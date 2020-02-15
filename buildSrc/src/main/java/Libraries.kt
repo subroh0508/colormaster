@@ -12,9 +12,9 @@ object Libraries {
     object Kotlin {
         const val version = "1.3.61"
 
-        const val stdlibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
-        const val stdlibJvm = "org.jetbrains.kotlin:kotlin-stdlib:$version"
-        const val stdlibJs = "org.jetbrains.kotlin:kotlin-stdlib-js:$version"
+        const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
+        const val jvm = "org.jetbrains.kotlin:kotlin-stdlib:$version"
+        const val js = "org.jetbrains.kotlin:kotlin-stdlib-js:$version"
         const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$version"
         const val androidExtensions = "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$version"
         const val test = "org.jetbrains.kotlin:kotlin-test:$version"
@@ -23,10 +23,10 @@ object Libraries {
     object Serialization {
         const val version = "0.14.0"
 
-        const val serializationCommon = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$version"
-        const val serializationJvm = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$version"
-        const val serializationJs = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$version"
-        const val serializationIos = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$version"
+        const val common = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$version"
+        const val jvm = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$version"
+        const val js = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$version"
+        const val ios = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$version"
     }
 
     object Coroutines {

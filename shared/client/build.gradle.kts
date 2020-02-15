@@ -1,27 +1,27 @@
 plugins {
     kotlin("multiplatform")
-    //id("com.android.library")
+    `android-library`
     id("kotlinx-serialization")
 }
 
 kotlin {
-    jvm()
+    android("android")
     js { nodejs {} }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(Libraries.Kotlin.stdlibCommon)
+                implementation(Libraries.Kotlin.common)
             }
         }
-        val jvmMain by getting {
+        val androidMain by getting {
             dependencies {
-                implementation(Libraries.Kotlin.stdlibJvm)
+                implementation(Libraries.Kotlin.jvm)
             }
         }
         val jsMain by getting {
             dependencies {
-                implementation(Libraries.Kotlin.stdlibJs)
+                implementation(Libraries.Kotlin.js)
             }
         }
     }
