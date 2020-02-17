@@ -1,1 +1,1 @@
-include(":shared:data", ":shared:client", ":android")
+include(":shared:data", ":shared:client", ":android", ":web")
