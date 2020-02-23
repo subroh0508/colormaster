@@ -1,14 +1,8 @@
 package net.subroh0508.ktor.client.mpp.sample.repository
 
 import io.ktor.client.HttpClient
-import io.ktor.client.request.accept
 import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.readText
-import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
-import io.ktor.utils.io.charsets.Charsets
-import kotlinx.serialization.json.Json
 import net.subroh0508.ktor.client.mpp.sample.repository.json.Response
 import net.subroh0508.ktor.client.mpp.sample.valueobject.IdolColor
 
@@ -21,18 +15,14 @@ class IdolColorsRepository(
     }
 
     suspend fun search(): List<IdolColor> {
-        val response = httpClient.get<HttpResponse>(buildQuery()) {
+        val response = httpClient.get<Response>(buildQuery()) {
             url {
                 protocol = URLProtocol.HTTPS
                 host = HOSTNAME
             }
-            accept(ContentType("application", "sparql-results+json"))
         }
 
-        return Json.nonstrict.parse(
-            Response.serializer(),
-            response.readText(Charsets.UTF_8)
-        ).results.bindings.mapNotNull { (sMap, nameMap, colorMap) ->
+        return response.results.bindings.mapNotNull { (sMap, nameMap, colorMap) ->
             val id = sMap["value"] ?: return@mapNotNull null
             val name = nameMap["value"] ?: return@mapNotNull null
             val color = colorMap["value"] ?: return@mapNotNull null

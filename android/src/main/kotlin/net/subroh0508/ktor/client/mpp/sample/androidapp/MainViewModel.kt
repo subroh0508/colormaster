@@ -6,7 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.features.defaultRequest
 import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.request.accept
+import io.ktor.http.ContentType
 import kotlinx.coroutines.launch
 import net.subroh0508.ktor.client.mpp.sample.repository.IdolColorsRepository
 import net.subroh0508.ktor.client.mpp.sample.valueobject.IdolColor
@@ -42,7 +45,12 @@ class MainViewModel : ViewModel() {
                 addInterceptor(loggingInterceptor)
             }
         }
-        install(JsonFeature)
+        defaultRequest {
+            accept(ContentType("application", "sparql-results+json"))
+        }
+        install(JsonFeature) {
+            acceptContentTypes += ContentType("application", "sparql-results+json")
+        }
     }
     private val repository: IdolColorsRepository by lazy { IdolColorsRepository(httpClient) }
 

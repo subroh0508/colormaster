@@ -29,6 +29,7 @@ dependencies {
     implementation(project(":shared:repository"))
 
     implementation(Libraries.Kotlin.android)
+    implementation(Libraries.Kotlin.reflect)
 
     implementation(Libraries.Coroutines.android)
 

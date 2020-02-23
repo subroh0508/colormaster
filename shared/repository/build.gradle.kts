@@ -26,6 +26,7 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(Libraries.Kotlin.android)
+                implementation(Libraries.Kotlin.reflect)
 
                 implementation(Libraries.Serialization.android)
 
