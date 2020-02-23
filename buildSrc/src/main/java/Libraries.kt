@@ -13,7 +13,7 @@ object Libraries {
         const val version = "1.3.61"
 
         const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
-        const val jvm = "org.jetbrains.kotlin:kotlin-stdlib:$version"
+        const val android = "org.jetbrains.kotlin:kotlin-stdlib:$version"
         const val js = "org.jetbrains.kotlin:kotlin-stdlib-js:$version"
         const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$version"
         const val androidExtensions = "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$version"
@@ -24,7 +24,7 @@ object Libraries {
         const val version = "0.14.0"
 
         const val common = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$version"
-        const val jvm = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$version"
+        const val android = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$version"
         const val js = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$version"
         const val ios = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$version"
     }
@@ -44,7 +44,7 @@ object Libraries {
         const val clientAndroid = "io.ktor:ktor-client-okhttp:$version"
         const val clientIos = "io.ktor:ktor-client-ios:$version"
         const val clientJs = "io.ktor:ktor-client-js:$version"
-        const val loggingJvm = "io.ktor:ktor-client-logging-jvm:$version"
+        const val loggingAndroid = "io.ktor:ktor-client-logging-jvm:$version"
         const val jsonCommon = "io.ktor:ktor-client-json:$version"
         const val jsonAndroid = "io.ktor:ktor-client-json-jvm:$version"
         const val jsonNative = "io.ktor:ktor-client-json-native:$version"

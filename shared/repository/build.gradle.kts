@@ -15,6 +15,8 @@ kotlin {
 
                 implementation(Libraries.Kotlin.common)
 
+                implementation(Libraries.Serialization.common)
+
                 implementation(Libraries.Ktor.clientCommon)
                 implementation(Libraries.Ktor.jsonCommon)
                 implementation(Libraries.Ktor.serializationCommon)
@@ -23,7 +25,9 @@ kotlin {
         val androidMain by getting {
             dependsOn(commonMain)
             dependencies {
-                implementation(Libraries.Kotlin.jvm)
+                implementation(Libraries.Kotlin.android)
+
+                implementation(Libraries.Serialization.android)
 
                 implementation(Libraries.Ktor.clientAndroid)
                 implementation(Libraries.Ktor.jsonAndroid)
@@ -34,6 +38,8 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(Libraries.Kotlin.js)
+
+                implementation(Libraries.Serialization.js)
 
                 implementation(Libraries.Ktor.clientJs)
                 implementation(Libraries.Ktor.jsonJs)

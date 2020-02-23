@@ -21,7 +21,18 @@ android {
 }
 
 dependencies {
-    implementation(Libraries.Kotlin.jvm)
+    implementation(project(":shared:data"))
+    implementation(project(":shared:repository"))
+
+    implementation(Libraries.Kotlin.android)
+
+    implementation(Libraries.Coroutines.android)
+
+    implementation(Libraries.Ktor.clientAndroid)
+    implementation(Libraries.Ktor.jsonAndroid)
+
+    implementation(Libraries.Serialization.android)
+
     implementation(Libraries.AndroidX.appCompat)
     implementation(Libraries.AndroidX.coreKtx)
     implementation(Libraries.AndroidX.constraintLayout)
