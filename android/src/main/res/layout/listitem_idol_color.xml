@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ListItem.IdolColor"
+    tools:background="#3B91C4">
+
+    <TextView
+        android:id="@+id/name"
+        style="@style/ListItem.IdolColorText"
+        tools:text="三峰結華"/>
+
+    <TextView
+        android:id="@+id/colorCode"
+        style="@style/ListItem.IdolColorText"
+        tools:text="#3B91C4"/>
+</LinearLayout>
