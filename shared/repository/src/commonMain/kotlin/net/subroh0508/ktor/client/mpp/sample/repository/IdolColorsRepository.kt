@@ -5,9 +5,9 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.http.ContentType
 import net.subroh0508.ktor.client.mpp.sample.repository.json.Response
-import net.subroh0508.ktor.client.mpp.sample.valueobject.ImageColor
+import net.subroh0508.ktor.client.mpp.sample.valueobject.IdolColor
 
-class ImageColorsRepository(
+class IdolColorsRepository(
     private val httpClient: HttpClient
 ) {
     companion object {
@@ -15,7 +15,7 @@ class ImageColorsRepository(
         private const val ENDPOINT = "/spql/imas/query"
     }
 
-    suspend fun search(): List<ImageColor> {
+    suspend fun search(): List<IdolColor> {
         val response = httpClient.get<Response>(buildQuery()) {
             accept(ContentType("application", "sparql-results+json"))
         }
@@ -25,7 +25,7 @@ class ImageColorsRepository(
             val name = nameMap["value"] ?: return@mapNotNull null
             val color = colorMap["value"] ?: return@mapNotNull null
 
-            ImageColor(id, name, color)
+            IdolColor(id, name, color)
         }
     }
 
