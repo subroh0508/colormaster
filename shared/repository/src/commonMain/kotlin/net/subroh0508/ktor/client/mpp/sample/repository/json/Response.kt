@@ -4,9 +4,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Response(
-    val heads: List<String>,
+    val head: Vars,
     val results: Result
 ) {
+    @Serializable
+    data class Vars(
+        val vars: List<String>
+    )
+
     @Serializable
     data class Result(
         val bindings: List<Binding>
