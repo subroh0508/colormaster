@@ -18,6 +18,10 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
+    packagingOptions {
+        exclude("META-INF/*")
+    }
 }
 
 dependencies {
