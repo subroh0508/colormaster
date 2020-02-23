@@ -22,7 +22,10 @@ android {
 
 dependencies {
     implementation(Libraries.Kotlin.jvm)
+    implementation(Libraries.AndroidX.appCompat)
     implementation(Libraries.AndroidX.coreKtx)
     implementation(Libraries.AndroidX.constraintLayout)
     implementation(Libraries.AndroidX.recyclerView)
+    implementation(Libraries.AndroidX.lifecycleViewModel)
+    implementation(Libraries.AndroidX.lifecycleLiveData)
 }
