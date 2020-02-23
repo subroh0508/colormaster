@@ -11,6 +11,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(project(":shared:data"))
+
                 implementation(Libraries.Kotlin.common)
 
                 implementation(Libraries.Ktor.clientCommon)
@@ -19,6 +21,7 @@ kotlin {
             }
         }
         val androidMain by getting {
+            dependsOn(commonMain)
             dependencies {
                 implementation(Libraries.Kotlin.jvm)
 
@@ -28,6 +31,7 @@ kotlin {
             }
         }
         val jsMain by getting {
+            dependsOn(commonMain)
             dependencies {
                 implementation(Libraries.Kotlin.js)
 
