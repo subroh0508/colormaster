@@ -56,6 +56,13 @@ object Libraries {
         const val serializationJs = "io.ktor:ktor-client-serialization-js:$version"
     }
 
+    object Okhttp3 {
+        const val version = "3.14.2"
+
+        const val client = "com.squareup.okhttp3:okhttp:$version"
+        const val loggingIntercerptor = "com.squareup.okhttp3:logging-interceptor:$version"
+    }
+
     object AndroidX {
         const val coreVersion = "1.2.0"
         const val coreKtx = "androidx.core:core-ktx:$coreVersion"

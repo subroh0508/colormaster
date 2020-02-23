@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AndroidApp</string>
+    <string name="hex_color">#%s</string>
+    <string name="results_empty">検索結果は0件です</string>
 </resources>

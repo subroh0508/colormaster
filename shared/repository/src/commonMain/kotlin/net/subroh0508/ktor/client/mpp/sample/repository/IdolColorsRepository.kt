@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.http.ContentType
+import io.ktor.http.URLProtocol
 import net.subroh0508.ktor.client.mpp.sample.repository.json.Response
 import net.subroh0508.ktor.client.mpp.sample.valueobject.IdolColor
 
@@ -11,12 +12,12 @@ class IdolColorsRepository(
     private val httpClient: HttpClient
 ) {
     companion object {
-        private const val BASE_URL = "https://sparql.crssnky.xyz"
+        private val HOSTNAME = "${URLProtocol.HTTPS.name}/sparql.crssnky.xyz"
         private const val ENDPOINT = "/spql/imas/query"
     }
 
     suspend fun search(): List<IdolColor> {
-        val response = httpClient.get<Response>(buildQuery()) {
+        val response = httpClient.get<Response>(HOSTNAME + buildQuery()) {
             accept(ContentType("application", "sparql-results+json"))
         }
 

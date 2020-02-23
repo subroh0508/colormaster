@@ -6,6 +6,22 @@
     </style>
 
     <style name="ListItem"/>
+    <style name="ListItem.Footer">
+        <item name="android:layout_height">@dimen/listitem_footer_height</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginStart">@dimen/listitem_footer_marginHorizontal</item>
+        <item name="android:layout_marginEnd">@dimen/listitem_footer_marginHorizontal</item>
+    </style>
+    <style name="ListItem.FooterText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:padding">@dimen/listitem_footer_padding</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+    <style name="ListItem.FooterProgress">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
     <style name="ListItem.IdolColor">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>

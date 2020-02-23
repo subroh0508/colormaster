@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="listitem_footer_height">40dp</dimen>
+    <dimen name="listitem_footer_marginHorizontal">16dp</dimen>
+    <dimen name="listitem_footer_padding">8dp</dimen>
+
     <dimen name="listitem_idol_color_marginVertical">4dp</dimen>
     <dimen name="listitem_idol_color_marginHorizontal">16dp</dimen>
     <dimen name="listitem_idol_color_padding">8dp</dimen>
