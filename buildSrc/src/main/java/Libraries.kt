@@ -55,4 +55,18 @@ object Libraries {
         const val serializationIosX64 = "io.ktor:ktor-client-serialization-iosx64:$version"
         const val serializationJs = "io.ktor:ktor-client-serialization-js:$version"
     }
+
+    object AndroidX {
+        const val coreVersion = "1.2.0"
+        const val coreKtx = "androidx.core:core-ktx:$coreVersion"
+
+        const val appCompatVersion = "1.1.0"
+        const val appCompat = "androidx.appcompat:appcompat:$appCompatVersion"
+
+        const val constraintLayoutVersion = "1.1.3"
+        const val constraintLayout = "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+
+        const val recyclerViewVersion = "1.1.0"
+        const val recyclerView = "androidx.recyclerview:recyclerview:$recyclerViewVersion"
+    }
 }
