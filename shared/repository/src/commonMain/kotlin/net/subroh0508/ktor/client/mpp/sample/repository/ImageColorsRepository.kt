@@ -16,7 +16,7 @@ class ImageColorsRepository(
     }
 
     suspend fun search(): List<ImageColor> {
-        val response = httpClient.get<Response>(ENDPOINT.appendQuery()) {
+        val response = httpClient.get<Response>(buildQuery()) {
             accept(ContentType("application", "sparql-results+json"))
         }
 
@@ -29,10 +29,18 @@ class ImageColorsRepository(
         }
     }
 
-    private fun String.appendQuery(): String = buildString {
-        append(this@appendQuery)
+    private fun buildQuery(): String = buildString {
+        append(ENDPOINT)
         append("?output=json")
         append("&query=")
-        append("")
+
+        val query = """
+            PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+            SELECT * WHERE {?s rdfs:label ?name;imas:Color ?color;} order by rand()
+        """.trimIndent()
+
+        append(URLEncoder.encode(query))
     }
 }
