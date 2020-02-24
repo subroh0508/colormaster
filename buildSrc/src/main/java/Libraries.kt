@@ -80,4 +80,18 @@ object Libraries {
         const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
         const val lifecycleLiveData = "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
     }
+
+    object Html {
+        const val version = "0.7.1"
+
+        const val js = "org.jetbrains.kotlinx:kotlinx-html-js:$version"
+    }
+
+    object Npm {
+        const val abortControllerVersion = "3.0.0"
+        const val abortController = "abort-controller"
+
+        const val textEncodingVersion = "0.7.0"
+        const val textEncoding = "text-encoding"
+    }
 }
