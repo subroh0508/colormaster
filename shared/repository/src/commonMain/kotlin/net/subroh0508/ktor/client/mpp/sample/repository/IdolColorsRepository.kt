@@ -5,7 +5,6 @@ import io.ktor.client.request.get
 import io.ktor.http.URLProtocol
 import net.subroh0508.ktor.client.mpp.sample.repository.json.Response
 import net.subroh0508.ktor.client.mpp.sample.repository.mapper.toIdolColors
-import net.subroh0508.ktor.client.mpp.sample.valueobject.IdolColor
 
 class IdolColorsRepository(
     private val httpClient: HttpClient

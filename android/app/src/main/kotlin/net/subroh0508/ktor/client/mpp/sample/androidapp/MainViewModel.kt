@@ -11,8 +11,8 @@ import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.request.accept
 import io.ktor.http.ContentType
 import kotlinx.coroutines.launch
+import net.subroh0508.ktor.client.mpp.sample.domain.valueobject.IdolColor
 import net.subroh0508.ktor.client.mpp.sample.repository.IdolColorsRepository
-import net.subroh0508.ktor.client.mpp.sample.valueobject.IdolColor
 import okhttp3.logging.HttpLoggingInterceptor
 
 class MainViewModel : ViewModel() {

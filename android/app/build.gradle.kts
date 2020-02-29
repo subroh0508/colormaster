@@ -25,7 +25,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":shared:data"))
+    implementation(project(":shared:domain:valueobject"))
     implementation(project(":shared:repository"))
 
     implementation(Libraries.Kotlin.android)

@@ -7,8 +7,8 @@ import kotlinx.html.div
 import kotlinx.html.dom.append
 import kotlinx.html.js.div
 import kotlinx.html.style
+import net.subroh0508.ktor.client.mpp.sample.domain.valueobject.IdolColor
 import net.subroh0508.ktor.client.mpp.sample.repository.IdolColorsRepository
-import net.subroh0508.ktor.client.mpp.sample.valueobject.IdolColor
 import kotlin.browser.document
 import kotlin.coroutines.CoroutineContext
 

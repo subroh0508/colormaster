@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.listitem_footer.view.*
 import kotlinx.android.synthetic.main.listitem_idol_color.view.*
-import net.subroh0508.ktor.client.mpp.sample.valueobject.IdolColor
+import net.subroh0508.ktor.client.mpp.sample.domain.valueobject.IdolColor
 
 class IdolColorAdapter(
     private val context: Context,

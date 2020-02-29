@@ -1,6 +1,6 @@
 include(
     ":android:app",
     ":web",
-    ":shared:data",
+    ":shared:domain:valueobject",
     ":shared:repository"
 )
