@@ -34,15 +34,6 @@ dependencies {
 
     implementation(Libraries.Coroutines.android)
 
-    implementation(Libraries.Ktor.clientAndroid)
-    implementation(Libraries.Ktor.jsonAndroid)
-    implementation(Libraries.Ktor.serializationAndroid)
-
-    implementation(Libraries.Serialization.android)
-
-    implementation(Libraries.Okhttp3.client)
-    implementation(Libraries.Okhttp3.loggingIntercerptor)
-
     implementation(Libraries.AndroidX.appCompat)
     implementation(Libraries.AndroidX.coreKtx)
     implementation(Libraries.AndroidX.constraintLayout)
