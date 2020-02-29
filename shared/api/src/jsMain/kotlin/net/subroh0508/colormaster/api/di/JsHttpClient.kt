@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.js.Js
 import io.ktor.client.features.defaultRequest
 import io.ktor.client.features.json.Json
+import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.accept
 import io.ktor.http.URLProtocol
 import io.ktor.http.userAgent
@@ -22,5 +23,6 @@ internal actual val httpClient get() = HttpClient(Js) {
     }
     Json {
         acceptContentTypes += ContentType.Application.SparqlJson
+        serializer = KotlinxSerializer(kotlinx.serialization.json.Json.nonstrict)
     }
 }

@@ -1,4 +1,3 @@
-
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -7,18 +6,20 @@ import kotlinx.html.div
 import kotlinx.html.dom.append
 import kotlinx.html.js.div
 import kotlinx.html.style
+import net.subroh0508.colormaster.components.core.AppModule
 import net.subroh0508.colormaster.domain.valueobject.IdolColor
 import net.subroh0508.colormaster.domain.valueobject.IdolName
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
+import org.kodein.di.erased.instance
 import kotlin.browser.document
 import kotlin.coroutines.CoroutineContext
 
-class MainApplication(
-    private val repository: IdolColorsRepository
-) : CoroutineScope, KodeinAware {
+class MainApplication : CoroutineScope, KodeinAware {
     override val coroutineContext: CoroutineContext get() = SupervisorJob()
+
+    private val repository: IdolColorsRepository by instance()
 
     fun loadItems() {
         launch {
@@ -56,7 +57,5 @@ class MainApplication(
         append("text-align: center;")
     }
 
-    override val kodein by Kodein.lazy {
-        import(Api)
-    }
+    override val kodein = Kodein { import(AppModule) }
 }

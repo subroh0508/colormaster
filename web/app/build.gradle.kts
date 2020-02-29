@@ -27,6 +27,7 @@ kotlin {
     sourceSets {
         val main by getting {
             dependencies {
+                implementation(project(":shared:components:core"))
                 implementation(project(":shared:domain:valueobject"))
                 implementation(project(":shared:repository"))
 
