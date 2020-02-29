@@ -10,8 +10,8 @@ import org.kodein.di.erased.singleton
 
 internal expect val httpClient: HttpClient
 
-object ApiModules {
-    val ImasparqlClientModule get() = Kodein.Module(name = "ImasparqlClientModule") {
+object Api {
+    val Module get() = Kodein.Module(name = "ImasparqlClientModule") {
         bind<HttpClient>() with singleton { httpClient }
         bind<ImasparqlClient>() with singleton { ImasparqlApiClient(instance()) }
     }
