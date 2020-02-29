@@ -1,1 +1,6 @@
-include(":shared:data", ":shared:repository", ":android", ":web")
+include(
+    ":android:app",
+    ":web",
+    ":shared:data",
+    ":shared:repository"
+)
