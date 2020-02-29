@@ -1,6 +1,7 @@
 include(
     ":android:app",
     ":android:features:idol",
+    ":android:widget",
     ":web:app",
     ":shared:components:core",
     ":shared:domain:valueobject",

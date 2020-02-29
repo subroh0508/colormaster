@@ -82,12 +82,18 @@ object Libraries {
         const val constraintLayoutVersion = "1.1.3"
         const val constraintLayout = "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
 
+        const val coordinatorLayoutVersion = "1.1.0"
+        const val coordinatorLayout = "androidx.coordinatorlayout:coordinatorlayout:$coordinatorLayoutVersion"
+
         const val recyclerViewVersion = "1.1.0"
         const val recyclerView = "androidx.recyclerview:recyclerview:$recyclerViewVersion"
 
         const val lifecycleVersion = "2.2.0"
         const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
         const val lifecycleLiveData = "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+
+        const val materialVersion = "1.1.0"
+        const val material = "com.google.android.material:material:$materialVersion"
     }
 
     object Html {
