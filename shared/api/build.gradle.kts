@@ -20,6 +20,8 @@ kotlin {
                 implementation(Libraries.Ktor.clientCommon)
                 implementation(Libraries.Ktor.jsonCommon)
                 implementation(Libraries.Ktor.serializationCommon)
+
+                implementation(Libraries.Kodein.common)
             }
         }
         val androidMain by getting {
@@ -35,6 +37,11 @@ kotlin {
                 implementation(Libraries.Ktor.clientAndroid)
                 implementation(Libraries.Ktor.jsonAndroid)
                 implementation(Libraries.Ktor.serializationAndroid)
+
+                implementation(Libraries.Okhttp3.client)
+                implementation(Libraries.Okhttp3.loggingIntercerptor)
+
+                implementation(Libraries.Kodein.android)
             }
         }
         val jsMain by getting {
@@ -49,6 +56,8 @@ kotlin {
                 implementation(Libraries.Ktor.clientJs)
                 implementation(Libraries.Ktor.jsonJs)
                 implementation(Libraries.Ktor.serializationJs)
+
+                implementation(Libraries.Kodein.js)
             }
         }
     }

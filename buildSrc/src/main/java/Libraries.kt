@@ -56,6 +56,15 @@ object Libraries {
         const val serializationJs = "io.ktor:ktor-client-serialization-js:$version"
     }
 
+    object Kodein {
+        const val version = "6.5.2"
+
+        const val common = "org.kodein.di:kodein-di-erased:$version"
+        const val android = "org.kodein.di:kodein-di-generic-jvm:$version"
+        const val frameworkAndroidX = "org.kodein.di:kodein-di-framework-android-x:$version"
+        const val js = "org.kodein.di:kodein-di-erased-js:$version"
+    }
+
     object Okhttp3 {
         const val version = "3.14.2"
 
