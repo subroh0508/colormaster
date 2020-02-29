@@ -3,5 +3,6 @@ include(
     ":web",
     ":shared:domain:valueobject",
     ":shared:repository",
+    ":shared:query",
     ":shared:api"
 )
