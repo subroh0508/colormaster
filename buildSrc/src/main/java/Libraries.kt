@@ -79,7 +79,7 @@ object Libraries {
         const val appCompatVersion = "1.1.0"
         const val appCompat = "androidx.appcompat:appcompat:$appCompatVersion"
 
-        const val constraintLayoutVersion = "1.1.3"
+        const val constraintLayoutVersion = "2.0.0-beta4"
         const val constraintLayout = "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
 
         const val coordinatorLayoutVersion = "1.1.0"

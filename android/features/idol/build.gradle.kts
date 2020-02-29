@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":android:widget"))
     implementation(project(":shared:components:core"))
     implementation(project(":shared:domain:valueobject"))
     implementation(project(":shared:repository"))
@@ -17,9 +18,11 @@ dependencies {
     implementation(Libraries.AndroidX.appCompat)
     implementation(Libraries.AndroidX.coreKtx)
     implementation(Libraries.AndroidX.constraintLayout)
+    implementation(Libraries.AndroidX.coordinatorLayout)
     implementation(Libraries.AndroidX.recyclerView)
     implementation(Libraries.AndroidX.lifecycleViewModel)
     implementation(Libraries.AndroidX.lifecycleLiveData)
+    implementation(Libraries.AndroidX.material)
 
     implementation(Libraries.Kodein.android)
     implementation(Libraries.Kodein.frameworkAndroidX)
