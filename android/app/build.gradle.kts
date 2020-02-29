@@ -25,7 +25,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":android:corecomponent"))
+    implementation(project(":shared:components:core"))
     implementation(project(":shared:domain:valueobject"))
     implementation(project(":shared:repository"))
 

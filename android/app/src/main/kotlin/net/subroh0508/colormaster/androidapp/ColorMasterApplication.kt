@@ -1,7 +1,7 @@
 package net.subroh0508.colormaster.androidapp
 
 import android.app.Application
-import net.subroh0508.colormaster.corecomponent.AppModule
+import net.subroh0508.colormaster.components.core.AppModule
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 

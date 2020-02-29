@@ -1,7 +1,7 @@
 include(
     ":android:app",
-    ":android:corecomponent",
     ":web:app",
+    ":shared:components:core",
     ":shared:domain:valueobject",
     ":shared:repository",
     ":shared:query",

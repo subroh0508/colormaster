@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.corecomponent
+package net.subroh0508.colormaster.components.core
 
 import org.kodein.di.Kodein
 import net.subroh0508.colormaster.api.di.Api
