@@ -4,7 +4,7 @@ import net.subroh0508.colormaster.domain.valueobject.IdolName
 import net.subroh0508.colormaster.query.internal.URLEncoder
 
 object ImasparqlQueries {
-    fun search(name: IdolName) = buildQuery("""
+    fun searchByName(name: String) = buildQuery("""
         SELECT * WHERE {?s rdfs:label ?name;imas:Color ?color;} order by rand()
     """.trimIndent())
 
