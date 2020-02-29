@@ -1,17 +1,13 @@
 package net.subroh0508.colormaster.domain.valueobject
 
-data class IdolColor(
+data class IdolColor internal constructor(
     val id: String,
     val name: String,
-    private val hexColor: String
+    private val hexColor: HexColor
 ) {
-    val isBrighter: Boolean get() {
-        val red = hexColor.substring(0, 2).toInt(16)
-        val green = hexColor.substring(2, 4).toInt(16)
-        val blue = hexColor.substring(4, 6).toInt(16)
+    constructor(id: String, name: String, hexColor: String) : this(id, name, HexColor(hexColor))
 
-        return 186 < (red * 0.299 + green * 0.587 + blue * 0.114)
-    }
+    val isBrighter: Boolean get() = hexColor.isBrighter
 
-    val color = "#$hexColor"
+    val color = "#${hexColor.value}"
 }
