@@ -1,5 +1,6 @@
 include(
     ":android:app",
+    ":android:features:search",
     ":web:app",
     ":shared:components:core",
     ":shared:domain:valueobject",
