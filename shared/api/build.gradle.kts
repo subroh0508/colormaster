@@ -11,8 +11,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":shared:domain:valueobject"))
-
                 implementation(Libraries.Kotlin.common)
 
                 implementation(Libraries.Coroutines.common)
