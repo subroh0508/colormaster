@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.http.URLProtocol
 import net.subroh0508.ktor.client.mpp.sample.repository.json.Response
+import net.subroh0508.ktor.client.mpp.sample.repository.mapper.toIdolColors
 import net.subroh0508.ktor.client.mpp.sample.valueobject.IdolColor
 
 class IdolColorsRepository(
@@ -14,22 +15,12 @@ class IdolColorsRepository(
         private const val ENDPOINT = "/spql/imas/query"
     }
 
-    suspend fun search(): List<IdolColor> {
-        val response = httpClient.get<Response>(buildQuery()) {
-            url {
-                protocol = URLProtocol.HTTPS
-                host = HOSTNAME
-            }
+    suspend fun search() = httpClient.get<Response>(buildQuery()) {
+        url {
+            protocol = URLProtocol.HTTPS
+            host = HOSTNAME
         }
-
-        return response.results.bindings.mapNotNull { (sMap, nameMap, colorMap) ->
-            val id = sMap["value"] ?: return@mapNotNull null
-            val name = nameMap["value"] ?: return@mapNotNull null
-            val color = colorMap["value"] ?: return@mapNotNull null
-
-            IdolColor(id, name, color)
-        }
-    }
+    }.toIdolColors()
 
     private fun buildQuery(): String = buildString {
         append(ENDPOINT)
