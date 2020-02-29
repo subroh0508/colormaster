@@ -1,9 +1,6 @@
 package net.subroh0508.colormaster.androidapp
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.features.defaultRequest
@@ -12,10 +9,13 @@ import io.ktor.client.request.accept
 import io.ktor.http.ContentType
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.domain.valueobject.IdolColor
+import net.subroh0508.colormaster.domain.valueobject.IdolName
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import okhttp3.logging.HttpLoggingInterceptor
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    private val repository: IdolColorsRepository
+) : ViewModel() {
     val items: List<IdolColor> get() = loadingState.value?.let { (it as? LoadingState.Loaded)?.items } ?: listOf()
     val loadingState: LiveData<LoadingState> get() = mutableLoadingState
 
@@ -29,7 +29,7 @@ class MainViewModel : ViewModel() {
                 LoadingState.Loading
             )
 
-            runCatching { repository.search() }
+            runCatching { repository.search(IdolName("dummy")) }
                 .onSuccess { mutableLoadingState.postValue(
                     LoadingState.Loaded(it)
                 ) }
@@ -60,11 +60,18 @@ class MainViewModel : ViewModel() {
             acceptContentTypes += ContentType("application", "sparql-results+json")
         }
     }
-    private val repository: IdolColorsRepository by lazy { IdolColorsRepository(httpClient) }
 
     sealed class LoadingState {
         object Loading : LoadingState()
         data class Loaded(val items: List<IdolColor> = listOf()) : LoadingState()
         data class Error(val exception: Throwable) : LoadingState()
+    }
+
+    class Factory(
+        private val repository: IdolColorsRepository
+    ) : ViewModelProvider.NewInstanceFactory() {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            MainViewModel(repository) as T
     }
 }
