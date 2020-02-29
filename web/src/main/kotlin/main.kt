@@ -7,7 +7,7 @@ import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.accept
 import io.ktor.http.ContentType
 import kotlinx.serialization.json.Json
-import net.subroh0508.ktor.client.mpp.sample.repository.IdolColorsRepository
+import net.subroh0508.colormaster.repository.IdolColorsRepository
 import kotlin.browser.window
 
 private val httpClient: HttpClient = HttpClient(Js) {
@@ -20,7 +20,9 @@ private val httpClient: HttpClient = HttpClient(Js) {
     }
 }
 
-private val repository: IdolColorsRepository by lazy { IdolColorsRepository(httpClient) }
+private val repository: IdolColorsRepository by lazy {
+    IdolColorsRepository(httpClient)
+}
 
 fun main() {
     window.onload = {

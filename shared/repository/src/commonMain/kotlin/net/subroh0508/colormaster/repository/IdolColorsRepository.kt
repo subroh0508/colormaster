@@ -1,10 +1,10 @@
-package net.subroh0508.ktor.client.mpp.sample.repository
+package net.subroh0508.colormaster.repository
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.http.URLProtocol
-import net.subroh0508.ktor.client.mpp.sample.repository.json.Response
-import net.subroh0508.ktor.client.mpp.sample.repository.mapper.toIdolColors
+import net.subroh0508.colormaster.repository.json.Response
+import net.subroh0508.colormaster.repository.mapper.toIdolColors
 
 class IdolColorsRepository(
     private val httpClient: HttpClient

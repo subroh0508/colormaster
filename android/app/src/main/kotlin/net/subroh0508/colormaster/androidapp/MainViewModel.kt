@@ -1,4 +1,4 @@
-package net.subroh0508.ktor.client.mpp.sample.androidapp
+package net.subroh0508.colormaster.androidapp
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,25 +11,33 @@ import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.request.accept
 import io.ktor.http.ContentType
 import kotlinx.coroutines.launch
-import net.subroh0508.ktor.client.mpp.sample.domain.valueobject.IdolColor
-import net.subroh0508.ktor.client.mpp.sample.repository.IdolColorsRepository
+import net.subroh0508.colormaster.domain.valueobject.IdolColor
+import net.subroh0508.colormaster.repository.IdolColorsRepository
 import okhttp3.logging.HttpLoggingInterceptor
 
 class MainViewModel : ViewModel() {
     val items: List<IdolColor> get() = loadingState.value?.let { (it as? LoadingState.Loaded)?.items } ?: listOf()
     val loadingState: LiveData<LoadingState> get() = mutableLoadingState
 
-    private val mutableLoadingState: MutableLiveData<LoadingState> = MutableLiveData(LoadingState.Loaded())
+    private val mutableLoadingState: MutableLiveData<LoadingState> = MutableLiveData(
+        LoadingState.Loaded()
+    )
 
     fun loadItems() {
         viewModelScope.launch {
-            mutableLoadingState.postValue(LoadingState.Loading)
+            mutableLoadingState.postValue(
+                LoadingState.Loading
+            )
 
             runCatching { repository.search() }
-                .onSuccess { mutableLoadingState.postValue(LoadingState.Loaded(it)) }
+                .onSuccess { mutableLoadingState.postValue(
+                    LoadingState.Loaded(it)
+                ) }
                 .onFailure {
                     it.printStackTrace()
-                    mutableLoadingState.postValue(LoadingState.Error(it))
+                    mutableLoadingState.postValue(
+                        LoadingState.Error(it)
+                    )
                 }
         }
     }

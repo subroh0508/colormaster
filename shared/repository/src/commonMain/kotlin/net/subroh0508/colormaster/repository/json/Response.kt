@@ -1,4 +1,4 @@
-package net.subroh0508.ktor.client.mpp.sample.repository.json
+package net.subroh0508.colormaster.repository.json
 
 import kotlinx.serialization.Serializable
 

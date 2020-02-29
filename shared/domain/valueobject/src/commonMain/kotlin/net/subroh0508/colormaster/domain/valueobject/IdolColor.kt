@@ -1,4 +1,4 @@
-package net.subroh0508.ktor.client.mpp.sample.domain.valueobject
+package net.subroh0508.colormaster.domain.valueobject
 
 data class IdolColor(
     val id: String,

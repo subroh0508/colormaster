@@ -1,7 +1,7 @@
-package net.subroh0508.ktor.client.mpp.sample.repository.mapper
+package net.subroh0508.colormaster.repository.mapper
 
-import net.subroh0508.ktor.client.mpp.sample.domain.valueobject.IdolColor
-import net.subroh0508.ktor.client.mpp.sample.repository.json.Response
+import net.subroh0508.colormaster.domain.valueobject.IdolColor
+import net.subroh0508.colormaster.repository.json.Response
 
 fun Response.toIdolColors(): List<IdolColor> = results.bindings.mapNotNull { (sMap, nameMap, colorMap) ->
     val id = sMap["value"] ?: return@mapNotNull null

@@ -1,4 +1,4 @@
-package net.subroh0508.ktor.client.mpp.sample.androidapp
+package net.subroh0508.colormaster.androidapp
 
 import android.content.Context
 import android.graphics.Color
@@ -9,7 +9,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.listitem_footer.view.*
 import kotlinx.android.synthetic.main.listitem_idol_color.view.*
-import net.subroh0508.ktor.client.mpp.sample.domain.valueobject.IdolColor
+import net.subroh0508.colormaster.domain.valueobject.IdolColor
+import net.subroh0508.colormaster.androidapp.R
 
 class IdolColorAdapter(
     private val context: Context,
@@ -23,8 +24,20 @@ class IdolColorAdapter(
     private val inflater: LayoutInflater by lazy { LayoutInflater.from(context) }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
-        MAIN_ITEM_VIEW -> MainViewHolder(inflater.inflate(R.layout.listitem_idol_color, parent, false))
-        FOOTER_ITEM_VIEW -> FooterViewHolder(inflater.inflate(R.layout.listitem_footer, parent, false))
+        MAIN_ITEM_VIEW -> MainViewHolder(
+            inflater.inflate(
+                R.layout.listitem_idol_color,
+                parent,
+                false
+            )
+        )
+        FOOTER_ITEM_VIEW -> FooterViewHolder(
+                inflater.inflate(
+                    R.layout.listitem_footer,
+                    parent,
+                    false
+                )
+            )
         else -> throw IllegalStateException("Unknown viewType: $viewType")
     }
 
@@ -46,7 +59,8 @@ class IdolColorAdapter(
             name.text = item.name
             colorCode.text = item.color
 
-            val textColor = ContextCompat.getColor(context, if (item.isBrighter) R.color.black else R.color.white)
+            val textColor = ContextCompat.getColor(context, if (item.isBrighter) R.color.black else R.color.white
+            )
 
             name.setTextColor(textColor)
             colorCode.setTextColor(textColor)
@@ -66,7 +80,9 @@ class IdolColorAdapter(
             }
 
             message.text = when {
-                state is MainViewModel.LoadingState.Loaded && state.items.isEmpty() -> context.getString(R.string.results_empty)
+                state is MainViewModel.LoadingState.Loaded && state.items.isEmpty() -> context.getString(
+                    R.string.results_empty
+                )
                 state is MainViewModel.LoadingState.Error -> state.exception.localizedMessage
                 else -> ""
             }

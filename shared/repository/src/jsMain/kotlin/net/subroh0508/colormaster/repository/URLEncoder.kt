@@ -1,4 +1,4 @@
-package net.subroh0508.ktor.client.mpp.sample.repository
+package net.subroh0508.colormaster.repository
 
 external fun encodeURIComponent(s: String): String
 
