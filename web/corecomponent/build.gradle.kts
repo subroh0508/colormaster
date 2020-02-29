@@ -42,6 +42,8 @@ kotlin {
 
                 implementation(Libraries.Html.js)
 
+                implementation(Libraries.Kodein.js)
+
                 implementation(npm(Libraries.Npm.abortController, Libraries.Npm.abortControllerVersion))
                 implementation(npm(Libraries.Npm.textEncoding, Libraries.Npm.textEncodingVersion))
             }

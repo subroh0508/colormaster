@@ -8,18 +8,21 @@ import kotlinx.html.dom.append
 import kotlinx.html.js.div
 import kotlinx.html.style
 import net.subroh0508.colormaster.domain.valueobject.IdolColor
+import net.subroh0508.colormaster.domain.valueobject.IdolName
 import net.subroh0508.colormaster.repository.IdolColorsRepository
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
 import kotlin.browser.document
 import kotlin.coroutines.CoroutineContext
 
 class MainApplication(
     private val repository: IdolColorsRepository
-) : CoroutineScope {
+) : CoroutineScope, KodeinAware {
     override val coroutineContext: CoroutineContext get() = SupervisorJob()
 
     fun loadItems() {
         launch {
-            runCatching { repository.search() }
+            runCatching { repository.search(IdolName("dummy")) }
                 .onSuccess { showColors(it) }
                 .onFailure { console.log(it) }
         }
@@ -51,5 +54,9 @@ class MainApplication(
         append("background-color: ${item.color};")
         append("color: ${if (item.isBrighter) "black" else "white"};")
         append("text-align: center;")
+    }
+
+    override val kodein by Kodein.lazy {
+        import(Api)
     }
 }
