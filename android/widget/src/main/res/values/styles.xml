@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Widget.ColorMaster.FilterChip" parent="">
+        <item name="android:textSize">14sp</item>
+        <item name="android:minHeight">32dp</item>
+        <item name="horizontalPadding">10dp</item>
+        <item name="verticalPadding">6dp</item>
+        <item name="clearIcon">@drawable/ic_cancel_black_12dp</item>
+        <item name="foreground">?selectableItemBackground</item>
+        <item name="showIcons">true</item>
+        <item name="dotSize">10dp</item>
+        <item name="dotPadding">7dp</item>
+        <item name="android:textColor">?colorOnSecondary</item>
+        <item name="android:color">?colorSecondary</item>
+        <item name="clearIconTint">@color/filter_chip_clear_icon_selector</item>
+        <item name="selectedTextColor">?colorOnSecondary</item>
+        <item name="backgroundColor">@color/orange_400</item>
+    </style>
+
     <style name="Widget.ColorMaster.Item.Footer" parent="">
         <item name="android:layout_height">@dimen/item_footer_height</item>
         <item name="android:layout_width">match_parent</item>

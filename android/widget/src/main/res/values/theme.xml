@@ -10,6 +10,8 @@
         <item name="textAppearanceBody2">@style/TextAppearance.ColorMaster.Body2</item>
         <item name="textAppearanceCaption">@style/TextAppearance.ColorMaster.Caption</item>
         <item name="textAppearanceButton">@style/TextAppearance.ColorMaster.Button</item>
+
+        <item name="filterChipStyle">@style/Widget.ColorMaster.FilterChip</item>
     </style>
 
     <style name="Theme.ColorMaster" parent="Base.Theme.ColorMaster">
