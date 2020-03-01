@@ -1,5 +1,5 @@
 object Android {
-    const val applicationId = "net.subroh0508.ktor.client.mpp.sample"
+    const val applicationId = "net.subroh0508.colormaster"
     const val versionCode = 1
     const val versionName = "0.0.1"
 
