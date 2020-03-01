@@ -10,10 +10,10 @@
         <item name="showIcons">true</item>
         <item name="dotSize">10dp</item>
         <item name="dotPadding">7dp</item>
-        <item name="android:textColor">?colorOnSecondary</item>
+        <item name="android:textColor">@color/black</item>
         <item name="android:color">?colorSecondary</item>
         <item name="clearIconTint">@color/filter_chip_clear_icon_selector</item>
-        <item name="selectedTextColor">?colorOnSecondary</item>
+        <item name="selectedTextColor">@color/black</item>
         <item name="backgroundColor">@color/orange_400</item>
     </style>
 

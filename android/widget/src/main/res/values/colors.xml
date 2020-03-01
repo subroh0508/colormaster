@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">@color/orange_200</color>
-    <color name="colorPrimaryVariant">@color/orange_900</color>
+    <color name="colorPrimaryVariant">@color/deep_orange_900</color>
     <color name="colorSecondary">#fff09f</color>
 
     <color name="orange_200">#ffcc80</color>
     <color name="orange_400">#ffa726</color>
     <color name="orange_500">#ff9800</color>
     <color name="orange_900">#e65100</color>
+
+    <color name="deep_orange_600">#f4511e</color>
+    <color name="deep_orange_900">#bf360c</color>
 
     <color name="white">#FFFFFF</color>
     <color name="gray">#7B7B7B</color>
