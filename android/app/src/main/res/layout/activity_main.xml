@@ -7,7 +7,9 @@
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?colorPrimary"
+        app:statusBarBackground="?colorPrimarySurface">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/content_container"
@@ -16,7 +18,7 @@
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
-                style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                style="@style/Widget.ColorMaster.MaterialToolbar"
                 android:layout_width="0dp"
                 android:layout_height="?actionBarSize"
                 app:layout_constraintTop_toTopOf="parent"

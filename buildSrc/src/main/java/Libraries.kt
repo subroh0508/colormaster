@@ -96,7 +96,7 @@ object Libraries {
         const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
         const val lifecycleLiveData = "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
 
-        const val materialVersion = "1.1.0"
+        const val materialVersion = "1.2.0-alpha05"
         const val material = "com.google.android.material:material:$materialVersion"
 
         object Navigation {

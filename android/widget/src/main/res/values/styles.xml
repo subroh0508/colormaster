@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Widget"/>
-    <style name="Widget.ColorMaster"/>
-    <style name="Widget.ColorMaster.Item"/>
-
-    <style name="Widget.ColorMaster.Item.Footer">
+    <style name="Widget.ColorMaster.Item.Footer" parent="">
         <item name="android:layout_height">@dimen/item_footer_height</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_marginStart">@dimen/item_footer_marginHorizontal</item>
         <item name="android:layout_marginEnd">@dimen/item_footer_marginHorizontal</item>
     </style>
-    <style name="Widget.ColorMaster.Item.FooterText">
+    <style name="Widget.ColorMaster.Item.FooterText" parent="">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:padding">@dimen/item_footer_padding</item>
         <item name="android:gravity">center_horizontal</item>
     </style>
-    <style name="Widget.ColorMaster.Item.FooterProgress">
+    <style name="Widget.ColorMaster.Item.FooterProgress" parent="">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
     </style>
 
-    <style name="Widget.ColorMaster.Item.IdolColor">
+    <style name="Widget.ColorMaster.Item.IdolColor" parent="">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:orientation">vertical</item>
@@ -32,7 +28,7 @@
         <item name="android:padding">@dimen/item_idol_color_padding</item>
     </style>
 
-    <style name="Widget.ColorMaster.Item.IdolColorText">
+    <style name="Widget.ColorMaster.Item.IdolColorText" parent="">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:gravity">center_horizontal</item>
