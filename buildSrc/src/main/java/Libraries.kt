@@ -7,6 +7,7 @@ object Libraries {
         const val android = "com.android.tools.build:gradle:$buildToolsVersion"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Kotlin.version}"
         const val kotlinSerialization = "org.jetbrains.kotlin:kotlin-serialization:${Kotlin.version}"
+        const val navigationSafeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:${AndroidX.Navigation.version}"
     }
 
     object Kotlin {
@@ -85,6 +86,9 @@ object Libraries {
         const val coordinatorLayoutVersion = "1.1.0"
         const val coordinatorLayout = "androidx.coordinatorlayout:coordinatorlayout:$coordinatorLayoutVersion"
 
+        const val drawerLayoutVersion = "1.0.0"
+        const val drawerLayout = "androidx.drawerlayout:drawerlayout:$drawerLayoutVersion"
+
         const val recyclerViewVersion = "1.1.0"
         const val recyclerView = "androidx.recyclerview:recyclerview:$recyclerViewVersion"
 
@@ -94,6 +98,14 @@ object Libraries {
 
         const val materialVersion = "1.1.0"
         const val material = "com.google.android.material:material:$materialVersion"
+
+        object Navigation {
+            const val version = "2.2.1"
+
+            const val runtimeKtx = "androidx.navigation:navigation-runtime-ktx:$version"
+            const val fragmentKtx = "androidx.navigation:navigation-fragment-ktx:$version"
+            const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
+        }
     }
 
     object Html {

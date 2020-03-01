@@ -1,12 +1,15 @@
-package net.subroh0508.colormaster.androidapp
+package net.subroh0508.colormaster.idol.ui.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.domain.valueobject.IdolColor
 import net.subroh0508.colormaster.domain.valueobject.IdolName
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 
-class MainViewModel(
+class IdolsViewModel(
     private val repository: IdolColorsRepository
 ) : ViewModel() {
     val items: List<IdolColor> get() = loadingState.value?.let { (it as? LoadingState.Loaded)?.items } ?: listOf()
@@ -42,12 +45,5 @@ class MainViewModel(
         object Loading : LoadingState()
         data class Loaded(val items: List<IdolColor> = listOf()) : LoadingState()
         data class Error(val exception: Throwable) : LoadingState()
-    }
-
-    class Factory(
-        private val repository: IdolColorsRepository
-    ) : ViewModelProvider.NewInstanceFactory() {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T = MainViewModel(repository) as T
     }
 }

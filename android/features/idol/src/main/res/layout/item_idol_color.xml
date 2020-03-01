@@ -2,16 +2,16 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/ListItem.IdolColor"
+    style="@style/Widget.ColorMaster.Item.IdolColor"
     tools:background="#3B91C4">
 
     <TextView
         android:id="@+id/name"
-        style="@style/ListItem.IdolColorText"
+        style="@style/Widget.ColorMaster.Item.IdolColorText"
         tools:text="三峰結華"/>
 
     <TextView
         android:id="@+id/colorCode"
-        style="@style/ListItem.IdolColorText"
+        style="@style/Widget.ColorMaster.Item.IdolColorText"
         tools:text="#3B91C4"/>
 </LinearLayout>

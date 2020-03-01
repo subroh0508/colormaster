@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation"
+    app:startDestination="@id/main">
+
+    <fragment
+        android:id="@+id/main"
+        android:name="net.subroh0508.colormaster.idol.ui.MainIdolsFragment"
+        android:label="@string/idol_label">
+
+    </fragment>
+    <fragment
+        android:id="@+id/idols"
+        android:name="net.subroh0508.colormaster.idol.ui.IdolsFragment"
+        android:label="@string/idol_label">
+
+    </fragment>
+    <fragment
+        android:id="@+id/bottom_idols"
+        android:name="net.subroh0508.colormaster.idol.ui.BottomSheetIdolsFragment"
+        android:label="@string/idol_label">
+
+    </fragment>
+</navigation>

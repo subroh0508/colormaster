@@ -18,4 +18,8 @@ dependencies {
     implementation(Libraries.AndroidX.lifecycleViewModel)
     implementation(Libraries.AndroidX.lifecycleLiveData)
     implementation(Libraries.AndroidX.material)
+
+    api(Libraries.AndroidX.Navigation.runtimeKtx)
+    api(Libraries.AndroidX.Navigation.fragmentKtx)
+    api(Libraries.AndroidX.Navigation.uiKtx)
 }

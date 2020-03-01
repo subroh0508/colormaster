@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.ColorMaster.Item.Footer">
+        <item name="android:layout_height">@dimen/item_footer_height</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginStart">@dimen/item_footer_marginHorizontal</item>
+        <item name="android:layout_marginEnd">@dimen/item_footer_marginHorizontal</item>
+    </style>
+    <style name="Widget.ColorMaster.Item.FooterText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:padding">@dimen/item_footer_padding</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+    <style name="Widget.ColorMaster.Item.FooterProgress">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="Widget.ColorMaster.Item.IdolColor">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_marginTop">@dimen/item_idol_color_marginVertical</item>
+        <item name="android:layout_marginBottom">@dimen/item_idol_color_marginVertical</item>
+        <item name="android:layout_marginStart">@dimen/item_idol_color_marginHorizontal</item>
+        <item name="android:layout_marginEnd">@dimen/item_idol_color_marginHorizontal</item>
+        <item name="android:padding">@dimen/item_idol_color_padding</item>
+    </style>
+
+    <style name="Widget.ColorMaster.Item.IdolColorText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">@dimen/item_idol_color_textSize</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.androidapp
+package net.subroh0508.colormaster.idol.ui.adapter
 
 import android.content.Context
 import android.graphics.Color
@@ -7,14 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.listitem_footer.view.*
-import kotlinx.android.synthetic.main.listitem_idol_color.view.*
+import kotlinx.android.synthetic.main.item_footer.view.*
+import kotlinx.android.synthetic.main.item_idol_color.view.*
 import net.subroh0508.colormaster.domain.valueobject.IdolColor
-import net.subroh0508.colormaster.androidapp.R
+import net.subroh0508.colormaster.idol.R
+import net.subroh0508.colormaster.idol.ui.viewmodel.IdolsViewModel
 
-class IdolColorAdapter(
+class IdolsAdapter(
     private val context: Context,
-    private val viewModel: MainViewModel
+    private val viewModel: IdolsViewModel
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         private const val MAIN_ITEM_VIEW = 1
@@ -26,14 +27,14 @@ class IdolColorAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
         MAIN_ITEM_VIEW -> MainViewHolder(
             inflater.inflate(
-                R.layout.listitem_idol_color,
+                R.layout.item_idol_color,
                 parent,
                 false
             )
         )
         FOOTER_ITEM_VIEW -> FooterViewHolder(
                 inflater.inflate(
-                    R.layout.listitem_footer,
+                    R.layout.item_footer,
                     parent,
                     false
                 )
@@ -68,22 +69,22 @@ class IdolColorAdapter(
     }
 
     class FooterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(state: MainViewModel.LoadingState?) = with (itemView) {
+        fun bind(state: IdolsViewModel.LoadingState?) = with (itemView) {
             message.visibility = when {
-                state is MainViewModel.LoadingState.Loaded && state.items.isNotEmpty() -> View.GONE
-                state is MainViewModel.LoadingState.Loading -> View.GONE
+                state is IdolsViewModel.LoadingState.Loaded && state.items.isNotEmpty() -> View.GONE
+                state is IdolsViewModel.LoadingState.Loading -> View.GONE
                 else -> View.VISIBLE
             }
             progress.visibility = when (state) {
-                is MainViewModel.LoadingState.Loading -> View.VISIBLE
+                is IdolsViewModel.LoadingState.Loading -> View.VISIBLE
                 else -> View.GONE
             }
 
             message.text = when {
-                state is MainViewModel.LoadingState.Loaded && state.items.isEmpty() -> context.getString(
+                state is IdolsViewModel.LoadingState.Loaded && state.items.isEmpty() -> context.getString(
                     R.string.results_empty
                 )
-                state is MainViewModel.LoadingState.Error -> state.exception.localizedMessage
+                state is IdolsViewModel.LoadingState.Error -> state.exception.localizedMessage
                 else -> ""
             }
         }

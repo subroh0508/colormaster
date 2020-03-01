@@ -4,4 +4,14 @@
     <dimen name="bottom_sheet_top_padding">8dp</dimen>
     <dimen name="bottom_sheet_elevation">1dp</dimen>
     <dimen name="bottom_sheet_default_peek_height">64dp</dimen>
+
+    <dimen name="item_footer_height">40dp</dimen>
+    <dimen name="item_footer_marginHorizontal">16dp</dimen>
+    <dimen name="item_footer_padding">8dp</dimen>
+
+    <dimen name="item_idol_color_marginVertical">4dp</dimen>
+    <dimen name="item_idol_color_marginHorizontal">16dp</dimen>
+    <dimen name="item_idol_color_padding">8dp</dimen>
+
+    <dimen name="item_idol_color_textSize">18sp</dimen>
 </resources>

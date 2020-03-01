@@ -25,6 +25,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":android:widget"))
+    implementation(project(":android:features:idol"))
     implementation(project(":shared:components:core"))
     implementation(project(":shared:domain:valueobject"))
     implementation(project(":shared:repository"))
@@ -37,6 +39,7 @@ dependencies {
     implementation(Libraries.AndroidX.appCompat)
     implementation(Libraries.AndroidX.coreKtx)
     implementation(Libraries.AndroidX.constraintLayout)
+    implementation(Libraries.AndroidX.drawerLayout)
     implementation(Libraries.AndroidX.recyclerView)
     implementation(Libraries.AndroidX.lifecycleViewModel)
     implementation(Libraries.AndroidX.lifecycleLiveData)

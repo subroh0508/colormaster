@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="idol_label">アイドル一覧</string>
+
+    <string name="results_empty">検索結果は0件です</string>
+</resources>
