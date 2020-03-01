@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_bottom_sheet_idols.*
 import net.subroh0508.colormaster.idol.R
+import net.subroh0508.colormaster.idol.databinding.FragmentBottomSheetIdolsBinding
 import net.subroh0508.colormaster.idol.ui.adapter.IdolsAdapter
 import net.subroh0508.colormaster.idol.ui.viewmodel.IdolsViewModel
 import org.kodein.di.KodeinAware
@@ -39,8 +39,10 @@ class BottomSheetIdolsFragment : Fragment(R.layout.fragment_bottom_sheet_idols),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        idol_list.layoutManager = linearLayoutManager
-        idol_list.adapter = adapter
+        val binding = FragmentBottomSheetIdolsBinding.bind(view)
+        binding.idolList.layoutManager = linearLayoutManager
+        binding.idolList.adapter = adapter
+        binding.isFiltered = false
 
         viewModel.loadingState.observe(this) { adapter.notifyDataSetChanged() }
         viewModel.loadItems()
