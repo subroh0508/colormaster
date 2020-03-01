@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/orange_500"
                     android:text="@string/filter_reset"
-                    android:textColor="?colorOnPrimary"
+                    android:textColor="?colorOnSecondary"
                     app:layout_constraintTop_toTopOf="@id/filter_title"
                     app:layout_constraintBottom_toBottomOf="@id/filter_title"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
