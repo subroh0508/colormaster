@@ -17,8 +17,9 @@ class IdolsFragment : Fragment(R.layout.fragment_idols) {
         setHasOptionsMenu(true)
 
         val binding = FragmentIdolsBinding.bind(view)
-
+        val idolsSheetBehavior = BottomSheetBehavior.from(binding.fragmentBottomSheetIdols)
         initBottomSheetShapeAppearance(binding)
+        idolsSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         setupIdolsFragment()
     }
