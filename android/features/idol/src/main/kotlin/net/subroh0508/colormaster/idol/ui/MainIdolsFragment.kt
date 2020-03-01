@@ -10,6 +10,7 @@ class MainIdolsFragment : Fragment(R.layout.fragment_main_idols) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setHasOptionsMenu(true)
         setupIdolsFragment()
     }
 

@@ -3,6 +3,7 @@ package net.subroh0508.colormaster.idol.ui
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -12,6 +13,9 @@ import net.subroh0508.colormaster.idol.databinding.FragmentIdolsBinding
 class IdolsFragment : Fragment(R.layout.fragment_idols) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setHasOptionsMenu(true)
+
         val binding = FragmentIdolsBinding.bind(view)
 
         initBottomSheetShapeAppearance(binding)
