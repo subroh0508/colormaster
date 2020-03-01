@@ -9,6 +9,39 @@
     <string name="filter_category">カテゴリ</string>
     <string name="filter_division">区分</string>
 
+    <string-array name="imas_titles">
+        <item>765PRO ALLSTARS</item>
+        <item>MILLIONSTARS</item>
+        <item>CINDERELLA GIRLS</item>
+        <item>SHINY COLORS</item>
+        <item>315 STARS</item>
+        <item>876PRO</item>
+    </string-array>
+
+    <string-array name="attributes">
+        <item>Vo</item>
+        <item>Da</item>
+        <item>Vi</item>
+    </string-array>
+
+    <string-array name="type">
+        <item>Cu</item>
+        <item>Co</item>
+        <item>Pa</item>
+    </string-array>
+
+    <string-array name="category">
+        <item>メンタル</item>
+        <item>インテリ</item>
+        <item>フィジカル</item>
+    </string-array>
+
+    <string-array name="division">
+        <item>Princess</item>
+        <item>Fairy</item>
+        <item>Angel</item>
+    </string-array>
+
     <string name="start_filter">絞り込む</string>
     <string name="filter_now">絞り込み中</string>
 </resources>
