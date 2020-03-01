@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notosans Regular 24sp -->
+    <style name="TextAppearance.ColorMaster.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor">?colorOnBackground</item>
+    </style>
+
+    <!-- Notosans Medium 20sp -->
+    <style name="TextAppearance.ColorMaster.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">?colorOnBackground</item>
+    </style>
+
+    <!-- Notosans Regular 16sp -->
+    <style name="TextAppearance.ColorMaster.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textColor">?colorOnBackground</item>
+    </style>
+
+    <!-- Notosans Medium 14sp -->
+    <style name="TextAppearance.ColorMaster.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textColor">?colorOnBackground</item>
+    </style>
+
+    <!-- Notosans Regular 16sp -->
+    <style name="TextAppearance.ColorMaster.Body1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">?colorOnBackground</item>
+    </style>
+
+    <!-- Notosans Regular 14sp -->
+    <style name="TextAppearance.ColorMaster.Body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textColor">?colorOnBackground</item>
+    </style>
+
+    <!-- Notosans Regular 12sp -->
+    <style name="TextAppearance.ColorMaster.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">?colorOnBackground</item>
+    </style>
+
+    <!-- Notosans Medium 14sp -->
+    <style name="TextAppearance.ColorMaster.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textColor">?colorOnBackground</item>
+    </style>
+</resources>
