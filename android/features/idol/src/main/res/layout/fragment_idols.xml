@@ -15,6 +15,158 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/filter_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="@dimen/bottom_sheet_filter_layout_guide_begin"/>
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_end="@dimen/bottom_sheet_filter_layout_guide_end"/>
+
+                <TextView
+                    android:id="@+id/filter_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/text_view_title_marginTop"
+                    android:text="@string/filter_title"
+                    android:textAppearance="@style/TextAppearance.ColorMaster.Headline5"
+                    android:textColor="?colorOnPrimary"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filter_reset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/orange_500"
+                    android:text="@string/filter_reset"
+                    android:textColor="?colorOnPrimary"
+                    app:layout_constraintTop_toTopOf="@id/filter_title"
+                    app:layout_constraintBottom_toBottomOf="@id/filter_title"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+                <TextView
+                    android:id="@+id/filter_imas_title_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/text_view_title_marginTop"
+                    android:text="@string/filter_imas_title"
+                    android:textAppearance="@style/TextAppearance.ColorMaster.Subtitle2"
+                    android:textColor="?attr/colorOnPrimary"
+                    app:layout_constraintTop_toBottomOf="@id/filter_title"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"/>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/imas_title_filters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/chip_group_filters_marginTop"
+                    app:chipSpacingVertical="@dimen/chip_filter_vertical_margin"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintTop_toBottomOf="@id/filter_imas_title_title"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+                <TextView
+                    android:id="@+id/filter_attributes_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/text_view_title_marginTop"
+                    android:text="@string/filter_attributes"
+                    android:textAppearance="@style/TextAppearance.ColorMaster.Subtitle2"
+                    android:textColor="?attr/colorOnPrimary"
+                    app:layout_constraintTop_toBottomOf="@id/imas_title_filters"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"/>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/attributes_filters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/chip_group_filters_marginTop"
+                    app:chipSpacingVertical="@dimen/chip_filter_vertical_margin"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintTop_toBottomOf="@id/filter_attributes_title"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+                <TextView
+                    android:id="@+id/filter_type_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/text_view_title_marginTop"
+                    android:text="@string/filter_type"
+                    android:textAppearance="@style/TextAppearance.ColorMaster.Subtitle2"
+                    android:textColor="?attr/colorOnPrimary"
+                    app:layout_constraintTop_toBottomOf="@id/attributes_filters"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"/>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/type_filters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/chip_group_filters_marginTop"
+                    app:chipSpacingVertical="@dimen/chip_filter_vertical_margin"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintTop_toBottomOf="@id/filter_type_title"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+                <TextView
+                    android:id="@+id/filter_category_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/text_view_title_marginTop"
+                    android:text="@string/filter_category"
+                    android:textAppearance="@style/TextAppearance.ColorMaster.Subtitle2"
+                    android:textColor="?attr/colorOnPrimary"
+                    app:layout_constraintTop_toBottomOf="@id/type_filters"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"/>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/category_filters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/chip_group_filters_marginTop"
+                    app:chipSpacingVertical="@dimen/chip_filter_vertical_margin"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintTop_toBottomOf="@id/filter_category_title"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+                <TextView
+                    android:id="@+id/filter_division_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/text_view_title_marginTop"
+                    android:text="@string/filter_division"
+                    android:textAppearance="@style/TextAppearance.ColorMaster.Subtitle2"
+                    android:textColor="?attr/colorOnPrimary"
+                    app:layout_constraintTop_toBottomOf="@id/category_filters"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"/>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/divison_filters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/chip_group_filters_marginTop"
+                    app:chipSpacingVertical="@dimen/chip_filter_vertical_margin"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintTop_toBottomOf="@id/filter_division_title"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </ScrollView>
 
         <FrameLayout

@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="filter_title">フィルター</string>
+    <string name="filter_reset">リセット</string>
+
+    <string name="filter_imas_title">タイトル</string>
+    <string name="filter_attributes">属性</string>
+    <string name="filter_type">タイプ</string>
+    <string name="filter_category">カテゴリ</string>
+    <string name="filter_division">区分</string>
+
     <string name="start_filter">絞り込む</string>
     <string name="filter_now">絞り込み中</string>
 </resources>
