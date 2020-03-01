@@ -3,4 +3,7 @@
     <string name="idol_label">アイドル一覧</string>
 
     <string name="results_empty">検索結果は0件です</string>
+
+    <string name="description_filter_applied">フィルター%1$sを適用</string>
+    <string name="description_filter_not_applied">フィルター%1$sを解除</string>
 </resources>
