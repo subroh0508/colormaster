@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Widget"/>
+    <style name="Widget.ColorMaster"/>
+    <style name="Widget.ColorMaster.Item"/>
+
     <style name="Widget.ColorMaster.Item.Footer">
         <item name="android:layout_height">@dimen/item_footer_height</item>
         <item name="android:layout_width">match_parent</item>

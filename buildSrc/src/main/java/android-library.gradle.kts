@@ -31,4 +31,8 @@ android {
     sourceSets.forEach {
         it.java.setSrcDirs(files("src/${it.name}/kotlin"))
     }
+
+    dataBinding {
+        isEnabled = true
+    }
 }
