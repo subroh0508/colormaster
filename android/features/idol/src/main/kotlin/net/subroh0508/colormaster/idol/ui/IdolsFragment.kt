@@ -57,7 +57,7 @@ class IdolsFragment : Fragment(R.layout.fragment_idols), KodeinAware {
             ) { checked, title -> idolsViewModel.filterChanged(title, checked) }
             binding.attributesFilters.setupFilter(
                 allFilterSet = filters.allTypes,
-                currentFilterSet = filters.types.toSet(),
+                currentFilterSet = filters.types,
                 filterName = { "" }
             ) { checked, types -> idolsViewModel.filterChanged(types, checked) }
         }

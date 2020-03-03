@@ -5,42 +5,42 @@ import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.model.UnitName
 
 sealed class Filters {
-    abstract val types: List<Types>
+    abstract val types: Set<Types>
     abstract val unitName: UnitName?
 
     object Empty : Filters() {
-        override val types: List<Types> = listOf()
+        override val types: Set<Types> = setOf()
         override val unitName: UnitName? = null
     }
 
     data class _765AS(
-        override val types: List<Types.MILLION_LIVE>,
+        override val types: Set<Types.MILLION_LIVE>,
         override val unitName: UnitName?
     ) : Filters()
 
     data class _MillionStars(
-        override val types: List<Types.MILLION_LIVE>,
+        override val types: Set<Types.MILLION_LIVE>,
         override val unitName: UnitName?
     ) : Filters()
 
     data class _CinderellaGirls(
-        override val types: List<Types.CINDERELLA_GIRLS>,
+        override val types: Set<Types.CINDERELLA_GIRLS>,
         override val unitName: UnitName?
     ) : Filters()
 
     data class _ShinyColors(
         override val unitName: UnitName?
     ) : Filters() {
-        override val types: List<Types> = listOf()
+        override val types: Set<Types> = setOf()
     }
 
     data class _SideM(
-        override val types: List<Types.SIDE_M>,
+        override val types: Set<Types.SIDE_M>,
         override val unitName: UnitName?
     ) : Filters()
 
     object _876Pro : Filters() {
-        override val types: List<Types> = listOf()
+        override val types: Set<Types> = setOf()
         override val unitName: UnitName? = null
     }
 
@@ -63,18 +63,18 @@ sealed class Filters {
     }
 
     operator fun plus(type: Types) = when (this) {
-        is _765AS -> if (type is Types.MILLION_LIVE) copy(types.toMutableList().apply { add(type) }) else this
-        is _MillionStars -> if (type is Types.MILLION_LIVE) copy(types.toMutableList().apply { add(type) }) else this
-        is _CinderellaGirls -> if (type is Types.CINDERELLA_GIRLS) copy(types.toMutableList().apply { add(type) }) else this
-        is _SideM -> if (type is Types.SIDE_M) copy(types.toMutableList().apply { add(type) }) else this
+        is _765AS -> if (type is Types.MILLION_LIVE) copy(types.toMutableSet().apply { add(type) }) else this
+        is _MillionStars -> if (type is Types.MILLION_LIVE) copy(types.toMutableSet().apply { add(type) }) else this
+        is _CinderellaGirls -> if (type is Types.CINDERELLA_GIRLS) copy(types.toMutableSet().apply { add(type) }) else this
+        is _SideM -> if (type is Types.SIDE_M) copy(types.toMutableSet().apply { add(type) }) else this
         else -> this
     }
 
     operator fun minus(type: Types) = when (this) {
-        is _765AS -> if (type is Types.MILLION_LIVE) copy(types.toMutableList().apply { remove(type) }) else this
-        is _MillionStars -> if (type is Types.MILLION_LIVE) copy(types.toMutableList().apply { remove(type) }) else this
-        is _CinderellaGirls -> if (type is Types.CINDERELLA_GIRLS) copy(types.toMutableList().apply { remove(type) }) else this
-        is _SideM -> if (type is Types.SIDE_M) copy(types.toMutableList().apply { remove(type) }) else this
+        is _765AS -> if (type is Types.MILLION_LIVE) copy(types.toMutableSet().apply { remove(type) }) else this
+        is _MillionStars -> if (type is Types.MILLION_LIVE) copy(types.toMutableSet().apply { remove(type) }) else this
+        is _CinderellaGirls -> if (type is Types.CINDERELLA_GIRLS) copy(types.toMutableSet().apply { remove(type) }) else this
+        is _SideM -> if (type is Types.SIDE_M) copy(types.toMutableSet().apply { remove(type) }) else this
         else -> this
     }
 
@@ -89,11 +89,11 @@ sealed class Filters {
 
     companion object {
         operator fun invoke(titles: Titles) = when (titles) {
-            Titles._765 -> _765AS(listOf(), null)
-            Titles._ML -> _MillionStars(listOf(), null)
-            Titles._CG -> _CinderellaGirls(listOf(), null)
+            Titles._765 -> _765AS(setOf(), null)
+            Titles._ML -> _MillionStars(setOf(), null)
+            Titles._CG -> _CinderellaGirls(setOf(), null)
             Titles._SC -> _ShinyColors(null)
-            Titles._315 -> _SideM(listOf(), null)
+            Titles._315 -> _SideM(setOf(), null)
             Titles._876 -> _876Pro
         }
     }
