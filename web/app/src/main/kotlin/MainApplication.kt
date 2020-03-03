@@ -7,8 +7,8 @@ import kotlinx.html.dom.append
 import kotlinx.html.js.div
 import kotlinx.html.style
 import net.subroh0508.colormaster.components.core.AppModule
-import net.subroh0508.colormaster.domain.valueobject.IdolColor
-import net.subroh0508.colormaster.domain.valueobject.IdolName
+import net.subroh0508.colormaster.model.IdolColor
+import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware

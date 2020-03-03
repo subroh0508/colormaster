@@ -1,6 +1,5 @@
 package net.subroh0508.colormaster.query
 
-import net.subroh0508.colormaster.domain.valueobject.IdolName
 import net.subroh0508.colormaster.query.internal.URLEncoder
 
 object ImasparqlQueries {

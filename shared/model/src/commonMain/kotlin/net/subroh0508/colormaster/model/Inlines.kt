@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.domain.valueobject
+package net.subroh0508.colormaster.model
 
 inline class IdolName(val value: String)
 

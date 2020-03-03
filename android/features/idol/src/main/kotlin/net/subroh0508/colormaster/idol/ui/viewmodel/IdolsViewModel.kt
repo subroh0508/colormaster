@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import net.subroh0508.colormaster.domain.valueobject.IdolColor
-import net.subroh0508.colormaster.domain.valueobject.IdolName
+import net.subroh0508.colormaster.model.IdolColor
+import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 
 class IdolsViewModel(

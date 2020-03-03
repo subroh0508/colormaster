@@ -1,4 +1,6 @@
-package net.subroh0508.colormaster.domain.valueobject
+package net.subroh0508.colormaster.model
+
+import net.subroh0508.colormaster.model.HexColor
 
 data class IdolColor(
     val id: String,

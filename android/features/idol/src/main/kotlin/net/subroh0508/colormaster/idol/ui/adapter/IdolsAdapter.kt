@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_footer.view.*
 import kotlinx.android.synthetic.main.item_idol_color.view.*
-import net.subroh0508.colormaster.domain.valueobject.IdolColor
+import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.idol.R
 import net.subroh0508.colormaster.idol.ui.viewmodel.IdolsViewModel
 
