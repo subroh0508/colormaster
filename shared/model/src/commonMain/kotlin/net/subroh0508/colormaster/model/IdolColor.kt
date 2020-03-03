@@ -1,7 +1,5 @@
 package net.subroh0508.colormaster.model
 
-import net.subroh0508.colormaster.model.HexColor
-
 data class IdolColor(
     val id: String,
     val name: String,

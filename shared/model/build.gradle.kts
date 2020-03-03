@@ -24,5 +24,9 @@ kotlin {
                 implementation(Libraries.Kotlin.js)
             }
         }
+
+        all {
+            languageSettings.enableLanguageFeature("InlineClasses")
+        }
     }
 }
