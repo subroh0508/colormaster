@@ -1,49 +1,72 @@
 package net.subroh0508.colormaster.idol.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import kotlinx.coroutines.launch
-import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.IdolName
+import net.subroh0508.colormaster.extensions.combine
+import net.subroh0508.colormaster.extensions.requireValue
+import net.subroh0508.colormaster.model.*
+import net.subroh0508.colormaster.model.ui.commons.LoadState
+import net.subroh0508.colormaster.model.ui.idol.Filters
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 
 class IdolsViewModel(
     private val repository: IdolColorsRepository
 ) : ViewModel() {
-    val items: List<IdolColor> get() = loadingState.value?.let { (it as? LoadingState.Loaded)?.items } ?: listOf()
-    val loadingState: LiveData<LoadingState> get() = mutableLoadingState
-
-    private val mutableLoadingState: MutableLiveData<LoadingState> = MutableLiveData(
-        LoadingState.Loaded()
+    data class UiModel(
+        val isLoading: Boolean = false,
+        val error: Throwable? = null,
+        val items: List<IdolColor> = listOf(),
+        val filters: Filters = Filters.Empty
     )
+
+    val items: List<IdolColor> get() = uiModel.value?.items ?: listOf()
+
+    private val idolsLoadStateLiveData: MutableLiveData<LoadState<List<IdolColor>>> = MutableLiveData(LoadState.Loaded(listOf()))
+    private val filterLiveData: MutableLiveData<Filters> = MutableLiveData(Filters.Empty)
+
+    val uiModel: LiveData<UiModel> = combine(
+        UiModel(),
+        liveData1 = idolsLoadStateLiveData,
+        liveData2 = filterLiveData
+    ) { uiModel, loadState, filters ->
+
+        UiModel(
+            loadState.isLoading,
+            loadState.getErrorOrNull(),
+            loadState.getValueOrNull() ?: uiModel.items,
+            filters
+        )
+    }
 
     fun loadItems() {
         viewModelScope.launch {
-            mutableLoadingState.postValue(
-                LoadingState.Loading
-            )
+            idolsLoadStateLiveData.postValue(LoadState.Loading)
 
             runCatching { repository.search(IdolName("dummy")) }
-                .onSuccess { mutableLoadingState.postValue(
-                    LoadingState.Loaded(it)
-                ) }
+                .onSuccess { idolsLoadStateLiveData.postValue(LoadState.Loaded(it)) }
                 .onFailure {
                     it.printStackTrace()
-                    mutableLoadingState.postValue(
-                        LoadingState.Error(it)
-                    )
+                    idolsLoadStateLiveData.postValue(LoadState.Error(it))
                 }
         }
     }
 
+    fun filterChanged(title: Titles, checked: Boolean) {
+        filterLiveData.value = if (checked) Filters(title) else Filters.Empty
+    }
+
+    fun filterChanged(type: Types, checked: Boolean) {
+        val filters = filterLiveData.requireValue()
+
+        filterLiveData.value = if (checked) filters + type else filters - type
+    }
+
+    fun filterChanged(unitName: UnitName?) {
+        val filters = filterLiveData.requireValue()
+
+        filterLiveData.value = filters.assign(unitName)
+    }
+
     val itemCount get() = items.size
     fun itemId(position: Int) = items[position].id.hashCode().toLong()
-
-    sealed class LoadingState {
-        object Loading : LoadingState()
-        data class Loaded(val items: List<IdolColor> = listOf()) : LoadingState()
-        data class Error(val exception: Throwable) : LoadingState()
-    }
 }
