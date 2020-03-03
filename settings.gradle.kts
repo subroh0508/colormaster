@@ -5,7 +5,7 @@ include(
     ":web:app",
     ":shared:components:core",
     ":shared:domain:valueobject",
-    ":shared:repository",
-    ":shared:query",
-    ":shared:api"
+    ":shared:infra:repository",
+    ":shared:infra:query",
+    ":shared:infra:api"
 )

@@ -8,7 +8,7 @@ dependencies {
     implementation(project(":android:widget"))
     implementation(project(":shared:components:core"))
     implementation(project(":shared:domain:valueobject"))
-    implementation(project(":shared:repository"))
+    implementation(project(":shared:infra:repository"))
 
     implementation(Libraries.Kotlin.android)
     implementation(Libraries.Kotlin.reflect)

@@ -11,8 +11,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":shared:domain:valueobject"))
-                implementation(project(":shared:repository"))
-                implementation(project(":shared:api"))
+                implementation(project(":shared:infra:repository"))
+                implementation(project(":shared:infra:api"))
 
                 implementation(Libraries.Kotlin.common)
 
