@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -20,16 +21,16 @@ import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.*
 
 class BottomSheetIdolsFragment : Fragment(R.layout.fragment_bottom_sheet_idols), KodeinAware {
-    private val viewModelProvider: () -> IdolsViewModel by provider()
-    private val viewModel by viewModels<IdolsViewModel> {
+    private val idolsViewModelProvider: () -> IdolsViewModel by provider()
+    private val idolsViewModel by activityViewModels<IdolsViewModel> {
         object : ViewModelProvider.NewInstanceFactory() {
             @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T = viewModelProvider() as T
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T = idolsViewModelProvider() as T
         }
     }
 
     private val linearLayoutManager: LinearLayoutManager by lazy { LinearLayoutManager(context) }
-    private val adapter: IdolsAdapter by lazy { IdolsAdapter(requireContext(), viewModel) }
+    private val adapter: IdolsAdapter by lazy { IdolsAdapter(requireContext(), idolsViewModel) }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -44,8 +45,8 @@ class BottomSheetIdolsFragment : Fragment(R.layout.fragment_bottom_sheet_idols),
         binding.idolList.adapter = adapter
         binding.isFiltered = false
 
-        viewModel.loadingState.observe(this) { adapter.notifyDataSetChanged() }
-        viewModel.loadItems()
+        idolsViewModel.uiModel.observe(viewLifecycleOwner) { adapter.notifyDataSetChanged() }
+        idolsViewModel.loadItems()
     }
 
     override val kodein by subKodein(kodein()) {
