@@ -37,6 +37,8 @@ kotlin {
                 implementation(Libraries.Ktor.jsonAndroid)
                 implementation(Libraries.Ktor.serializationAndroid)
 
+                implementation(Libraries.AndroidX.lifecycleLiveData)
+
                 implementation(Libraries.Kodein.android)
             }
         }
