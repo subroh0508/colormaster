@@ -28,7 +28,7 @@ kotlin {
         val main by getting {
             dependencies {
                 implementation(project(":shared:components:core"))
-                implementation(project(":shared:domain:valueobject"))
+                implementation(project(":shared:model"))
                 implementation(project(":shared:infra:repository"))
 
                 implementation(Libraries.Kotlin.js)

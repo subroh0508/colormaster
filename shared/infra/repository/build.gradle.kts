@@ -10,7 +10,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":shared:domain:valueobject"))
+                implementation(project(":shared:model"))
                 implementation(project(":shared:infra:api"))
 
                 implementation(Libraries.Kotlin.common)
