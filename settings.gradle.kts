@@ -3,8 +3,8 @@ include(
     ":android:features:idol",
     ":android:widget",
     ":web:app",
+    ":shared:model",
     ":shared:components:core",
-    ":shared:domain:valueobject",
     ":shared:infra:repository",
     ":shared:infra:query",
     ":shared:infra:api"
