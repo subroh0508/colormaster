@@ -2,7 +2,7 @@
 @Suppress("unused")
 object Libraries {
     object GradlePlugin {
-        const val buildToolsVersion = "3.5.2"
+        const val buildToolsVersion = "3.6.1"
 
         const val android = "com.android.tools.build:gradle:$buildToolsVersion"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Kotlin.version}"
@@ -10,7 +10,7 @@ object Libraries {
     }
 
     object Kotlin {
-        const val version = "1.3.70-eap-274"
+        const val version = "1.3.70"
 
         const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
         const val android = "org.jetbrains.kotlin:kotlin-stdlib:$version"
