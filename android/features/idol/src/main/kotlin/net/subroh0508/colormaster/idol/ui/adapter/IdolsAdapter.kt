@@ -45,7 +45,7 @@ class IdolsAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is MainViewHolder -> holder.bind(viewModel.items[position])
-            is FooterViewHolder -> holder.bind(viewModel.loadingState.value)
+            is FooterViewHolder -> holder.bind(viewModel.uiModel.value)
         }
     }
 
@@ -69,22 +69,20 @@ class IdolsAdapter(
     }
 
     class FooterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(state: IdolsViewModel.LoadingState?) = with (itemView) {
-            message.visibility = when {
-                state is IdolsViewModel.LoadingState.Loaded && state.items.isNotEmpty() -> View.GONE
-                state is IdolsViewModel.LoadingState.Loading -> View.GONE
-                else -> View.VISIBLE
-            }
-            progress.visibility = when (state) {
-                is IdolsViewModel.LoadingState.Loading -> View.VISIBLE
-                else -> View.GONE
-            }
+        fun bind(state: IdolsViewModel.UiModel?) = with (itemView) {
+            message.visibility =
+                if (state?.isLoading == false && (state.items.isEmpty() || state.error != null))
+                    View.VISIBLE
+                else
+                    View.GONE
+            progress.visibility =
+                if (state?.isLoading != false) View.VISIBLE else View.GONE
 
             message.text = when {
-                state is IdolsViewModel.LoadingState.Loaded && state.items.isEmpty() -> context.getString(
+                state?.isLoading == false && state.items.isEmpty() -> context.getString(
                     R.string.results_empty
                 )
-                state is IdolsViewModel.LoadingState.Error -> state.exception.localizedMessage
+                state?.isLoading == false && state.error != null -> state.error.localizedMessage
                 else -> ""
             }
         }
