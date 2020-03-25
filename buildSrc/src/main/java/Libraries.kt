@@ -11,7 +11,7 @@ object Libraries {
     }
 
     object Kotlin {
-        const val version = "1.3.70"
+        const val version = "1.3.71"
 
         const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
         const val android = "org.jetbrains.kotlin:kotlin-stdlib:$version"
@@ -22,7 +22,7 @@ object Libraries {
     }
 
     object Serialization {
-        const val version = "0.14.0-1.3.70-eap-134"
+        const val version = "0.20.0"
 
         const val common = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$version"
@@ -31,7 +31,7 @@ object Libraries {
     }
 
     object Coroutines {
-        const val version = "1.3.3-1.3.70-eap-42"
+        const val version = "1.3.5"
 
         const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
@@ -39,7 +39,7 @@ object Libraries {
     }
 
     object Ktor {
-        const val version = "1.3.0-rc3-1.3.70-eap-42"
+        const val version = "1.3.2"
 
         const val clientCommon = "io.ktor:ktor-client-core:$version"
         const val clientAndroid = "io.ktor:ktor-client-okhttp:$version"
@@ -58,7 +58,7 @@ object Libraries {
     }
 
     object Kodein {
-        const val version = "6.5.2"
+        const val version = "6.5.4"
 
         const val common = "org.kodein.di:kodein-di-erased:$version"
         const val android = "org.kodein.di:kodein-di-generic-jvm:$version"
