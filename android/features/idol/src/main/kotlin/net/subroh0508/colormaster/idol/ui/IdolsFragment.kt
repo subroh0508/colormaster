@@ -58,7 +58,7 @@ class IdolsFragment : Fragment(R.layout.fragment_idols), KodeinAware {
             binding.attributesFilters.setupFilter(
                 allFilterSet = filters.allTypes,
                 currentFilterSet = filters.types,
-                filterName = { "" }
+                filterName = { it.displayName }
             ) { checked, types -> idolsViewModel.filterChanged(types, checked) }
         }
 
@@ -139,4 +139,17 @@ class IdolsFragment : Fragment(R.layout.fragment_idols), KodeinAware {
         bind<IdolsViewModel>() with provider { IdolsViewModel(instance()) }
     }
     override val kodeinTrigger = KodeinTrigger()
+
+    private val Types.displayName: String get() = when (this) {
+        Types.CINDERELLA_GIRLS.CU -> getString(R.string.type_cinderella_cu)
+        Types.CINDERELLA_GIRLS.CO -> getString(R.string.type_cinderella_co)
+        Types.CINDERELLA_GIRLS.PA -> getString(R.string.type_cinderella_pa)
+        Types.MILLION_LIVE.PRINCESS -> getString(R.string.type_million_princess)
+        Types.MILLION_LIVE.FAIRY -> getString(R.string.type_million_fairy)
+        Types.MILLION_LIVE.ANGEL -> getString(R.string.type_million_angel)
+        Types.SIDE_M.PHYSICAL -> getString(R.string.type_side_m_physical)
+        Types.SIDE_M.INTELLIGENT -> getString(R.string.type_side_m_intelligent)
+        Types.SIDE_M.MENTAL -> getString(R.string.type_side_m_mental)
+        else -> ""
+    }
 }
