@@ -15,10 +15,8 @@ import net.subroh0508.colormaster.query.ImasparqlQueries
 internal class ImasparqlApiClient(
     private val httpClient: HttpClient
 ) : ImasparqlClient {
-    override suspend fun search(
-        name: String
-    ): Response<IdolColorJson> {
-        val response = httpClient.get<HttpResponse>(ImasparqlQueries.searchByName(name))
+    override suspend fun search(query: String): Response<IdolColorJson> {
+        val response = httpClient.get<HttpResponse>(query)
 
         return Json.nonstrict.parse(
             Response.serializer(IdolColorJson.serializer()),

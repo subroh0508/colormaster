@@ -6,12 +6,14 @@ import net.subroh0508.colormaster.api.serializer.Response
 import net.subroh0508.colormaster.model.HexColor
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.IdolName
+import net.subroh0508.colormaster.query.ImasparqlQueries
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 
 internal class IdolColorsRepositoryImpl(
     private val imasparqlClient: ImasparqlClient
 ) : IdolColorsRepository {
-    override suspend fun search(name: IdolName) = imasparqlClient.search(name.value).toIdolColors()
+    override suspend fun search(name: IdolName) =
+        imasparqlClient.search(ImasparqlQueries.searchByName(name)).toIdolColors()
 
     private fun Response<IdolColorJson>.toIdolColors(): List<IdolColor> = results.bindings.mapNotNull { (sMap, nameMap, colorMap) ->
         val id = sMap["value"] ?: return@mapNotNull null
@@ -20,5 +22,4 @@ internal class IdolColorsRepositoryImpl(
 
         IdolColor(id, name, HexColor(color))
     }
-
 }
