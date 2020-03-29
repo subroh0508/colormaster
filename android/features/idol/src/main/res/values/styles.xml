@@ -7,4 +7,15 @@
     <style name="Widget.ColorMaster.BackLayer" parent="">
         <item name="android:background">?colorPrimary</item>
     </style>
+
+    <style name="Widget.ColorMaster.TextInputLayout.OutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColor">?colorOnPrimary</item>
+        <item name="android:textColorHint">?colorOnPrimary</item>
+        <item name="hintTextColor">?colorOnPrimary</item>
+        <item name="boxStrokeColor">?colorSecondary</item>
+    </style>
+
+    <style name="Widget.ColorMaster.EditText" parent="">
+        <item name="android:textColor">?colorOnPrimary</item>
+    </style>
 </resources>

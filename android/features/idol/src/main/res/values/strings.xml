@@ -3,6 +3,8 @@
     <string name="filter_title">フィルター</string>
     <string name="filter_reset">リセット</string>
 
+    <string name="label_idol_name">アイドル名</string>
+
     <string name="filter_imas_title">タイトル</string>
     <string name="filter_attributes">属性</string>
     <string name="filter_type">タイプ</string>

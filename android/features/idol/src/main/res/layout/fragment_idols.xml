@@ -56,6 +56,23 @@
                     app:layout_constraintBottom_toBottomOf="@id/filter_title"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/idol_name"
+                    style="@style/Widget.ColorMaster.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/text_input_layout_idol_name_marginTop"
+                    android:hint="@string/label_idol_name"
+                    app:layout_constraintTop_toBottomOf="@id/filter_title"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.ColorMaster.EditText"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <TextView
                     android:id="@+id/filter_imas_title_title"
                     android:layout_width="wrap_content"
@@ -64,7 +81,7 @@
                     android:text="@string/filter_imas_title"
                     android:textAppearance="@style/TextAppearance.ColorMaster.Subtitle2"
                     android:textColor="?attr/colorOnPrimary"
-                    app:layout_constraintTop_toBottomOf="@id/filter_title"
+                    app:layout_constraintTop_toBottomOf="@id/idol_name"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"/>
 
                 <com.google.android.material.chip.ChipGroup
