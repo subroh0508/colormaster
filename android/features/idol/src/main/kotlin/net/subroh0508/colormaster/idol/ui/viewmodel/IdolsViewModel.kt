@@ -46,7 +46,7 @@ class IdolsViewModel(
         viewModelScope.launch {
             idolsLoadStateLiveData.postValue(LoadState.Loading)
 
-            runCatching { repository.search(IdolName("dummy")) }
+            runCatching { repository.search(idolNameLiveData.value) }
                 .onSuccess { idolsLoadStateLiveData.postValue(LoadState.Loaded(it)) }
                 .onFailure {
                     it.printStackTrace()
@@ -63,6 +63,12 @@ class IdolsViewModel(
         val filters = filterLiveData.requireValue()
 
         filterLiveData.value = if (checked) filters + type else filters - type
+    }
+
+    fun filterChanged(idolName: IdolName?) {
+        idolNameLiveData.value = idolName
+
+        loadItems()
     }
 
     fun filterChanged(unitName: UnitName?) {

@@ -49,7 +49,7 @@ class IdolsAdapter(
         }
     }
 
-    override fun getItemCount() = viewModel.itemCount
+    override fun getItemCount() = viewModel.itemCount + 1
     override fun getItemId(position: Int) = if (position == itemCount - 1) Long.MAX_VALUE else viewModel.itemId(position)
     override fun getItemViewType(position: Int) = if (position == itemCount - 1) FOOTER_ITEM_VIEW else MAIN_ITEM_VIEW
 

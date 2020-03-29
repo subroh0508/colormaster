@@ -12,8 +12,9 @@ import net.subroh0508.colormaster.repository.IdolColorsRepository
 internal class IdolColorsRepositoryImpl(
     private val imasparqlClient: ImasparqlClient
 ) : IdolColorsRepository {
-    override suspend fun search(name: IdolName) =
-        imasparqlClient.search(ImasparqlQueries.searchByName(name)).toIdolColors()
+    override suspend fun search(name: IdolName?) = name?.let {
+        imasparqlClient.search(ImasparqlQueries.searchByName(it)).toIdolColors()
+    } ?: listOf()
 
     private fun Response<IdolColorJson>.toIdolColors(): List<IdolColor> = results.bindings.mapNotNull { (sMap, nameMap, colorMap) ->
         val id = sMap["value"] ?: return@mapNotNull null

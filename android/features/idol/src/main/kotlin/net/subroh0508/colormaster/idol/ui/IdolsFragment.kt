@@ -3,6 +3,8 @@ package net.subroh0508.colormaster.idol.ui
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.children
+import androidx.core.view.get
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModel
@@ -13,9 +15,11 @@ import com.google.android.material.chip.ChipGroup
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
+import com.google.android.material.textfield.TextInputEditText
 import net.subroh0508.colormaster.idol.R
 import net.subroh0508.colormaster.idol.databinding.FragmentIdolsBinding
 import net.subroh0508.colormaster.idol.ui.viewmodel.IdolsViewModel
+import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.model.Titles
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.widget.ui.FilterChip
@@ -47,9 +51,13 @@ class IdolsFragment : Fragment(R.layout.fragment_idols), KodeinAware {
         initBottomSheetShapeAppearance(binding)
         idolsSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
+        binding.idolName.addTextChangedListener {
+            idolsViewModel.filterChanged(it?.toString()?.takeIf(String::isNotBlank)?.let(::IdolName))
+        }
+
         setupIdolsFragment()
 
-        idolsViewModel.uiModel.observe(viewLifecycleOwner) { (_, _, _, idolName, filters) ->
+        idolsViewModel.uiModel.observe(viewLifecycleOwner) { (_, _, _, _, filters) ->
             binding.imasTitleFilters.setupFilter(
                 allFilterSet = Titles.values().toSet(),
                 currentFilterSet = filters.title?.let(::setOf) ?: setOf(),
@@ -61,7 +69,6 @@ class IdolsFragment : Fragment(R.layout.fragment_idols), KodeinAware {
                 filterName = { it.displayName }
             ) { checked, types -> idolsViewModel.filterChanged(types, checked) }
         }
-
     }
 
     private inline fun <reified T> ChipGroup.setupFilter(
