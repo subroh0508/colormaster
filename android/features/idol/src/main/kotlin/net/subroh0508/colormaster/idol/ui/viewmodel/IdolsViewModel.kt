@@ -16,24 +16,28 @@ class IdolsViewModel(
         val isLoading: Boolean = false,
         val error: Throwable? = null,
         val items: List<IdolColor> = listOf(),
+        val idolName: IdolName? = null,
         val filters: Filters = Filters.Empty
     )
 
     val items: List<IdolColor> get() = uiModel.value?.items ?: listOf()
 
     private val idolsLoadStateLiveData: MutableLiveData<LoadState<List<IdolColor>>> = MutableLiveData(LoadState.Loaded(listOf()))
+    private val idolNameLiveData: MutableLiveData<IdolName> = MutableLiveData()
     private val filterLiveData: MutableLiveData<Filters> = MutableLiveData(Filters.Empty)
 
     val uiModel: LiveData<UiModel> = combine(
         UiModel(),
         liveData1 = idolsLoadStateLiveData,
-        liveData2 = filterLiveData
-    ) { uiModel, loadState, filters ->
+        liveData2 = filterLiveData,
+        liveData3 = idolNameLiveData
+    ) { uiModel, loadState, filters, idolName ->
 
         UiModel(
             loadState.isLoading,
             loadState.getErrorOrNull(),
             loadState.getValueOrNull() ?: uiModel.items,
+            idolName,
             filters
         )
     }

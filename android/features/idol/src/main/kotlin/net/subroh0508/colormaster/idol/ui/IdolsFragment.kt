@@ -49,7 +49,7 @@ class IdolsFragment : Fragment(R.layout.fragment_idols), KodeinAware {
 
         setupIdolsFragment()
 
-        idolsViewModel.uiModel.observe(viewLifecycleOwner) { (_, _, _, filters) ->
+        idolsViewModel.uiModel.observe(viewLifecycleOwner) { (_, _, _, idolName, filters) ->
             binding.imasTitleFilters.setupFilter(
                 allFilterSet = Titles.values().toSet(),
                 currentFilterSet = filters.title?.let(::setOf) ?: setOf(),
