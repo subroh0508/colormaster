@@ -1,10 +1,15 @@
 package net.subroh0508.colormaster.query
 
+import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.query.internal.URLEncoder
 
 object ImasparqlQueries {
-    fun searchByName(name: String) = buildQuery("""
-        SELECT * WHERE {?s rdfs:label ?name;imas:Color ?color;} order by rand()
+    fun searchByName(name: IdolName) = buildQuery("""
+        SELECT * WHERE {
+          ?s rdfs:label ?name;
+            imas:Color ?color.
+          FILTER regex(?name, ".*${name.value}.*", "i").
+        } order by rand()
     """.trimIndent())
 
     private fun buildQuery(query: String) = buildString {
