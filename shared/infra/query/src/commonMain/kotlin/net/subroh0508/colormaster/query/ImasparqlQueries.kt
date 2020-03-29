@@ -10,7 +10,7 @@ object ImasparqlQueries {
             imas:Color ?color.
           FILTER regex(?name, ".*${name.value}.*", "i").
         } order by rand()
-    """.trimIndent())
+    """.trimIndent().replace("[\n\r]", ""))
 
     private fun buildQuery(query: String) = buildString {
         append(ENDPOINT_MAIN)

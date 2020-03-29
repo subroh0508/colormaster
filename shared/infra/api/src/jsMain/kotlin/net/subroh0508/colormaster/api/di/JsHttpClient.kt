@@ -22,7 +22,7 @@ internal actual val httpClient get() = HttpClient(Js) {
         userAgent(UserAgent)
     }
     Json {
-        acceptContentTypes += ContentType.Application.SparqlJson
+        acceptContentTypes = listOf(ContentType.Application.SparqlJson)
         serializer = KotlinxSerializer(kotlinx.serialization.json.Json.nonstrict)
     }
 }
