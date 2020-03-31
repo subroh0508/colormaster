@@ -114,7 +114,29 @@ object Libraries {
         const val js = "org.jetbrains.kotlinx:kotlinx-html-js:$version"
     }
 
+    object JsWrappers {
+        const val reactVersion = "${Npm.reactVersion}-pre.94-kotlin-1.3.70"
+        const val react = "org.jetbrains:kotlin-react:$reactVersion"
+        const val reactDom = "org.jetbrains:kotlin-react-dom:$reactVersion"
+
+        const val cssVersion = "1.0.0-pre.94-kotlin-1.3.70"
+        const val css = "org.jetbrains:kotlin-css-js:$cssVersion"
+
+        const val styledVersion = "1.0.0-pre.94-kotlin-1.3.70"
+        const val styled = "org.jetbrains:kotlin-styled:$styledVersion"
+    }
+
     object Npm {
+        const val reactVersion = "16.13.0"
+        const val react = "react"
+        const val reactDom = "react-dom"
+
+        const val styledComponentVersion = "^4.3.2"
+        const val styledComponent = "styled-components"
+
+        const val inlineStylePrefixerVersion = "^5.1.0"
+        const val inlineStylePrefixer = "inline-style-prefixer"
+
         const val abortControllerVersion = "3.0.0"
         const val abortController = "abort-controller"
 
