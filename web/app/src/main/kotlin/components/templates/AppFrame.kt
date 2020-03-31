@@ -1,6 +1,5 @@
 package components.templates
 
-import kotlinx.css.div
 import kotlinx.css.flexGrow
 import kotlinx.css.marginRight
 import materialui.components.appbar.appBar
@@ -14,7 +13,6 @@ import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
-import react.RBuilder
 import react.RProps
 import react.dom.div
 import react.functionalComponent
@@ -25,7 +23,7 @@ external interface AppFrameStyle {
     val title: String
 }
 
-val useStyles = makeStyles<AppFrameStyle> {
+private val useStyles = makeStyles<AppFrameStyle> {
     "root" {
         flexGrow = 1.0
     }
@@ -37,7 +35,7 @@ val useStyles = makeStyles<AppFrameStyle> {
     }
 }
 
-fun appFrame() = functionalComponent<RProps> {
+fun appFrame() = functionalComponent<RProps> { props ->
     val classes = useStyles()
 
     div(classes.root) {
@@ -72,4 +70,6 @@ fun appFrame() = functionalComponent<RProps> {
             }
         }
     }
+
+    props.children()
 }
