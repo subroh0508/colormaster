@@ -125,7 +125,7 @@ object Libraries {
         const val styledVersion = "1.0.0-pre.94-kotlin-${Kotlin.version}"
         const val styled = "org.jetbrains:kotlin-styled:$styledVersion"
 
-        const val materialUiVersion = "0.3.0"
+        const val materialUiVersion = "0.3.1"
         const val materialUi = "subroh0508.net.kotlinmaterialui:core:$materialUiVersion"
     }
 
