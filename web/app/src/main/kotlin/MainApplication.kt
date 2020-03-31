@@ -23,7 +23,7 @@ class MainApplication : CoroutineScope, KodeinAware {
 
     fun loadItems() {
         launch {
-            runCatching { repository.search(IdolName("dummy")) }
+            runCatching { repository.search(IdolName("真")) }
                 .onSuccess { showColors(it) }
                 .onFailure { console.log(it) }
         }

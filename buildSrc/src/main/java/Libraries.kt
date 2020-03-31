@@ -11,7 +11,7 @@ object Libraries {
     }
 
     object Kotlin {
-        const val version = "1.3.71"
+        const val version = "1.3.70"
 
         const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
         const val android = "org.jetbrains.kotlin:kotlin-stdlib:$version"
@@ -115,15 +115,18 @@ object Libraries {
     }
 
     object JsWrappers {
-        const val reactVersion = "${Npm.reactVersion}-pre.94-kotlin-1.3.70"
+        const val reactVersion = "${Npm.reactVersion}-pre.94-kotlin-${Kotlin.version}"
         const val react = "org.jetbrains:kotlin-react:$reactVersion"
         const val reactDom = "org.jetbrains:kotlin-react-dom:$reactVersion"
 
-        const val cssVersion = "1.0.0-pre.94-kotlin-1.3.70"
+        const val cssVersion = "1.0.0-pre.94-kotlin-${Kotlin.version}"
         const val css = "org.jetbrains:kotlin-css-js:$cssVersion"
 
-        const val styledVersion = "1.0.0-pre.94-kotlin-1.3.70"
+        const val styledVersion = "1.0.0-pre.94-kotlin-${Kotlin.version}"
         const val styled = "org.jetbrains:kotlin-styled:$styledVersion"
+
+        const val materialUiVersion = "0.3.0"
+        const val materialUi = "subroh0508.net.kotlinmaterialui:core:$materialUiVersion"
     }
 
     object Npm {

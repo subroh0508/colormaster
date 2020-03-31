@@ -47,6 +47,7 @@ kotlin {
                 implementation(Libraries.JsWrappers.reactDom)
                 implementation(Libraries.JsWrappers.css)
                 implementation(Libraries.JsWrappers.styled)
+                implementation(Libraries.JsWrappers.materialUi)
 
                 implementation(Libraries.Kodein.js)
 
