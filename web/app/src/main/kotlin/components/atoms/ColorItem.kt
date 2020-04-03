@@ -8,7 +8,9 @@ import materialui.styles.makeStyles
 import react.*
 import react.dom.br
 
-fun RBuilder.colorItem(handler: RHandler<ColorItemProps>) = child(functionalComponent<ColorItemProps> { props ->
+fun RBuilder.colorItem(handler: RHandler<ColorItemProps>) = child(ColorItemComponent, handler = handler)
+
+private val ColorItemComponent = functionalComponent<ColorItemProps> { props ->
     val classes = useStyles()
 
     paper {
@@ -24,7 +26,7 @@ fun RBuilder.colorItem(handler: RHandler<ColorItemProps>) = child(functionalComp
         br { }
         +props.color
     }
-}, handler = handler)
+}
 
 external interface ColorItemProps : RProps {
     var name: String

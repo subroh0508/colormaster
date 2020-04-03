@@ -7,17 +7,15 @@ import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
 import materialui.components.drawer.enums.DrawerStyle
 import materialui.components.drawer.enums.DrawerVariant
-import materialui.components.formcontrol.enums.FormControlVariant
-import materialui.components.list.list
-import materialui.components.listitem.listItem
-import materialui.components.textfield.textField
 import materialui.styles.makeStyles
 import materialui.styles.mixins.toolbar
 import net.subroh0508.colormaster.model.IdolColor
 import react.*
 import react.dom.div
 
-fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(functionalComponent<IdolSearchPanelProps> { props ->
+fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(IdolSearchPanelComponent, handler = handler)
+
+private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps> { props ->
     val classes = useStyles()
 
     div(classes.root) {
@@ -32,14 +30,18 @@ fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(fu
             }
 
             div(classes.toolbar) {}
-            idolSearchBox { attrs.idolName = props.idolName }
+            idolSearchBox {
+                attrs.idolName = props.idolName
+                attrs.onChangeIdolName = props.onChangeIdolName
+            }
         }
     }
-}, handler = handler)
+}
 
 external interface IdolSearchPanelProps : RProps {
     var items: List<IdolColor>
-    var idolName: String
+    var idolName: String?
+    var onChangeIdolName: (String) -> Unit
 }
 
 private external interface IdolSearchPanelStyle {

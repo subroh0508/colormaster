@@ -18,7 +18,9 @@ import materialui.styles.muitheme.spacing
 import react.*
 import react.dom.div
 
-fun RBuilder.appFrame(handler: RHandler<RProps>) = child(functionalComponent<RProps> { props ->
+fun RBuilder.appFrame(handler: RHandler<RProps>) = child(AppFrameComponent, handler = handler)
+
+private val AppFrameComponent = functionalComponent<RProps> { props ->
     val classes = useStyles()
 
     div(classes.root) {
@@ -59,7 +61,7 @@ fun RBuilder.appFrame(handler: RHandler<RProps>) = child(functionalComponent<RPr
 
     div(classes.toolbar) {}
     props.children()
-}, handler = handler)
+}
 
 private external interface AppFrameStyle {
     val root: String
