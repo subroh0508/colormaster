@@ -13,30 +13,37 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.erased.instance
 import react.*
 import utilities.useEffectDidMount
-import kotlin.js.Promise
 
-@Suppress("FunctionName")
-fun RBuilder.IdolSearchContainer(handler: RHandler<RProps>) = child(functionalComponent<RProps> {
+val IdolSearchContainer = functionalComponent<RProps> {
     val (items, setItems) = useState(listOf<IdolColor>())
+    val (idolName, setIdolName) = useState<String?>(null)
 
-    useEffectDidMount {
-        Controller.loadItems(IdolName(""))
-            .then { setItems(it) }
-            .catch { console.log(it) }
-    }
+    fun search(idolName: IdolName?) = Controller.loadItems(
+        idolName,
+        resolve = { setItems(it) },
+        reject = { console.log(it) }
+    )
+
+    useEffectDidMount { search(IdolName("")) }
+    useEffect(listOf(idolName)) { search(idolName?.let(::IdolName)) }
 
     idolSearchPanel {
         attrs.items = items
-        attrs.idolName = "三峰結華"
+        attrs.idolName = idolName
+        attrs.onChangeIdolName = { setIdolName(it) }
     }
-}, handler = handler)
+}
 
 private object Controller : CoroutineScope by mainScope, KodeinAware {
     private val repository: IdolColorsRepository by instance()
 
-    fun loadItems(name: IdolName?): Promise<List<IdolColor>> = promise {
-        repository.search(name)
-    }
+    fun loadItems(
+        name: IdolName?,
+        resolve: (List<IdolColor>) -> Unit,
+        reject: (Throwable) -> Unit
+    ) = promise { repository.search(name) }
+        .then(resolve)
+        .catch(reject)
 
     override val kodein = appKodein
 }
