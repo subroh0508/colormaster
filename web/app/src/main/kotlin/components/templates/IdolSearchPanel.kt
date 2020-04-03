@@ -1,6 +1,7 @@
 package components.templates
 
 import components.organisms.idolColorGrids
+import components.organisms.idolSearchBox
 import kotlinx.css.*
 import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
@@ -15,7 +16,6 @@ import materialui.styles.mixins.toolbar
 import net.subroh0508.colormaster.model.IdolColor
 import react.*
 import react.dom.div
-import react.dom.form
 
 fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(functionalComponent<IdolSearchPanelProps> { props ->
     val classes = useStyles()
@@ -32,19 +32,7 @@ fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(fu
             }
 
             div(classes.toolbar) {}
-            list {
-                listItem {
-                    form {
-                        textField {
-                            attrs {
-                                label { +"アイドル名" }
-                                variant = FormControlVariant.outlined
-                                value = props.idolName
-                            }
-                        }
-                    }
-                }
-            }
+            idolSearchBox { attrs.idolName = props.idolName }
         }
     }
 }, handler = handler)
