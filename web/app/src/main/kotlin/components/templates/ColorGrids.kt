@@ -1,5 +1,6 @@
 package components.templates
 
+import components.atoms.colorItem
 import controllers.SearchController
 import kotlinext.js.js
 import kotlinext.js.jsObject
@@ -14,12 +15,9 @@ import materialui.components.typography.typography
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.IdolName
-import react.RProps
+import react.*
 import react.dom.br
 import react.dom.div
-import react.functionalComponent
-import react.useEffect
-import react.useState
 
 external interface ColorGridsStyle {
     val root: String
@@ -61,18 +59,10 @@ fun colorGrids() = functionalComponent<RProps> {
     div(classes.root) {
         div(classes.container) {
             items.forEach { idolColor ->
-                paper {
-                    attrs {
-                        classes(classes.paper)
-                        setProp("style", js {
-                            this["background-color"] = idolColor.color
-                            this["color"] = if (idolColor.isBrighter) Color.black.toString() else Color.white.toString()
-                        } as Any)
-                    }
-
-                    +idolColor.name
-                    br { }
-                    +idolColor.color
+                colorItem {
+                    name = idolColor.name
+                    color = idolColor.color
+                    isBrighter = idolColor.isBrighter
                 }
             }
         }
