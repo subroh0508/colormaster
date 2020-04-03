@@ -11,12 +11,13 @@ import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.kodein.di.KodeinAware
 import org.kodein.di.erased.instance
 import react.*
+import utilities.useEffectDidMount
 import kotlin.js.Promise
 
 fun RBuilder.idolSearchContainer(handler: RHandler<RProps>) = child(functionalComponent<RProps> {
     val (items, setItems) = useState(listOf<IdolColor>())
 
-    useEffect(listOf()) {
+    useEffectDidMount {
         Controller.loadItems(IdolName(""))
             .then { setItems(it) }
             .catch { console.log(it) }
