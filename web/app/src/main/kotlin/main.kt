@@ -1,11 +1,10 @@
 import components.templates.appFrame
-import components.templates.colorGrids
+import components.organisms.idolColorGrids
+import containers.idolSearchContainer
 import kotlinx.coroutines.MainScope
 import materialui.components.cssbaseline.cssBaseline
 import net.subroh0508.colormaster.components.core.AppModule
 import org.kodein.di.Kodein
-import react.child
-import react.dom.div
 import react.dom.render
 import kotlin.browser.document
 import kotlin.browser.window
@@ -18,7 +17,7 @@ fun main() {
         render(document.getElementById("root")) {
             cssBaseline {  }
             appFrame {
-                colorGrids()
+                idolSearchContainer {  }
             }
         }
     }

@@ -16,24 +16,6 @@ import materialui.styles.muitheme.spacing
 import react.*
 import react.dom.div
 
-external interface AppFrameStyle {
-    val root: String
-    val menuButton: String
-    val title: String
-}
-
-private val useStyles = makeStyles<AppFrameStyle> {
-    "root" {
-        flexGrow = 1.0
-    }
-    "menuButton" {
-        marginRight = theme.spacing(2)
-    }
-    "title" {
-        flexGrow = 1.0
-    }
-}
-
 fun RBuilder.appFrame(handler: RHandler<RProps>) = child(functionalComponent<RProps> { props ->
     val classes = useStyles()
 
@@ -66,9 +48,29 @@ fun RBuilder.appFrame(handler: RHandler<RProps>) = child(functionalComponent<RPr
 
                     +"COLOR M@STER"
                 }
+
+
             }
         }
     }
 
     props.children()
 }, handler = handler)
+
+private external interface AppFrameStyle {
+    val root: String
+    val menuButton: String
+    val title: String
+}
+
+private val useStyles = makeStyles<AppFrameStyle> {
+    "root" {
+        flexGrow = 1.0
+    }
+    "menuButton" {
+        marginRight = theme.spacing(2)
+    }
+    "title" {
+        flexGrow = 1.0
+    }
+}
