@@ -17,8 +17,8 @@ fun main() {
     window.onload = {
         render(document.getElementById("root")) {
             cssBaseline {  }
-            child(appFrame()) {
-                child(colorGrids()) {  }
+            appFrame {
+                colorGrids()
             }
         }
     }

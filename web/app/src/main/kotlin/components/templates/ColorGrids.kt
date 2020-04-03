@@ -45,7 +45,7 @@ private val useStyles = makeStyles<ColorGridsStyle> {
     }
 }
 
-fun colorGrids() = functionalComponent<RProps> {
+fun RBuilder.colorGrids() = child(functionalComponent<RProps> {
     val classes = useStyles()
 
     val (items, setItems) = useState(listOf<IdolColor>())
@@ -60,11 +60,13 @@ fun colorGrids() = functionalComponent<RProps> {
         div(classes.container) {
             items.forEach { idolColor ->
                 colorItem {
-                    name = idolColor.name
-                    color = idolColor.color
-                    isBrighter = idolColor.isBrighter
+                    attrs {
+                        name = idolColor.name
+                        color = idolColor.color
+                        isBrighter = idolColor.isBrighter
+                    }
                 }
             }
         }
     }
-}
+})

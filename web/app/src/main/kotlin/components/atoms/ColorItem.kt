@@ -5,13 +5,10 @@ import kotlinext.js.jsObject
 import kotlinx.css.*
 import materialui.components.paper.paper
 import materialui.styles.makeStyles
-import react.RBuilder
-import react.RProps
-import react.child
+import react.*
 import react.dom.br
-import react.functionalComponent
 
-fun RBuilder.colorItem(block: ColorItemProps.() -> Unit) = child(functionalComponent<ColorItemProps> { props ->
+fun RBuilder.colorItem(handler: RHandler<ColorItemProps>) = child(functionalComponent<ColorItemProps> { props ->
     val classes = useStyles()
 
     paper {
@@ -27,7 +24,7 @@ fun RBuilder.colorItem(block: ColorItemProps.() -> Unit) = child(functionalCompo
         br { }
         +props.color
     }
-}, jsObject(block))
+}, handler = handler)
 
 external interface ColorItemProps : RProps {
     var name: String

@@ -13,9 +13,8 @@ import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
-import react.RProps
+import react.*
 import react.dom.div
-import react.functionalComponent
 
 external interface AppFrameStyle {
     val root: String
@@ -35,7 +34,7 @@ private val useStyles = makeStyles<AppFrameStyle> {
     }
 }
 
-fun appFrame() = functionalComponent<RProps> { props ->
+fun RBuilder.appFrame(handler: RHandler<RProps>) = child(functionalComponent<RProps> { props ->
     val classes = useStyles()
 
     div(classes.root) {
@@ -72,4 +71,4 @@ fun appFrame() = functionalComponent<RProps> { props ->
     }
 
     props.children()
-}
+}, handler = handler)
