@@ -2,6 +2,7 @@ package containers
 
 import appKodein
 import components.organisms.idolColorGrids
+import components.templates.idolSearchPanel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.promise
 import mainScope
@@ -14,7 +15,8 @@ import react.*
 import utilities.useEffectDidMount
 import kotlin.js.Promise
 
-fun RBuilder.idolSearchContainer(handler: RHandler<RProps>) = child(functionalComponent<RProps> {
+@Suppress("FunctionName")
+fun RBuilder.IdolSearchContainer(handler: RHandler<RProps>) = child(functionalComponent<RProps> {
     val (items, setItems) = useState(listOf<IdolColor>())
 
     useEffectDidMount {
@@ -23,7 +25,10 @@ fun RBuilder.idolSearchContainer(handler: RHandler<RProps>) = child(functionalCo
             .catch { console.log(it) }
     }
 
-    idolColorGrids { attrs.items = items }
+    idolSearchPanel {
+        attrs.items = items
+        attrs.idolName = "三峰結華"
+    }
 }, handler = handler)
 
 private object Controller : CoroutineScope by mainScope, KodeinAware {

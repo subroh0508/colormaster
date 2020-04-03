@@ -1,6 +1,5 @@
 import components.templates.appFrame
-import components.organisms.idolColorGrids
-import containers.idolSearchContainer
+import containers.IdolSearchContainer
 import kotlinx.coroutines.MainScope
 import materialui.components.cssbaseline.cssBaseline
 import net.subroh0508.colormaster.components.core.AppModule
@@ -17,7 +16,7 @@ fun main() {
         render(document.getElementById("root")) {
             cssBaseline {  }
             appFrame {
-                idolSearchContainer {  }
+                IdolSearchContainer {  }
             }
         }
     }
