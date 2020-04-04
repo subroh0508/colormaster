@@ -34,7 +34,7 @@ external interface ColorItemProps : RProps {
     var isBrighter: Boolean
 }
 
-external interface ColorItemStyle {
+private external interface ColorItemStyle {
     val root: String
 }
 
