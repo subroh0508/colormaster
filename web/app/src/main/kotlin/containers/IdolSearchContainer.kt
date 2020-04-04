@@ -12,7 +12,10 @@ import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.kodein.di.KodeinAware
 import org.kodein.di.erased.instance
 import react.*
+import utilities.useDebounceEffect
 import utilities.useEffectDidMount
+
+
 
 val IdolSearchContainer = functionalComponent<RProps> {
     val (items, setItems) = useState(listOf<IdolColor>())
@@ -25,7 +28,7 @@ val IdolSearchContainer = functionalComponent<RProps> {
     )
 
     useEffectDidMount { search(IdolName("")) }
-    useEffect(listOf(idolName)) { search(idolName?.let(::IdolName)) }
+    useDebounceEffect(idolName, 500) { search(it?.let(::IdolName)) }
 
     idolSearchPanel {
         attrs.items = items
