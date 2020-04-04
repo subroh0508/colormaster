@@ -17,7 +17,7 @@ fun main() {
         render(document.getElementById("root")) {
             cssBaseline {  }
             appFrame {
-                child(IdolSearchContainer) { }
+                IdolSearchContainer()
             }
         }
     }
