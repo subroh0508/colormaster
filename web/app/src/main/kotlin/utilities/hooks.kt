@@ -10,6 +10,16 @@ import react.*
 
 fun useEffectDidMount(effect: () -> Unit) = useEffect(listOf(), effect)
 
+fun <T> useAsyncEffect(
+    value: T,
+    coroutineScope: CoroutineScope = mainScope,
+    effect: suspend () -> Unit
+) {
+    val scope = useRef(coroutineScope)
+
+    useEffect(listOf(value)) { scope.current.launch { effect() } }
+}
+
 fun <T> useDebounceEffect(
     value: T,
     timeoutMillis: Long,
