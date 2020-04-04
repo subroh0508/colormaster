@@ -22,19 +22,27 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
 
     val (items, setItems) = useState(listOf<IdolColor>())
     val (idolName, setIdolName) = useState<String?>(null)
+    val (error, setError) = useState<String?>(null)
 
-    fun Controller.search(idolName: IdolName?) = launch {
-        runCatching { repository.search(idolName) }
-                .onSuccess(setItems)
-                .onFailure { console.log(it) }
+    fun Controller.search(idolName: IdolName? = null) = launch {
+        runCatching { fetchItems(idolName) }
+                .onSuccess {
+                    setError(null)
+                    setItems(it)
+                }
+                .onFailure {
+                    console.log(it)
+                    setError("エラーが発生しました")
+                }
     }
 
-    useEffectDidMount { controller.search(IdolName("")) }
-    useDebounceEffect(idolName, 500) { controller.search(it?.let(::IdolName)) }
+    useEffectDidMount { controller.search() }
+    useDebounceEffect(idolName, 500) { controller.search(it?.takeIf(String::isNotBlank)?.let(::IdolName)) }
 
     idolSearchPanel {
         attrs.items = items
         attrs.idolName = idolName
+        attrs.error = error
         attrs.onChangeIdolName = { setIdolName(it) }
     }
 }
@@ -42,7 +50,13 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
 private val IdolSearchController = createContext<Controller>()
 
 private object Controller : CoroutineScope by mainScope, KodeinAware {
+    const val LIMIT = 10
+
     val repository: IdolColorsRepository by instance()
+
+    suspend fun fetchItems(
+        idolName: IdolName?
+    ) = if (idolName == null) repository.rand(LIMIT) else repository.search(idolName)
 
     override val kodein = appKodein
 }

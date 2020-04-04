@@ -12,7 +12,7 @@ import net.subroh0508.colormaster.repository.IdolColorsRepository
 internal class IdolColorsRepositoryImpl(
     private val imasparqlClient: ImasparqlClient
 ) : IdolColorsRepository {
-    override suspend fun rand(): List<IdolColor> = imasparqlClient.search(ImasparqlQueries.rand()).toIdolColors()
+    override suspend fun rand(limit: Int): List<IdolColor> = imasparqlClient.search(ImasparqlQueries.rand(limit)).toIdolColors()
 
     override suspend fun search(name: IdolName?) = name?.let {
         imasparqlClient.search(ImasparqlQueries.searchByName(it)).toIdolColors()

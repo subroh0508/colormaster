@@ -6,6 +6,7 @@ import materialui.lab.components.alert.alert
 import materialui.lab.components.alert.enums.AlertSeverity
 import materialui.lab.components.alerttitle.alertTitle
 import materialui.styles.makeStyles
+import org.w3c.dom.events.Event
 import react.*
 
 fun RBuilder.successAlert(handler: RHandler<AlertProps>) = child(alertComponent) { handler(); attrs.severity = AlertSeverity.success }
@@ -20,7 +21,7 @@ private val alertComponent = functionalComponent<AlertProps> { props ->
         attrs {
             classes(classes.root)
             severity = props.severity
-            onClose = { props.onClose }
+            onClose = if (props.onClose == null) null else { _: Event -> props.onClose?.invoke() }
         }
 
         props.title?.let { title -> alertTitle { +title } }

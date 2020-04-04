@@ -1,5 +1,8 @@
 package components.templates
 
+import components.atoms.errorAlert
+import components.atoms.infoAlert
+import components.atoms.successAlert
 import components.organisms.idolColorGrids
 import components.organisms.idolSearchBox
 import kotlinx.css.*
@@ -19,7 +22,10 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     val classes = useStyles()
 
     div(classes.root) {
-        idolColorGrids { attrs.items = props.items }
+        div {
+            alert(props)
+            idolColorGrids { attrs.items = props.items }
+        }
         drawer(
             DrawerStyle.root to classes.drawer,
             DrawerStyle.paper to classes.drawerPaper
@@ -38,9 +44,23 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     }
 }
 
+private fun RBuilder.alert(props: IdolSearchPanelProps) = when {
+    props.idolName.isNullOrBlank() && props.items.size == 10 -> infoAlert {
+        attrs.message = "ランダムに10人のアイドルを表示しています"
+    }
+    props.error != null -> errorAlert {
+        attrs.title = "エラー"
+        attrs.message = props.error ?: ""
+    }
+    else -> successAlert {
+        attrs.message = "検索結果: ${props.items.size}件"
+    }
+}
+
 external interface IdolSearchPanelProps : RProps {
     var items: List<IdolColor>
     var idolName: String?
+    var error: String?
     var onChangeIdolName: (String) -> Unit
 }
 
