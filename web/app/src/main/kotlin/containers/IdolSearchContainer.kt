@@ -24,20 +24,20 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
 
     val (uiModel, dispatch) = useReducer(reducer, UiModel.Search.INITIALIZED)
 
-    fun onChangeIdolName(name: String?) = dispatch(actions(type = ActionTypes.ON_CHANGE_IDOL_NAME, idolName = name.toIdolName()))
-    fun onSelectTitle(title: Titles, checked: Boolean) = dispatch(actions(type = ActionTypes.ON_SELECT_TITLE, filters = if (checked) Filters(title) else Filters.Empty))
-    fun onSelectType(filters: Filters, type: Types, checked: Boolean) = dispatch(actions(type = ActionTypes.ON_SELECT_TYPE, filters = if (checked) filters + type else filters - type))
+    fun onChangeIdolName(name: String?) = dispatch(actions(type = ActionTypes.ON_CHANGE_IDOL_NAME, idolName = name.toIdolName(), filters = uiModel.filters))
+    fun onSelectTitle(title: Titles, checked: Boolean) = dispatch(actions(type = ActionTypes.ON_SELECT_TITLE, idolName = uiModel.idolName, filters = if (checked) Filters(title) else Filters.Empty))
+    fun onSelectType(filters: Filters, type: Types, checked: Boolean) = dispatch(actions(type = ActionTypes.ON_SELECT_TYPE, idolName = uiModel.idolName, filters = if (checked) filters + type else filters - type))
     fun onSuccess(items: List<IdolColor>) = dispatch(actions(type = ActionTypes.ON_SUCCESS, items = items))
     fun onFailure(e: Throwable) = dispatch(actions(type = ActionTypes.ON_FAILURE, error = e))
 
-    fun Controller.search(idolName: IdolName? = null) = launch {
-        runCatching { fetchItems(idolName) }
+    fun Controller.search(model: UiModel.Search = UiModel.Search.INITIALIZED) = launch {
+        runCatching { fetchItems(model) }
                 .onSuccess(::onSuccess)
                 .onFailure(::onFailure)
     }
 
     useEffectDidMount { controller.search() }
-    useDebounceEffect(uiModel.idolName, 500) { controller.search(it) }
+    useDebounceEffect(uiModel.idolName, 500) { controller.search(uiModel) }
 
     idolSearchPanel {
         attrs.model = uiModel
@@ -67,7 +67,8 @@ private val reducer = { state: UiModel.Search, action: Actions<ActionTypes, UiMo
 
     when (action.type) {
         ActionTypes.ON_CHANGE_IDOL_NAME -> state.copy(items = listOf(), idolName = idolName, error = null, isLoading = true)
-        ActionTypes.ON_SELECT_TITLE, ActionTypes.ON_SELECT_TYPE -> state.copy(filters = filters)
+        ActionTypes.ON_SELECT_TITLE,
+        ActionTypes.ON_SELECT_TYPE -> state.copy(items = listOf(), filters = filters, error = null, isLoading = true)
         ActionTypes.ON_SUCCESS -> state.copy(items = items, error = null, isLoading = false)
         ActionTypes.ON_FAILURE -> state.copy(items = listOf(), error = error, isLoading = false)
     }
@@ -80,9 +81,11 @@ private object Controller : CoroutineScope by mainScope, KodeinAware {
 
     val repository: IdolColorsRepository by instance()
 
-    suspend fun fetchItems(
-        idolName: IdolName?
-    ) = if (idolName == null) repository.rand(LIMIT) else repository.search(idolName)
+    suspend fun fetchItems(model: UiModel.Search) =
+        if (model.isConditionsEmpty)
+            repository.rand(LIMIT)
+        else
+            repository.search(model.idolName, model.filters.title, model.filters.types)
 
     override val kodein = appKodein
 }

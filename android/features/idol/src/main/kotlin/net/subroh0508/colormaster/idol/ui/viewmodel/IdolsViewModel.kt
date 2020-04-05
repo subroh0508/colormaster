@@ -46,7 +46,7 @@ class IdolsViewModel(
         viewModelScope.launch {
             idolsLoadStateLiveData.postValue(LoadState.Loading)
 
-            runCatching { repository.search(idolNameLiveData.value) }
+            runCatching { repository.search(idolNameLiveData.value, filterLiveData.value?.title, filterLiveData.value?.types ?: setOf()) }
                 .onSuccess { idolsLoadStateLiveData.postValue(LoadState.Loaded(it)) }
                 .onFailure {
                     it.printStackTrace()

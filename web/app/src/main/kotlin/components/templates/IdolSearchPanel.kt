@@ -55,7 +55,7 @@ private fun RBuilder.alert(uiModel: UiModel.Search) = when {
     uiModel.isLoading -> warningAlert {
         attrs.message = "検索中..."
     }
-    uiModel.idolName == null -> infoAlert {
+    uiModel.isConditionsEmpty -> infoAlert {
         attrs.message = "ランダムに10人のアイドルを表示しています"
     }
     uiModel.error != null -> errorAlert {
