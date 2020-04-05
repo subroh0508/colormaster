@@ -1,6 +1,8 @@
 package net.subroh0508.colormaster.query
 
 import net.subroh0508.colormaster.model.IdolName
+import net.subroh0508.colormaster.model.Titles
+import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.query.internal.URLEncoder
 
 object ImasparqlQueries {
@@ -13,11 +15,13 @@ object ImasparqlQueries {
         LIMIT $limit
     """.trimIndentAndBr())
 
-    fun searchByName(name: IdolName) = buildQuery("""
+    fun search(name: IdolName?, titles: Titles?, types: Set<Types>) = buildQuery("""
         SELECT * WHERE {
           ?s rdfs:label ?name;
-            imas:Color ?color.
-          FILTER regex(?name, ".*${name.value}.*", "i").
+            imas:Color ?color;
+            imas:Title ?title.
+          ${name?.value?.let { "FILTER regex(?name, '.*$it.*', 'i')." } ?: ""}
+          ${titles?.queryStr?.let { "FILTER (str(?title) = '$it')." } ?: ""}
         }
         ORDER BY ?name
     """.trimIndentAndBr())

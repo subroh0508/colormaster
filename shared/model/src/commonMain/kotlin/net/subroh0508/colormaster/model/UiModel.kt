@@ -13,5 +13,7 @@ abstract class UiModel {
         companion object {
             val INITIALIZED  = Search(emptyList(), null, Filters.Empty, null)
         }
+
+        val isConditionsEmpty get() = idolName == null && filters == Filters.Empty
     }
 }
