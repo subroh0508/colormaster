@@ -1,6 +1,7 @@
 package components.atoms
 
 import kotlinx.css.*
+import kotlinx.html.js.onClickFunction
 import materialui.components.chip.chip
 import materialui.components.chip.enums.ChipColor
 import materialui.components.chip.enums.ChipVariant
@@ -19,6 +20,7 @@ private val chipComponent = functionalComponent<ChipProps> { props ->
             label { +props.label }
             color = ChipColor.primary
             variant = if (props.isChecked) ChipVariant.default else ChipVariant.outlined
+            onClickFunction = { props.onClick?.invoke(it) }
         }
     }
 }

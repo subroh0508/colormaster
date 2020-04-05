@@ -13,6 +13,8 @@ import materialui.components.drawer.enums.DrawerStyle
 import materialui.components.drawer.enums.DrawerVariant
 import materialui.styles.makeStyles
 import materialui.styles.mixins.toolbar
+import net.subroh0508.colormaster.model.Titles
+import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.model.UiModel
 import react.*
 import react.dom.div
@@ -42,6 +44,8 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
                 attrs.idolName = uiModel.idolName?.value
                 attrs.filters = uiModel.filters
                 attrs.onChangeIdolName = props.onChangeIdolName
+                attrs.onSelectTitle = props.onSelectTitle
+                attrs.onSelectType = props.onSelectType
             }
         }
     }
@@ -66,6 +70,8 @@ private fun RBuilder.alert(uiModel: UiModel.Search) = when {
 external interface IdolSearchPanelProps : RProps {
     var model: UiModel.Search
     var onChangeIdolName: (String) -> Unit
+    var onSelectTitle: (Titles, Boolean) -> Unit
+    var onSelectType: (Types, Boolean) -> Unit
 }
 
 private external interface IdolSearchPanelStyle {

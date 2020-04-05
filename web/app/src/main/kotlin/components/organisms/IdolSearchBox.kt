@@ -44,7 +44,7 @@ private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { p
             typesChips(props.filters.title) {
                 attrs {
                     types = props.filters.types
-                    onSelect = props.onSelectTypes
+                    onSelect = props.onSelectType
                 }
             }
         }
@@ -56,5 +56,5 @@ external interface IdolSearchBoxProps : RProps {
     var filters: Filters
     var onChangeIdolName: (String) -> Unit
     var onSelectTitle: (Titles, Boolean) -> Unit
-    var onSelectTypes: (Types, Boolean) -> Unit
+    var onSelectType: (Types, Boolean) -> Unit
 }

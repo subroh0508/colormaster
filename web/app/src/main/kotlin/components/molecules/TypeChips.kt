@@ -30,7 +30,7 @@ private val TypeChipsComponent = functionalComponent<TypeChipsProps> { props ->
                 attrs {
                     label = type.displayName
                     isChecked = checked
-                    onClick = { props.onSelect?.invoke(type, checked) }
+                    onClick = { props.onSelect?.invoke(type, !checked) }
                 }
             }
         }

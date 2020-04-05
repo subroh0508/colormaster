@@ -23,7 +23,7 @@ private val TitleChipsComponent = functionalComponent<TitleChipsProps> { props -
                 attrs {
                     label = title.displayName
                     isChecked = checked
-                    onClick = { props.onSelect?.invoke(title, checked) }
+                    onClick = { props.onSelect?.invoke(title, !checked) }
                 }
             }
         }

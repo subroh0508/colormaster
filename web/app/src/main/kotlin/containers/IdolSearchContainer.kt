@@ -5,10 +5,7 @@ import components.templates.idolSearchPanel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mainScope
-import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.IdolName
-import net.subroh0508.colormaster.model.UiModel
-import net.subroh0508.colormaster.model.toIdolName
+import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.model.ui.idol.Filters
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.kodein.di.KodeinAware
@@ -28,6 +25,8 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
     val (uiModel, dispatch) = useReducer(reducer, UiModel.Search.INITIALIZED)
 
     fun onChangeIdolName(name: String?) = dispatch(actions(type = ActionTypes.ON_CHANGE_IDOL_NAME, idolName = name.toIdolName()))
+    fun onSelectTitle(title: Titles, checked: Boolean) = dispatch(actions(type = ActionTypes.ON_SELECT_TITLE, filters = if (checked) Filters(title) else Filters.Empty))
+    fun onSelectType(filters: Filters, type: Types, checked: Boolean) = dispatch(actions(type = ActionTypes.ON_SELECT_TYPE, filters = if (checked) filters + type else filters - type))
     fun onSuccess(items: List<IdolColor>) = dispatch(actions(type = ActionTypes.ON_SUCCESS, items = items))
     fun onFailure(e: Throwable) = dispatch(actions(type = ActionTypes.ON_FAILURE, error = e))
 
@@ -43,11 +42,13 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
     idolSearchPanel {
         attrs.model = uiModel
         attrs.onChangeIdolName = ::onChangeIdolName
+        attrs.onSelectTitle = ::onSelectTitle
+        attrs.onSelectType = { type, checked -> onSelectType(uiModel.filters, type, checked) }
     }
 }
 
 private enum class ActionTypes {
-    ON_CHANGE_IDOL_NAME, ON_SUCCESS, ON_FAILURE
+    ON_CHANGE_IDOL_NAME, ON_SELECT_TITLE, ON_SELECT_TYPE, ON_SUCCESS, ON_FAILURE
 }
 
 private fun actions(
@@ -62,13 +63,13 @@ private fun actions(
 }
 
 private val reducer = { state: UiModel.Search, action: Actions<ActionTypes, UiModel.Search> ->
-    val (items, idolName, _, error, _) = action.payload
+    val (items, idolName, filters, error, _) = action.payload
 
     when (action.type) {
         ActionTypes.ON_CHANGE_IDOL_NAME -> state.copy(items = listOf(), idolName = idolName, error = null, isLoading = true)
+        ActionTypes.ON_SELECT_TITLE, ActionTypes.ON_SELECT_TYPE -> state.copy(filters = filters)
         ActionTypes.ON_SUCCESS -> state.copy(items = items, error = null, isLoading = false)
         ActionTypes.ON_FAILURE -> state.copy(items = listOf(), error = error, isLoading = false)
-        else -> state
     }
 }
 
