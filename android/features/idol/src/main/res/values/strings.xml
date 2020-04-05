@@ -5,7 +5,7 @@
 
     <string name="label_idol_name">アイドル名</string>
 
-    <string name="filter_imas_title">タイトル</string>
+    <string name="filter_imas_brand">ブランド</string>
     <string name="filter_attributes">属性</string>
     <string name="filter_type">タイプ</string>
     <string name="filter_category">カテゴリ</string>

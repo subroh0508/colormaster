@@ -14,7 +14,7 @@ private val TitleChipsComponent = functionalComponent<TitleChipsProps> { props -
     val classes = useStyles()
 
     div {
-        p(classes.title) { +"タイトル" }
+        p(classes.title) { +"ブランド" }
 
         div(classes.chips) {
             Titles.values().forEach { title ->

@@ -75,11 +75,11 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
-                    android:id="@+id/filter_imas_title_title"
+                    android:id="@+id/filter_imas_brand_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/text_view_title_marginTop"
-                    android:text="@string/filter_imas_title"
+                    android:text="@string/filter_imas_brand"
                     android:textAppearance="@style/TextAppearance.ColorMaster.Subtitle2"
                     android:textColor="?attr/colorOnPrimary"
                     app:layout_constraintTop_toBottomOf="@id/idol_name_layout"
@@ -92,7 +92,7 @@
                     android:layout_marginTop="@dimen/chip_group_filters_marginTop"
                     app:chipSpacingVertical="@dimen/chip_filter_vertical_margin"
                     app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintTop_toBottomOf="@id/filter_imas_title_title"
+                    app:layout_constraintTop_toBottomOf="@id/filter_imas_brand_title"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
 
