@@ -16,6 +16,7 @@ import materialui.styles.mixins.toolbar
 import net.subroh0508.colormaster.model.Titles
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.model.UiModel
+import net.subroh0508.colormaster.model.ui.idol.Filters
 import react.*
 import react.dom.div
 
@@ -41,7 +42,6 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
 
             div(classes.toolbar) {}
             idolSearchBox {
-                attrs.idolName = uiModel.idolName?.value
                 attrs.filters = uiModel.filters
                 attrs.onChangeIdolName = props.onChangeIdolName
                 attrs.onSelectTitle = props.onSelectTitle
@@ -55,7 +55,7 @@ private fun RBuilder.alert(uiModel: UiModel.Search) = when {
     uiModel.isLoading -> warningAlert {
         attrs.message = "検索中..."
     }
-    uiModel.isConditionsEmpty -> infoAlert {
+    uiModel.filters is Filters.Empty -> infoAlert {
         attrs.message = "ランダムに10人のアイドルを表示しています"
     }
     uiModel.error != null -> errorAlert {

@@ -62,7 +62,7 @@ private fun actions(
 }
 
 private val reducer = { state: UiModel.Search, action: Actions<ActionTypes, UiModel.Search> ->
-    val (items, _, filters, error, _) = action.payload
+    val (items, filters, error, _) = action.payload
 
     when (action.type) {
         ActionTypes.ON_CHANGE_FILTER -> state.copy(items = listOf(), filters = filters, error = null, isLoading = true)

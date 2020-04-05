@@ -107,7 +107,7 @@ sealed class Filters {
     companion object {
         @Suppress("UNCHECKED_CAST")
         operator fun invoke(idolName: IdolName?, titles: Titles?, types: Set<Types> = emptySet()) = when (titles) {
-            null -> NoTitle(idolName)
+            null -> idolName?.let(::NoTitle) ?: Empty
             Titles._765 -> _765AS(idolName, types as Set<Types.MILLION_LIVE>, null)
             Titles._ML -> _MillionStars(idolName, types as Set<Types.MILLION_LIVE>, null)
             Titles._CG -> _CinderellaGirls(idolName, types as Set<Types.CINDERELLA_GIRLS>, null)

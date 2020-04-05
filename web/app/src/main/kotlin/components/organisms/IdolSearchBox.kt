@@ -24,7 +24,7 @@ private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { p
                     attrs {
                         label { +"アイドル名" }
                         variant = FormControlVariant.outlined
-                        value = props.idolName
+                        value = props.filters.idolName?.value
                         onChangeFunction = { e -> props.onChangeIdolName(e.inputTarget().value) }
                     }
                 }
@@ -52,7 +52,6 @@ private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { p
 }
 
 external interface IdolSearchBoxProps : RProps {
-    var idolName: String?
     var filters: Filters
     var onChangeIdolName: (String) -> Unit
     var onSelectTitle: (Titles, Boolean) -> Unit
