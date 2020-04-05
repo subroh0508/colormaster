@@ -9,6 +9,7 @@ import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.model.UiModel
 import net.subroh0508.colormaster.model.toIdolName
+import net.subroh0508.colormaster.model.ui.idol.Filters
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.kodein.di.KodeinAware
 import org.kodein.di.erased.instance
@@ -52,15 +53,16 @@ private enum class ActionTypes {
 private fun actions(
     type: ActionTypes,
     idolName: IdolName? = null,
+    filters: Filters = Filters.Empty,
     items: List<IdolColor> = listOf(),
     error: Throwable? = null
 ) = actions<ActionTypes, UiModel.Search> {
     this.type = type
-    this.payload = UiModel.Search(idolName = idolName, items = items, error = error)
+    this.payload = UiModel.Search(idolName = idolName, filters = filters, items = items, error = error)
 }
 
 private val reducer = { state: UiModel.Search, action: Actions<ActionTypes, UiModel.Search> ->
-    val (items, idolName, error, _) = action.payload
+    val (items, idolName, _, error, _) = action.payload
 
     when (action.type) {
         ActionTypes.ON_CHANGE_IDOL_NAME -> state.copy(items = listOf(), idolName = idolName, error = null, isLoading = true)

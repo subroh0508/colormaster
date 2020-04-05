@@ -7,7 +7,9 @@ import net.subroh0508.colormaster.model.IdolColor
 import react.*
 import react.dom.div
 
-fun RBuilder.idolColorGrids(handler: RHandler<IdolColorGridsProps>) = child(functionalComponent<IdolColorGridsProps> { props ->
+fun RBuilder.idolColorGrids(handler: RHandler<IdolColorGridsProps>) = child(IdolColorGridsComponent, handler = handler)
+
+private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> { props ->
     val classes = useStyles()
 
     div(classes.root) {
@@ -23,7 +25,7 @@ fun RBuilder.idolColorGrids(handler: RHandler<IdolColorGridsProps>) = child(func
             }
         }
     }
-}, handler = handler)
+}
 
 external interface IdolColorGridsProps : RProps {
     var items: List<IdolColor>

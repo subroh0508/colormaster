@@ -40,6 +40,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             div(classes.toolbar) {}
             idolSearchBox {
                 attrs.idolName = uiModel.idolName?.value
+                attrs.filters = uiModel.filters
                 attrs.onChangeIdolName = props.onChangeIdolName
             }
         }

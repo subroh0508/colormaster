@@ -1,19 +1,24 @@
 package components.atoms
 
+import kotlinx.css.*
 import materialui.components.chip.chip
 import materialui.components.chip.enums.ChipColor
 import materialui.components.chip.enums.ChipVariant
+import materialui.styles.makeStyles
 import org.w3c.dom.events.Event
 import react.*
 
 fun RBuilder.chip(handler: RHandler<ChipProps>) = child(chipComponent, handler = handler)
 
 private val chipComponent = functionalComponent<ChipProps> { props ->
+    val classes = useStyles()
+
     chip {
         attrs {
+            classes(classes.root)
             label { +props.label }
             color = ChipColor.primary
-            variant = if (props.isChecked) ChipVariant.outlined else ChipVariant.default
+            variant = if (props.isChecked) ChipVariant.default else ChipVariant.outlined
         }
     }
 }
@@ -22,4 +27,14 @@ external interface ChipProps : RProps {
     var label: String
     var isChecked: Boolean
     var onClick: ((event: Event) -> Unit)?
+}
+
+private external interface ChipStyle {
+    val root: String
+}
+
+private val useStyles = makeStyles<ChipStyle> {
+    "root" {
+        margin(4.px)
+    }
 }
