@@ -1,29 +1,31 @@
 package components.molecules
 
 import components.atoms.chip
-import kotlinx.css.Display
-import kotlinx.css.FlexWrap
-import kotlinx.css.display
-import kotlinx.css.flexWrap
+import kotlinx.css.*
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.Titles
 import react.*
 import react.dom.div
+import react.dom.p
 
 fun RBuilder.titleChips(handler: RHandler<TitleChipsProps>) = child(TitleChipsComponent, handler = handler)
 
 private val TitleChipsComponent = functionalComponent<TitleChipsProps> { props ->
     val classes = useStyles()
 
-    div(classes.root) {
-        Titles.values().forEach { title ->
-            val checked = props.title == title
+    div {
+        p(classes.title) { +"タイトル" }
 
-            chip {
-                attrs {
-                    label = title.displayName
-                    isChecked = checked
-                    onClick = { props.onSelect?.invoke(title, !checked) }
+        div(classes.chips) {
+            Titles.values().forEach { title ->
+                val checked = props.title == title
+
+                chip {
+                    attrs {
+                        label = title.displayName
+                        isChecked = checked
+                        onClick = { props.onSelect?.invoke(title, !checked) }
+                    }
                 }
             }
         }
@@ -36,11 +38,15 @@ external interface TitleChipsProps : RProps {
 }
 
 private external interface TitleChipsStyle {
-    val root: String
+    val title: String
+    val chips: String
 }
 
 private val useStyles = makeStyles<TitleChipsStyle> {
-    "root" {
+    "title" {
+        flexGrow = 1.0
+    }
+    "chips" {
         display = Display.flex
         flexWrap = FlexWrap.wrap
     }

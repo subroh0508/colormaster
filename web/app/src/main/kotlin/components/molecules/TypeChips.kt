@@ -7,6 +7,7 @@ import net.subroh0508.colormaster.model.Titles
 import net.subroh0508.colormaster.model.Types
 import react.*
 import react.dom.div
+import react.dom.p
 
 fun RBuilder.typesChips(titles: Titles?, handler: RHandler<TypeChipsProps>) = when (titles) {
     Titles._765, Titles._ML -> typesMillionLiveChips(handler)
@@ -22,15 +23,19 @@ fun RBuilder.typesSideMChips(handler: RHandler<TypeChipsProps>) = child(TypeChip
 private val TypeChipsComponent = functionalComponent<TypeChipsProps> { props ->
     val classes = useStyles()
 
-    div(classes.root) {
-        props.allTypes.forEach { type ->
-            val checked = props.types.contains(type)
+    div {
+        p(classes.title) { +"属性" }
 
-            chip {
-                attrs {
-                    label = type.displayName
-                    isChecked = checked
-                    onClick = { props.onSelect?.invoke(type, !checked) }
+        div(classes.chips) {
+            props.allTypes.forEach { type ->
+                val checked = props.types.contains(type)
+
+                chip {
+                    attrs {
+                        label = type.displayName
+                        isChecked = checked
+                        onClick = { props.onSelect?.invoke(type, !checked) }
+                    }
                 }
             }
         }
@@ -57,11 +62,15 @@ external interface TypeChipsProps : RProps {
 }
 
 private external interface TypeChipsStyle {
-    val root: String
+    val title: String
+    val chips: String
 }
 
 private val useStyles = makeStyles<TypeChipsStyle> {
-    "root" {
+    "title" {
+        flexGrow = 1.0
+    }
+    "chips" {
         display = Display.flex
         flexWrap = FlexWrap.wrap
     }
