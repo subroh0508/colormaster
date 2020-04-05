@@ -15,13 +15,13 @@ import com.google.android.material.chip.ChipGroup
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
-import com.google.android.material.textfield.TextInputEditText
 import net.subroh0508.colormaster.idol.R
 import net.subroh0508.colormaster.idol.databinding.FragmentIdolsBinding
 import net.subroh0508.colormaster.idol.ui.viewmodel.IdolsViewModel
 import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.model.Titles
 import net.subroh0508.colormaster.model.Types
+import net.subroh0508.colormaster.model.toIdolName
 import net.subroh0508.colormaster.widget.ui.FilterChip
 import net.subroh0508.colormaster.widget.ui.onCheckedChanged
 import org.kodein.di.KodeinAware
@@ -52,12 +52,12 @@ class IdolsFragment : Fragment(R.layout.fragment_idols), KodeinAware {
         idolsSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         binding.idolName.addTextChangedListener {
-            idolsViewModel.filterChanged(it?.toString()?.takeIf(String::isNotBlank)?.let(::IdolName))
+            idolsViewModel.filterChanged(it?.toString().toIdolName())
         }
 
         setupIdolsFragment()
 
-        idolsViewModel.uiModel.observe(viewLifecycleOwner) { (_, _, _, _, filters) ->
+        idolsViewModel.uiModel.observe(viewLifecycleOwner) { (_, filters, _, _) ->
             binding.imasTitleFilters.setupFilter(
                 allFilterSet = Titles.values().toSet(),
                 currentFilterSet = filters.title?.let(::setOf) ?: setOf(),

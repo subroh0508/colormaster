@@ -12,33 +12,22 @@ import net.subroh0508.colormaster.repository.IdolColorsRepository
 class IdolsViewModel(
     private val repository: IdolColorsRepository
 ) : ViewModel() {
-    data class UiModel(
-        val isLoading: Boolean = false,
-        val error: Throwable? = null,
-        val items: List<IdolColor> = listOf(),
-        val idolName: IdolName? = null,
-        val filters: Filters = Filters.Empty
-    )
-
     val items: List<IdolColor> get() = uiModel.value?.items ?: listOf()
 
     private val idolsLoadStateLiveData: MutableLiveData<LoadState<List<IdolColor>>> = MutableLiveData(LoadState.Loaded(listOf()))
-    private val idolNameLiveData: MutableLiveData<IdolName> = MutableLiveData()
     private val filterLiveData: MutableLiveData<Filters> = MutableLiveData(Filters.Empty)
 
-    val uiModel: LiveData<UiModel> = combine(
-        UiModel(),
+    val uiModel: LiveData<UiModel.Search> = combine(
+        UiModel.Search.INITIALIZED,
         liveData1 = idolsLoadStateLiveData,
-        liveData2 = filterLiveData,
-        liveData3 = idolNameLiveData
-    ) { uiModel, loadState, filters, idolName ->
+        liveData2 = filterLiveData
+    ) { uiModel, loadState, filters ->
 
-        UiModel(
-            loadState.isLoading,
-            loadState.getErrorOrNull(),
+        UiModel.Search(
             loadState.getValueOrNull() ?: uiModel.items,
-            idolName,
-            filters
+            filters,
+            loadState.getErrorOrNull(),
+            loadState.isLoading
         )
     }
 
@@ -46,7 +35,7 @@ class IdolsViewModel(
         viewModelScope.launch {
             idolsLoadStateLiveData.postValue(LoadState.Loading)
 
-            runCatching { repository.search(idolNameLiveData.value, filterLiveData.value?.title, filterLiveData.value?.types ?: setOf()) }
+            runCatching { repository.search(filterLiveData.value?.idolName, filterLiveData.value?.title, filterLiveData.value?.types ?: setOf()) }
                 .onSuccess { idolsLoadStateLiveData.postValue(LoadState.Loaded(it)) }
                 .onFailure {
                     it.printStackTrace()
@@ -56,7 +45,11 @@ class IdolsViewModel(
     }
 
     fun filterChanged(title: Titles, checked: Boolean) {
-        filterLiveData.value = if (checked) Filters(title) else Filters.Empty
+        val filters = filterLiveData.requireValue()
+
+        filterLiveData.value = if (checked) Filters(filters.idolName, title) else Filters.Empty
+
+        loadItems()
     }
 
     fun filterChanged(type: Types, checked: Boolean) {
@@ -66,7 +59,9 @@ class IdolsViewModel(
     }
 
     fun filterChanged(idolName: IdolName?) {
-        idolNameLiveData.value = idolName
+        val filters = filterLiveData.requireValue()
+
+        filterLiveData.value = Filters(idolName, filters.title, filters.types)
 
         loadItems()
     }
