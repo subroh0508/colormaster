@@ -24,7 +24,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     val uiModel = props.model
 
     div(classes.root) {
-        div {
+        div(classes.panel) {
             alert(uiModel)
             idolColorGrids { attrs.items = uiModel.items }
         }
@@ -69,6 +69,7 @@ external interface IdolSearchPanelProps : RProps {
 
 private external interface IdolSearchPanelStyle {
     val root: String
+    val panel: String
     val toolbar: String
     val drawer: String
     val drawerPaper: String
@@ -79,6 +80,9 @@ private val DRAWER_WIDTH = 240.px
 private val useStyles = makeStyles<IdolSearchPanelStyle> {
     "root" {
         display = Display.flex
+    }
+    "panel" {
+        flexGrow = 1.0
     }
     css["toolbar"] = theme.mixins.toolbar
     "drawer" {
