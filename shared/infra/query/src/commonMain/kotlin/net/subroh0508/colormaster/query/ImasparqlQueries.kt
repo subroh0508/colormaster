@@ -9,7 +9,9 @@ object ImasparqlQueries {
     fun rand(limit: Int = 10) = buildQuery("""
         SELECT * WHERE {
           ?s rdfs:label ?name;
-            imas:Color ?color.
+            imas:Color ?color;
+            imas:Title ?title.
+          FILTER (str(?title) != '1st Vision').
         }
         ORDER BY rand()
         LIMIT $limit
@@ -20,7 +22,7 @@ object ImasparqlQueries {
           ?s rdfs:label ?name;
             imas:Color ?color;
             imas:Title ?title.
-          ${name?.value?.let { "FILTER regex(?name, '.*$it.*', 'i')." } ?: ""}
+          ${name?.value?.let {"FILTER (regex(?name, '.*$it.*', 'i') && str(?title) != '1st Vision')." } ?: ""}
           ${titles?.queryStr?.let { "FILTER (str(?title) = '$it')." } ?: ""}
         }
         ORDER BY ?name
