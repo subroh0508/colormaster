@@ -22,11 +22,29 @@ object ImasparqlQueries {
           ?s rdfs:label ?name;
             imas:Color ?color;
             imas:Title ?title.
+          OPTIONAL { ?s imas:Division|imas:Type|imas:Category ?attribute. }
           ${name?.value?.let {"FILTER (regex(?name, '.*$it.*', 'i') && str(?title) != '1st Vision')." } ?: ""}
           ${titles?.queryStr?.let { "FILTER (str(?title) = '$it')." } ?: ""}
+          ${types.regexStr?.let { "FILTER regex(?attribute, '$it', 'i')" } ?: "" }
         }
         ORDER BY ?name
     """.trimIndentAndBr())
+
+    private val Set<Types>.regexStr get() =
+        mapNotNull { it.queryStr }.takeIf(List<String>::isNotEmpty)?.joinToString("|")?.let { "($it)" }
+
+    private val Types.queryStr get() = when (this) {
+        Types.CINDERELLA_GIRLS.CU -> "Cu"
+        Types.CINDERELLA_GIRLS.CO -> "Co"
+        Types.CINDERELLA_GIRLS.PA -> "Pa"
+        Types.MILLION_LIVE.PRINCESS -> "Princess"
+        Types.MILLION_LIVE.FAIRY -> "Fairy"
+        Types.MILLION_LIVE.ANGEL -> "Angel"
+        Types.SIDE_M.PHYSICAL -> "フィジカル"
+        Types.SIDE_M.INTELLIGENT -> "インテリ"
+        Types.SIDE_M.MENTAL -> "メンタル"
+        else -> null
+    }
 
     private fun buildQuery(query: String) = buildString {
         append(ENDPOINT_MAIN)
