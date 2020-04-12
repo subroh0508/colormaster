@@ -10,7 +10,17 @@ abstract class UiModel {
         val isLoading: Boolean = false
     ) {
         companion object {
-            val INITIALIZED  = Search(emptyList(), Filters.Empty, null)
+            val INITIALIZED = Search(emptyList(), Filters.Empty, null)
+        }
+    }
+
+    data class Penlight(
+        val items: List<IdolColor>,
+        val error: Throwable?,
+        val isLoading: Boolean = false
+    ) {
+        companion object {
+            val INITIALIZED = Penlight(emptyList(), null)
         }
     }
 }
