@@ -26,17 +26,20 @@ object ImasparqlQueries {
           OPTIONAL { ?s imas:Division|imas:Type|imas:Category ?attribute. }
           ${name?.value?.let {"FILTER (regex(?name, '.*$it.*', 'i') && str(?title) != '1st Vision')." } ?: ""}
           ${titles?.queryStr?.let { "FILTER (str(?title) = '$it')." } ?: ""}
-          ${types.regexStr?.let { "FILTER regex(?attribute, '$it', 'i')" } ?: "" }
+          ${types.regexStr?.let { "FILTER regex(?attribute, '$it', 'i')." } ?: "" }
           BIND (REPLACE(str(?s), '$ESCAPED_ENDPOINT_RDFS_DETAIL', '') as ?id).
         }
         ORDER BY ?name
     """.trimIndentAndBr())
 
-    fun findBy(id: String) = buildQuery("""
+    fun search(ids: List<String>) = buildQuery("""
         SELECT * WHERE {
-          imasrdf:$id rdfs:label ?name;
-            imas:Color ?color.
-          BIND ('$id' as ?id)
+          ?s rdfs:label ?name;
+            imas:Color ?color;
+            imas:Title ?title.
+          FILTER (str(?title) != '1st Vision').
+          BIND (REPLACE(str(?s), '$ESCAPED_ENDPOINT_RDFS_DETAIL', '') as ?id).  
+          ${ids.takeIf(List<String>::isNotEmpty)?.let { "FILTER (regex(?id, '(${it.joinToString("|")})', 'i'))." }}
         }
     """.trimIndentAndBr())
 

@@ -15,8 +15,8 @@ internal class IdolColorsRepositoryImpl(
     override suspend fun search(name: IdolName?, titles: Titles?, types: Set<Types>) =
         imasparqlClient.search(ImasparqlQueries.search(name, titles, types)).toIdolColors()
 
-    override suspend fun findBy(id: String) =
-        imasparqlClient.search(ImasparqlQueries.findBy(id)).toIdolColors().firstOrNull()
+    override suspend fun search(ids: List<String>): List<IdolColor>  =
+        imasparqlClient.search(ImasparqlQueries.search(ids)).toIdolColors()
 
     private fun Response<IdolColorJson>.toIdolColors(): List<IdolColor> = results.bindings.mapNotNull { (idMap, nameMap, colorMap) ->
         val id = idMap["value"] ?: return@mapNotNull null
