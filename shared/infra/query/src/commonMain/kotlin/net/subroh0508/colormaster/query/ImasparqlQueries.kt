@@ -32,6 +32,14 @@ object ImasparqlQueries {
         ORDER BY ?name
     """.trimIndentAndBr())
 
+    fun findBy(id: String) = buildQuery("""
+        SELECT * WHERE {
+          imasrdf:$id rdfs:label ?name;
+            imas:Color ?color.
+          BIND ('$id' as ?id)
+        }
+    """.trimIndentAndBr())
+
     private val Set<Types>.regexStr get() =
         mapNotNull { it.queryStr }.takeIf(List<String>::isNotEmpty)?.joinToString("|")?.let { "($it)" }
 

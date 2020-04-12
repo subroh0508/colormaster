@@ -9,4 +9,6 @@ interface IdolColorsRepository {
     suspend fun rand(limit: Int): List<IdolColor>
 
     suspend fun search(name: IdolName?, titles: Titles?, types: Set<Types>): List<IdolColor>
+
+    suspend fun findBy(id: String): IdolColor?
 }
