@@ -20,7 +20,7 @@ abstract class UiModel {
         val isLoading: Boolean = false
     ) {
         companion object {
-            val INITIALIZED = Penlight(emptyList(), null)
+            val INITIALIZED = Penlight(emptyList(), null, true)
         }
     }
 }

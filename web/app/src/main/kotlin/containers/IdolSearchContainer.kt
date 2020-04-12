@@ -14,24 +14,24 @@ import react.*
 import utilities.*
 
 @Suppress("FunctionName")
-fun RBuilder.IdolSearchContainer() = IdolSearchController.Provider(Controller) { child(IdolSearchContainerImpl) }
+fun RBuilder.IdolSearchContainer() = IdolSearchControllerContext.Provider(IdolSearchController) { child(IdolSearchContainerImpl) }
 
 private val IdolSearchContainerImpl = functionalComponent<RProps> {
     val history = useHistory()
 
     fun turnOnPenlight(items: List<IdolColor>) = history.push("/penlight?${items.joinToString("&") { "id=${it.id}" }}")
 
-    val controller = useContext(IdolSearchController)
+    val controller = useContext(IdolSearchControllerContext)
 
     val (uiModel, dispatch) = useReducer(reducer, UiModel.Search.INITIALIZED)
 
-    fun onChangeIdolName(filters: Filters, name: String?) = dispatch(actions(type = ActionTypes.ON_CHANGE_FILTER, filters = Filters(name.toIdolName(), filters.title, filters.types)))
-    fun onSelectTitle(filters: Filters, title: Titles, checked: Boolean) = dispatch(actions(type = ActionTypes.ON_CHANGE_FILTER, filters = if (checked) Filters(filters.idolName, title) else Filters.Empty))
-    fun onSelectType(filters: Filters, type: Types, checked: Boolean) = dispatch(actions(type = ActionTypes.ON_CHANGE_FILTER, filters = if (checked) filters + type else filters - type))
-    fun onSuccess(items: List<IdolColor>) = dispatch(actions(type = ActionTypes.ON_SUCCESS, items = items))
-    fun onFailure(e: Throwable) = dispatch(actions(type = ActionTypes.ON_FAILURE, error = e))
+    fun onChangeIdolName(filters: Filters, name: String?) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, filters = Filters(name.toIdolName(), filters.title, filters.types)))
+    fun onSelectTitle(filters: Filters, title: Titles, checked: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, filters = if (checked) Filters(filters.idolName, title) else Filters.Empty))
+    fun onSelectType(filters: Filters, type: Types, checked: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, filters = if (checked) filters + type else filters - type))
+    fun onSuccess(items: List<IdolColor>) = dispatch(actions(type = IdolSearchActionTypes.ON_SUCCESS, items = items))
+    fun onFailure(e: Throwable) = dispatch(actions(type = IdolSearchActionTypes.ON_FAILURE, error = e))
 
-    fun Controller.search(filters: Filters = Filters.Empty) = launch {
+    fun IdolSearchController.search(filters: Filters = Filters.Empty) = launch {
         runCatching { fetchItems(filters) }
                 .onSuccess(::onSuccess)
                 .onFailure(::onFailure)
@@ -49,33 +49,33 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
     }
 }
 
-private enum class ActionTypes {
+private enum class IdolSearchActionTypes {
     ON_CHANGE_FILTER, ON_SUCCESS, ON_FAILURE
 }
 
 private fun actions(
-    type: ActionTypes,
+    type: IdolSearchActionTypes,
     filters: Filters = Filters.Empty,
     items: List<IdolColor> = listOf(),
     error: Throwable? = null
-) = actions<ActionTypes, UiModel.Search> {
+) = actions<IdolSearchActionTypes, UiModel.Search> {
     this.type = type
     this.payload = UiModel.Search(filters = filters, items = items, error = error)
 }
 
-private val reducer = { state: UiModel.Search, action: Actions<ActionTypes, UiModel.Search> ->
+private val reducer = { state: UiModel.Search, action: Actions<IdolSearchActionTypes, UiModel.Search> ->
     val (items, filters, error, _) = action.payload
 
     when (action.type) {
-        ActionTypes.ON_CHANGE_FILTER -> state.copy(items = listOf(), filters = filters, error = null, isLoading = true)
-        ActionTypes.ON_SUCCESS -> state.copy(items = items, error = null, isLoading = false)
-        ActionTypes.ON_FAILURE -> state.copy(items = listOf(), error = error, isLoading = false)
+        IdolSearchActionTypes.ON_CHANGE_FILTER -> state.copy(items = listOf(), filters = filters, error = null, isLoading = true)
+        IdolSearchActionTypes.ON_SUCCESS -> state.copy(items = items, error = null, isLoading = false)
+        IdolSearchActionTypes.ON_FAILURE -> state.copy(items = listOf(), error = error, isLoading = false)
     }
 }
 
-private val IdolSearchController = createContext<Controller>()
+private val IdolSearchControllerContext = createContext<IdolSearchController>()
 
-private object Controller : CoroutineScope by mainScope, KodeinAware {
+private object IdolSearchController : CoroutineScope by mainScope, KodeinAware {
     const val LIMIT = 10
 
     val repository: IdolColorsRepository by instance()
