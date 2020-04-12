@@ -9,8 +9,8 @@ import io.ktor.client.request.accept
 import io.ktor.http.URLProtocol
 import io.ktor.http.userAgent
 import net.subroh0508.colormaster.api.internal.ContentType
-import net.subroh0508.colormaster.api.internal.HOSTNAME
 import net.subroh0508.colormaster.api.internal.UserAgent
+import net.subroh0508.colormaster.query.HOSTNAME
 
 internal actual val httpClient get() = HttpClient(Js) {
     defaultRequest {

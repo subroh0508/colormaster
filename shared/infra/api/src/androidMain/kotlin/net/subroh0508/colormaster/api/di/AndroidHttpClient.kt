@@ -15,8 +15,8 @@ import kotlinx.serialization.modules.serializersModuleOf
 import net.subroh0508.colormaster.api.BuildConfig
 import net.subroh0508.colormaster.api.ImasparqlClient
 import net.subroh0508.colormaster.api.internal.ContentType
-import net.subroh0508.colormaster.api.internal.HOSTNAME
 import net.subroh0508.colormaster.api.internal.UserAgent
+import net.subroh0508.colormaster.query.HOSTNAME
 import okhttp3.logging.HttpLoggingInterceptor
 
 internal actual val httpClient get() = HttpClient(OkHttp) {
