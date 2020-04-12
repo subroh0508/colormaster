@@ -16,9 +16,7 @@ fun main() {
     window.onload = {
         render(document.getElementById("root")) {
             cssBaseline {  }
-            appFrame {
-                IdolSearchContainer()
-            }
+            appFrame { routing() }
         }
     }
 }
