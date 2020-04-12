@@ -45,6 +45,7 @@ kotlin {
 
                 implementation(Libraries.JsWrappers.react)
                 implementation(Libraries.JsWrappers.reactDom)
+                implementation(Libraries.JsWrappers.reactRouterDom)
                 implementation(Libraries.JsWrappers.css)
                 implementation(Libraries.JsWrappers.styled)
                 implementation(Libraries.JsWrappers.MaterialUi.core)
@@ -54,6 +55,7 @@ kotlin {
 
                 implementation(npm(Libraries.Npm.react, Libraries.Npm.reactVersion))
                 implementation(npm(Libraries.Npm.reactDom, Libraries.Npm.reactVersion))
+                implementation(npm(Libraries.Npm.reactRouterDom, Libraries.Npm.reactRouterDomVersion))
                 implementation(npm(Libraries.Npm.styledComponent, Libraries.Npm.styledComponentVersion))
                 implementation(npm(Libraries.Npm.inlineStylePrefixer, Libraries.Npm.inlineStylePrefixerVersion))
                 implementation(npm(Libraries.Npm.abortController, Libraries.Npm.abortControllerVersion))

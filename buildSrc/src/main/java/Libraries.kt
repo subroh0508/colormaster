@@ -119,6 +119,9 @@ object Libraries {
         const val react = "org.jetbrains:kotlin-react:$reactVersion"
         const val reactDom = "org.jetbrains:kotlin-react-dom:$reactVersion"
 
+        const val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-pre.94-kotlin-${Kotlin.version}"
+        const val reactRouterDom = "org.jetbrains:kotlin-react-router-dom:$reactRouterDomVersion"
+
         const val cssVersion = "1.0.0-pre.94-kotlin-${Kotlin.version}"
         const val css = "org.jetbrains:kotlin-css-js:$cssVersion"
 
@@ -138,6 +141,9 @@ object Libraries {
         const val reactVersion = "16.13.0"
         const val react = "react"
         const val reactDom = "react-dom"
+
+        const val reactRouterDomVersion = "4.3.1"
+        const val reactRouterDom = "react-router-dom"
 
         const val styledComponentVersion = "^4.3.2"
         const val styledComponent = "styled-components"
