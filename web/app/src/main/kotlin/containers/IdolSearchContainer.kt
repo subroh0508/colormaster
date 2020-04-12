@@ -11,15 +11,16 @@ import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.kodein.di.KodeinAware
 import org.kodein.di.erased.instance
 import react.*
-import utilities.Actions
-import utilities.actions
-import utilities.useDebounceEffect
-import utilities.useEffectDidMount
+import utilities.*
 
 @Suppress("FunctionName")
 fun RBuilder.IdolSearchContainer() = IdolSearchController.Provider(Controller) { child(IdolSearchContainerImpl) }
 
 private val IdolSearchContainerImpl = functionalComponent<RProps> {
+    val history = useHistory()
+
+    fun turnOnPenlight(items: List<IdolColor>) = history.push("/penlight?${items.joinToString("&") { "id=${it.id}" }}")
+
     val controller = useContext(IdolSearchController)
 
     val (uiModel, dispatch) = useReducer(reducer, UiModel.Search.INITIALIZED)
@@ -44,6 +45,7 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
         attrs.onChangeIdolName = { name -> onChangeIdolName(uiModel.filters, name) }
         attrs.onSelectTitle = { title, checked -> onSelectTitle(uiModel.filters, title, checked) }
         attrs.onSelectType = { type, checked -> onSelectType(uiModel.filters, type, checked) }
+        attrs.onDoubleClickIdolColor = { item -> turnOnPenlight(listOf(item)) }
     }
 }
 

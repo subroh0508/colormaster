@@ -20,6 +20,7 @@ private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> {
                         name = idolColor.name
                         color = idolColor.color
                         isBrighter = idolColor.isBrighter
+                        onDoubleClick = { props.onDoubleClick(idolColor) }
                     }
                 }
             }
@@ -29,6 +30,7 @@ private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> {
 
 external interface IdolColorGridsProps : RProps {
     var items: List<IdolColor>
+    var onDoubleClick: (item: IdolColor) -> Unit
 }
 
 private external interface IdolColorGridsStyle {

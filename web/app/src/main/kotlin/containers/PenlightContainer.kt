@@ -1,8 +1,17 @@
 package containers
 
-import react.RBuilder
+import react.*
 import react.dom.div
-import react.dom.h1
+import react.dom.h3
+import useQuery
 
 @Suppress("FunctionName")
-fun RBuilder.PenlightContainer() = div { h1 { +"Penlight" } }
+fun RBuilder.PenlightContainer() = child(PenlightContainerComponent)
+
+private val PenlightContainerComponent = functionalComponent<RProps> {
+    val ids = useQuery().getAll("id")
+
+    ids.forEach {
+        div { h3 { +it } }
+    }
+}

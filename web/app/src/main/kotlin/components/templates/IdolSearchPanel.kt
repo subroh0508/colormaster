@@ -13,6 +13,7 @@ import materialui.components.drawer.enums.DrawerStyle
 import materialui.components.drawer.enums.DrawerVariant
 import materialui.styles.makeStyles
 import materialui.styles.mixins.toolbar
+import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.Titles
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.model.UiModel
@@ -29,7 +30,10 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     div(classes.root) {
         div(classes.panel) {
             alert(uiModel)
-            idolColorGrids { attrs.items = uiModel.items }
+            idolColorGrids {
+                attrs.items = uiModel.items
+                attrs.onDoubleClick = props.onDoubleClickIdolColor
+            }
         }
         drawer(
             DrawerStyle.root to classes.drawer,
@@ -72,6 +76,7 @@ external interface IdolSearchPanelProps : RProps {
     var onChangeIdolName: (String) -> Unit
     var onSelectTitle: (Titles, Boolean) -> Unit
     var onSelectType: (Types, Boolean) -> Unit
+    var onDoubleClickIdolColor: (IdolColor) -> Unit
 }
 
 private external interface IdolSearchPanelStyle {
