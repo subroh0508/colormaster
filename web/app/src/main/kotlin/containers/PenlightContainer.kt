@@ -1,6 +1,7 @@
 package containers
 
 import appKodein
+import components.atoms.fullscreenPenlight
 import kotlinext.js.Object
 import kotlinext.js.assign
 import kotlinext.js.js
@@ -76,27 +77,7 @@ private val PenlightContainerComponentImpl = functionalComponent<RProps> {
         return@functionalComponent
     }
 
-    dialog {
-        attrs.fullScreen = true
-        attrs.open = true
-        setProp("TransitionComponent", Transition)
-        attrs.paperProps {
-            setProp("style", js {
-                this["backgroundColor"] = uiModel.items.first().color
-            } as Any)
-        }
-    }
-}
-
-private val Transition = forwardRef<RProps> { props, ref ->
-    slide {
-        attrs {
-            direction = SlideDirection.up
-            this.ref = ref
-
-            Object.assign(this, props)
-        }
-    }
+    fullscreenPenlight { attrs.colors = uiModel.items.map(IdolColor::color) }
 }
 
 private enum class PenlightActionTypes {
