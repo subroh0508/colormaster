@@ -12,6 +12,7 @@ object ImasparqlQueries {
             imas:Color ?color;
             imas:Title ?title.
           FILTER (str(?title) != '1st Vision').
+          BIND (REPLACE(str(?s), '$ESCAPED_ENDPOINT_RDFS_DETAIL', '') as ?id).
         }
         ORDER BY rand()
         LIMIT $limit
@@ -26,6 +27,7 @@ object ImasparqlQueries {
           ${name?.value?.let {"FILTER (regex(?name, '.*$it.*', 'i') && str(?title) != '1st Vision')." } ?: ""}
           ${titles?.queryStr?.let { "FILTER (str(?title) = '$it')." } ?: ""}
           ${types.regexStr?.let { "FILTER regex(?attribute, '$it', 'i')" } ?: "" }
+          BIND (REPLACE(str(?s), '$ESCAPED_ENDPOINT_RDFS_DETAIL', '') as ?id).
         }
         ORDER BY ?name
     """.trimIndentAndBr())
@@ -62,6 +64,7 @@ object ImasparqlQueries {
     }
 
     private const val ENDPOINT_MAIN = "/spql/imas/query"
+    private const val ESCAPED_ENDPOINT_RDFS_DETAIL = """https://$HOSTNAME/imasrdf/RDFs/detail/"""
 
     private const val PREFIX_IMAS = "PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>"
     private const val PREFIX_RDFS = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
