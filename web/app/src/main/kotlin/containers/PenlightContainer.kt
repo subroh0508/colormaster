@@ -2,6 +2,7 @@ package containers
 
 import appKodein
 import components.atoms.fullscreenPenlight
+import components.templates.penlightModal
 import kotlinext.js.Object
 import kotlinext.js.assign
 import kotlinext.js.js
@@ -45,39 +46,7 @@ private val PenlightContainerComponentImpl = functionalComponent<RProps> {
 
     useEffectDidMount { controller.fetch(ids) }
 
-    if (uiModel.isLoading) {
-        dialog {
-            attrs.open = true
-
-            dialogContent {
-                dialogContentText(null) {
-                    +"読み込んでいます…"
-                }
-            }
-        }
-
-        return@functionalComponent
-    }
-
-    if (uiModel.error != null) {
-        dialog {
-            attrs.open = true
-
-            dialogTitle {
-                +"エラー"
-            }
-
-            dialogContent {
-                dialogContentText(null) {
-                    +(uiModel.error?.message ?: "エラーが発生しました")
-                }
-            }
-        }
-
-        return@functionalComponent
-    }
-
-    fullscreenPenlight { attrs.colors = uiModel.items.map(IdolColor::color) }
+    penlightModal { attrs.model = uiModel }
 }
 
 private enum class PenlightActionTypes {
