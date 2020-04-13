@@ -1,9 +1,6 @@
 package components.templates
 
-import components.atoms.errorAlert
-import components.atoms.infoAlert
-import components.atoms.successAlert
-import components.atoms.warningAlert
+import components.atoms.*
 import components.organisms.idolColorGrids
 import components.organisms.idolSearchBox
 import kotlinx.css.*
@@ -11,8 +8,14 @@ import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
 import materialui.components.drawer.enums.DrawerStyle
 import materialui.components.drawer.enums.DrawerVariant
+import materialui.components.hidden.hidden
+import materialui.components.icon.icon
+import materialui.components.iconbutton.iconButton
+import materialui.styles.breakpoint.Breakpoint
+import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
 import materialui.styles.mixins.toolbar
+import materialui.styles.muitheme.spacing
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.Titles
 import net.subroh0508.colormaster.model.Types
@@ -35,16 +38,9 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
                 attrs.onDoubleClick = props.onDoubleClickIdolColor
             }
         }
-        drawer(
-            DrawerStyle.root to classes.drawer,
-            DrawerStyle.paper to classes.drawerPaper
-        ) {
-            attrs {
-                variant = DrawerVariant.permanent
-                anchor = DrawerAnchor.right
-            }
+        responsiveDrawer {
+            attrs.anchor = DrawerAnchor.right
 
-            div(classes.toolbar) {}
             idolSearchBox {
                 attrs.filters = uiModel.filters
                 attrs.onChangeIdolName = props.onChangeIdolName
@@ -82,12 +78,7 @@ external interface IdolSearchPanelProps : RProps {
 private external interface IdolSearchPanelStyle {
     val root: String
     val panel: String
-    val toolbar: String
-    val drawer: String
-    val drawerPaper: String
 }
-
-private val DRAWER_WIDTH = 240.px
 
 private val useStyles = makeStyles<IdolSearchPanelStyle> {
     "root" {
@@ -95,13 +86,5 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
     }
     "panel" {
         flexGrow = 1.0
-    }
-    css["toolbar"] = theme.mixins.toolbar
-    "drawer" {
-        width = DRAWER_WIDTH
-        flexShrink = 0.0
-    }
-    "drawerPaper" {
-        width = DRAWER_WIDTH
     }
 }

@@ -5,6 +5,8 @@ import kotlinext.js.jsObject
 import kotlinx.css.*
 import kotlinx.html.js.onDoubleClickFunction
 import materialui.components.paper.paper
+import materialui.styles.breakpoint.Breakpoint
+import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
 import org.w3c.dom.events.Event
 import react.*
@@ -44,10 +46,14 @@ private external interface ColorItemStyle {
 
 private val useStyles = makeStyles<ColorItemStyle> {
     "root" {
-        width = 200.px
+        width = 100.pct
         height = 50.px
         margin(4.px)
         textAlign = TextAlign.center
         fontWeight = FontWeight.w700
+
+        (theme.breakpoints.up(Breakpoint.sm)) {
+            width = 200.px
+        }
     }
 }
