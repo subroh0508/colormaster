@@ -1,5 +1,6 @@
 package components.atoms
 
+import kotlinext.js.js
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import materialui.components.drawer.drawer
@@ -9,9 +10,11 @@ import materialui.components.drawer.enums.DrawerVariant
 import materialui.components.hidden.hidden
 import materialui.components.icon.icon
 import materialui.components.iconbutton.iconButton
+import materialui.components.modal.ModalProps
 import materialui.styles.makeStyles
 import materialui.styles.mixins.toolbar
 import materialui.styles.muitheme.spacing
+import org.w3c.dom.HTMLDivElement
 import react.*
 import react.dom.div
 
@@ -46,23 +49,18 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
     val classes = useStyles()
     val (opened, openDrawer) = useState(false)
 
-    val direction = when {
-        props.anchor == DrawerAnchor.right && opened -> "right"
-        props.anchor == DrawerAnchor.right && !opened -> "left"
-        props.anchor == DrawerAnchor.left && opened -> "left"
-        props.anchor == DrawerAnchor.left && !opened -> "right"
-        else -> throw IllegalStateException()
-    }
-
     hidden {
-        attrs { smUp = true }
+        attrs {
+            smUp = true
+        }
 
         drawer(
-            DrawerStyle.root to if (opened) classes.open else classes.close,
-            DrawerStyle.paper to if (opened) classes.open else classes.close
+            DrawerStyle.root to classes.close,
+            DrawerStyle.paper to classes.close
         ) {
             attrs {
-                variant = DrawerVariant.permanent
+                variant = DrawerVariant.persistent
+                open = !opened
                 anchor = props.anchor
             }
 
@@ -70,15 +68,30 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
             iconButton {
                 attrs {
                     classes(classes.expandIcon)
-                    icon { +"chevron_${direction}_icon" }
+                    icon { +"chevron_${if (props.anchor == DrawerAnchor.left) "right" else "left"}_icon" }
 
-                    onClickFunction = { openDrawer(!opened) }
+                    onClickFunction = { openDrawer(true) }
+                }
+            }
+        }
+
+        drawer(
+            DrawerStyle.root to classes.open,
+            DrawerStyle.paper to classes.open
+        ) {
+            attrs {
+                open = opened
+                anchor = props.anchor
+                onClose = { openDrawer(false) }
+                ModalProps = jsObject<ModalProps> {
+                    setProp("style", js {
+                        this["zIndex"] = 1200
+                    } as Any)
                 }
             }
 
-            if (opened) {
-                props.children()
-            }
+            div(classes.toolbar) {}
+            props.children()
         }
     }
 }
