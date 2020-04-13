@@ -1,6 +1,7 @@
 package components.atoms
 
 import kotlinext.js.js
+import kotlinext.js.jsObject
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import materialui.components.drawer.drawer
@@ -14,7 +15,6 @@ import materialui.components.modal.ModalProps
 import materialui.styles.makeStyles
 import materialui.styles.mixins.toolbar
 import materialui.styles.muitheme.spacing
-import org.w3c.dom.HTMLDivElement
 import react.*
 import react.dom.div
 
