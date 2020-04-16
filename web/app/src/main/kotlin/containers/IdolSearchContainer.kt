@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mainScope
 import net.subroh0508.colormaster.model.*
+import net.subroh0508.colormaster.model.UiModel.Search.IdolColorItem
 import net.subroh0508.colormaster.model.ui.idol.Filters
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.kodein.di.KodeinAware
@@ -28,7 +29,7 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
     fun onChangeIdolName(filters: Filters, name: String?) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, filters = Filters(name.toIdolName(), filters.title, filters.types)))
     fun onSelectTitle(filters: Filters, title: Titles, checked: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, filters = if (checked) Filters(filters.idolName, title) else Filters.Empty))
     fun onSelectType(filters: Filters, type: Types, checked: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, filters = if (checked) filters + type else filters - type))
-    fun onSuccess(items: List<IdolColor>) = dispatch(actions(type = IdolSearchActionTypes.ON_SUCCESS, items = items))
+    fun onSuccess(items: List<IdolColor>) = dispatch(actions(type = IdolSearchActionTypes.ON_SUCCESS, items = items.map(::IdolColorItem)))
     fun onFailure(e: Throwable) = dispatch(actions(type = IdolSearchActionTypes.ON_FAILURE, error = e))
 
     fun IdolSearchController.search(filters: Filters = Filters.Empty) = launch {
@@ -56,7 +57,7 @@ private enum class IdolSearchActionTypes {
 private fun actions(
     type: IdolSearchActionTypes,
     filters: Filters = Filters.Empty,
-    items: List<IdolColor> = listOf(),
+    items: List<IdolColorItem> = listOf(),
     error: Throwable? = null
 ) = actions<IdolSearchActionTypes, UiModel.Search> {
     this.type = type

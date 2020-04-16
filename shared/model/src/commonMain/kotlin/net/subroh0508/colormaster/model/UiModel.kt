@@ -4,13 +4,22 @@ import net.subroh0508.colormaster.model.ui.idol.Filters
 
 abstract class UiModel {
     data class Search(
-        val items: List<IdolColor>,
+        val items: List<IdolColorItem>,
         val filters: Filters,
         val error: Throwable?,
         val isLoading: Boolean = false
     ) {
         companion object {
             val INITIALIZED = Search(emptyList(), Filters.Empty, null)
+        }
+
+        data class IdolColorItem(
+            val idolColor: IdolColor,
+            val selected: Boolean
+        ) {
+            constructor(idolColor: IdolColor) : this(idolColor, false)
+
+            val itemId: Long get() = idolColor.id.hashCode().toLong()
         }
     }
 

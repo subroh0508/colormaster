@@ -9,10 +9,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_footer.view.*
 import kotlinx.android.synthetic.main.item_idol_color.view.*
-import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.idol.R
 import net.subroh0508.colormaster.idol.ui.viewmodel.IdolsViewModel
 import net.subroh0508.colormaster.model.UiModel
+import net.subroh0508.colormaster.model.UiModel.Search.IdolColorItem
 
 class IdolsAdapter(
     private val context: Context,
@@ -55,13 +55,15 @@ class IdolsAdapter(
     override fun getItemViewType(position: Int) = if (position == itemCount - 1) FOOTER_ITEM_VIEW else MAIN_ITEM_VIEW
 
     class MainViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(item: IdolColor) = with (itemView) {
-            setBackgroundColor(Color.parseColor(item.color))
+        fun bind(item: IdolColorItem) = with (itemView) {
+            val (it, selected) = item
 
-            name.text = item.name
-            colorCode.text = item.color
+            setBackgroundColor(Color.parseColor(it.color))
 
-            val textColor = ContextCompat.getColor(context, if (item.isBrighter) R.color.black else R.color.white
+            name.text = it.name
+            colorCode.text = it.color
+
+            val textColor = ContextCompat.getColor(context, if (it.isBrighter) R.color.black else R.color.white
             )
 
             name.setTextColor(textColor)

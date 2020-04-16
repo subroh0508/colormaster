@@ -5,6 +5,7 @@ import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.extensions.combine
 import net.subroh0508.colormaster.extensions.requireValue
 import net.subroh0508.colormaster.model.*
+import net.subroh0508.colormaster.model.UiModel.Search.IdolColorItem
 import net.subroh0508.colormaster.model.ui.commons.LoadState
 import net.subroh0508.colormaster.model.ui.idol.Filters
 import net.subroh0508.colormaster.repository.IdolColorsRepository
@@ -12,7 +13,7 @@ import net.subroh0508.colormaster.repository.IdolColorsRepository
 class IdolsViewModel(
     private val repository: IdolColorsRepository
 ) : ViewModel() {
-    val items: List<IdolColor> get() = uiModel.value?.items ?: listOf()
+    val items: List<IdolColorItem> get() = uiModel.value?.items ?: listOf()
 
     private val idolsLoadStateLiveData: MutableLiveData<LoadState<List<IdolColor>>> = MutableLiveData(LoadState.Loaded(listOf()))
     private val filterLiveData: MutableLiveData<Filters> = MutableLiveData(Filters.Empty)
@@ -24,7 +25,7 @@ class IdolsViewModel(
     ) { uiModel, loadState, filters ->
 
         UiModel.Search(
-            loadState.getValueOrNull() ?: uiModel.items,
+            loadState.getValueOrNull()?.map(::IdolColorItem) ?: uiModel.items,
             filters,
             loadState.getErrorOrNull(),
             loadState.isLoading
@@ -73,5 +74,5 @@ class IdolsViewModel(
     }
 
     val itemCount get() = items.size
-    fun itemId(position: Int) = items[position].id.hashCode().toLong()
+    fun itemId(position: Int) = items[position].itemId
 }
