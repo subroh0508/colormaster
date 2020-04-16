@@ -84,5 +84,5 @@ private val useStyles = makeStyles<AppFrameStyle> {
     "title" {
         flexGrow = 1.0
     }
-    css["toolbar"] = theme.mixins.toolbar
+    "toolbar"(theme.mixins.toolbar)
 }

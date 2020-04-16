@@ -129,11 +129,9 @@ object Libraries {
         const val styled = "org.jetbrains:kotlin-styled:$styledVersion"
 
         object MaterialUi {
-            const val coreVersion = "0.3.4"
-            const val core = "subroh0508.net.kotlinmaterialui:core:$coreVersion"
-
-            const val labVersion = "0.3.1"
-            const val lab = "subroh0508.net.kotlinmaterialui:lab:$labVersion"
+            const val version = "0.3.6"
+            const val core = "subroh0508.net.kotlinmaterialui:core:$version"
+            const val lab = "subroh0508.net.kotlinmaterialui:lab:$version"
         }
     }
 

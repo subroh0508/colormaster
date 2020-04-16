@@ -118,7 +118,7 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
         width = theme.spacing(6)
         flexShrink = 0.0
     }
-    css["toolbar"] = theme.mixins.toolbar
+    "toolbar"(theme.mixins.toolbar)
     "expandIcon" {
         width = theme.spacing(3)
         margin(theme.spacing(1), LinearDimension.auto, theme.spacing(1), 12.px)
