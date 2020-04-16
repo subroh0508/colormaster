@@ -4,6 +4,7 @@ import components.atoms.colorItem
 import kotlinx.css.*
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.IdolColor
+import net.subroh0508.colormaster.model.UiModel.Search.IdolColorItem
 import react.*
 import react.dom.div
 
@@ -14,13 +15,13 @@ private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> {
 
     div(classes.root) {
         div(classes.container) {
-            props.items.forEach { idolColor ->
+            props.items.forEach { (item, selected) ->
                 colorItem {
                     attrs {
-                        name = idolColor.name
-                        color = idolColor.color
-                        isBrighter = idolColor.isBrighter
-                        onDoubleClick = { props.onDoubleClick(idolColor) }
+                        name = item.name
+                        color = item.color
+                        isBrighter = item.isBrighter
+                        onDoubleClick = { props.onDoubleClick(item) }
                     }
                 }
             }
@@ -29,7 +30,7 @@ private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> {
 }
 
 external interface IdolColorGridsProps : RProps {
-    var items: List<IdolColor>
+    var items: List<IdolColorItem>
     var onDoubleClick: (item: IdolColor) -> Unit
 }
 
