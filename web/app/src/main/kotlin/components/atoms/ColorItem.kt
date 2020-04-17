@@ -2,46 +2,31 @@ package components.atoms
 
 import kotlinx.css.*
 import kotlinx.css.properties.*
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.onDoubleClickFunction
-import kotlinx.html.js.onMouseOutFunction
-import kotlinx.html.js.onMouseOverFunction
+import kotlinx.html.js.*
 import materialui.components.icon.icon
 import materialui.components.paper.paper
 import materialui.styles.breakpoint.Breakpoint
 import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
-import materialui.styles.palette.default
-import org.w3c.dom.events.Event
 import react.*
 import react.dom.br
-import react.dom.div
 import styled.animation
+import utilities.isMobile
 
 fun RBuilder.colorItem(handler: RHandler<ColorItemProps>) = child(ColorItemComponent, handler = handler)
 
-private val ColorItemComponent = functionalComponent<ColorItemProps> { props ->
+private val ColorItemComponent = memo(functionalComponent<ColorItemProps> { props ->
     val classes = useStyles(props)
     val (mouse, setMouseEvent) = useState(Mouse.NONE)
 
-    fun rootStyle(mouse: Mouse, isSelected: Boolean) = when {
-        isSelected -> "${classes.root} ${classes.small}"
-        mouse == Mouse.OVER -> "${classes.root} ${classes.mouseOver}"
-        mouse == Mouse.OUT -> "${classes.root} ${classes.mouseOut}"
-        mouse == Mouse.CLICK -> "${classes.root} ${classes.small}"
-        else -> classes.root
-    }
-
+    console.log(props.name, mouse.name, props.isSelected)
     paper {
         attrs {
-            classes(rootStyle(mouse, props.isSelected))
-            onClickFunction = {
-                setMouseEvent(Mouse.CLICK)
-                props.onClick(it)
-            }
-            onMouseOverFunction = { setMouseEvent(Mouse.OVER) }
-            onMouseOutFunction = { setMouseEvent(Mouse.OUT) }
-            //onDoubleClickFunction = props.onDoubleClick
+            classes(rootStyle(classes, mouse, props.isSelected))
+
+            onClickFunction = { setMouseEvent(Mouse.CLICK) }
+            onMouseOverFunction = { console.log("over"); setMouseEvent(Mouse.OVER) }
+            onMouseOutFunction = { console.log("out"); setMouseEvent(Mouse.OUT) }
         }
 
         if (props.isSelected) {
@@ -55,15 +40,14 @@ private val ColorItemComponent = functionalComponent<ColorItemProps> { props ->
         br { }
         +props.color
     }
-}
+})
 
 external interface ColorItemProps : RProps {
+    var id: String
     var name: String
     var color: String
     var isBrighter: Boolean
     var isSelected: Boolean
-    var onClick: (event: Event) -> Unit
-    var onDoubleClick: (event: Event) -> Unit
 }
 
 private external interface ColorItemStyle {
@@ -85,7 +69,6 @@ private val useStyles = makeStyles<ColorItemStyle, ColorItemProps> {
         height = 50.px
         backgroundColor = Color(props.color)
         color = if (props.isBrighter) Color.black else Color.white
-        margin(4.px)
         textAlign = TextAlign.center
         fontWeight = FontWeight.w700
         alignItems = Align.center
@@ -115,5 +98,25 @@ private val useStyles = makeStyles<ColorItemStyle, ColorItemProps> {
         left = 0.px
         bottom = 0.px
         margin(LinearDimension.auto, 4.px)
+    }
+}
+
+private fun rootStyle(classes: ColorItemStyle, mouse: Mouse, isSelected: Boolean): String {
+    if (isMobile) {
+        return when (isSelected) {
+            true -> "${classes.root} ${classes.mouseOver}"
+            false -> "${classes.root} ${classes.mouseOut}"
+        }
+    }
+
+    if (isSelected) {
+        return "${classes.root} ${classes.small}"
+    }
+
+    return when (mouse) {
+        Mouse.OVER -> "${classes.root} ${classes.mouseOver}"
+        Mouse.OUT -> "${classes.root} ${classes.mouseOut}"
+        Mouse.CLICK -> "${classes.root} ${classes.small}"
+        else -> classes.root
     }
 }
