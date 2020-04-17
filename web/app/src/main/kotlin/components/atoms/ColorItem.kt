@@ -15,6 +15,7 @@ import materialui.styles.palette.default
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.br
+import react.dom.div
 import styled.animation
 
 fun RBuilder.colorItem(handler: RHandler<ColorItemProps>) = child(ColorItemComponent, handler = handler)
@@ -79,7 +80,7 @@ private enum class Mouse {
 
 private val useStyles = makeStyles<ColorItemStyle, ColorItemProps> {
     "root" { props ->
-        position = Position.relative
+        display = Display.flex
         width = 100.pct
         height = 50.px
         backgroundColor = Color(props.color)
@@ -87,6 +88,8 @@ private val useStyles = makeStyles<ColorItemStyle, ColorItemProps> {
         margin(4.px)
         textAlign = TextAlign.center
         fontWeight = FontWeight.w700
+        alignItems = Align.center
+        justifyContent = JustifyContent.center
 
         (theme.breakpoints.up(Breakpoint.sm)) {
             width = 200.px
@@ -110,8 +113,7 @@ private val useStyles = makeStyles<ColorItemStyle, ColorItemProps> {
         position = Position.absolute
         top = 0.px
         left = 0.px
-        width = 24.px
-        height = 24.px
-        borderRadius = 50.pct
+        bottom = 0.px
+        margin(LinearDimension.auto, 4.px)
     }
 }
