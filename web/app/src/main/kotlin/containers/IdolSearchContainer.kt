@@ -31,8 +31,8 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
     fun onSelectType(filters: Filters, type: Types, checked: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, filters = if (checked) filters + type else filters - type))
     fun onSuccess(items: List<IdolColor>) = dispatch(actions(type = IdolSearchActionTypes.ON_SUCCESS, items = items.map(::IdolColorItem)))
     fun onFailure(e: Throwable) = dispatch(actions(type = IdolSearchActionTypes.ON_FAILURE, error = e))
-    fun onSelectIdol(items: List<IdolColorItem>, item: IdolColor, selected: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_SELECT, items = items.map { if (it.idolColor.id == item.id) it.copy(selected = selected) else it }))
-    fun onSelectAll(items: List<IdolColorItem>, selected: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_SELECT, items = items.map { it.copy(selected = selected) }))
+    fun onSelectIdol(item: IdolColor, selected: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_SELECT, items = listOf(IdolColorItem(item, selected))))
+    fun onSelectAll(selected: Boolean) = dispatch(actions(type = if (selected) IdolSearchActionTypes.ON_SELECT_ALL else IdolSearchActionTypes.ON_CLEAR_ALL))
 
     fun IdolSearchController.search(filters: Filters = Filters.Empty) = launch {
         runCatching { fetchItems(filters) }
@@ -48,14 +48,14 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
         attrs.onChangeIdolName = { name -> onChangeIdolName(uiModel.filters, name) }
         attrs.onSelectTitle = { title, checked -> onSelectTitle(uiModel.filters, title, checked) }
         attrs.onSelectType = { type, checked -> onSelectType(uiModel.filters, type, checked) }
-        attrs.onClickIdolColor = { item, selected -> onSelectIdol(uiModel.items, item, selected) }
+        attrs.onClickIdolColor = { item, selected -> onSelectIdol(item, selected) }
         attrs.onDoubleClickIdolColor = { item -> turnOnPenlight(listOf(item)) }
-        attrs.onClickSelectAll = { selected -> onSelectAll(uiModel.items, selected) }
+        attrs.onClickSelectAll = { selected -> onSelectAll(selected) }
     }
 }
 
 private enum class IdolSearchActionTypes {
-    ON_CHANGE_FILTER, ON_SUCCESS, ON_FAILURE, ON_SELECT
+    ON_CHANGE_FILTER, ON_SUCCESS, ON_FAILURE, ON_SELECT, ON_SELECT_ALL, ON_CLEAR_ALL
 }
 
 private fun actions(
@@ -73,8 +73,10 @@ private val reducer = { state: UiModel.Search, action: Actions<IdolSearchActionT
 
     when (action.type) {
         IdolSearchActionTypes.ON_CHANGE_FILTER -> state.copy(items = listOf(), filters = filters, error = null, isLoading = true)
-        IdolSearchActionTypes.ON_SUCCESS,
-        IdolSearchActionTypes.ON_SELECT -> state.copy(items = items, error = null, isLoading = false)
+        IdolSearchActionTypes.ON_SUCCESS -> state.copy(items = items, error = null, isLoading = false)
+        IdolSearchActionTypes.ON_SELECT -> state.copy(items = state.items.map { item -> items.first().let { (color, selected) -> if (color.id == item.idolColor.id) item.copy(selected = selected) else item } })
+        IdolSearchActionTypes.ON_SELECT_ALL -> state.copy(items = state.items.map { it.copy(selected = true) })
+        IdolSearchActionTypes.ON_CLEAR_ALL -> state.copy(items = state.items.map { it.copy(selected = false) })
         IdolSearchActionTypes.ON_FAILURE -> state.copy(items = listOf(), error = error, isLoading = false)
     }
 }

@@ -1,11 +1,7 @@
 package components.organisms
 
-import components.atoms.CLICK_HANDLER_CLASS_NAME
-import components.atoms.clickHandler
 import components.molecules.colorGridItem
 import kotlinx.css.*
-import materialui.styles.breakpoint.Breakpoint
-import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.UiModel.Search.IdolColorItem
@@ -19,22 +15,13 @@ private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> {
 
     div(classes.root) {
         div(classes.container) {
-            props.items.forEach { (item, selected) ->
-                clickHandler {
-                    key = item.id
-
+            props.items.forEach { (idolColor, selected) ->
+                colorGridItem {
                     attrs {
-                        onClick = { props.onClick(item, !selected) }
-                        onDoubleClick = { props.onDoubleClick(item) }
-                    }
-
-                    colorGridItem {
-                        attrs {
-                            name = item.name
-                            color = item.color
-                            isBrighter = item.isBrighter
-                            isSelected = selected
-                        }
+                        item = idolColor
+                        isSelected = selected
+                        onClick = props.onClick
+                        onDoubleClick = props.onDoubleClick
                     }
                 }
             }
@@ -63,14 +50,5 @@ private val useStyles = makeStyles<IdolColorGridsStyle> {
         display = Display.flex
         flexDirection = FlexDirection.row
         flexWrap = FlexWrap.wrap
-
-        descendants(".$CLICK_HANDLER_CLASS_NAME") {
-            width = 100.pct
-            margin(4.px)
-
-            (theme.breakpoints.up(Breakpoint.sm)) {
-                width = 200.px
-            }
-        }
     }
 }

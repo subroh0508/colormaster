@@ -1,6 +1,7 @@
 package components.molecules
 
 import components.atoms.COLOR_PREVIEW_ITEM_CLASS_NAME
+import components.atoms.clickHandler
 import components.atoms.colorPreviewItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -16,6 +17,7 @@ import materialui.components.paper.paper
 import materialui.styles.breakpoint.Breakpoint
 import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
+import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.utilities.throttleFirst
 import react.*
 import styled.animation
@@ -27,6 +29,9 @@ fun RBuilder.colorGridItem(handler: RHandler<ColorGridItem>) = child(
 private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { props ->
     val classes = useStyles(props)
     val (mouse, setMouseEvent) = useState(Mouse.NONE)
+
+    val handleOnClick = useCallback(props.onClick, arrayOf(props.item.id))
+    val handleOnDoubleClick = useCallback(props.onDoubleClick, arrayOf(props.item.id))
 
     val channel = throttleFirstMouseEventChannel(100) { setMouseEvent(it) }
 
@@ -50,11 +55,20 @@ private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { p
             }
         }
 
-        colorPreviewItem {
+        clickHandler {
+            key = props.item.id
+
             attrs {
-                name = props.name
-                color = props.color
-                isBrighter = props.isBrighter
+                onClick = { handleOnClick(props.item, !props.isSelected) }
+                onDoubleClick = { handleOnDoubleClick(props.item) }
+            }
+
+            colorPreviewItem {
+                attrs {
+                    name = props.item.name
+                    color = props.item.color
+                    isBrighter = props.item.isBrighter
+                }
             }
         }
     }
@@ -76,10 +90,10 @@ private inline fun throttleFirstMouseEventChannel(
 }
 
 external interface ColorGridItem : RProps {
-    var name: String
-    var color: String
-    var isBrighter: Boolean
+    var item: IdolColor
     var isSelected: Boolean
+    var onClick: (IdolColor, Boolean) -> Unit
+    var onDoubleClick: (IdolColor) -> Unit
 }
 
 private external interface ColorGridStyle {
@@ -96,7 +110,8 @@ private enum class Mouse {
 
 private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
     "root" { props ->
-        color = if (props.isBrighter) Color.black else Color.white
+        color = if (props.item.isBrighter) Color.black else Color.white
+        margin(4.px)
 
         descendants(".$COLOR_PREVIEW_ITEM_CLASS_NAME") {
             height = 50.px
