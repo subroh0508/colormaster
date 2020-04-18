@@ -1,8 +1,9 @@
 package containers
 
 import appKodein
-import components.templates.penlightModal
-import kotlinext.js.jsObject
+import components.atoms.FullscreenPenlightComponent
+import components.atoms.FullscreenPreviewComponent
+import components.templates.previewModal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mainScope
@@ -20,7 +21,22 @@ import utilities.useEffectDidMount
 
 @Suppress("FunctionName")
 fun RBuilder.PenlightContainer() = FullscreenPreviewControllerContext.Provider(FullscreenPreviewController) {
-    child(FullscreenPreviewContainerComponentImpl) { model -> penlightModal { attrs.model = model } }
+    child(FullscreenPreviewContainerComponentImpl) { model ->
+        previewModal {
+            attrs.model = model
+            attrs.PreviewComponent = FullscreenPenlightComponent
+        }
+    }
+}
+
+@Suppress("FunctionName")
+fun RBuilder.PreviewContainer() = FullscreenPreviewControllerContext.Provider(FullscreenPreviewController) {
+    child(FullscreenPreviewContainerComponentImpl) { model ->
+        previewModal {
+            attrs.model = model
+            attrs.PreviewComponent = FullscreenPreviewComponent
+        }
+    }
 }
 
 private val FullscreenPreviewContainerComponentImpl = functionalComponent<FullscreenPreviewContainerProps> { props ->

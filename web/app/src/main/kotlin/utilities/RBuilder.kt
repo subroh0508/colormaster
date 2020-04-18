@@ -7,9 +7,10 @@ typealias RConsumerHandler<T> = RBuilder.(T) -> Unit
 
 fun <T, P: RConsumerProps<T>> RBuilder.child(
     functionalComponent: FunctionalComponent<P>,
+    props: P = jsObject {},
     handler: RConsumerHandler<T>
 ): ReactElement {
-    return child(functionalComponent, jsObject<P> {
+    return child(functionalComponent, props.apply {
         children = { value: T -> buildElement { handler(value) } as Any }
     })
 }

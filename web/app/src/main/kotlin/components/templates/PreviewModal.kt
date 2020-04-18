@@ -1,6 +1,7 @@
 package components.templates
 
-import components.atoms.fullscreenPenlight
+import components.atoms.ColorPreviewProps
+import components.atoms.FullscreenModalProps
 import materialui.components.dialog.dialog
 import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogcontenttext.dialogContentText
@@ -9,15 +10,21 @@ import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.UiModel
 import react.*
 
-fun RBuilder.penlightModal(handler: RHandler<PenlightModalProps>) = child(PenlightModalComponent, handler = handler)
+fun RBuilder.previewModal(handler: RHandler<PreviewModalProps>) = child(PreviewModalComponent, handler = handler)
 
-private val PenlightModalComponent = functionalComponent<PenlightModalProps> { props ->
+external interface PreviewModalProps : RProps {
+    var model: UiModel.FullscreenPreview
+    @Suppress("PropertyName")
+    var PreviewComponent: FunctionalComponent<FullscreenModalProps>
+}
+
+private val PreviewModalComponent = functionalComponent<PreviewModalProps> { props ->
     val (items, error, isLoading) = props.model
 
     when {
         isLoading -> loadingModal()
         error != null -> errorModal(error)
-        else -> fullscreenPenlight { attrs.colors = items.map(IdolColor::color) }
+        else -> child(props.PreviewComponent) { attrs.items = items }
     }
 }
 
@@ -43,8 +50,4 @@ private fun RBuilder.errorModal(error: Throwable) = dialog {
             +(error.message ?: "エラーが発生しました")
         }
     }
-}
-
-external interface PenlightModalProps : RProps {
-    var model: UiModel.FullscreenPreview
 }
