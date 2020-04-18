@@ -39,6 +39,7 @@ private val useStyles = makeStyles<ColorPreviewItemStyle, ColorPreviewItemProps>
         display = Display.flex
         width = 100.pct
         height = 100.pct
+        color = if (props.isBrighter) Color.black else Color.white
         backgroundColor = Color(props.color)
         textAlign = TextAlign.center
         fontWeight = FontWeight.w700

@@ -20,6 +20,7 @@ fun RBuilder.IdolSearchContainer() = IdolSearchControllerContext.Provider(IdolSe
 private val IdolSearchContainerImpl = functionalComponent<RProps> {
     val history = useHistory()
 
+    fun preview(items: List<IdolColor>) = history.push("/preview?${items.joinToString("&") { "id=${it.id}" }}")
     fun turnOnPenlight(items: List<IdolColor>) = history.push("/penlight?${items.joinToString("&") { "id=${it.id}" }}")
 
     val controller = useContext(IdolSearchControllerContext)
@@ -49,8 +50,9 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
         attrs.onSelectTitle = { title, checked -> onSelectTitle(uiModel.filters, title, checked) }
         attrs.onSelectType = { type, checked -> onSelectType(uiModel.filters, type, checked) }
         attrs.onClickIdolColor = { item, selected -> onSelectIdol(item, selected) }
-        attrs.onDoubleClickIdolColor = { item -> turnOnPenlight(listOf(item)) }
         attrs.onClickSelectAll = { selected -> onSelectAll(selected) }
+        attrs.onDoubleClickIdolColor = { item -> turnOnPenlight(listOf(item)) }
+        attrs.onClickPreview = { preview(uiModel.selected) }
     }
 }
 
