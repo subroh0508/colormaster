@@ -1,5 +1,7 @@
-package components.atoms
+package components.molecules
 
+import components.atoms.COLOR_PREVIEW_ITEM_CLASS_NAME
+import components.atoms.colorPreviewItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -16,13 +18,13 @@ import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.utilities.throttleFirst
 import react.*
-import react.dom.br
 import styled.animation
 import utilities.isMobile
 
-fun RBuilder.colorItem(handler: RHandler<ColorItemProps>) = child(ColorItemComponent, handler = handler)
+fun RBuilder.colorGridItem(handler: RHandler<ColorGridItem>) = child(
+    ColorGridItemComponent, handler = handler)
 
-private val ColorItemComponent = memo(functionalComponent<ColorItemProps> { props ->
+private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { props ->
     val classes = useStyles(props)
     val (mouse, setMouseEvent) = useState(Mouse.NONE)
 
@@ -73,14 +75,14 @@ private inline fun throttleFirstMouseEventChannel(
     }).current
 }
 
-external interface ColorItemProps : RProps {
+external interface ColorGridItem : RProps {
     var name: String
     var color: String
     var isBrighter: Boolean
     var isSelected: Boolean
 }
 
-private external interface ColorItemStyle {
+private external interface ColorGridStyle {
     val root: String
     val small: String
     val mouseOver: String
@@ -92,7 +94,7 @@ private enum class Mouse {
     NONE, OVER, OUT, CLICK
 }
 
-private val useStyles = makeStyles<ColorItemStyle, ColorItemProps> {
+private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
     "root" { props ->
         color = if (props.isBrighter) Color.black else Color.white
 
@@ -129,7 +131,7 @@ private val useStyles = makeStyles<ColorItemStyle, ColorItemProps> {
     }
 }
 
-private fun rootStyle(classes: ColorItemStyle, mouse: Mouse, isSelected: Boolean): String {
+private fun rootStyle(classes: ColorGridStyle, mouse: Mouse, isSelected: Boolean): String {
     if (isMobile) {
         return when (isSelected) {
             true -> "${classes.root} ${classes.mouseOver}"

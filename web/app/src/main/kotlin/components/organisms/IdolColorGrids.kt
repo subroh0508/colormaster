@@ -2,10 +2,8 @@ package components.organisms
 
 import components.atoms.CLICK_HANDLER_CLASS_NAME
 import components.atoms.clickHandler
-import components.atoms.colorItem
+import components.molecules.colorGridItem
 import kotlinx.css.*
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.onDoubleClickFunction
 import materialui.styles.breakpoint.Breakpoint
 import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
@@ -30,7 +28,7 @@ private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> {
                         onDoubleClick = { props.onDoubleClick(item) }
                     }
 
-                    colorItem {
+                    colorGridItem {
                         attrs {
                             name = item.name
                             color = item.color
