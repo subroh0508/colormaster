@@ -3,7 +3,6 @@ package components.atoms
 import kotlinext.js.jsObject
 import kotlinx.css.*
 import materialui.styles.makeStyles
-import net.subroh0508.colormaster.model.IdolColor
 import react.*
 import react.dom.br
 import react.dom.div
@@ -29,28 +28,18 @@ external interface ColorPreviewItemProps : RProps {
     var name: String
     var color: String
     var isBrighter: Boolean
-    var isColorOnly: Boolean?
-    var count: Int?
 }
 
-external interface ColorPreviewItemStyle {
+private external interface ColorPreviewItemStyle {
     val root: String
 }
 
 private val useStyles = makeStyles<ColorPreviewItemStyle, ColorPreviewItemProps> {
     "root" { props ->
-        val textColor = when {
-            props.isColorOnly == true -> Color.transparent
-            props.isBrighter -> Color.black
-            !props.isBrighter -> Color.white
-            else -> Color.transparent
-        }
-
         display = Display.flex
         width = 100.pct
-        height = 100.pct / (props.count ?: 1)
+        height = 100.pct
         backgroundColor = Color(props.color)
-        color = textColor
         textAlign = TextAlign.center
         fontWeight = FontWeight.w700
         alignItems = Align.center
