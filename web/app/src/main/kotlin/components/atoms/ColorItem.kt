@@ -1,5 +1,11 @@
 package components.atoms
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.launch
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import kotlinx.html.js.*
@@ -8,6 +14,7 @@ import materialui.components.paper.paper
 import materialui.styles.breakpoint.Breakpoint
 import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
+import net.subroh0508.colormaster.utilities.throttleFirst
 import react.*
 import react.dom.br
 import styled.animation
@@ -19,14 +26,19 @@ private val ColorItemComponent = memo(functionalComponent<ColorItemProps> { prop
     val classes = useStyles(props)
     val (mouse, setMouseEvent) = useState(Mouse.NONE)
 
-    console.log(props.name, mouse.name, props.isSelected)
+    val channel = throttleFirstMouseEventChannel(100) { setMouseEvent(it) }
+
+    fun offerMouseEvent(previous: Mouse, next: Mouse) {
+        if (previous == Mouse.CLICK || next == Mouse.CLICK) channel.offer(next) else setMouseEvent(next)
+    }
+
     paper {
         attrs {
             classes(rootStyle(classes, mouse, props.isSelected))
 
-            onClickFunction = { setMouseEvent(Mouse.CLICK) }
-            onMouseOverFunction = { console.log("over"); setMouseEvent(Mouse.OVER) }
-            onMouseOutFunction = { console.log("out"); setMouseEvent(Mouse.OUT) }
+            onClickFunction = { offerMouseEvent(mouse, Mouse.CLICK) }
+            onMouseOverFunction = { offerMouseEvent(mouse, Mouse.OVER) }
+            onMouseOutFunction = { offerMouseEvent(mouse, Mouse.OUT) }
         }
 
         if (props.isSelected) {
@@ -41,6 +53,21 @@ private val ColorItemComponent = memo(functionalComponent<ColorItemProps> { prop
         +props.color
     }
 })
+
+private inline fun throttleFirstMouseEventChannel(
+    durationMillis: Long,
+    crossinline action: suspend (Mouse) -> Unit
+): Channel<Mouse> {
+    val scope = useRef(CoroutineScope(Job()))
+
+    return useRef(Channel<Mouse>().apply {
+        scope.current.launch {
+            consumeAsFlow()
+                .throttleFirst(durationMillis)
+                .collect { action.invoke(it) }
+        }
+    }).current
+}
 
 external interface ColorItemProps : RProps {
     var id: String
