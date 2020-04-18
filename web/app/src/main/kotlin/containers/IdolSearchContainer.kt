@@ -32,6 +32,7 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
     fun onSuccess(items: List<IdolColor>) = dispatch(actions(type = IdolSearchActionTypes.ON_SUCCESS, items = items.map(::IdolColorItem)))
     fun onFailure(e: Throwable) = dispatch(actions(type = IdolSearchActionTypes.ON_FAILURE, error = e))
     fun onSelectIdol(items: List<IdolColorItem>, item: IdolColor, selected: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_SELECT, items = items.map { if (it.idolColor.id == item.id) it.copy(selected = selected) else it }))
+    fun onSelectAll(items: List<IdolColorItem>, selected: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_SELECT, items = items.map { it.copy(selected = selected) }))
 
     fun IdolSearchController.search(filters: Filters = Filters.Empty) = launch {
         runCatching { fetchItems(filters) }
@@ -49,6 +50,7 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
         attrs.onSelectType = { type, checked -> onSelectType(uiModel.filters, type, checked) }
         attrs.onClickIdolColor = { item, selected -> onSelectIdol(uiModel.items, item, selected) }
         attrs.onDoubleClickIdolColor = { item -> turnOnPenlight(listOf(item)) }
+        attrs.onClickSelectAll = { selected -> onSelectAll(uiModel.items, selected) }
     }
 }
 

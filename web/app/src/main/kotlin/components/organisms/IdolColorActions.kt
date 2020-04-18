@@ -22,6 +22,15 @@ private val IdolColorActionsComponent = functionalComponent<IdolColorActionsProp
 
             button {
                 attrs {
+                    variant = ButtonVariant.outlined
+                    onClickFunction = { props.onClickPreview() }
+                }
+
+                +"プレビュー"
+            }
+
+            button {
+                attrs {
                     classes(classes.checkBox)
                     disableRipple = true
                     disableTouchRipple = true
@@ -30,18 +39,10 @@ private val IdolColorActionsComponent = functionalComponent<IdolColorActionsProp
                 supportableCheckBox {
                     attrs {
                         clearedAll = props.selected.isNotEmpty()
-                        onClickCheckedAll = { console.log("checked all") }
-                        onClickClearedAll = { console.log("cleared all") }
+                        onClickCheckedAll = { props.onClickSelectAll(true) }
+                        onClickClearedAll = { props.onClickSelectAll(false) }
                     }
                 }
-            }
-            button {
-                attrs {
-                    variant = ButtonVariant.outlined
-                    onClickFunction = { props.onClickPreview() }
-                }
-
-                +"プレビュー"
             }
         }
     }
@@ -50,6 +51,7 @@ private val IdolColorActionsComponent = functionalComponent<IdolColorActionsProp
 external interface IdolColorActionsProps : RProps {
     var selected: List<IdolColor>
     var onClickPreview: () -> Unit
+    var onClickSelectAll: (Boolean) -> Unit
 }
 
 external interface IdolColorActionsStyle {

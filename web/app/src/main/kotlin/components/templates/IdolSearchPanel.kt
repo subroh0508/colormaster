@@ -37,6 +37,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             idolColorActions {
                 attrs.selected = uiModel.selected
                 attrs.onClickPreview = props.onClickPreview
+                attrs.onClickSelectAll = props.onClickSelectAll
             }
             idolColorGrids {
                 attrs.items = uiModel.items
@@ -81,6 +82,7 @@ external interface IdolSearchPanelProps : RProps {
     var onClickIdolColor: (IdolColor, Boolean) -> Unit
     var onDoubleClickIdolColor: (IdolColor) -> Unit
     var onClickPreview: () -> Unit
+    var onClickSelectAll: (Boolean) -> Unit
 }
 
 private external interface IdolSearchPanelStyle {
