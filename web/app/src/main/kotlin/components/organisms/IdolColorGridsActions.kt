@@ -23,6 +23,7 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
             button {
                 attrs {
                     variant = ButtonVariant.outlined
+                    disabled = props.selected.isEmpty()
                     onClickFunction = { props.onClickPreview() }
                 }
 

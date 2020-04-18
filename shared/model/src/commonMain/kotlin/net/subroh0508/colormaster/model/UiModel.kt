@@ -25,13 +25,13 @@ abstract class UiModel {
         }
     }
 
-    data class Penlight(
+    data class FullscreenPreview(
         val items: List<IdolColor>,
         val error: Throwable?,
         val isLoading: Boolean = false
     ) {
         companion object {
-            val INITIALIZED = Penlight(emptyList(), null, true)
+            val INITIALIZED = FullscreenPreview(emptyList(), null, true)
         }
     }
 }
