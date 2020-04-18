@@ -26,7 +26,7 @@ object ImasparqlQueries {
           OPTIONAL { ?s imas:Division ?division }
           OPTIONAL { ?s imas:Type ?type }
           OPTIONAL { ?s imas:Category ?category }
-          OPTIONAL { BIND (COALESCE(?category, ?division, ?type) as ?attributes) }
+          BIND (COALESCE(?category, ?division, ?type) as ?attribute)
           ${name?.value?.let {"FILTER (regex(?name, '.*$it.*', 'i') && str(?title) != '1st Vision')." } ?: ""}
           ${titles?.queryStr?.let { "FILTER (str(?title) = '$it')." } ?: ""}
           ${types.regexStr?.let { "FILTER regex(?attribute, '$it', 'i')." } ?: "" }
