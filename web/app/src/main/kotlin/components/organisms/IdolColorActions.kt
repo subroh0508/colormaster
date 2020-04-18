@@ -1,6 +1,6 @@
 package components.organisms
 
-import components.atoms.supportableCheckBox
+import components.molecules.supportableCheckBox
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
