@@ -14,14 +14,13 @@ import org.kodein.di.erased.instance
 import react.*
 import useQuery
 import utilities.Actions
+import utilities.child
 import utilities.children
 import utilities.useEffectDidMount
 
 @Suppress("FunctionName")
 fun RBuilder.PenlightContainer() = FullscreenPreviewControllerContext.Provider(FullscreenPreviewController) {
-    child(FullscreenPreviewContainerComponentImpl, props = jsObject<FullscreenPreviewContainerProps> {
-        this.children = { model -> buildElement { penlightModal { attrs.model = model } } as Any }
-    })
+    child(FullscreenPreviewContainerComponentImpl) { model -> penlightModal { attrs.model = model } }
 }
 
 private val FullscreenPreviewContainerComponentImpl = functionalComponent<FullscreenPreviewContainerProps> { props ->
