@@ -1,5 +1,7 @@
-package components.atoms
+package components.organisms
 
+import components.atoms.ColorPreviewProps
+import components.atoms.colorPreview
 import kotlinext.js.Object
 import materialui.components.dialog.dialog
 import materialui.components.slide.enums.SlideDirection

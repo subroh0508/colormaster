@@ -1,8 +1,8 @@
 package containers
 
 import appKodein
-import components.atoms.FullscreenPenlightComponent
-import components.atoms.FullscreenPreviewComponent
+import components.organisms.FullscreenPenlightComponent
+import components.organisms.FullscreenPreviewComponent
 import components.templates.previewModal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

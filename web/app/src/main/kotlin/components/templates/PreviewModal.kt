@@ -1,12 +1,10 @@
 package components.templates
 
-import components.atoms.ColorPreviewProps
-import components.atoms.FullscreenModalProps
+import components.organisms.FullscreenModalProps
 import materialui.components.dialog.dialog
 import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogcontenttext.dialogContentText
 import materialui.components.dialogtitle.dialogTitle
-import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.UiModel
 import react.*
 

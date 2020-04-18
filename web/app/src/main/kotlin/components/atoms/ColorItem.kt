@@ -48,9 +48,13 @@ private val ColorItemComponent = memo(functionalComponent<ColorItemProps> { prop
             }
         }
 
-        +props.name
-        br { }
-        +props.color
+        colorPreviewItem {
+            attrs {
+                name = props.name
+                color = props.color
+                isBrighter = props.isBrighter
+            }
+        }
     }
 })
 
@@ -90,18 +94,16 @@ private enum class Mouse {
 
 private val useStyles = makeStyles<ColorItemStyle, ColorItemProps> {
     "root" { props ->
-        display = Display.flex
-        width = 100.pct
-        height = 50.px
-        backgroundColor = Color(props.color)
         color = if (props.isBrighter) Color.black else Color.white
-        textAlign = TextAlign.center
-        fontWeight = FontWeight.w700
-        alignItems = Align.center
-        justifyContent = JustifyContent.center
 
-        (theme.breakpoints.up(Breakpoint.sm)) {
-            width = 200.px
+        descendants(".$COLOR_PREVIEW_ITEM_CLASS_NAME") {
+            height = 50.px
+
+            (theme.breakpoints.up(Breakpoint.sm)) {
+                width = 200.px
+            }
+
+            borderRadius = theme.shape.borderRadius.px
         }
     }
     "small" {
