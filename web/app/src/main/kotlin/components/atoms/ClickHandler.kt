@@ -6,14 +6,12 @@ import react.*
 import react.dom.div
 import kotlin.browser.window
 
-const val CLICK_HANDLER_CLASS_NAME = "click-handler"
-
 fun RBuilder.clickHandler(handler: RHandler<ClickHandlerProps>) = child(ClickHandlerComponent, handler = handler)
 
 private val ClickHandlerComponent = functionalComponent<ClickHandlerProps> { props ->
     val lastTimeRef = useRef(0L)
 
-    div(CLICK_HANDLER_CLASS_NAME) {
+    div {
         attrs {
             onClickFunction = {
                 handleOnClick(

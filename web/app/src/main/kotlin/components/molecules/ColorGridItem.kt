@@ -110,16 +110,16 @@ private enum class Mouse {
 
 private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
     "root" { props ->
+        width = 100.pct
         color = if (props.item.isBrighter) Color.black else Color.white
         margin(4.px)
 
+        (theme.breakpoints.up(Breakpoint.sm)) {
+            width = 200.px
+        }
+
         descendants(".$COLOR_PREVIEW_ITEM_CLASS_NAME") {
             height = 50.px
-
-            (theme.breakpoints.up(Breakpoint.sm)) {
-                width = 200.px
-            }
-
             borderRadius = theme.shape.borderRadius.px
         }
     }
