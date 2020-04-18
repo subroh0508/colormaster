@@ -1,22 +1,12 @@
 package components.templates
 
 import components.atoms.*
-import components.organisms.idolColorActions
+import components.organisms.idolColorGridsActions
 import components.organisms.idolColorGrids
 import components.organisms.idolSearchBox
 import kotlinx.css.*
-import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
-import materialui.components.drawer.enums.DrawerStyle
-import materialui.components.drawer.enums.DrawerVariant
-import materialui.components.hidden.hidden
-import materialui.components.icon.icon
-import materialui.components.iconbutton.iconButton
-import materialui.styles.breakpoint.Breakpoint
-import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
-import materialui.styles.mixins.toolbar
-import materialui.styles.muitheme.spacing
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.Titles
 import net.subroh0508.colormaster.model.Types
@@ -34,7 +24,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     div(classes.root) {
         div(classes.panel) {
             alert(uiModel)
-            idolColorActions {
+            idolColorGridsActions {
                 attrs.selected = uiModel.selected
                 attrs.onClickPreview = props.onClickPreview
                 attrs.onClickSelectAll = props.onClickSelectAll

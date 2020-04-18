@@ -11,9 +11,9 @@ import net.subroh0508.colormaster.model.IdolColor
 import react.*
 import react.dom.div
 
-fun RBuilder.idolColorActions(handler: RHandler<IdolColorActionsProps>) = child(IdolColorActionsComponent, handler = handler)
+fun RBuilder.idolColorGridsActions(handler: RHandler<IdolColorGridsActionsProps>) = child(IdolColorGridsActionsComponent, handler = handler)
 
-private val IdolColorActionsComponent = functionalComponent<IdolColorActionsProps> { props ->
+private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsActionsProps> { props ->
     val classes = useStyle()
 
     div(classes.root) {
@@ -48,19 +48,19 @@ private val IdolColorActionsComponent = functionalComponent<IdolColorActionsProp
     }
 }
 
-external interface IdolColorActionsProps : RProps {
+external interface IdolColorGridsActionsProps : RProps {
     var selected: List<IdolColor>
     var onClickPreview: () -> Unit
     var onClickSelectAll: (Boolean) -> Unit
 }
 
-external interface IdolColorActionsStyle {
+external interface IdolColorGridsActionsStyle {
     val root: String
     val buttonGroup: String
     val checkBox: String
 }
 
-private val useStyle = makeStyles<IdolColorActionsStyle> {
+private val useStyle = makeStyles<IdolColorGridsActionsStyle> {
     "root" {
         flexGrow = 1.0
         display = Display.flex
