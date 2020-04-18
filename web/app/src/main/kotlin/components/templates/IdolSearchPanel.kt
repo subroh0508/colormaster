@@ -1,6 +1,7 @@
 package components.templates
 
 import components.atoms.*
+import components.organisms.idolColorActions
 import components.organisms.idolColorGrids
 import components.organisms.idolSearchBox
 import kotlinx.css.*
@@ -33,6 +34,10 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     div(classes.root) {
         div(classes.panel) {
             alert(uiModel)
+            idolColorActions {
+                attrs.selected = uiModel.selected
+                attrs.onClickPreview = props.onClickPreview
+            }
             idolColorGrids {
                 attrs.items = uiModel.items
                 attrs.onClick = props.onClickIdolColor
@@ -75,6 +80,7 @@ external interface IdolSearchPanelProps : RProps {
     var onSelectType: (Types, Boolean) -> Unit
     var onClickIdolColor: (IdolColor, Boolean) -> Unit
     var onDoubleClickIdolColor: (IdolColor) -> Unit
+    var onClickPreview: () -> Unit
 }
 
 private external interface IdolSearchPanelStyle {

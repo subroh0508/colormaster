@@ -13,6 +13,8 @@ abstract class UiModel {
             val INITIALIZED = Search(emptyList(), Filters.Empty, null)
         }
 
+        val selected: List<IdolColor> get() = items.mapNotNull { it.takeIf(IdolColorItem::selected)?.idolColor }
+
         data class IdolColorItem(
             val idolColor: IdolColor,
             val selected: Boolean
