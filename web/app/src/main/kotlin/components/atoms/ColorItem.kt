@@ -70,7 +70,6 @@ private inline fun throttleFirstMouseEventChannel(
 }
 
 external interface ColorItemProps : RProps {
-    var id: String
     var name: String
     var color: String
     var isBrighter: Boolean

@@ -1,5 +1,7 @@
 package components.organisms
 
+import components.atoms.CLICK_HANDLER_CLASS_NAME
+import components.atoms.clickHandler
 import components.atoms.colorItem
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
@@ -20,31 +22,23 @@ private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> {
     div(classes.root) {
         div(classes.container) {
             props.items.forEach { (item, selected) ->
-                child(GridItemComponent) {
-                    attrs.item = item
-                    attrs.selected = selected
-                    attrs.onClick = props.onClick
-                    attrs.onDoubleClick = props.onDoubleClick
+                clickHandler {
+                    key = item.id
+
+                    attrs {
+                        onClick = { props.onClick(item, !selected) }
+                        onDoubleClick = { props.onDoubleClick(item) }
+                    }
+
+                    colorItem {
+                        attrs {
+                            name = item.name
+                            color = item.color
+                            isBrighter = item.isBrighter
+                            isSelected = selected
+                        }
+                    }
                 }
-            }
-        }
-    }
-}
-
-private val GridItemComponent = functionalComponent<GridItemProps> { props ->
-    div("grid-item") {
-        attrs {
-            onClickFunction = { props.onClick(props.item, !props.selected) }
-            //onDoubleClickFunction  = { props.onDoubleClick(props.item) }
-        }
-
-        colorItem {
-            attrs {
-                id = props.item.id
-                name = props.item.name
-                color = props.item.color
-                isBrighter = props.item.isBrighter
-                isSelected = props.selected
             }
         }
     }
@@ -52,13 +46,6 @@ private val GridItemComponent = functionalComponent<GridItemProps> { props ->
 
 external interface IdolColorGridsProps : RProps {
     var items: List<IdolColorItem>
-    var onClick: (item: IdolColor, isSelected: Boolean) -> Unit
-    var onDoubleClick: (item: IdolColor) -> Unit
-}
-
-private external interface GridItemProps : RProps {
-    var item: IdolColor
-    var selected: Boolean
     var onClick: (item: IdolColor, isSelected: Boolean) -> Unit
     var onDoubleClick: (item: IdolColor) -> Unit
 }
@@ -79,7 +66,7 @@ private val useStyles = makeStyles<IdolColorGridsStyle> {
         flexDirection = FlexDirection.row
         flexWrap = FlexWrap.wrap
 
-        descendants(".grid-item") {
+        descendants(".$CLICK_HANDLER_CLASS_NAME") {
             width = 100.pct
             margin(4.px)
 
