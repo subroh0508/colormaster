@@ -46,5 +46,5 @@ private fun RBuilder.errorModal(error: Throwable) = dialog {
 }
 
 external interface PenlightModalProps : RProps {
-    var model: UiModel.Penlight
+    var model: UiModel.FullscreenPreview
 }

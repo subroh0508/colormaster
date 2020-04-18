@@ -2,6 +2,7 @@ package containers
 
 import appKodein
 import components.templates.penlightModal
+import kotlinext.js.jsObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mainScope
@@ -13,12 +14,17 @@ import org.kodein.di.erased.instance
 import react.*
 import useQuery
 import utilities.Actions
+import utilities.children
 import utilities.useEffectDidMount
 
 @Suppress("FunctionName")
-fun RBuilder.PenlightContainer() = FullscreenPreviewControllerContext.Provider(FullscreenPreviewController) { child(PenlightContainerComponentImpl) }
+fun RBuilder.PenlightContainer() = FullscreenPreviewControllerContext.Provider(FullscreenPreviewController) {
+    child(FullscreenPreviewContainerComponentImpl, props = jsObject<FullscreenPreviewContainerProps> {
+        this.children = { model -> buildElement { penlightModal { attrs.model = model } } as Any }
+    })
+}
 
-private val PenlightContainerComponentImpl = functionalComponent<RProps> {
+private val FullscreenPreviewContainerComponentImpl = functionalComponent<FullscreenPreviewContainerProps> { props ->
     val ids = useQuery().getAll("id").toList()
 
     val controller = useContext(FullscreenPreviewControllerContext)
@@ -36,8 +42,10 @@ private val PenlightContainerComponentImpl = functionalComponent<RProps> {
 
     useEffectDidMount { controller.fetch(ids) }
 
-    penlightModal { attrs.model = uiModel }
+    children(props, uiModel)
 }
+
+external interface FullscreenPreviewContainerProps : RConsumerProps<UiModel.FullscreenPreview>
 
 private enum class FullscreenPreviewActionType {
     ON_SUCCESS, ON_FAILURE
