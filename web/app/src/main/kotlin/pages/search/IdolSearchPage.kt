@@ -15,6 +15,7 @@ import utilities.isMobile
 fun RBuilder.IdolSearchPage(handler: RHandler<IdolSearchPageProps>) = child(IdolSearchPageComponent, handler = handler)
 
 private val IdolSearchPageComponent = functionalComponent<IdolSearchPageProps> { props ->
+    // TODO Use useMediaQuery
     val (openedSearchBox, setOpenedSearchBox) = useState(!isMobile)
 
     appFrame {

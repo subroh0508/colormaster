@@ -5,6 +5,7 @@ import kotlinx.css.*
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.UiModel.Search.IdolColorItem
+import org.w3c.dom.HTMLDivElement
 import react.*
 import react.dom.div
 
@@ -12,16 +13,24 @@ fun RBuilder.idolColorGrids(handler: RHandler<IdolColorGridsProps>) = child(Idol
 
 private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> { props ->
     val classes = useStyles()
+    val containerRef = useRef<HTMLDivElement?>(null)
 
     div(classes.root) {
         div(classes.container) {
+            ref = containerRef
+
             props.items.forEach { (idolColor, selected) ->
                 colorGridItem {
+                    // TODO Change other way
+                    val columns = (containerRef.current?.clientWidth ?: 200) / 200
+                    val width = containerRef.current?.let { it.clientWidth / columns - 8 }
+
                     attrs {
                         item = idolColor
                         isSelected = selected
                         onClick = props.onClick
                         onDoubleClick = props.onDoubleClick
+                        this.width = width
                     }
                 }
             }

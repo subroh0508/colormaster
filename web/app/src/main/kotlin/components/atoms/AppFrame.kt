@@ -1,11 +1,13 @@
 package components.atoms
 
 import kotlinx.css.*
+import kotlinx.css.properties.BoxShadows
 import materialui.components.appbar.appBar
 import materialui.components.appbar.enums.AppBarColor
 import materialui.components.appbar.enums.AppBarPosition
 import materialui.styles.makeStyles
 import materialui.styles.mixins.toolbar
+import materialui.styles.palette.default
 import react.*
 import react.dom.div
 
@@ -51,7 +53,9 @@ private val useStyles = makeStyles<AppFrameStyle> {
         flexGrow = 1.0
     }
     "appBar" {
-        zIndex = theme.zIndex.drawer.toInt()
+        zIndex = 0
+        backgroundColor = theme.palette.background.default
+        boxShadow = BoxShadows.none
     }
     "toolbar"(theme.mixins.toolbar)
 }
