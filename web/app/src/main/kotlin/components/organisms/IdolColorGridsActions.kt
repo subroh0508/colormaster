@@ -18,6 +18,8 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
     val classes = useStyle()
 
     buttonGroup {
+        attrs.classes(classes.root)
+
         button {
             attrs {
                 variant = ButtonVariant.outlined
@@ -85,8 +87,11 @@ external interface IdolColorGridsActionsStyle {
 
 private val useStyle = makeStyles<IdolColorGridsActionsStyle> {
     "root" {
-        flexGrow = 1.0
-        display = Display.flex
-        margin(8.px)
+        width = 100.pct
+        padding(8.px)
+
+        descendants("button") {
+            width = 100.pct / 3
+        }
     }
 }
