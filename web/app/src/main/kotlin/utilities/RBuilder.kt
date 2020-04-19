@@ -3,19 +3,14 @@ package utilities
 import kotlinext.js.jsObject
 import react.*
 
-typealias RConsumerHandler<T> = RBuilder.(T) -> Unit
-
-fun <T, P: RConsumerProps<T>> RBuilder.child(
+fun <T, P: RProps> RBuilder.child(
     functionalComponent: FunctionalComponent<P>,
     props: P = jsObject {},
-    handler: RConsumerHandler<T>
+    handler: RBuilder.(T) -> Unit
 ): ReactElement {
-    return child(functionalComponent, props.apply {
-        children = { value: T -> buildElement { handler(value) } as Any }
-    })
+    return child(functionalComponent, props, listOf { value: T -> buildElement { handler(value) } })
 }
 
-fun <T, P: RConsumerProps<T>> RBuilder.children(props: P, t: T) {
-    childList.add(props.children(t))
+fun <T, P: RProps> RBuilder.children(props: P, t: T) {
+    childList.add((props.children as (T) -> Any).invoke(t))
 }
-

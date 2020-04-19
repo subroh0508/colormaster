@@ -21,7 +21,7 @@ import utilities.useEffectDidMount
 
 @Suppress("FunctionName")
 fun RBuilder.PenlightContainer() = FullscreenPreviewControllerContext.Provider(FullscreenPreviewController) {
-    child(FullscreenPreviewContainerComponentImpl) { model ->
+    child(FullscreenPreviewContainerComponentImpl) { model: UiModel.FullscreenPreview ->
         previewModal {
             attrs.model = model
             attrs.PreviewComponent = FullscreenPenlightComponent
@@ -31,7 +31,7 @@ fun RBuilder.PenlightContainer() = FullscreenPreviewControllerContext.Provider(F
 
 @Suppress("FunctionName")
 fun RBuilder.PreviewContainer() = FullscreenPreviewControllerContext.Provider(FullscreenPreviewController) {
-    child(FullscreenPreviewContainerComponentImpl) { model ->
+    child(FullscreenPreviewContainerComponentImpl) { model: UiModel.FullscreenPreview ->
         previewModal {
             attrs.model = model
             attrs.PreviewComponent = FullscreenPreviewComponent
@@ -39,7 +39,7 @@ fun RBuilder.PreviewContainer() = FullscreenPreviewControllerContext.Provider(Fu
     }
 }
 
-private val FullscreenPreviewContainerComponentImpl = functionalComponent<FullscreenPreviewContainerProps> { props ->
+private val FullscreenPreviewContainerComponentImpl = functionalComponent<RProps> { props ->
     val ids = useQuery().getAll("id").toList()
 
     val controller = useContext(FullscreenPreviewControllerContext)
@@ -59,8 +59,6 @@ private val FullscreenPreviewContainerComponentImpl = functionalComponent<Fullsc
 
     children(props, uiModel)
 }
-
-external interface FullscreenPreviewContainerProps : RConsumerProps<UiModel.FullscreenPreview>
 
 private enum class FullscreenPreviewActionType {
     ON_SUCCESS, ON_FAILURE
