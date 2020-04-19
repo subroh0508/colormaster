@@ -11,7 +11,7 @@ object Libraries {
     }
 
     object Kotlin {
-        const val version = "1.3.70"
+        const val version = "1.3.72"
 
         const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
         const val android = "org.jetbrains.kotlin:kotlin-stdlib:$version"
@@ -115,21 +115,24 @@ object Libraries {
     }
 
     object JsWrappers {
-        const val reactVersion = "${Npm.reactVersion}-pre.94-kotlin-${Kotlin.version}"
+        const val reactVersion = "${Npm.reactVersion}-pre.97-kotlin-${Kotlin.version}"
         const val react = "org.jetbrains:kotlin-react:$reactVersion"
         const val reactDom = "org.jetbrains:kotlin-react-dom:$reactVersion"
 
-        const val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-pre.94-kotlin-${Kotlin.version}"
+        const val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-pre.97-kotlin-${Kotlin.version}"
         const val reactRouterDom = "org.jetbrains:kotlin-react-router-dom:$reactRouterDomVersion"
 
-        const val cssVersion = "1.0.0-pre.94-kotlin-${Kotlin.version}"
+        const val cssVersion = "1.0.0-pre.97-kotlin-${Kotlin.version}"
         const val css = "org.jetbrains:kotlin-css-js:$cssVersion"
 
-        const val styledVersion = "1.0.0-pre.94-kotlin-${Kotlin.version}"
+        const val styledVersion = "1.0.0-pre.97-kotlin-${Kotlin.version}"
         const val styled = "org.jetbrains:kotlin-styled:$styledVersion"
 
+        const val extensionsVersion = "1.0.1-pre.97-kotlin-${Kotlin.version}"
+        const val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
+
         object MaterialUi {
-            const val version = "0.3.6"
+            const val version = "0.3.7"
             const val core = "subroh0508.net.kotlinmaterialui:core:$version"
             const val lab = "subroh0508.net.kotlinmaterialui:lab:$version"
         }

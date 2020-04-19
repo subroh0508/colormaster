@@ -49,6 +49,7 @@ kotlin {
                 implementation(Libraries.JsWrappers.reactRouterDom)
                 implementation(Libraries.JsWrappers.css)
                 implementation(Libraries.JsWrappers.styled)
+                implementation(Libraries.JsWrappers.extensions)
                 implementation(Libraries.JsWrappers.MaterialUi.core)
                 implementation(Libraries.JsWrappers.MaterialUi.lab)
 
