@@ -180,7 +180,10 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
     }
     "header" {
         height = 64.px
-        // height = theme.mixins.toolbar.height <- ClassCastException
+        // height = theme.mixins.toolbar.height <-
+        display = Display.flex
+        justifyContent = JustifyContent.center
+        alignItems = Align.center
     }
     "toolbar"(theme.mixins.toolbar)
     "expandIcon" {

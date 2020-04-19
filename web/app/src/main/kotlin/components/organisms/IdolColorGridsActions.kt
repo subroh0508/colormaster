@@ -6,6 +6,7 @@ import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.buttonGroup
+import materialui.components.icon.icon
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.IdolColor
 import react.*
@@ -16,36 +17,59 @@ fun RBuilder.idolColorGridsActions(handler: RHandler<IdolColorGridsActionsProps>
 private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsActionsProps> { props ->
     val classes = useStyle()
 
-    div(classes.root) {
-        buttonGroup {
-            attrs.classes(classes.buttonGroup)
-
-            button {
-                attrs {
-                    variant = ButtonVariant.outlined
-                    disabled = props.selected.isEmpty()
-                    onClickFunction = { props.onClickPreview() }
-                }
-
-                +"プレビュー"
+    buttonGroup {
+        button {
+            attrs {
+                variant = ButtonVariant.outlined
+                disabled = props.selected.isEmpty()
+                onClickFunction = { props.onClickPreview() }
+                startIcon { icon { +"palette_icon" } }
             }
 
-            button {
-                attrs {
-                    classes(classes.checkBox)
-                    disableRipple = true
-                    disableTouchRipple = true
-                }
+            +"プレビュー"
+        }
 
-                supportableCheckBox {
-                    attrs {
-                        clearedAll = props.selected.isNotEmpty()
-                        onClickCheckedAll = { props.onClickSelectAll(true) }
-                        onClickClearedAll = { props.onClickSelectAll(false) }
-                    }
+        button {
+            attrs {
+                variant = ButtonVariant.outlined
+                disabled = props.selected.isEmpty()
+                onClickFunction = { props.onClickPreview() }
+                startIcon { icon { +"highlight_icon" } }
+            }
+
+            +"ペンライト"
+        }
+
+        val checkAll = props.selected.isEmpty()
+        button {
+            attrs {
+                variant = ButtonVariant.outlined
+                onClickFunction = { props.onClickSelectAll(checkAll) }
+                startIcon { icon {
+                    + if(checkAll) "check_box_outline_blank_icon" else "indeterminate_check_box_icon"
+                } }
+            }
+
+            + if (checkAll) "すべて" else "選択解除"
+        }
+
+        /*
+        button {
+            attrs {
+                classes(classes.checkBox)
+                disableRipple = true
+                disableTouchRipple = true
+            }
+
+            supportableCheckBox {
+                attrs {
+                    clearedAll = props.selected.isNotEmpty()
+                    onClickCheckedAll = { props.onClickSelectAll(true) }
+                    onClickClearedAll = { props.onClickSelectAll(false) }
                 }
             }
         }
+        */
     }
 }
 
@@ -57,8 +81,6 @@ external interface IdolColorGridsActionsProps : RProps {
 
 external interface IdolColorGridsActionsStyle {
     val root: String
-    val buttonGroup: String
-    val checkBox: String
 }
 
 private val useStyle = makeStyles<IdolColorGridsActionsStyle> {
@@ -66,13 +88,5 @@ private val useStyle = makeStyles<IdolColorGridsActionsStyle> {
         flexGrow = 1.0
         display = Display.flex
         margin(8.px)
-    }
-    "buttonGroup" {
-        marginLeft = LinearDimension.auto
-    }
-    "checkBox" {
-        descendants("button") {
-            padding(0.px)
-        }
     }
 }
