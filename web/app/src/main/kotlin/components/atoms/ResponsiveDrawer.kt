@@ -84,23 +84,13 @@ private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
         ) {
             attrs {
                 variant = DrawerVariant.persistent
-                open = props.opened
+                open = true
                 anchor = props.anchor
-                onClose = { props.onClose() }
             }
 
-            div(classes.toolbar) {}
-            if (props.opened) {
-                iconButton {
-                    attrs {
-                        classes(classes.expandIcon)
-                        icon { +"chevron_${if (props.anchor == DrawerAnchor.left) "left" else "right"}_icon" }
-
-                        onClickFunction = { props.onClose() }
-                    }
-                }
+            div(classes.header) {
+                props.HeaderComponent?.let(::child)
             }
-
             props.children()
         }
     }
@@ -161,12 +151,20 @@ private val HiddenSmUpX = functionalComponent<ResponsiveDrawerProps> { props ->
 external interface ResponsiveDrawerProps : RProps {
     var anchor: DrawerAnchor
     var opened: Boolean
+    @Suppress("PropertyName")
+    var HeaderComponent: ReactElement?
     var onClose: () -> Unit
+}
+
+@Suppress("FunctionName")
+fun ResponsiveDrawerProps.HeaderComponent(block: RBuilder.() -> Unit) {
+    HeaderComponent = buildElement(block)
 }
 
 private external interface ResponsiveDrawerStyle {
     val open: String
     val close: String
+    val header: String
     val toolbar: String
     val expandIcon: String
 }
@@ -179,6 +177,10 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
     "close" {
         width = theme.spacing(6)
         flexShrink = 0.0
+    }
+    "header" {
+        height = 64.px
+        // height = theme.mixins.toolbar.height <- ClassCastException
     }
     "toolbar"(theme.mixins.toolbar)
     "expandIcon" {

@@ -9,12 +9,13 @@ import components.templates.idolSearchToolbar
 import containers.IdolSearchContainer
 import kotlinext.js.Object
 import react.*
+import utilities.isMobile
 
 @Suppress("FunctionName")
 fun RBuilder.IdolSearchPage(handler: RHandler<IdolSearchPageProps>) = child(IdolSearchPageComponent, handler = handler)
 
 private val IdolSearchPageComponent = functionalComponent<IdolSearchPageProps> { props ->
-    val (openedSearchBox, setOpenedSearchBox) = useState(false)
+    val (openedSearchBox, setOpenedSearchBox) = useState(!isMobile)
 
     appFrame {
         attrs.ToolbarComponent {

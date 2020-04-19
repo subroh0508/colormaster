@@ -51,7 +51,7 @@ private val useStyles = makeStyles<AppFrameStyle> {
         flexGrow = 1.0
     }
     "appBar" {
-        zIndex = theme.zIndex.drawer.toInt() + 1
+        zIndex = theme.zIndex.drawer.toInt()
     }
     "toolbar"(theme.mixins.toolbar)
 }
