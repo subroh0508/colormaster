@@ -6,7 +6,7 @@ import react.RBuilder
 import react.router.dom.browserRouter
 import react.router.dom.route
 import react.router.dom.switch
-import utilities.useLocation
+import react.router.dom.useLocation
 
 fun RBuilder.routing() = browserRouter {
     switch {
