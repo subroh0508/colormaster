@@ -92,8 +92,6 @@ private inline fun throttleFirstMouseEventChannel(
 external interface ColorGridItem : RProps {
     var item: IdolColor
     var isSelected: Boolean
-    // TODO remove
-    var width: Int?
     var onClick: (IdolColor, Boolean) -> Unit
     var onDoubleClick: (IdolColor) -> Unit
 }
@@ -115,10 +113,6 @@ private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
         width = 100.pct
         color = if (props.item.isBrighter) Color.black else Color.white
         margin(4.px)
-
-        (theme.breakpoints.up(Breakpoint.sm)) {
-            width = (props.width ?: 200).px
-        }
 
         descendants(".$COLOR_PREVIEW_ITEM_CLASS_NAME") {
             height = 50.px
