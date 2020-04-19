@@ -15,14 +15,16 @@ import net.subroh0508.colormaster.model.ui.idol.Filters
 import react.*
 import react.dom.div
 
-fun RBuilder.idolSearchPanel(props: IdolSearchPanelProps) = child(IdolSearchPanelComponent, props)
+fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(IdolSearchPanelComponent, handler = handler)
 
 private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps> { props ->
     val classes = useStyles()
     val uiModel = props.model
 
+    val panelStyle = "${classes.panel} ${if (props.isOpenedSearchBox) classes.panelShift else ""}"
+
     div(classes.root) {
-        div(classes.panel) {
+        div(panelStyle) {
             alert(uiModel)
             idolColorGridsActions {
                 attrs.selected = uiModel.selected
@@ -37,6 +39,8 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
         }
         responsiveDrawer {
             attrs.anchor = DrawerAnchor.right
+            attrs.opened = props.isOpenedSearchBox
+            attrs.onClose = props.onCloseSearchBox
 
             idolSearchBox {
                 attrs.filters = uiModel.filters
@@ -66,6 +70,7 @@ private fun RBuilder.alert(uiModel: UiModel.Search) = when {
 
 external interface IdolSearchPanelProps : RProps {
     var model: UiModel.Search
+    var isOpenedSearchBox: Boolean
     var onChangeIdolName: (String) -> Unit
     var onSelectTitle: (Titles, Boolean) -> Unit
     var onSelectType: (Types, Boolean) -> Unit
@@ -73,11 +78,13 @@ external interface IdolSearchPanelProps : RProps {
     var onDoubleClickIdolColor: (IdolColor) -> Unit
     var onClickPreview: () -> Unit
     var onClickSelectAll: (Boolean) -> Unit
+    var onCloseSearchBox: () -> Unit
 }
 
 private external interface IdolSearchPanelStyle {
     val root: String
     val panel: String
+    val panelShift: String
 }
 
 private val useStyles = makeStyles<IdolSearchPanelStyle> {
@@ -86,5 +93,9 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
     }
     "panel" {
         flexGrow = 1.0
+        marginRight = -DRAWER_WIDTH
+    }
+    "panelShift" {
+        marginRight = 0.px
     }
 }

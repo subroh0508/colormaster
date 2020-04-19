@@ -7,6 +7,7 @@ import components.templates.IdolSearchToolbarProps
 import components.templates.idolSearchPanel
 import components.templates.idolSearchToolbar
 import containers.IdolSearchContainer
+import kotlinext.js.Object
 import react.*
 
 @Suppress("FunctionName")
@@ -23,7 +24,11 @@ private val IdolSearchPageComponent = functionalComponent<IdolSearchPageProps> {
             }
         }
 
-        idolSearchPanel(props)
+        idolSearchPanel {
+            Object.assign(attrs, props)
+            attrs.isOpenedSearchBox = openedSearchBox
+            attrs.onCloseSearchBox = { setOpenedSearchBox(false) }
+        }
     }
 }
 

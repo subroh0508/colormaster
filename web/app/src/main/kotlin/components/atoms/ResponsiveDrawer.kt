@@ -15,15 +15,40 @@ import materialui.components.modal.ModalProps
 import materialui.styles.makeStyles
 import materialui.styles.mixins.toolbar
 import materialui.styles.muitheme.spacing
+import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+
+val DRAWER_WIDTH = 408.px
 
 fun RBuilder.responsiveDrawer(handler: RHandler<ResponsiveDrawerProps>) {
     child(HiddenSmUp, handler = handler)
     child(HiddenXsDown, handler = handler)
 }
 
-private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
+private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
+    val classes = useStyles()
+
+    hidden {
+        attrs { smUp = true }
+
+        drawer(
+            DrawerStyle.root to classes.open,
+            DrawerStyle.paper to classes.open
+        ) {
+            attrs {
+                variant = DrawerVariant.permanent
+                anchor = props.anchor
+            }
+
+            div(classes.toolbar) {}
+
+            props.children()
+        }
+    }
+}
+
+private val HiddenXsDownX = functionalComponent<ResponsiveDrawerProps> { props ->
     val classes = useStyles()
 
     hidden {
@@ -45,7 +70,43 @@ private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
     }
 }
 
-private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
+private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
+    val classes = useStyles()
+
+    hidden {
+        attrs {
+            xsDown = true
+        }
+
+        drawer(
+            DrawerStyle.root to classes.open,
+            DrawerStyle.paper to classes.open
+        ) {
+            attrs {
+                variant = DrawerVariant.persistent
+                open = props.opened
+                anchor = props.anchor
+                onClose = { props.onClose() }
+            }
+
+            div(classes.toolbar) {}
+            if (props.opened) {
+                iconButton {
+                    attrs {
+                        classes(classes.expandIcon)
+                        icon { +"chevron_${if (props.anchor == DrawerAnchor.left) "left" else "right"}_icon" }
+
+                        onClickFunction = { props.onClose() }
+                    }
+                }
+            }
+
+            props.children()
+        }
+    }
+}
+
+private val HiddenSmUpX = functionalComponent<ResponsiveDrawerProps> { props ->
     val classes = useStyles()
     val (opened, openDrawer) = useState(false)
 
@@ -62,6 +123,7 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
                 variant = DrawerVariant.persistent
                 open = !opened
                 anchor = props.anchor
+                onClose = { props.onClose() }
             }
 
             div(classes.toolbar) {}
@@ -70,7 +132,7 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
                     classes(classes.expandIcon)
                     icon { +"chevron_${if (props.anchor == DrawerAnchor.left) "right" else "left"}_icon" }
 
-                    onClickFunction = { openDrawer(true) }
+                    onClickFunction = { props.onClose() }
                 }
             }
         }
@@ -98,6 +160,8 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
 
 external interface ResponsiveDrawerProps : RProps {
     var anchor: DrawerAnchor
+    var opened: Boolean
+    var onClose: () -> Unit
 }
 
 private external interface ResponsiveDrawerStyle {
@@ -106,8 +170,6 @@ private external interface ResponsiveDrawerStyle {
     val toolbar: String
     val expandIcon: String
 }
-
-private val DRAWER_WIDTH = 240.px
 
 private val useStyles = makeStyles<ResponsiveDrawerStyle> {
     "open" {
