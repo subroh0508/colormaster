@@ -11,6 +11,7 @@ import net.subroh0508.colormaster.model.ui.idol.Filters
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.kodein.di.KodeinAware
 import org.kodein.di.erased.instance
+import pages.search.IdolSearchPage
 import react.*
 import react.router.dom.useHistory
 import utilities.*
@@ -45,7 +46,7 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
     useEffectDidMount { controller.search() }
     useDebounceEffect(uiModel.filters, 500) { controller.search(it) }
 
-    idolSearchPanel {
+    IdolSearchPage {
         attrs.model = uiModel
         attrs.onChangeIdolName = { name -> onChangeIdolName(uiModel.filters, name) }
         attrs.onSelectTitle = { title, checked -> onSelectTitle(uiModel.filters, title, checked) }

@@ -2,14 +2,17 @@ package pages.search
 
 import components.atoms.ToolbarComponent
 import components.atoms.appFrame
+import components.templates.IdolSearchPanelProps
+import components.templates.IdolSearchToolbarProps
+import components.templates.idolSearchPanel
 import components.templates.idolSearchToolbar
 import containers.IdolSearchContainer
 import react.*
 
 @Suppress("FunctionName")
-fun RBuilder.IdolSearchPage() = child(IdolSearchPageComponent)
+fun RBuilder.IdolSearchPage(handler: RHandler<IdolSearchPageProps>) = child(IdolSearchPageComponent, handler = handler)
 
-private val IdolSearchPageComponent = functionalComponent<RProps> {
+private val IdolSearchPageComponent = functionalComponent<IdolSearchPageProps> { props ->
     val (openedSearchBox, setOpenedSearchBox) = useState(false)
 
     appFrame {
@@ -20,6 +23,8 @@ private val IdolSearchPageComponent = functionalComponent<RProps> {
             }
         }
 
-        IdolSearchContainer()
+        idolSearchPanel(props)
     }
 }
+
+external interface IdolSearchPageProps : IdolSearchPanelProps

@@ -15,7 +15,7 @@ import net.subroh0508.colormaster.model.ui.idol.Filters
 import react.*
 import react.dom.div
 
-fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(IdolSearchPanelComponent, handler = handler)
+fun RBuilder.idolSearchPanel(props: IdolSearchPanelProps) = child(IdolSearchPanelComponent, props)
 
 private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps> { props ->
     val classes = useStyles()
