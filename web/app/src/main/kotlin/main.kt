@@ -1,10 +1,7 @@
-import components.templates.appFrame
-import containers.IdolSearchContainer
 import kotlinx.coroutines.MainScope
 import materialui.components.cssbaseline.cssBaseline
 import net.subroh0508.colormaster.components.core.AppModule
 import org.kodein.di.Kodein
-import react.child
 import react.dom.render
 import kotlin.browser.document
 import kotlin.browser.window
@@ -16,7 +13,7 @@ fun main() {
     window.onload = {
         render(document.getElementById("root")) {
             cssBaseline {  }
-            appFrame { routing() }
+            routing()
         }
     }
 }
