@@ -24,16 +24,8 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     val panelStyle = "${classes.panel} ${if (props.isOpenedSearchBox) classes.panelShift else ""}"
 
     div(classes.root) {
-        div(panelStyle) {
-            alert(uiModel)
-            idolColorGrids {
-                attrs.items = uiModel.items
-                attrs.onClick = props.onClickIdolColor
-                attrs.onDoubleClick = props.onDoubleClickIdolColor
-            }
-        }
         responsiveDrawer {
-            attrs.anchor = DrawerAnchor.right
+            attrs.anchor = DrawerAnchor.left
             attrs.opened = props.isOpenedSearchBox
             attrs.onClose = props.onCloseSearchBox
             attrs.HeaderComponent {
@@ -49,6 +41,15 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
                 attrs.onChangeIdolName = props.onChangeIdolName
                 attrs.onSelectTitle = props.onSelectTitle
                 attrs.onSelectType = props.onSelectType
+            }
+        }
+
+        div(panelStyle) {
+            alert(uiModel)
+            idolColorGrids {
+                attrs.items = uiModel.items
+                attrs.onClick = props.onClickIdolColor
+                attrs.onDoubleClick = props.onDoubleClickIdolColor
             }
         }
     }
@@ -95,9 +96,9 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
     }
     "panel" {
         flexGrow = 1.0
-        marginRight = -DRAWER_WIDTH
+        marginLeft = -DRAWER_WIDTH
     }
     "panelShift" {
-        marginRight = 0.px
+        marginLeft = 0.px
     }
 }

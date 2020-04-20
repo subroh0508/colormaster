@@ -14,8 +14,6 @@ import kotlinx.css.properties.*
 import kotlinx.html.js.*
 import materialui.components.icon.icon
 import materialui.components.paper.paper
-import materialui.styles.breakpoint.Breakpoint
-import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.utilities.throttleFirst
