@@ -115,35 +115,37 @@ object Libraries {
     }
 
     object JsWrappers {
-        const val reactVersion = "${Npm.reactVersion}-pre.97-kotlin-${Kotlin.version}"
+        const val version = "pre.100-kotlin-${Kotlin.version}"
+
+        const val reactVersion = "${Npm.reactVersion}-$version"
         const val react = "org.jetbrains:kotlin-react:$reactVersion"
         const val reactDom = "org.jetbrains:kotlin-react-dom:$reactVersion"
 
-        const val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-pre.97-kotlin-${Kotlin.version}"
+        const val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-$version"
         const val reactRouterDom = "org.jetbrains:kotlin-react-router-dom:$reactRouterDomVersion"
 
-        const val cssVersion = "1.0.0-pre.97-kotlin-${Kotlin.version}"
+        const val cssVersion = "1.0.0-$version"
         const val css = "org.jetbrains:kotlin-css-js:$cssVersion"
 
-        const val styledVersion = "1.0.0-pre.97-kotlin-${Kotlin.version}"
+        const val styledVersion = "1.0.0-$version"
         const val styled = "org.jetbrains:kotlin-styled:$styledVersion"
 
-        const val extensionsVersion = "1.0.1-pre.97-kotlin-${Kotlin.version}"
+        const val extensionsVersion = "1.0.1-$version"
         const val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.3.7"
+            const val version = "0.3.9"
             const val core = "subroh0508.net.kotlinmaterialui:core:$version"
             const val lab = "subroh0508.net.kotlinmaterialui:lab:$version"
         }
     }
 
     object Npm {
-        const val reactVersion = "16.13.0"
+        const val reactVersion = "16.13.1"
         const val react = "react"
         const val reactDom = "react-dom"
 
-        const val reactRouterDomVersion = "4.3.1"
+        const val reactRouterDomVersion = "5.1.2"
         const val reactRouterDom = "react-router-dom"
 
         const val styledComponentVersion = "^4.3.2"
