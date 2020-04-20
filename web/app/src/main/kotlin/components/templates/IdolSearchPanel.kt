@@ -5,8 +5,16 @@ import components.organisms.idolColorGridsActions
 import components.organisms.idolColorGrids
 import components.organisms.idolSearchBox
 import kotlinx.css.*
+import kotlinx.css.properties.borderBottom
+import kotlinx.css.properties.borderRight
+import kotlinx.css.properties.borderTop
 import materialui.components.drawer.enums.DrawerAnchor
+import materialui.styles.breakpoint.Breakpoint
+import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
+import materialui.styles.mixins.toolbar
+import materialui.styles.palette.divider
+import materialui.styles.palette.paper
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.Titles
 import net.subroh0508.colormaster.model.Types
@@ -29,6 +37,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             attrs.opened = props.isOpenedSearchBox
             attrs.onClose = props.onCloseSearchBox
 
+            div(classes.searchBoxTop) {}
             idolSearchBox {
                 attrs.filters = uiModel.filters
                 attrs.onChangeIdolName = props.onChangeIdolName
@@ -38,16 +47,20 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
         }
 
         div(panelStyle) {
-            idolColorGridsActions {
-                attrs.selected = uiModel.selected
-                attrs.onClickPreview = props.onClickPreview
-                attrs.onClickSelectAll = props.onClickSelectAll
-            }
             alert(uiModel)
             idolColorGrids {
                 attrs.items = uiModel.items
                 attrs.onClick = props.onClickIdolColor
                 attrs.onDoubleClick = props.onDoubleClickIdolColor
+            }
+        }
+
+        div(classes.actions) {
+            div(classes.toolbar) {}
+            idolColorGridsActions {
+                attrs.selected = uiModel.selected
+                attrs.onClickPreview = props.onClickPreview
+                attrs.onClickSelectAll = props.onClickSelectAll
             }
         }
     }
@@ -86,6 +99,9 @@ private external interface IdolSearchPanelStyle {
     val root: String
     val panel: String
     val panelShift: String
+    val toolbar: String
+    val actions: String
+    val searchBoxTop: String
 }
 
 private val useStyles = makeStyles<IdolSearchPanelStyle> {
@@ -98,5 +114,30 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
     }
     "panelShift" {
         marginLeft = 0.px
+    }
+    "toolbar"(theme.mixins.toolbar)
+    "actions" {
+        position = Position.fixed
+        left = 0.px
+        zIndex = theme.zIndex.drawer.toInt() + 1
+
+        (theme.breakpoints.up(Breakpoint.sm)) {
+            top = 0.px
+        }
+
+        children("div") {
+            lastChild {
+                padding(8.px, 16.px)
+                backgroundColor = theme.palette.background.paper
+                borderRadius = 0.px
+
+                (theme.breakpoints.up(Breakpoint.sm)) {
+                    width = DRAWER_WIDTH
+                }
+            }
+        }
+    }
+    "searchBoxTop" {
+        height = 48.px
     }
 }

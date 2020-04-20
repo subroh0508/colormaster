@@ -62,8 +62,7 @@ private external interface IdolColorGridsStyle {
 
 private val useStyles = makeStyles<IdolColorGridsStyle, GridsWidth> {
     "root" {
-        margin(8.px)
-        paddingTop = 16.px
+        margin(8.px, 4.px)
     }
     "container" { props ->
         flexGrow = 1.0

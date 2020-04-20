@@ -4,6 +4,7 @@ import components.molecules.supportableCheckBox
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
+import materialui.components.button.enums.ButtonSize
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.buttonGroup
 import materialui.components.icon.icon
@@ -23,6 +24,7 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
         button {
             attrs {
                 variant = ButtonVariant.outlined
+                size = ButtonSize.small
                 disabled = props.selected.isEmpty()
                 onClickFunction = { props.onClickPreview() }
                 startIcon { icon { +"palette_icon" } }
@@ -34,6 +36,7 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
         button {
             attrs {
                 variant = ButtonVariant.outlined
+                size = ButtonSize.small
                 disabled = props.selected.isEmpty()
                 onClickFunction = { props.onClickPreview() }
                 startIcon { icon { +"highlight_icon" } }
@@ -46,6 +49,7 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
         button {
             attrs {
                 variant = ButtonVariant.outlined
+                size = ButtonSize.small
                 onClickFunction = { props.onClickSelectAll(checkAll) }
                 startIcon { icon {
                     + if(checkAll) "check_box_outline_blank_icon" else "indeterminate_check_box_icon"
