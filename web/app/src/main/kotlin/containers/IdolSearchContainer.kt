@@ -55,6 +55,7 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
         attrs.onClickSelectAll = { selected -> onSelectAll(selected) }
         attrs.onDoubleClickIdolColor = { item -> turnOnPenlight(listOf(item)) }
         attrs.onClickPreview = { preview(uiModel.selected) }
+        attrs.onClickPenlight = { turnOnPenlight(uiModel.selected) }
     }
 }
 

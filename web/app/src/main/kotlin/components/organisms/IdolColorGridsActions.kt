@@ -38,7 +38,7 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
                 variant = ButtonVariant.outlined
                 size = ButtonSize.small
                 disabled = props.selected.isEmpty()
-                onClickFunction = { props.onClickPreview() }
+                onClickFunction = { props.onClickPenlight() }
                 startIcon { icon { +"highlight_icon" } }
             }
 
@@ -58,30 +58,13 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
 
             + if (checkAll) "すべて" else "選択解除"
         }
-
-        /*
-        button {
-            attrs {
-                classes(classes.checkBox)
-                disableRipple = true
-                disableTouchRipple = true
-            }
-
-            supportableCheckBox {
-                attrs {
-                    clearedAll = props.selected.isNotEmpty()
-                    onClickCheckedAll = { props.onClickSelectAll(true) }
-                    onClickClearedAll = { props.onClickSelectAll(false) }
-                }
-            }
-        }
-        */
     }
 }
 
 external interface IdolColorGridsActionsProps : RProps {
     var selected: List<IdolColor>
     var onClickPreview: () -> Unit
+    var onClickPenlight: () -> Unit
     var onClickSelectAll: (Boolean) -> Unit
 }
 

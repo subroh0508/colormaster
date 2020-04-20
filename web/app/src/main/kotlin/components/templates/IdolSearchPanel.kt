@@ -60,6 +60,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             idolColorGridsActions {
                 attrs.selected = uiModel.selected
                 attrs.onClickPreview = props.onClickPreview
+                attrs.onClickPenlight = props.onClickPenlight
                 attrs.onClickSelectAll = props.onClickSelectAll
             }
         }
@@ -91,6 +92,7 @@ external interface IdolSearchPanelProps : RProps {
     var onClickIdolColor: (IdolColor, Boolean) -> Unit
     var onDoubleClickIdolColor: (IdolColor) -> Unit
     var onClickPreview: () -> Unit
+    var onClickPenlight: () -> Unit
     var onClickSelectAll: (Boolean) -> Unit
     var onCloseSearchBox: () -> Unit
 }
@@ -129,6 +131,7 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
             lastChild {
                 padding(8.px, 16.px)
                 backgroundColor = theme.palette.background.paper
+                borderRight(1.px, BorderStyle.solid, theme.palette.divider)
                 borderRadius = 0.px
 
                 (theme.breakpoints.up(Breakpoint.sm)) {
