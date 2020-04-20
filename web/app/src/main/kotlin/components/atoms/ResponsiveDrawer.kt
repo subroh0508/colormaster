@@ -88,9 +88,7 @@ private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
                 anchor = props.anchor
             }
 
-            div(classes.header) {
-                props.HeaderComponent?.let(::child)
-            }
+            div(classes.toolbar) {}
             props.children()
         }
     }
@@ -151,20 +149,12 @@ private val HiddenSmUpX = functionalComponent<ResponsiveDrawerProps> { props ->
 external interface ResponsiveDrawerProps : RProps {
     var anchor: DrawerAnchor
     var opened: Boolean
-    @Suppress("PropertyName")
-    var HeaderComponent: ReactElement?
     var onClose: () -> Unit
-}
-
-@Suppress("FunctionName")
-fun ResponsiveDrawerProps.HeaderComponent(block: RBuilder.() -> Unit) {
-    HeaderComponent = buildElement(block)
 }
 
 private external interface ResponsiveDrawerStyle {
     val open: String
     val close: String
-    val header: String
     val toolbar: String
     val expandIcon: String
 }
@@ -177,13 +167,6 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
     "close" {
         width = theme.spacing(6)
         flexShrink = 0.0
-    }
-    "header" {
-        height = 64.px
-        // height = theme.mixins.toolbar.height <- ClassCastException
-        display = Display.flex
-        justifyContent = JustifyContent.center
-        alignItems = Align.center
     }
     "toolbar"(theme.mixins.toolbar)
     "expandIcon" {

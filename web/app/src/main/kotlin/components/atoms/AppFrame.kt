@@ -5,9 +5,10 @@ import kotlinx.css.properties.BoxShadows
 import materialui.components.appbar.appBar
 import materialui.components.appbar.enums.AppBarColor
 import materialui.components.appbar.enums.AppBarPosition
+import materialui.styles.breakpoint.Breakpoint
+import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
-import materialui.styles.mixins.toolbar
-import materialui.styles.palette.default
+import materialui.styles.palette.paper
 import react.*
 import react.dom.div
 
@@ -28,7 +29,6 @@ private val AppFrameComponent = functionalComponent<AppFrameProps> { props ->
         }
     }
 
-    div(classes.toolbar) {}
     props.children()
 }
 
@@ -45,7 +45,6 @@ fun AppFrameProps.ToolbarComponent(block: RBuilder.() -> Unit) {
 private external interface AppFrameStyle {
     val root: String
     val appBar: String
-    val toolbar: String
 }
 
 private val useStyles = makeStyles<AppFrameStyle> {
@@ -53,9 +52,13 @@ private val useStyles = makeStyles<AppFrameStyle> {
         flexGrow = 1.0
     }
     "appBar" {
-        zIndex = 0
-        backgroundColor = theme.palette.background.default
+        zIndex = theme.zIndex.drawer.toInt() + 1
+        backgroundColor = theme.palette.background.paper
         boxShadow = BoxShadows.none
+
+        (theme.breakpoints.up(Breakpoint.sm)) {
+            left = 0.px
+            width = DRAWER_WIDTH - 1.px
+        }
     }
-    "toolbar"(theme.mixins.toolbar)
 }

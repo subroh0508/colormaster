@@ -28,13 +28,6 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             attrs.anchor = DrawerAnchor.left
             attrs.opened = props.isOpenedSearchBox
             attrs.onClose = props.onCloseSearchBox
-            attrs.HeaderComponent {
-                idolColorGridsActions {
-                    attrs.selected = uiModel.selected
-                    attrs.onClickPreview = props.onClickPreview
-                    attrs.onClickSelectAll = props.onClickSelectAll
-                }
-            }
 
             idolSearchBox {
                 attrs.filters = uiModel.filters
@@ -45,6 +38,11 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
         }
 
         div(panelStyle) {
+            idolColorGridsActions {
+                attrs.selected = uiModel.selected
+                attrs.onClickPreview = props.onClickPreview
+                attrs.onClickSelectAll = props.onClickSelectAll
+            }
             alert(uiModel)
             idolColorGrids {
                 attrs.items = uiModel.items
