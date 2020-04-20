@@ -5,6 +5,7 @@ import kotlinx.css.marginRight
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.enums.ButtonColor
 import materialui.components.icon.icon
+import materialui.components.iconbutton.enums.IconButtonEdge
 import materialui.components.iconbutton.iconButton
 import materialui.components.toolbar.toolbar
 import materialui.components.typography.enums.TypographyVariant
@@ -24,6 +25,7 @@ private val IdolSearchToolbarComponent = functionalComponent<IdolSearchToolbarPr
             attrs {
                 classes(classes.menuButton)
                 color = ButtonColor.inherit
+                edge = IconButtonEdge.start
             }
 
             icon { +"menu_icon" }
