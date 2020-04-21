@@ -26,9 +26,10 @@ fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(Id
 
 private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps> { props ->
     val classes = useStyles()
+    val isSmUp = useMediaQuery("@media (min-width: 600px)")
     val uiModel = props.model
 
-    val drawerAnchor = if (useMediaQuery("@media (min-width: 600px)")) DrawerAnchor.right else DrawerAnchor.bottom
+    val drawerAnchor = if (isSmUp) DrawerAnchor.right else DrawerAnchor.bottom
     val actionsStyle = "${classes.actions} ${if (props.isOpenedGrids) "" else classes.actionsHide}"
 
     div(classes.root) {
@@ -47,10 +48,10 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             attrs.anchor = drawerAnchor
             attrs.opened = props.isOpenedGrids
             attrs.onClose = props.onCloseGrids
-            attrs.onClickExpandIcon = { props.onClickOpenGrids() }
+            attrs.onClickExpandIcon = props.onClickToggleGrids
 
             div(classes.panel) {
-                alert(uiModel)
+                alert(props.isOpenedGrids, uiModel)
                 idolColorGrids {
                     attrs.items = uiModel.items
                     attrs.onClick = props.onClickIdolColor
@@ -71,16 +72,16 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     }
 }
 
-private fun RBuilder.alert(uiModel: UiModel.Search) = when {
+private fun RBuilder.alert(opened: Boolean, uiModel: UiModel.Search) = when {
     uiModel.isLoading -> warningAlert {
         attrs.message = "検索中..."
     }
     uiModel.filters is Filters.Empty -> infoAlert {
-        attrs.message = "ランダムに10人のアイドルを表示しています"
+        attrs.message = "ランダムに10人表示中"
     }
     uiModel.error != null -> errorAlert {
         attrs.title = "エラー"
-        attrs.message = uiModel.error?.message ?: ""
+        attrs.message = if (opened) uiModel.error?.message ?: "" else ""
     }
     else -> successAlert {
         attrs.message = "検索結果: ${uiModel.items.size}件"
@@ -90,7 +91,7 @@ private fun RBuilder.alert(uiModel: UiModel.Search) = when {
 external interface IdolSearchPanelProps : RProps {
     var model: UiModel.Search
     var isOpenedGrids: Boolean
-    var onClickOpenGrids: () -> Unit
+    var onClickToggleGrids: () -> Unit
     var onChangeIdolName: (String) -> Unit
     var onSelectTitle: (Titles, Boolean) -> Unit
     var onSelectType: (Types, Boolean) -> Unit

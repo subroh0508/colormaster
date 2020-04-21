@@ -49,18 +49,20 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
 
             if (props.opened) {
                 div(classes.toolbar) {}
-            } else {
-                iconButton {
-                    attrs {
-                        classes(classes.expandIcon)
-                        icon { +"expand_less_icon" }
+            }
 
-                        onClickFunction = props.onClickExpandIcon
-                    }
+            iconButton {
+                attrs {
+                    classes(classes.expandIcon)
+                    icon { +"expand_${if (props.opened) "more" else "less"}_icon" }
+
+                    onClickFunction = { props.onClickExpandIcon() }
                 }
             }
 
-            props.children()
+            div(classes.drawerContent) {
+                props.children()
+            }
         }
     }
 }
@@ -83,7 +85,9 @@ private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
                 anchor = props.anchor
             }
 
-            props.children()
+            div(classes.drawerContent) {
+                props.children()
+            }
         }
     }
 }
@@ -92,13 +96,14 @@ external interface ResponsiveDrawerProps : RProps {
     var anchor: DrawerAnchor
     var opened: Boolean
     var onClose: () -> Unit
-    var onClickExpandIcon: (event: Event) -> Unit
+    var onClickExpandIcon: () -> Unit
 }
 
 private external interface ResponsiveDrawerStyle {
     val open: String
     val close: String
     val toolbar: String
+    val drawerContent: String
     val expandIcon: String
 }
 
@@ -106,14 +111,24 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
     "open" {
         (theme.breakpoints.up(Breakpoint.sm)) {
             width = DRAWER_WIDTH_SM_UP
+            flexShrink = 0.0
         }
     }
     "close" {
         height = DRAWER_HEIGHT_CLOSE_XM_UP
     }
-    "toolbar"(theme.mixins.toolbar)
+    "toolbar"(theme.mixins.toolbar.apply {
+        backgroundColor = Color.transparent
+    })
+    "drawerContent" {
+        marginTop = -DRAWER_HEIGHT_CLOSE_XM_UP
+
+        (theme.breakpoints.up(Breakpoint.sm)) {
+            marginTop = 0.px
+        }
+    }
     "expandIcon" {
         width = theme.spacing(3)
-        margin(theme.spacing(1), theme.spacing(2), 12.px, LinearDimension.auto)
+        margin(LinearDimension.auto, theme.spacing(2), LinearDimension.auto, LinearDimension.auto)
     }
 }

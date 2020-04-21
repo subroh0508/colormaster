@@ -27,7 +27,7 @@ private val IdolSearchPageComponent = functionalComponent<IdolSearchPageProps> {
         idolSearchPanel {
             Object.assign(attrs, props)
             attrs.isOpenedGrids = openedGrids
-            attrs.onClickOpenGrids = { setOpenedGrids(true) }
+            attrs.onClickToggleGrids = { setOpenedGrids(!openedGrids) }
             attrs.onCloseGrids = { setOpenedGrids(false) }
         }
     }
