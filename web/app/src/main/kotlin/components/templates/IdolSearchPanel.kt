@@ -1,6 +1,7 @@
 package components.templates
 
 import components.atoms.*
+import components.organisms.IDOL_COLOR_GRID_ACTIONS_CLASS_NAME
 import components.organisms.idolColorGridsActions
 import components.organisms.idolColorGrids
 import components.organisms.idolSearchBox
@@ -118,10 +119,6 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
     }
     "panel" {
         flexGrow = 1.0
-
-        (theme.breakpoints.up(Breakpoint.sm)) {
-            marginRight = -DRAWER_WIDTH_SM_UP
-        }
     }
     "actions" {
         position = Position.fixed
@@ -137,17 +134,16 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
             top = 0.px
         }
 
-        children("div") {
-            lastChild {
-                padding(8.px, 4.px)
-                backgroundColor = theme.palette.background.paper
-                borderTop(1.px, BorderStyle.solid, theme.palette.divider)
-                borderRadius = 0.px
+        descendants(".$IDOL_COLOR_GRID_ACTIONS_CLASS_NAME") {
+            padding(8.px, 4.px)
+            backgroundColor = theme.palette.background.paper
+            borderTop(1.px, BorderStyle.solid, theme.palette.divider)
+            borderRadius = 0.px
 
-                (theme.breakpoints.up(Breakpoint.sm)) {
-                    width = APP_BAR_SM_UP
-                    padding(8.px, 16.px)
-                }
+            (theme.breakpoints.up(Breakpoint.sm)) {
+                borderTop = "none"
+                width = APP_BAR_SM_UP
+                padding(8.px, 16.px)
             }
         }
     }

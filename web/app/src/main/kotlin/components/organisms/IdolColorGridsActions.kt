@@ -15,12 +15,15 @@ import net.subroh0508.colormaster.model.IdolColor
 import react.*
 import react.dom.div
 
+const val IDOL_COLOR_GRID_ACTIONS_CLASS_NAME = "idol-color-grid-actions"
+
 fun RBuilder.idolColorGridsActions(handler: RHandler<IdolColorGridsActionsProps>) = child(IdolColorGridsActionsComponent, handler = handler)
 
 private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsActionsProps> { props ->
     val classes = useStyle()
 
     buttonGroup {
+        attrs.className = IDOL_COLOR_GRID_ACTIONS_CLASS_NAME
         attrs.classes(classes.root)
 
         button {
