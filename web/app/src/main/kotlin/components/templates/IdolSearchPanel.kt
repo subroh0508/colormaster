@@ -50,9 +50,11 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             attrs.opened = props.isOpenedGrids
             attrs.onClose = props.onCloseGrids
             attrs.onClickExpandIcon = props.onClickToggleGrids
+            attrs.HeaderComponent {
+                alert(props.isOpenedGrids, uiModel)
+            }
 
             div(classes.panel) {
-                alert(props.isOpenedGrids, uiModel)
                 idolColorGrids {
                     attrs.items = uiModel.items
                     attrs.onClick = props.onClickIdolColor

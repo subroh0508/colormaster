@@ -43,6 +43,6 @@ private external interface AlertStyle {
 
 private val useStyles = makeStyles<AlertStyle> {
     "root" {
-        margin(16.px, 8.px)
+        margin(8.px, 8.px)
     }
 }
