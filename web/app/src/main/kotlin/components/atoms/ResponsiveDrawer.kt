@@ -19,7 +19,7 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 
-val DRAWER_WIDTH = 408.px
+val DRAWER_WIDTH = 100.pct - 408.px
 
 fun RBuilder.responsiveDrawer(handler: RHandler<ResponsiveDrawerProps>) {
     child(HiddenSmUp, handler = handler)
@@ -41,8 +41,6 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
                 anchor = props.anchor
             }
 
-            div(classes.toolbar) {}
-
             props.children()
         }
     }
@@ -62,8 +60,6 @@ private val HiddenXsDownX = functionalComponent<ResponsiveDrawerProps> { props -
                 variant = DrawerVariant.permanent
                 anchor = props.anchor
             }
-
-            div(classes.toolbar) {}
 
             props.children()
         }
@@ -88,7 +84,6 @@ private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
                 anchor = props.anchor
             }
 
-            div(classes.toolbar) {}
             props.children()
         }
     }
@@ -114,7 +109,6 @@ private val HiddenSmUpX = functionalComponent<ResponsiveDrawerProps> { props ->
                 onClose = { props.onClose() }
             }
 
-            div(classes.toolbar) {}
             iconButton {
                 attrs {
                     classes(classes.expandIcon)
@@ -140,7 +134,6 @@ private val HiddenSmUpX = functionalComponent<ResponsiveDrawerProps> { props ->
                 }
             }
 
-            div(classes.toolbar) {}
             props.children()
         }
     }
@@ -155,7 +148,6 @@ external interface ResponsiveDrawerProps : RProps {
 private external interface ResponsiveDrawerStyle {
     val open: String
     val close: String
-    val toolbar: String
     val expandIcon: String
 }
 
@@ -168,7 +160,6 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
         width = theme.spacing(6)
         flexShrink = 0.0
     }
-    "toolbar"(theme.mixins.toolbar)
     "expandIcon" {
         width = theme.spacing(3)
         margin(theme.spacing(1), LinearDimension.auto, theme.spacing(1), 12.px)

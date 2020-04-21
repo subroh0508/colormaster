@@ -32,11 +32,8 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     val panelStyle = "${classes.panel} ${if (props.isOpenedSearchBox) classes.panelShift else ""}"
 
     div(classes.root) {
-        responsiveDrawer {
-            attrs.anchor = DrawerAnchor.left
-            attrs.opened = props.isOpenedSearchBox
-            attrs.onClose = props.onCloseSearchBox
-
+        div {
+            div(classes.toolbar) {}
             div(classes.searchBoxTop) {}
             idolSearchBox {
                 attrs.filters = uiModel.filters
@@ -46,12 +43,18 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             }
         }
 
-        div(panelStyle) {
-            alert(uiModel)
-            idolColorGrids {
-                attrs.items = uiModel.items
-                attrs.onClick = props.onClickIdolColor
-                attrs.onDoubleClick = props.onDoubleClickIdolColor
+        responsiveDrawer {
+            attrs.anchor = DrawerAnchor.right
+            attrs.opened = props.isOpenedSearchBox
+            attrs.onClose = props.onCloseSearchBox
+
+            div(panelStyle) {
+                alert(uiModel)
+                idolColorGrids {
+                    attrs.items = uiModel.items
+                    attrs.onClick = props.onClickIdolColor
+                    attrs.onDoubleClick = props.onDoubleClickIdolColor
+                }
             }
         }
 
@@ -112,12 +115,11 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
     }
     "panel" {
         flexGrow = 1.0
-        marginLeft = -DRAWER_WIDTH
+        marginRight = -DRAWER_WIDTH
     }
     "panelShift" {
-        marginLeft = 0.px
+        marginRight = 0.px
     }
-    "toolbar"(theme.mixins.toolbar)
     "actions" {
         position = Position.fixed
         left = 0.px
@@ -131,16 +133,20 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
             lastChild {
                 padding(8.px, 16.px)
                 backgroundColor = theme.palette.background.paper
-                borderRight(1.px, BorderStyle.solid, theme.palette.divider)
                 borderRadius = 0.px
 
                 (theme.breakpoints.up(Breakpoint.sm)) {
-                    width = DRAWER_WIDTH
+                    width = APP_BAR_SM_UP
                 }
             }
         }
     }
+    "toolbar"(theme.mixins.toolbar)
     "searchBoxTop" {
-        height = 48.px
+        height = 0.px
+
+        (theme.breakpoints.up(Breakpoint.sm)) {
+            height = 48.px
+        }
     }
 }

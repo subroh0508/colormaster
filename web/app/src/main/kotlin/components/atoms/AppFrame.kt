@@ -12,6 +12,8 @@ import materialui.styles.palette.paper
 import react.*
 import react.dom.div
 
+val APP_BAR_SM_UP = 408.px
+
 fun RBuilder.appFrame(handler: RHandler<AppFrameProps>) = child(AppFrameComponent, handler = handler)
 
 private val AppFrameComponent = functionalComponent<AppFrameProps> { props ->
@@ -58,7 +60,7 @@ private val useStyles = makeStyles<AppFrameStyle> {
 
         (theme.breakpoints.up(Breakpoint.sm)) {
             left = 0.px
-            width = DRAWER_WIDTH - 1.px
+            width = APP_BAR_SM_UP
         }
     }
 }
