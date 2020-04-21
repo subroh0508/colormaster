@@ -40,11 +40,12 @@ private val IdolSearchToolbarComponent = functionalComponent<IdolSearchToolbarPr
             +"COLOR M@STER"
         }
 
-        if (!props.isOpenedSearchBox) {
+        if (props.isOpenedGrids) {
             iconButton {
                 attrs {
                     color = ButtonColor.inherit
                     onClickFunction = props.onClickSearchButton
+                    edge = IconButtonEdge.end
                 }
 
                 icon { +"search_icon" }
@@ -54,7 +55,7 @@ private val IdolSearchToolbarComponent = functionalComponent<IdolSearchToolbarPr
 }
 
 external interface IdolSearchToolbarProps : RProps {
-    var isOpenedSearchBox: Boolean
+    var isOpenedGrids: Boolean
     var onClickSearchButton: (Event) -> Unit
 }
 

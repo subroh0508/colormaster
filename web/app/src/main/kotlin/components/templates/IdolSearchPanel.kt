@@ -28,8 +28,8 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     val classes = useStyles()
     val uiModel = props.model
 
-    val panelStyle = "${classes.panel} ${if (props.isOpenedSearchBox) classes.panelShift else ""}"
     val drawerAnchor = if (useMediaQuery("@media (min-width: 600px)")) DrawerAnchor.right else DrawerAnchor.bottom
+    val actionsStyle = "${classes.actions} ${if (props.isOpenedGrids) "" else classes.actionsHide}"
 
     div(classes.root) {
         div {
@@ -45,10 +45,11 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
 
         responsiveDrawer {
             attrs.anchor = drawerAnchor
-            attrs.opened = props.isOpenedSearchBox
-            attrs.onClose = props.onCloseSearchBox
+            attrs.opened = props.isOpenedGrids
+            attrs.onClose = props.onCloseGrids
+            attrs.onClickExpandIcon = { props.onClickOpenGrids() }
 
-            div(panelStyle) {
+            div(classes.panel) {
                 alert(uiModel)
                 idolColorGrids {
                     attrs.items = uiModel.items
@@ -57,7 +58,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
                 }
             }
 
-            div(classes.actions) {
+            div(actionsStyle) {
                 div(classes.toolbar) {}
                 idolColorGridsActions {
                     attrs.selected = uiModel.selected
@@ -88,7 +89,8 @@ private fun RBuilder.alert(uiModel: UiModel.Search) = when {
 
 external interface IdolSearchPanelProps : RProps {
     var model: UiModel.Search
-    var isOpenedSearchBox: Boolean
+    var isOpenedGrids: Boolean
+    var onClickOpenGrids: () -> Unit
     var onChangeIdolName: (String) -> Unit
     var onSelectTitle: (Titles, Boolean) -> Unit
     var onSelectType: (Types, Boolean) -> Unit
@@ -97,15 +99,15 @@ external interface IdolSearchPanelProps : RProps {
     var onClickPreview: () -> Unit
     var onClickPenlight: () -> Unit
     var onClickSelectAll: (Boolean) -> Unit
-    var onCloseSearchBox: () -> Unit
+    var onCloseGrids: () -> Unit
 }
 
 private external interface IdolSearchPanelStyle {
     val root: String
     val panel: String
-    val panelShift: String
     val toolbar: String
     val actions: String
+    val actionsHide: String
     val searchBoxTop: String
 }
 
@@ -119,9 +121,6 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
         (theme.breakpoints.up(Breakpoint.sm)) {
             marginRight = -DRAWER_WIDTH_SM_UP
         }
-    }
-    "panelShift" {
-        marginRight = 0.px
     }
     "actions" {
         position = Position.fixed
@@ -150,6 +149,9 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
                 }
             }
         }
+    }
+    "actionsHide" {
+        display = Display.none
     }
     "toolbar"(theme.mixins.toolbar)
     "searchBoxTop" {

@@ -17,6 +17,7 @@ import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
 import materialui.styles.mixins.toolbar
 import materialui.styles.muitheme.spacing
+import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 
@@ -30,9 +31,7 @@ fun RBuilder.responsiveDrawer(handler: RHandler<ResponsiveDrawerProps>) {
 
 private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
     val classes = useStyles()
-    val (opened, openDrawer) = useState(false)
-
-    val rootStyle = if (opened) classes.open else classes.close
+    val rootStyle = if (props.opened) classes.open else classes.close
 
     hidden {
         attrs { smUp = true }
@@ -44,12 +43,21 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
             attrs {
                 variant = DrawerVariant.permanent
                 anchor = props.anchor
-                open = opened
-                onClose = { openDrawer(false) }
+                open = props.opened
+                onClose = { props.onClose }
             }
 
-            if (opened) {
+            if (props.opened) {
                 div(classes.toolbar) {}
+            } else {
+                iconButton {
+                    attrs {
+                        classes(classes.expandIcon)
+                        icon { +"expand_less_icon" }
+
+                        onClickFunction = props.onClickExpandIcon
+                    }
+                }
             }
 
             props.children()
@@ -84,6 +92,7 @@ external interface ResponsiveDrawerProps : RProps {
     var anchor: DrawerAnchor
     var opened: Boolean
     var onClose: () -> Unit
+    var onClickExpandIcon: (event: Event) -> Unit
 }
 
 private external interface ResponsiveDrawerStyle {
@@ -105,6 +114,6 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
     "toolbar"(theme.mixins.toolbar)
     "expandIcon" {
         width = theme.spacing(3)
-        margin(theme.spacing(1), LinearDimension.auto, theme.spacing(1), 12.px)
+        margin(theme.spacing(1), theme.spacing(2), 12.px, LinearDimension.auto)
     }
 }
