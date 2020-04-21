@@ -5,8 +5,6 @@ import components.organisms.idolColorGridsActions
 import components.organisms.idolColorGrids
 import components.organisms.idolSearchBox
 import kotlinx.css.*
-import kotlinx.css.properties.borderBottom
-import kotlinx.css.properties.borderRight
 import kotlinx.css.properties.borderTop
 import materialui.components.drawer.enums.DrawerAnchor
 import materialui.styles.breakpoint.Breakpoint
@@ -15,6 +13,7 @@ import materialui.styles.makeStyles
 import materialui.styles.mixins.toolbar
 import materialui.styles.palette.divider
 import materialui.styles.palette.paper
+import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.Titles
 import net.subroh0508.colormaster.model.Types
@@ -30,6 +29,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     val uiModel = props.model
 
     val panelStyle = "${classes.panel} ${if (props.isOpenedSearchBox) classes.panelShift else ""}"
+    val drawerAnchor = if (useMediaQuery("@media (min-width: 600px)")) DrawerAnchor.right else DrawerAnchor.bottom
 
     div(classes.root) {
         div {
@@ -44,7 +44,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
         }
 
         responsiveDrawer {
-            attrs.anchor = DrawerAnchor.right
+            attrs.anchor = drawerAnchor
             attrs.opened = props.isOpenedSearchBox
             attrs.onClose = props.onCloseSearchBox
 
@@ -56,15 +56,15 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
                     attrs.onDoubleClick = props.onDoubleClickIdolColor
                 }
             }
-        }
 
-        div(classes.actions) {
-            div(classes.toolbar) {}
-            idolColorGridsActions {
-                attrs.selected = uiModel.selected
-                attrs.onClickPreview = props.onClickPreview
-                attrs.onClickPenlight = props.onClickPenlight
-                attrs.onClickSelectAll = props.onClickSelectAll
+            div(classes.actions) {
+                div(classes.toolbar) {}
+                idolColorGridsActions {
+                    attrs.selected = uiModel.selected
+                    attrs.onClickPreview = props.onClickPreview
+                    attrs.onClickPenlight = props.onClickPenlight
+                    attrs.onClickSelectAll = props.onClickSelectAll
+                }
             }
         }
     }
@@ -115,15 +115,23 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
     }
     "panel" {
         flexGrow = 1.0
-        marginRight = -DRAWER_WIDTH
+
+        (theme.breakpoints.up(Breakpoint.sm)) {
+            marginRight = -DRAWER_WIDTH_SM_UP
+        }
     }
     "panelShift" {
         marginRight = 0.px
     }
     "actions" {
         position = Position.fixed
-        left = 0.px
         zIndex = theme.zIndex.drawer.toInt() + 1
+        left = 0.px
+
+        (theme.breakpoints.up(Breakpoint.xs)) {
+            right = 0.px
+            bottom = 0.px
+        }
 
         (theme.breakpoints.up(Breakpoint.sm)) {
             top = 0.px
@@ -131,12 +139,14 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
 
         children("div") {
             lastChild {
-                padding(8.px, 16.px)
+                padding(8.px, 4.px)
                 backgroundColor = theme.palette.background.paper
+                borderTop(1.px, BorderStyle.solid, theme.palette.divider)
                 borderRadius = 0.px
 
                 (theme.breakpoints.up(Breakpoint.sm)) {
                     width = APP_BAR_SM_UP
+                    padding(8.px, 16.px)
                 }
             }
         }

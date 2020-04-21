@@ -8,6 +8,8 @@ import materialui.components.button.enums.ButtonSize
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.buttonGroup
 import materialui.components.icon.icon
+import materialui.styles.breakpoint.Breakpoint
+import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.IdolColor
 import react.*
