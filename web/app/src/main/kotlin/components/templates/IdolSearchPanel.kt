@@ -134,6 +134,8 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
 
         (theme.breakpoints.up(Breakpoint.sm)) {
             top = 0.px
+            height = 0.px
+            width = 0.px
         }
 
         descendants(".$IDOL_COLOR_GRID_ACTIONS_CLASS_NAME") {
@@ -141,6 +143,7 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
             backgroundColor = theme.palette.background.paper
             borderTop(1.px, BorderStyle.solid, theme.palette.divider)
             borderRadius = 0.px
+            width = 100.pct
 
             (theme.breakpoints.up(Breakpoint.sm)) {
                 borderTop = "none"

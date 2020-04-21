@@ -17,7 +17,8 @@ import materialui.styles.muitheme.spacing
 import react.*
 import react.dom.div
 
-val DRAWER_HEIGHT_CLOSE_XM_UP = 64.px
+val DRAWER_HEADER_HEIGHT_XM_UP = 64.px
+val DRAWER_HEADER_HEIGHT_SM_UP = 80.px
 val DRAWER_WIDTH_SM_UP = 100.pct - 408.px
 
 fun RBuilder.responsiveDrawer(handler: RHandler<ResponsiveDrawerProps>) {
@@ -74,6 +75,8 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
 
 private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
     val classes = useStyles()
+    val headerStyle = "${classes.header} ${if (props.opened) classes.headerOpen else classes.headerClose}"
+    val contentStyle = if (props.opened) classes.contentOpen else classes.contentClose
 
     hidden {
         attrs {
@@ -91,12 +94,12 @@ private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
             }
 
             props.HeaderComponent?.let {
-                div(classes.headerOpen) {
+                div(headerStyle) {
                     child(it)
                 }
             }
 
-            div(classes.contentOpen) {
+            div(contentStyle) {
                 props.children()
             }
         }
@@ -137,7 +140,7 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
         }
     }
     "close" {
-        height = DRAWER_HEIGHT_CLOSE_XM_UP
+        height = DRAWER_HEADER_HEIGHT_XM_UP
     }
     "toolbar"(theme.mixins.toolbar.apply {
         backgroundColor = Color.transparent
@@ -153,17 +156,20 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
         top = 0.px
 
         (theme.breakpoints.up(Breakpoint.sm)) {
-            margin(8.px, 0.px)
+            width = DRAWER_WIDTH_SM_UP
+            padding(8.px, 0.px)
+            margin(0.px, (-1).px, 0.px, LinearDimension.auto)
         }
     }
     "headerClose" {
         bottom = 0.px
     }
     "contentOpen" {
-        marginTop = DRAWER_HEIGHT_CLOSE_XM_UP
+        height = 100.vh
+        marginTop = DRAWER_HEADER_HEIGHT_XM_UP
 
         (theme.breakpoints.up(Breakpoint.sm)) {
-            marginTop = 0.px
+            marginTop = DRAWER_HEADER_HEIGHT_SM_UP
         }
     }
     "contentClose" {
