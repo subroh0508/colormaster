@@ -35,7 +35,6 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
 
     div(classes.root) {
         div {
-            div(classes.toolbar) {}
             div(classes.searchBoxTop) {}
             idolSearchBox {
                 attrs.filters = uiModel.filters
@@ -155,12 +154,20 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
     "actionsHide" {
         display = Display.none
     }
-    "toolbar"(theme.mixins.toolbar)
-    "searchBoxTop" {
-        height = 0.px
+    "toolbar"(theme.mixins.toolbar.apply {
+        display = Display.none
 
         (theme.breakpoints.up(Breakpoint.sm)) {
-            height = 48.px
+            display = Display.block
+            minHeight = 64.px
         }
-    }
+    })
+    "searchBoxTop"(theme.mixins.toolbar.apply {
+        marginBottom = 0.px
+
+        (theme.breakpoints.up(Breakpoint.sm)) {
+            minHeight = 64.px
+            marginBottom = 48.px
+        }
+    })
 }
