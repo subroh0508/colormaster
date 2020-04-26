@@ -1,6 +1,5 @@
 package components.organisms
 
-import components.molecules.supportableCheckBox
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
@@ -8,12 +7,10 @@ import materialui.components.button.enums.ButtonSize
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.buttonGroup
 import materialui.components.icon.icon
-import materialui.styles.breakpoint.Breakpoint
-import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
+import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
 import react.*
-import react.dom.div
 
 const val IDOL_COLOR_GRID_ACTIONS_CLASS_NAME = "idol-color-grid-actions"
 
@@ -21,6 +18,7 @@ fun RBuilder.idolColorGridsActions(handler: RHandler<IdolColorGridsActionsProps>
 
 private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsActionsProps> { props ->
     val classes = useStyle()
+    val showLabel = useMediaQuery("@media (min-width: 380px)")
 
     buttonGroup {
         attrs.className = IDOL_COLOR_GRID_ACTIONS_CLASS_NAME
@@ -35,7 +33,7 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
                 startIcon { icon { +"palette_icon" } }
             }
 
-            +"プレビュー"
+            if (showLabel) +"プレビュー"
         }
 
         button {
@@ -47,7 +45,7 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
                 startIcon { icon { +"highlight_icon" } }
             }
 
-            +"ペンライト"
+            if (showLabel) +"ペンライト"
         }
 
         val checkAll = props.selected.isEmpty()
