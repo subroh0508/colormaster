@@ -11,6 +11,7 @@ import materialui.components.icon.icon
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.components.typography.typographyH5
+import materialui.styles.palette.PaletteType
 import react.RBuilder
 import react.dom.*
 import styled.css
@@ -119,6 +120,15 @@ fun RBuilder.HowToUsePage() = StaticPage {
                 +"することで、"
                 strong { +"ペンライトモードをショートカット起動" }
                 +"させることができます。"
+            }
+            p {
+                +"それから、地味に"
+                strong { +"ダークテーマ対応" }
+                +"しており、右上の"
+                icon { +"brightness_4_icon" }
+                +"/"
+                icon { +"brightness_7_icon" }
+                +"からテーマ切り替えができます。使ってみたい人は是非🙏"
             }
         }
     }

@@ -3,6 +3,7 @@ import containers.IdolSearchContainer
 import containers.PenlightContainer
 import containers.PreviewContainer
 import org.w3c.dom.url.URLSearchParams
+import pages.DevelopmentPage
 import pages.HowToUsePage
 import react.RBuilder
 import react.router.dom.*
@@ -13,6 +14,7 @@ fun RBuilder.routing() = browserRouter {
             route("/preview") { PreviewContainer() }
             route("/penlight") { PenlightContainer() }
             route("/howtouse") { HowToUsePage() }
+            route("/development") { DevelopmentPage() }
             route("/") { IdolSearchContainer() }
         }
     }
