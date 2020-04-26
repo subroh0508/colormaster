@@ -1,5 +1,6 @@
 package components.templates
 
+import components.atoms.MenuComponent
 import components.atoms.appBarTop
 import kotlinext.js.jsObject
 import kotlinx.css.*
@@ -23,7 +24,8 @@ fun RBuilder.appFrame(handler: RHandler<RProps>) = child(AppFrameComponent, hand
 private val AppFrameComponent = functionalComponent<RProps> { props ->
     val (appState, setAppState) = useState(AppState(
         themeType = PaletteType.light,
-        lang = "ja"
+        lang = "ja",
+        openDrawer = false
     ))
 
     ThemeProvider {
@@ -31,9 +33,17 @@ private val AppFrameComponent = functionalComponent<RProps> { props ->
 
         appBarTop {
             attrs.themeType = appState.themeType
+            attrs.openDrawer = appState.openDrawer
+            attrs.MenuComponent {
+                appMenu {
+                    attrs.onCloseMenu = { setAppState(appState.copy(openDrawer = false)) }
+                }
+            }
             attrs.onClickChangeTheme = { setAppState(
                 appState.copy(themeType = if (appState.themeType == PaletteType.light) PaletteType.dark else PaletteType.light))
             }
+            attrs.onClickMenuIcon = { setAppState(appState.copy(openDrawer = !appState.openDrawer)) }
+            attrs.onCloseMenu = { setAppState(appState.copy(openDrawer = false)) }
         }
 
         props.children()
@@ -42,5 +52,6 @@ private val AppFrameComponent = functionalComponent<RProps> { props ->
 
 private data class AppState(
     val themeType: PaletteType,
-    val lang: String
+    val lang: String,
+    val openDrawer: Boolean
 )

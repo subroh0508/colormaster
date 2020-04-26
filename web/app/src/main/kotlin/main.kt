@@ -14,9 +14,7 @@ fun main() {
     window.onload = {
         render(document.getElementById("root")) {
             cssBaseline {  }
-            appFrame {
-                routing()
-            }
+            routing()
         }
     }
 }
