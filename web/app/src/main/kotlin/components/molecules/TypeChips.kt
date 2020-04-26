@@ -1,7 +1,8 @@
 package components.molecules
 
-import components.atoms.chip
+import components.atoms.checkbox
 import kotlinx.css.*
+import materialui.components.formgroup.formGroup
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.styles.makeStyles
@@ -10,7 +11,6 @@ import net.subroh0508.colormaster.model.Titles
 import net.subroh0508.colormaster.model.Types
 import react.*
 import react.dom.div
-import react.dom.p
 
 fun RBuilder.typesChips(titles: Titles?, handler: RHandler<TypeChipsProps>) = when (titles) {
     Titles._765, Titles._ML -> typesMillionLiveChips(handler)
@@ -36,15 +36,18 @@ private val TypeChipsComponent = functionalComponent<TypeChipsProps> { props ->
             +"属性"
         }
 
-        div(classes.chips) {
-            props.allTypes.forEach { type ->
-                val checked = props.types.contains(type)
+        div(classes.checkboxes) {
+            formGroup {
+                attrs.row = true
+                props.allTypes.forEach { type ->
+                    val checked = props.types.contains(type)
 
-                chip {
-                    attrs {
-                        label = type.displayName
-                        isChecked = checked
-                        onClick = { props.onSelect?.invoke(type, !checked) }
+                    checkbox {
+                        attrs {
+                            label = type.displayName
+                            isChecked = checked
+                            onClick = { props.onSelect?.invoke(type, !checked) }
+                        }
                     }
                 }
             }
@@ -73,7 +76,7 @@ external interface TypeChipsProps : RProps {
 
 private external interface TypeChipsStyle {
     val title: String
-    val chips: String
+    val checkboxes: String
 }
 
 private val useStyles = makeStyles<TypeChipsStyle> {
@@ -81,7 +84,7 @@ private val useStyles = makeStyles<TypeChipsStyle> {
         flexGrow = 1.0
         color = theme.palette.text.primary
     }
-    "chips" {
+    "checkboxes" {
         display = Display.flex
         flexWrap = FlexWrap.wrap
     }
