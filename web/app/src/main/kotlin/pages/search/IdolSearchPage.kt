@@ -1,10 +1,7 @@
 package pages.search
 
-import components.atoms.ToolbarComponent
-import components.atoms.appFrame
 import components.templates.IdolSearchPanelProps
 import components.templates.idolSearchPanel
-import components.templates.idolSearchToolbar
 import kotlinext.js.Object
 import react.*
 import utilities.isMobile
@@ -16,20 +13,11 @@ private val IdolSearchPageComponent = functionalComponent<IdolSearchPageProps> {
     // TODO Use useMediaQuery
     val (openedGrids, setOpenedGrids) = useState(!isMobile)
 
-    appFrame {
-        attrs.ToolbarComponent {
-            idolSearchToolbar {
-                attrs.isOpenedGrids = openedGrids
-                attrs.onClickSearchButton = { setOpenedGrids(!openedGrids) }
-            }
-        }
-
-        idolSearchPanel {
-            Object.assign(attrs, props)
-            attrs.isOpenedGrids = openedGrids
-            attrs.onClickToggleGrids = { setOpenedGrids(!openedGrids) }
-            attrs.onCloseGrids = { setOpenedGrids(false) }
-        }
+    idolSearchPanel {
+        Object.assign(attrs, props)
+        attrs.isOpenedGrids = openedGrids
+        attrs.onClickToggleGrids = { setOpenedGrids(!openedGrids) }
+        attrs.onCloseGrids = { setOpenedGrids(false) }
     }
 }
 

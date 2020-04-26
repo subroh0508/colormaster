@@ -1,3 +1,4 @@
+import components.templates.appFrame
 import kotlinx.coroutines.MainScope
 import materialui.components.cssbaseline.cssBaseline
 import net.subroh0508.colormaster.components.core.AppModule
@@ -13,7 +14,9 @@ fun main() {
     window.onload = {
         render(document.getElementById("root")) {
             cssBaseline {  }
-            routing()
+            appFrame {
+                routing()
+            }
         }
     }
 }
