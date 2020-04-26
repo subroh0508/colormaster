@@ -120,7 +120,7 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
     }
     "panel" {
         flexGrow = 1.0
-        marginBottom = 48.px
+        marginBottom = 192.px
 
         (theme.breakpoints.up(Breakpoint.sm)) {
             marginBottom = 0.px

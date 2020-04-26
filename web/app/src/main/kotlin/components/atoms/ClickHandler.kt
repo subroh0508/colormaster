@@ -21,7 +21,6 @@ private val ClickHandlerComponent = functionalComponent<ClickHandlerProps> { pro
                     props.onDoubleClick
                 )
             }
-
         }
 
         props.children()
