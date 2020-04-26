@@ -5,6 +5,7 @@ import containers.PreviewContainer
 import org.w3c.dom.url.URLSearchParams
 import pages.DevelopmentPage
 import pages.HowToUsePage
+import pages.TermsPage
 import react.RBuilder
 import react.router.dom.*
 
@@ -15,6 +16,7 @@ fun RBuilder.routing() = browserRouter {
             route("/penlight") { PenlightContainer() }
             route("/howtouse") { HowToUsePage() }
             route("/development") { DevelopmentPage() }
+            route("/terms") { TermsPage() }
             route("/") { IdolSearchContainer() }
         }
     }

@@ -94,7 +94,7 @@ fun RBuilder.DevelopmentPage() = StaticPage {
                 +"に報告ください。"
             }
             p {
-                +"St@r・Pull Requestも歓迎です。ついでに投げ銭とかしてくれると泣いて喜びます。"
+                +"St@r・Pull Requestも大歓迎です。ついでに投げ銭とかしてくれると泣いて喜びます。"
             }
 
             ul {

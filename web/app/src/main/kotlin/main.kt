@@ -1,6 +1,4 @@
-import components.templates.appFrame
 import kotlinx.coroutines.MainScope
-import materialui.components.cssbaseline.cssBaseline
 import net.subroh0508.colormaster.components.core.AppModule
 import org.kodein.di.Kodein
 import react.dom.render
