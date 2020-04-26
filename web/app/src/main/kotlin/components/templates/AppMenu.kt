@@ -1,20 +1,21 @@
 package components.templates
 
-import kotlinext.js.jsObject
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.onKeyDownFunction
+import kotlinx.html.label
 import materialui.components.divider.divider
+import materialui.components.icon.icon
 import materialui.components.list.list
 import materialui.components.listitem.listItem
+import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
+import materialui.components.typography.typographyH6
 import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
-import org.w3c.dom.events.Event
 import react.*
-import react.dom.div
+import react.dom.a
 import react.router.dom.useHistory
 
 fun RBuilder.appMenu(handler: RHandler<AppMenuProps>) = child(AppMenuComponent, handler = handler)
@@ -24,28 +25,96 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
     val history = useHistory()
 
     list {
-        menus().forEach { (label, menus) ->
-            list {
-                attrs.classes(classes.parent)
-
-                typography {
-                    attrs.classes(classes.parentLabel)
-                    attrs.variant = TypographyVariant.subtitle1
-                    +label
+        listItem {
+            attrs.classes(classes.title)
+            listItemText {
+                attrs.primary {
+                    typographyH6 {
+                        +"COLOR M@STER"
+                    }
                 }
+                attrs.secondary {
+                    +"v2020.04.20-beta"
+                }
+            }
+        }
+        divider {}
+        parent(classes, "検索") {
+            nestedListItem(
+                classes.nested,
+                id = "search-idol", label = "アイドル検索"
+            ) { history.push("/") }
+            nestedListItem(
+                classes.nested,
+                id = "search-unit", label = "ユニット検索"
+            ) { history.push("/unit") }
+            nestedListItem(
+                classes.nested,
+                id = "search-music", label = "楽曲検索"
+            ) { history.push("/music") }
+        }
+        divider {}
+        parent(classes, "このサイトについて") {
+            nestedListItem(
+                classes.nested,
+                id = "about-howtouse", label = "使い方"
+            ) { history.push("/howtouse") }
+            nestedListItem(
+                classes.nested,
+                id = "about-licences", label = "オープンソースライセンス"
+            ) { history.push("/licences") }
+        }
+        divider {}
+        a {
+            attrs.href = "https://github.com/subroh0508/colormaster"
+            attrs.target = "_blank"
 
-                menus.forEach { menu ->
-                    listItem {
-                        key = menu.id
-                        attrs.classes(classes.nested)
-                        attrs.onClickFunction = { history.push(menu.path) }
-                        listItemText { attrs.primary { +menu.label } }
+            listItem {
+                key = "github"
+                attrs.onClickFunction = { console.log("github") }
+                listItemIcon {
+                    icon { +"launch_icon" }
+                }
+                listItemText {
+                    attrs.primary {
+                        typography {
+                            attrs.classes(classes.parentLabel)
+                            attrs.variant = TypographyVariant.subtitle1
+                            +"GitHub"
+                        }
                     }
                 }
             }
-            divider {}
         }
     }
+}
+
+private fun RBuilder.parent(
+    classes: AppMenuStyle,
+    label: String,
+    children: RBuilder.() -> Unit
+) = list {
+    attrs.classes(classes.parent)
+
+    typography {
+        attrs.classes(classes.parentLabel)
+        attrs.variant = TypographyVariant.subtitle1
+        +label
+    }
+
+    child(buildElements(children))
+}
+
+private fun RBuilder.nestedListItem(
+    classes: String,
+    id: String,
+    label: String,
+    onClick: () -> Unit
+) = listItem {
+    key = id
+    attrs.classes(classes)
+    attrs.onClickFunction = { onClick() }
+    listItemText { attrs.primary { +label } }
 }
 
 external interface AppMenuProps : RProps {
@@ -53,12 +122,16 @@ external interface AppMenuProps : RProps {
 }
 
 private external interface AppMenuStyle {
+    val title: String
     val parent: String
     val parentLabel: String
     val nested: String
 }
 
 private val useStyles = makeStyles<AppMenuStyle> {
+    "title" {
+        marginBottom = theme.spacing(2)
+    }
     "parent" {
         paddingLeft = theme.spacing(2)
     }
@@ -70,26 +143,3 @@ private val useStyles = makeStyles<AppMenuStyle> {
         paddingLeft = theme.spacing(4)
     }
 }
-
-external interface AppMenuItem {
-    var id: String
-    var path: String
-    var label: String
-}
-
-fun menus() = arrayOf(
-    "検索" to searchMenus(),
-    "このサイトについて" to aboutMenus()
-)
-
-fun searchMenus(): Array<AppMenuItem> = arrayOf(
-    jsObject { id = "search-idol"; path = "/"; label = "アイドル検索" },
-    jsObject { id = "search-unit"; path = "/unit"; label = "ユニット検索" },
-    jsObject { id = "search-music"; path = "/music"; label = "楽曲検索" }
-)
-
-fun aboutMenus(): Array<AppMenuItem> = arrayOf(
-    jsObject { id = "about-howtouse"; path = "/about#houtouse"; label = "使い方" },
-    jsObject { id = "about-license"; path = "/about#license"; label = "オープンソースライセンス" },
-    jsObject { id = "about-github"; path = ""; label = "GitHub" }
-)

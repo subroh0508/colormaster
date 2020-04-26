@@ -58,8 +58,6 @@ private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
                         classes(classes.title)
                         variant = TypographyVariant.h6
                     }
-
-                    +"COLOR M@STER"
                 }
 
                 tooltip {
@@ -138,7 +136,7 @@ private val useStyles = makeStyles<AppBarTopStyle> {
         flexGrow = 1.0
     }
     "list" {
-        width = 250.px
+        width = 270.px
         height = 100.pct
     }
 }
