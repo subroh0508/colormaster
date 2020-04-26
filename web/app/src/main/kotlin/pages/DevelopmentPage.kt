@@ -23,6 +23,7 @@ fun RBuilder.DevelopmentPage() = StaticPage {
                 +"必要なデータは全て"
                 a {
                     attrs.href = "https://sparql.crssnky.xyz/imas/"
+                    attrs.target = "_blank"
                     +"im@sparql"
                 }
                 +"から取得しています。"
@@ -31,6 +32,7 @@ fun RBuilder.DevelopmentPage() = StaticPage {
                 +"データに間違いを見つけた場合は、"
                 a {
                     attrs.href = "https://github.com/imas/imasparql/issues"
+                    attrs.target = "_blank"
                     +"im@sparqlのIssueページ"
                 }
                 +"にご報告ください。"
@@ -51,6 +53,7 @@ fun RBuilder.DevelopmentPage() = StaticPage {
                 +"このWebアプリは、"
                 a {
                     attrs.href = "https://kotlinlang.org/docs/reference/multiplatform.html"
+                    attrs.target = "_blank"
                     strong { +"Kotlin Multiplatform" }
                 }
                 +"を使って実装しています。ソースコードに占めるKotlinの割合は"
@@ -65,6 +68,7 @@ fun RBuilder.DevelopmentPage() = StaticPage {
                 +"また、UIフレームワークとして"
                 a {
                     attrs.href = "https://material-ui.com/"
+                    attrs.target = "_blank"
                     +"Material-UI"
                 }
                 +"も利用しています。"
@@ -84,6 +88,7 @@ fun RBuilder.DevelopmentPage() = StaticPage {
             p {
                 a {
                     attrs.href = "https://github.com/subroh0508/colormaster/issues"
+                    attrs.target = "_blank"
                     +"COLOR M@STERのIssueページ"
                 }
                 +"に報告ください。"
@@ -97,6 +102,7 @@ fun RBuilder.DevelopmentPage() = StaticPage {
                     +"ほしいものリスト: "
                     a {
                         attrs.href = "https://www.amazon.jp/hz/wishlist/ls/34TBOXPWOUD8W?ref_=wl_share"
+                        attrs.target = "_blank"
                         +"Link"
                     }
                 }

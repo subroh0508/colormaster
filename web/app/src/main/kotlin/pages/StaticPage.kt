@@ -34,7 +34,6 @@ private external interface StaticPageStyle {
 
 private val useStyles = makeStyles<StaticPageStyle> {
     "root" {
-        height = 100.vh
         backgroundColor = theme.palette.background.default
     }
     "toolbar"(theme.mixins.toolbar)

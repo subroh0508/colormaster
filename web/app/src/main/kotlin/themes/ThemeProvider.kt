@@ -1,6 +1,7 @@
 package themes
 
 import kotlinx.css.Color
+import materialui.components.cssbaseline.cssBaseline
 import materialui.styles.createMuiTheme
 import materialui.styles.muitheme.options.palette
 import materialui.styles.palette.PaletteType
@@ -15,6 +16,7 @@ private val ThemeProviderComponent = functionalComponent<ThemeProviderProps> { p
     val theme = useMemo({ createTheme(props.paletteType) }, arrayOf(props.paletteType))
 
     themeProvider(theme) {
+        cssBaseline {}
         props.children()
     }
 }

@@ -11,7 +11,6 @@ import materialui.components.icon.icon
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.components.typography.typographyH5
-import materialui.styles.palette.PaletteType
 import react.RBuilder
 import react.dom.*
 import styled.css
