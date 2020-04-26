@@ -2,7 +2,10 @@ package components.molecules
 
 import components.atoms.chip
 import kotlinx.css.*
+import materialui.components.typography.enums.TypographyVariant
+import materialui.components.typography.typography
 import materialui.styles.makeStyles
+import materialui.styles.palette.primary
 import net.subroh0508.colormaster.model.Titles
 import react.*
 import react.dom.div
@@ -14,7 +17,14 @@ private val TitleChipsComponent = functionalComponent<TitleChipsProps> { props -
     val classes = useStyles()
 
     div {
-        p(classes.title) { +"ブランド" }
+        typography(p = true) {
+            attrs {
+                classes(classes.title)
+                variant = TypographyVariant.subtitle1
+            }
+
+            +"ブランド"
+        }
 
         div(classes.chips) {
             Titles.values().forEach { title ->
@@ -45,6 +55,7 @@ private external interface TitleChipsStyle {
 private val useStyles = makeStyles<TitleChipsStyle> {
     "title" {
         flexGrow = 1.0
+        color = theme.palette.text.primary
     }
     "chips" {
         display = Display.flex

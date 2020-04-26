@@ -20,7 +20,6 @@ import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.default
-import materialui.styles.palette.paper
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div

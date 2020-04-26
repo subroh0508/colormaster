@@ -1,6 +1,8 @@
 package components.atoms
 
 import kotlinx.css.*
+import kotlinx.css.properties.border
+import kotlinx.css.properties.borderTop
 import kotlinx.html.js.onClickFunction
 import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
@@ -30,7 +32,7 @@ fun RBuilder.responsiveDrawer(handler: RHandler<ResponsiveDrawerProps>) {
 
 private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
     val classes = useStyles()
-    val rootStyle = if (props.opened) classes.open else classes.close
+    val rootStyle = "${classes.root} ${if (props.opened) classes.open else classes.close}"
     val headerStyle = "${classes.header} ${if (props.opened) classes.headerOpen else classes.headerClose}"
     val contentStyle = "${classes.content} ${if (props.opened) classes.contentOpen else classes.contentClose}"
 
@@ -72,6 +74,7 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
 
 private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
     val classes = useStyles()
+    val rootStyle = "${classes.root} ${classes.open}"
     val headerStyle = "${classes.header} ${if (props.opened) classes.headerOpen else classes.headerClose}"
     val contentStyle = "${classes.content} ${if (props.opened) classes.contentOpen else classes.contentClose}"
 
@@ -81,8 +84,8 @@ private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
         }
 
         drawer(
-            DrawerStyle.root to classes.open,
-            DrawerStyle.paper to classes.open
+            DrawerStyle.root to rootStyle,
+            DrawerStyle.paper to rootStyle
         ) {
             attrs {
                 variant = DrawerVariant.persistent
@@ -118,6 +121,7 @@ fun ResponsiveDrawerProps.HeaderComponent(block: RBuilder.() -> Unit) {
 }
 
 private external interface ResponsiveDrawerStyle {
+    val root: String
     val open: String
     val close: String
     val header: String
@@ -140,9 +144,12 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
         }
     }
 
-    "open"(offsetTop.apply {
+    "root" {
+        border = "none"
         backgroundColor = Color.transparent
+    }
 
+    "open"(offsetTop.apply {
         (theme.breakpoints.up(Breakpoint.sm)) {
             top = 0.px
             width = DRAWER_WIDTH_SM_UP
@@ -159,9 +166,13 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
         zIndex = 1
         padding(8.px, 8.px)
         backgroundColor = theme.palette.background.paper
+        borderTopLeftRadius = 16.px
+        borderTopRightRadius = 16.px
 
         (theme.breakpoints.up(Breakpoint.sm)) {
             padding(16.px, 8.px)
+            borderTopLeftRadius = 0.px
+            borderTopRightRadius = 0.px
         }
     }
     "headerOpen"(offsetTop.apply {
@@ -191,9 +202,13 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
         right = 0.px
         paddingTop = DRAWER_HEADER_HEIGHT_XM_UP
         backgroundColor = theme.palette.background.paper
+        borderTopLeftRadius = 16.px
+        borderTopRightRadius = 16.px
 
         (theme.breakpoints.up(Breakpoint.sm)) {
             paddingTop = DRAWER_HEADER_HEIGHT_SM_UP
+            borderTopLeftRadius = 0.px
+            borderTopRightRadius = 0.px
         }
     }
     "contentOpen"(offsetTop.apply {

@@ -150,6 +150,7 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
 
         descendants(".$IDOL_COLOR_GRID_ACTIONS_CLASS_NAME") {
             padding(8.px, 4.px)
+            backgroundColor = theme.palette.background.paper
             borderTop(1.px, BorderStyle.solid, theme.palette.divider)
             borderRadius = 0.px
             width = 100.pct
@@ -158,6 +159,7 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
                 borderTop = "none"
                 width = APP_BAR_SM_UP
                 padding(8.px, 16.px)
+                backgroundColor = theme.palette.background.default
             }
         }
     }
