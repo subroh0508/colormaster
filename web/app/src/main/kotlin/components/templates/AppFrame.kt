@@ -2,6 +2,7 @@ package components.templates
 
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
+import isExpandAppBar
 import kotlinext.js.jsObject
 import kotlinx.css.*
 import kotlinx.css.properties.BoxShadows
@@ -15,6 +16,7 @@ import materialui.styles.palette.PaletteType
 import materialui.styles.palette.paper
 import react.*
 import react.dom.div
+import react.router.dom.useHistory
 import themes.ThemeProvider
 
 val APP_BAR_SM_UP = 408.px
@@ -27,6 +29,7 @@ private val AppFrameComponent = functionalComponent<RProps> { props ->
         lang = "ja",
         openDrawer = false
     ))
+    val history = useHistory()
 
     ThemeProvider {
         attrs.paletteType = appState.themeType
@@ -34,6 +37,7 @@ private val AppFrameComponent = functionalComponent<RProps> { props ->
         appBarTop {
             attrs.themeType = appState.themeType
             attrs.openDrawer = appState.openDrawer
+            attrs.expand = isExpandAppBar(history)
             attrs.MenuComponent {
                 appMenu {
                     attrs.onCloseMenu = { setAppState(appState.copy(openDrawer = false)) }

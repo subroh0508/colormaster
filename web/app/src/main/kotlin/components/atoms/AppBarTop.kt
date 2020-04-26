@@ -31,12 +31,13 @@ import react.dom.div
 fun RBuilder.appBarTop(handler: RHandler<AppBarTopProps>) = child(AppBarTopComponent, handler = handler)
 
 private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
-    val classes = useStyles()
+    val classes = useStyles(props)
+    val appBarStyle = "${classes.appBar} ${if (props.expand) classes.appBarExpand else ""}"
 
     div(classes.root) {
         appBar {
             attrs {
-                classes(classes.appBar)
+                classes(appBarStyle)
                 color = AppBarColor.default
                 position = AppBarPosition.fixed
             }
@@ -95,6 +96,7 @@ private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
 external interface AppBarTopProps : RProps {
     var themeType: PaletteType
     var openDrawer: Boolean
+    var expand: Boolean
     @Suppress("PropertyName")
     var MenuComponent: ReactElement?
     var onClickChangeTheme: (event: Event) -> Unit
@@ -110,12 +112,13 @@ fun AppBarTopProps.MenuComponent(block: RBuilder.() -> Unit) {
 private external interface AppBarTopStyle {
     val root: String
     val appBar: String
+    val appBarExpand: String
     val menuButton: String
     val title: String
     val list: String
 }
 
-private val useStyles = makeStyles<AppBarTopStyle> {
+private val useStyles = makeStyles<AppBarTopStyle, AppBarTopProps> {
     "root" {
         flexGrow = 1.0
     }
@@ -127,6 +130,11 @@ private val useStyles = makeStyles<AppBarTopStyle> {
         (theme.breakpoints.up(Breakpoint.sm)) {
             left = 0.px
             width = APP_BAR_SM_UP
+        }
+    }
+    "appBarExpand" {
+        (theme.breakpoints.up(Breakpoint.sm)) {
+            width = 100.pct
         }
     }
     "menuButton" {
