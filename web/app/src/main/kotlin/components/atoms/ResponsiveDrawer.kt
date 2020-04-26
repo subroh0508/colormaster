@@ -1,8 +1,6 @@
 package components.atoms
 
 import kotlinx.css.*
-import kotlinx.css.properties.Timing
-import kotlinx.css.properties.Transitions
 import kotlinx.html.js.onClickFunction
 import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
@@ -14,12 +12,9 @@ import materialui.components.iconbutton.iconButton
 import materialui.styles.breakpoint.Breakpoint
 import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
-import materialui.styles.mixins.toolbar
 import materialui.styles.muitheme.spacing
 import materialui.styles.transitions.create
-import materialui.styles.transitions.easeIn
 import materialui.styles.transitions.easeOut
-import materialui.styles.transitions.sharp
 import react.*
 import react.dom.div
 
@@ -54,11 +49,7 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
 
             props.HeaderComponent?.let {
                 div(headerStyle) {
-                    if (props.opened) {
-                        div(classes.toolbar) {}
-                    }
-
-                    div(classes.headerContainer) { child(it) }
+                    child(it)
 
                     iconButton {
                         attrs {
@@ -72,8 +63,7 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
             }
 
             div(contentStyle) {
-                div(classes.toolbar) {}
-                div(classes.contentContainer) { props.children() }
+                props.children()
             }
         }
     }
@@ -82,7 +72,7 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
 private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
     val classes = useStyles()
     val headerStyle = "${classes.header} ${if (props.opened) classes.headerOpen else classes.headerClose}"
-    val contentStyle = if (props.opened) classes.contentOpen else classes.contentClose
+    val contentStyle = "${classes.content} ${if (props.opened) classes.contentOpen else classes.contentClose}"
 
     hidden {
         attrs {
@@ -101,12 +91,12 @@ private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
 
             props.HeaderComponent?.let {
                 div(headerStyle) {
-                    div(classes.headerContainer) { child(it) }
+                    child(it)
                 }
             }
 
             div(contentStyle) {
-                div(classes.contentContainer) { props.children() }
+                props.children()
             }
         }
     }
@@ -129,51 +119,62 @@ fun ResponsiveDrawerProps.HeaderComponent(block: RBuilder.() -> Unit) {
 private external interface ResponsiveDrawerStyle {
     val open: String
     val close: String
-    val toolbar: String
     val header: String
     val headerOpen: String
     val headerClose: String
-    val headerContainer: String
     val content: String
     val contentOpen: String
     val contentClose: String
-    val contentContainer: String
     val expandIcon: String
 }
 
 private val useStyles = makeStyles<ResponsiveDrawerStyle> {
-    "open" {
+    val offsetTop = CSSBuilder().apply {
+        top = 56.px
+        media("(min-width:0px) and (orientation: landscape)") {
+            top = 48.px
+        }
         (theme.breakpoints.up(Breakpoint.sm)) {
+            top = 64.px
+        }
+    }
+
+    "open"(offsetTop.apply {
+        backgroundColor = Color.transparent
+
+        (theme.breakpoints.up(Breakpoint.sm)) {
+            top = 0.px
             width = DRAWER_WIDTH_SM_UP
             flexShrink = 0.0
         }
-    }
+    })
     "close" {
         height = DRAWER_HEADER_HEIGHT_XM_UP
     }
-    "toolbar"(theme.mixins.toolbar.apply {
-        backgroundColor = Color.transparent
-    })
     "header" {
         position = Position.fixed
         left = 0.px
         right = 0.px
         zIndex = 1
-        backgroundColor = Color.transparent
-    }
-    "headerOpen" {
-        top = 0.px
+        padding(8.px, 8.px)
+        backgroundColor = Color.white
 
+        (theme.breakpoints.up(Breakpoint.sm)) {
+            padding(16.px, 8.px)
+        }
+    }
+    "headerOpen"(offsetTop.apply {
         transition = theme.transitions.create("top") {
             easing = theme.transitions.easing.easeOut
             duration = theme.transitions.duration.complex
         }
 
         (theme.breakpoints.up(Breakpoint.sm)) {
+            top = 0.px
             width = DRAWER_WIDTH_SM_UP
             margin(0.px, (-1).px, 0.px, LinearDimension.auto)
         }
-    }
+    })
     "headerClose" {
         top = 100.pct - DRAWER_HEADER_HEIGHT_XM_UP
         bottom = 0.px
@@ -183,48 +184,39 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
             duration = theme.transitions.duration.complex
         }
     }
-    "headerContainer" {
-        backgroundColor = Color.white
-        padding(8.px, 8.px)
-
-        (theme.breakpoints.up(Breakpoint.sm)) {
-            padding(16.px, 8.px)
-        }
-    }
     "content" {
         position = Position.fixed
         left = 0.px
         right = 0.px
-        backgroundColor = Color.transparent
+        paddingTop = DRAWER_HEADER_HEIGHT_XM_UP
+        backgroundColor = Color.white
 
         (theme.breakpoints.up(Breakpoint.sm)) {
-            transition = Transitions.none
+            paddingTop = DRAWER_HEADER_HEIGHT_SM_UP
         }
     }
-    "contentOpen" {
-        top = 0.px
-        height = 100.vh
+    "contentOpen"(offsetTop.apply {
+        height = 100.pct
+        overflowY = Overflow.auto
+
         transition = theme.transitions.create("top") {
             easing = theme.transitions.easing.easeOut
             duration = theme.transitions.duration.complex
         }
-    }
+
+        (theme.breakpoints.up(Breakpoint.sm)) {
+            top = 0.px
+            width = DRAWER_WIDTH_SM_UP
+            margin(0.px, (-1).px, 0.px, LinearDimension.auto)
+            paddingTop = DRAWER_HEADER_HEIGHT_SM_UP
+        }
+    })
     "contentClose" {
         top = 100.pct - DRAWER_HEADER_HEIGHT_XM_UP
         height = 0.px
         transition = theme.transitions.create("top") {
             easing = theme.transitions.easing.easeOut
             duration = theme.transitions.duration.complex
-        }
-    }
-    "contentContainer" {
-        height = 100.pct
-        backgroundColor = Color.white
-        paddingTop = DRAWER_HEADER_HEIGHT_XM_UP
-        overflowY = Overflow.auto
-
-        (theme.breakpoints.up(Breakpoint.sm)) {
-            paddingTop = DRAWER_HEADER_HEIGHT_SM_UP
         }
     }
     "expandIcon" {
