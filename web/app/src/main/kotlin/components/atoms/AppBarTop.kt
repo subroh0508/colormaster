@@ -12,6 +12,7 @@ import materialui.components.icon.icon
 import materialui.components.iconbutton.enums.IconButtonEdge
 import materialui.components.iconbutton.iconButton
 import materialui.components.toolbar.toolbar
+import materialui.components.tooltip.tooltip
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.styles.breakpoint.Breakpoint
@@ -57,14 +58,18 @@ private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
                     +"COLOR M@STER"
                 }
 
-                iconButton {
-                    attrs {
-                        color = ButtonColor.inherit
-                        edge = IconButtonEdge.end
-                        onClickFunction = props.onClickChangeTheme
-                    }
+                tooltip {
+                    attrs { title { +if (props.themeType == PaletteType.light) "ダークテーマ" else "ライトテーマ" } }
 
-                    icon { +"brightness_${if (props.themeType == PaletteType.light) "4" else "7" }_icon" }
+                    iconButton {
+                        attrs {
+                            color = ButtonColor.inherit
+                            edge = IconButtonEdge.end
+                            onClickFunction = props.onClickChangeTheme
+                        }
+
+                        icon { +"brightness_${if (props.themeType == PaletteType.light) "4" else "7" }_icon" }
+                    }
                 }
             }
         }
