@@ -134,7 +134,7 @@ object Libraries {
         const val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.3.11"
+            const val version = "0.3.12"
             const val core = "subroh0508.net.kotlinmaterialui:core:$version"
             const val lab = "subroh0508.net.kotlinmaterialui:lab:$version"
         }

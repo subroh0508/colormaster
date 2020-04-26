@@ -1,4 +1,4 @@
-package pages.search
+package pages
 
 import components.templates.IdolSearchPanelProps
 import components.templates.idolSearchPanel

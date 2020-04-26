@@ -1,7 +1,6 @@
 package containers
 
 import appKodein
-import components.templates.idolSearchPanel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mainScope
@@ -11,7 +10,7 @@ import net.subroh0508.colormaster.model.ui.idol.Filters
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.kodein.di.KodeinAware
 import org.kodein.di.erased.instance
-import pages.search.IdolSearchPage
+import pages.IdolSearchPage
 import react.*
 import react.router.dom.useHistory
 import utilities.*

@@ -61,8 +61,12 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
             ) { history.push("/howtouse") }
             nestedListItem(
                 classes.nested,
-                id = "about-licences", label = "オープンソースライセンス"
-            ) { history.push("/licences") }
+                id = "about-development", label = "仕組み"
+            ) { history.push("/development") }
+            nestedListItem(
+                classes.nested,
+                id = "about-terms", label = "利用規約"
+            ) { history.push("/terms") }
         }
         divider {}
         a {
