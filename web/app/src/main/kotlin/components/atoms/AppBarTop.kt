@@ -19,6 +19,7 @@ import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
 import materialui.styles.palette.PaletteType
+import materialui.styles.palette.default
 import materialui.styles.palette.paper
 import org.w3c.dom.events.Event
 import react.*
@@ -89,7 +90,7 @@ private val useStyles = makeStyles<AppBarTopStyle> {
     }
     "appBar" {
         zIndex = theme.zIndex.drawer.toInt() + 1
-        backgroundColor = theme.palette.background.paper
+        backgroundColor = theme.palette.background.default
         boxShadow = BoxShadows.none
 
         (theme.breakpoints.up(Breakpoint.sm)) {

@@ -13,6 +13,7 @@ import materialui.styles.breakpoint.Breakpoint
 import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
+import materialui.styles.palette.paper
 import materialui.styles.transitions.create
 import materialui.styles.transitions.easeOut
 import react.*
@@ -157,7 +158,7 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
         right = 0.px
         zIndex = 1
         padding(8.px, 8.px)
-        backgroundColor = Color.white
+        backgroundColor = theme.palette.background.paper
 
         (theme.breakpoints.up(Breakpoint.sm)) {
             padding(16.px, 8.px)
@@ -189,7 +190,7 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
         left = 0.px
         right = 0.px
         paddingTop = DRAWER_HEADER_HEIGHT_XM_UP
-        backgroundColor = Color.white
+        backgroundColor = theme.palette.background.paper
 
         (theme.breakpoints.up(Breakpoint.sm)) {
             paddingTop = DRAWER_HEADER_HEIGHT_SM_UP

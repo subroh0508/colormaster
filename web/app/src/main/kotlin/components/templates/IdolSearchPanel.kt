@@ -12,6 +12,7 @@ import materialui.styles.breakpoint.Breakpoint
 import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
 import materialui.styles.mixins.toolbar
+import materialui.styles.palette.default
 import materialui.styles.palette.divider
 import materialui.styles.palette.paper
 import materialui.useMediaQuery
@@ -34,7 +35,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     val actionsStyle = "${classes.actions} ${if (props.isOpenedGrids) "" else classes.actionsHide}"
 
     div(classes.root) {
-        div {
+        div(classes.searchBox) {
             div(classes.searchBoxTop) {}
             idolSearchBox {
                 attrs.filters = uiModel.filters
@@ -107,6 +108,7 @@ external interface IdolSearchPanelProps : RProps {
 
 private external interface IdolSearchPanelStyle {
     val root: String
+    val searchBox: String
     val panel: String
     val toolbar: String
     val actions: String
@@ -117,6 +119,10 @@ private external interface IdolSearchPanelStyle {
 private val useStyles = makeStyles<IdolSearchPanelStyle> {
     "root" {
         display = Display.flex
+        height = 100.vh
+    }
+    "searchBox" {
+        backgroundColor = theme.palette.background.default
     }
     "panel" {
         flexGrow = 1.0
@@ -144,7 +150,6 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
 
         descendants(".$IDOL_COLOR_GRID_ACTIONS_CLASS_NAME") {
             padding(8.px, 4.px)
-            backgroundColor = theme.palette.background.paper
             borderTop(1.px, BorderStyle.solid, theme.palette.divider)
             borderRadius = 0.px
             width = 100.pct
