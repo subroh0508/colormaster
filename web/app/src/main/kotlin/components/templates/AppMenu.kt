@@ -44,14 +44,6 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
                 classes.nested,
                 id = "search-idol", label = "アイドル検索"
             ) { history.push("/") }
-            nestedListItem(
-                classes.nested,
-                id = "search-unit", label = "ユニット検索"
-            ) { history.push("/unit") }
-            nestedListItem(
-                classes.nested,
-                id = "search-music", label = "楽曲検索"
-            ) { history.push("/music") }
         }
         divider {}
         parent(classes, "このアプリについて") {
