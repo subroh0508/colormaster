@@ -1,7 +1,8 @@
-package components.templates
+package containers
 
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
+import components.templates.appMenu
 import isExpandAppBar
 import kotlinext.js.jsObject
 import kotlinx.css.*
@@ -15,13 +16,15 @@ import themes.ThemeProvider
 import utilities.Actions
 import kotlin.browser.localStorage
 
-val APP_BAR_SM_UP = 408.px
+@Suppress("FunctionName")
+fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppFrameContainerComponent, handler = handler)
 
-fun RBuilder.appFrame(handler: RHandler<RProps>) = child(AppFrameComponent, handler = handler)
-
-private val AppFrameComponent = functionalComponent<RProps> { props ->
+private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
     val preferredType = if (useMediaQuery("(prefers-color-scheme: dark)")) PaletteType.dark else PaletteType.light
-    val (appState, dispatch) = useReducer(reducer, AppState())
+    val (appState, dispatch) = useReducer(
+        reducer,
+        AppState()
+    )
     val history = useHistory()
 
     useEffect(listOf()) {
@@ -33,12 +36,18 @@ private val AppFrameComponent = functionalComponent<RProps> { props ->
     useEffect(listOf(preferredType)) {
         if (localStorage["paletteType"] != null) return@useEffect
 
-        dispatch(actions(ActionType.CHANGE) { themeType = preferredType })
+        dispatch(actions(ActionType.CHANGE) {
+            themeType = preferredType
+        })
     }
     useEffect(listOf(appState)) {
         localStorage["paletteType"] = appState.themeType.name
         localStorage["lang"] = appState.lang
     }
+
+    fun closeMenu() = dispatch(actions(ActionType.CHANGE) { openDrawer = false })
+    fun toggleMenu() = dispatch(actions(ActionType.CHANGE) { openDrawer = !appState.openDrawer })
+    fun toggleTheme() = dispatch(actions(ActionType.CHANGE) { themeType = if (appState.themeType == PaletteType.light) PaletteType.dark else PaletteType.light })
 
     ThemeProvider {
         attrs.paletteType = appState.themeType
@@ -48,15 +57,11 @@ private val AppFrameComponent = functionalComponent<RProps> { props ->
             attrs.openDrawer = appState.openDrawer
             attrs.expand = isExpandAppBar(history)
             attrs.MenuComponent {
-                appMenu {
-                    attrs.onCloseMenu = { dispatch(actions(ActionType.CHANGE) { openDrawer = false }) }
-                }
+                appMenu { attrs.onCloseMenu = { closeMenu() } }
             }
-            attrs.onClickChangeTheme = {
-                dispatch(actions(ActionType.CHANGE) { themeType = if (appState.themeType == PaletteType.light) PaletteType.dark else PaletteType.light })
-            }
-            attrs.onClickMenuIcon = { dispatch(actions(ActionType.CHANGE) { openDrawer = !appState.openDrawer }) }
-            attrs.onCloseMenu = { dispatch(actions(ActionType.CHANGE) { openDrawer = false }) }
+            attrs.onClickChangeTheme = { toggleTheme() }
+            attrs.onClickMenuIcon = { toggleMenu() }
+            attrs.onCloseMenu = { closeMenu() }
         }
 
         props.children()

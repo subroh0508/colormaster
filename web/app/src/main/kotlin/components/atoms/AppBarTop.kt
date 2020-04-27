@@ -1,6 +1,5 @@
 package components.atoms
 
-import components.templates.APP_BAR_SM_UP
 import kotlinx.css.*
 import kotlinx.css.properties.BoxShadows
 import kotlinx.html.js.onClickFunction
@@ -27,6 +26,8 @@ import materialui.styles.palette.default
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+
+val APP_BAR_SM_UP = 408.px
 
 fun RBuilder.appBarTop(handler: RHandler<AppBarTopProps>) = child(AppBarTopComponent, handler = handler)
 

@@ -1,4 +1,4 @@
-import components.templates.appFrame
+import containers.AppFrameContainer
 import containers.IdolSearchContainer
 import containers.PenlightContainer
 import containers.PreviewContainer
@@ -10,7 +10,7 @@ import react.RBuilder
 import react.router.dom.*
 
 fun RBuilder.routing() = browserRouter {
-    appFrame {
+    AppFrameContainer {
         switch {
             route("/preview") { PreviewContainer() }
             route("/penlight") { PenlightContainer() }
