@@ -1,12 +1,14 @@
 package themes
 
 import kotlinx.css.Color
+import kotlinx.css.color
 import materialui.components.cssbaseline.cssBaseline
 import materialui.styles.createMuiTheme
 import materialui.styles.muitheme.options.palette
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.options.*
 import materialui.styles.themeprovider.themeProvider
+import materialui.styles.withStyles
 import react.*
 
 @Suppress("FunctionName")
@@ -16,7 +18,8 @@ private val ThemeProviderComponent = functionalComponent<ThemeProviderProps> { p
     val theme = useMemo({ createTheme(props.paletteType) }, arrayOf(props.paletteType))
 
     themeProvider(theme) {
-        cssBaseline {}
+        cssBaseline { }
+        OverrideGlobalStyle { }
         props.children()
     }
 }
@@ -57,3 +60,8 @@ private fun createTheme(paletteType: PaletteType) = createMuiTheme {
         }
     }
 }
+
+private val OverrideGlobalStyle = withStyles(
+    functionalComponent<RProps> {  },
+    { global { "a" { color = Color("#00B5E2") } } }
+)
