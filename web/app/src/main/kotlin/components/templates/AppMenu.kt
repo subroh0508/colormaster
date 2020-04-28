@@ -2,7 +2,7 @@ package components.templates
 
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
-import kotlinx.html.label
+import materialui.components.button.button
 import materialui.components.divider.divider
 import materialui.components.icon.icon
 import materialui.components.list.list
@@ -39,27 +39,25 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
             }
         }
         divider {}
-        parent(classes, "検索") {
-            nestedListItem(
-                classes.nested,
-                id = "search-idol", label = "アイドル検索"
-            ) { history.push("/") }
-        }
+        parent(classes, "検索")
+        nestedListItem(
+            classes,
+            id = "search-idol", label = "アイドル検索"
+        ) { history.push("/") }
         divider {}
-        parent(classes, "このアプリについて") {
-            nestedListItem(
-                classes.nested,
-                id = "about-howtouse", label = "使い方"
-            ) { history.push("/howtouse") }
-            nestedListItem(
-                classes.nested,
-                id = "about-development", label = "仕組み"
-            ) { history.push("/development") }
-            nestedListItem(
-                classes.nested,
-                id = "about-terms", label = "利用規約"
-            ) { history.push("/terms") }
-        }
+        parent(classes, "このアプリについて")
+        nestedListItem(
+            classes,
+            id = "about-howtouse", label = "使い方"
+        ) { history.push("/howtouse") }
+        nestedListItem(
+            classes,
+            id = "about-development", label = "仕組み"
+        ) { history.push("/development") }
+        nestedListItem(
+            classes,
+            id = "about-terms", label = "利用規約"
+        ) { history.push("/terms") }
         divider {}
         a {
             attrs.href = "https://github.com/subroh0508/colormaster"
@@ -69,6 +67,8 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
                 key = "github"
                 attrs.onClickFunction = { console.log("github") }
                 listItemIcon {
+                    attrs.classes(classes.itemIcon)
+
                     icon { +"launch_icon" }
                 }
                 listItemText {
@@ -87,8 +87,7 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
 
 private fun RBuilder.parent(
     classes: AppMenuStyle,
-    label: String,
-    children: RBuilder.() -> Unit
+    label: String
 ) = list {
     attrs.classes(classes.parent)
 
@@ -97,20 +96,21 @@ private fun RBuilder.parent(
         attrs.variant = TypographyVariant.subtitle1
         +label
     }
-
-    child(buildElements(children))
 }
 
 private fun RBuilder.nestedListItem(
-    classes: String,
+    classes: AppMenuStyle,
     id: String,
     label: String,
     onClick: () -> Unit
-) = listItem {
+) = list {
     key = id
-    attrs.classes(classes)
-    attrs.onClickFunction = { onClick() }
-    listItemText { attrs.primary { +label } }
+    attrs.classes(classes.item)
+    button {
+        attrs.classes(classes.itemButton)
+        attrs.onClickFunction = { onClick() }
+        +label
+    }
 }
 
 external interface AppMenuProps : RProps {
@@ -121,7 +121,9 @@ private external interface AppMenuStyle {
     val title: String
     val parent: String
     val parentLabel: String
-    val nested: String
+    val item: String
+    val itemButton: String
+    val itemIcon: String
 }
 
 private val useStyles = makeStyles<AppMenuStyle> {
@@ -129,13 +131,23 @@ private val useStyles = makeStyles<AppMenuStyle> {
         marginBottom = theme.spacing(2)
     }
     "parent" {
+        display = Display.flex
         paddingLeft = theme.spacing(2)
     }
     "parentLabel" {
         fontWeight = FontWeight.w700
     }
-    "nested" {
+    "item" {
+        display = Display.flex
+        paddingTop = 0.px
+        paddingBottom = 0.px
+    }
+    "itemButton" {
         width = 100.pct
         paddingLeft = theme.spacing(4)
+        justifyContent = JustifyContent.flexStart
+    }
+    "itemIcon" {
+        minWidth = 36.px
     }
 }
