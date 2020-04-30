@@ -59,29 +59,14 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
             id = "about-terms", label = "利用規約"
         ) { history.push("/terms") }
         divider {}
-        a {
-            attrs.href = "https://github.com/subroh0508/colormaster"
-            attrs.target = "_blank"
-
-            listItem {
-                key = "github"
-                attrs.onClickFunction = { console.log("github") }
-                listItemIcon {
-                    attrs.classes(classes.itemIcon)
-
-                    icon { +"launch_icon" }
-                }
-                listItemText {
-                    attrs.primary {
-                        typography {
-                            attrs.classes(classes.parentLabel)
-                            attrs.variant = TypographyVariant.subtitle1
-                            +"GitHub"
-                        }
-                    }
-                }
-            }
-        }
+        anchorItem(
+            classes,
+            id = "github", label = "GitHub", href = "https://github.com/subroh0508/colormaster"
+        )
+        anchorItem(
+            classes,
+            id = "twitter", label = "開発者Twitter", href = "https://twitter.com/subroh_0508"
+        )
     }
 }
 
@@ -110,6 +95,35 @@ private fun RBuilder.nestedListItem(
         attrs.classes(classes.itemButton)
         attrs.onClickFunction = { onClick() }
         +label
+    }
+}
+
+private fun RBuilder.anchorItem(
+    classes: AppMenuStyle,
+    id: String,
+    label: String,
+    href: String,
+    icon: String = "launch_icon"
+) = a {
+    attrs.href = href
+    attrs.target = "_blank"
+
+    listItem {
+        key = id
+        listItemIcon {
+            attrs.classes(classes.itemIcon)
+
+            icon { +icon }
+        }
+        listItemText {
+            attrs.primary {
+                typography {
+                    attrs.classes(classes.parentLabel)
+                    attrs.variant = TypographyVariant.subtitle1
+                    +label
+                }
+            }
+        }
     }
 }
 
