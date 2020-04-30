@@ -1,5 +1,6 @@
 package pages
 
+import components.atoms.link
 import materialui.components.card.card
 import materialui.components.cardcontent.cardContent
 import materialui.components.cardheader.cardHeader
@@ -21,20 +22,18 @@ fun RBuilder.DevelopmentPage() = StaticPage {
         cardContent {
             p {
                 +"必要なデータは全て"
-                a {
-                    attrs.href = "https://sparql.crssnky.xyz/imas/"
-                    attrs.target = "_blank"
-                    +"im@sparql"
-                }
+                link(
+                    href = "https://sparql.crssnky.xyz/imas/",
+                    label = "im@sparql"
+                )
                 +"から取得しています。"
             }
             p {
                 +"データに間違いを見つけた場合は、"
-                a {
-                    attrs.href = "https://github.com/imas/imasparql/issues"
-                    attrs.target = "_blank"
-                    +"im@sparqlのIssueページ"
-                }
+                link(
+                    href = "https://github.com/imas/imasparql/issues",
+                    label = "im@sparqlのIssueページ"
+                )
                 +"にご報告ください。"
             }
         }
@@ -51,11 +50,10 @@ fun RBuilder.DevelopmentPage() = StaticPage {
         cardContent {
             p {
                 +"このWebアプリは、"
-                a {
-                    attrs.href = "https://kotlinlang.org/docs/reference/multiplatform.html"
-                    attrs.target = "_blank"
-                    strong { +"Kotlin Multiplatform" }
-                }
+                link(
+                    href = "https://kotlinlang.org/docs/reference/multiplatform.html",
+                    label = "Kotlin Multiplatform"
+                )
                 +"を使って実装しています。ソースコードに占めるKotlinの割合は"
                 strong { +"95%を超えています。" }
             }
@@ -66,11 +64,10 @@ fun RBuilder.DevelopmentPage() = StaticPage {
             }
             p {
                 +"また、UIフレームワークとして"
-                a {
-                    attrs.href = "https://material-ui.com/"
-                    attrs.target = "_blank"
-                    +"Material-UI"
-                }
+                link(
+                    href = "https://material-ui.com/",
+                    label = "Material-UI"
+                )
                 +"も利用しています。"
             }
         }
@@ -86,11 +83,10 @@ fun RBuilder.DevelopmentPage() = StaticPage {
         }
         cardContent {
             p {
-                a {
-                    attrs.href = "https://github.com/subroh0508/colormaster/issues"
-                    attrs.target = "_blank"
-                    +"COLOR M@STERのIssueページ"
-                }
+                link(
+                    href = "https://github.com/subroh0508/colormaster/issues",
+                    label = "COLOR M@STERのIssueページ"
+                )
                 +"に報告ください。"
             }
             p {
@@ -100,11 +96,10 @@ fun RBuilder.DevelopmentPage() = StaticPage {
             ul {
                 li {
                     +"ほしいものリスト: "
-                    a {
-                        attrs.href = "https://www.amazon.jp/hz/wishlist/ls/34TBOXPWOUD8W?ref_=wl_share"
-                        attrs.target = "_blank"
-                        +"Link"
-                    }
+                    link(
+                        href = "https://www.amazon.jp/hz/wishlist/ls/34TBOXPWOUD8W?ref_=wl_share",
+                        label = "Link"
+                    )
                 }
             }
         }

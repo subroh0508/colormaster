@@ -19,7 +19,6 @@ private val ThemeProviderComponent = functionalComponent<ThemeProviderProps> { p
 
     themeProvider(theme) {
         cssBaseline { }
-        OverrideGlobalStyle { }
         props.children()
     }
 }
@@ -60,8 +59,3 @@ private fun createTheme(paletteType: PaletteType) = createMuiTheme {
         }
     }
 }
-
-private val OverrideGlobalStyle = withStyles(
-    functionalComponent<RProps> {  },
-    { global { "a" { color = Color("#00B5E2") } } }
-)

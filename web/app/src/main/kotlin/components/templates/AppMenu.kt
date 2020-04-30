@@ -2,6 +2,7 @@ package components.templates
 
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
+import components.atoms.link
 import materialui.components.button.button
 import materialui.components.divider.divider
 import materialui.components.icon.icon
@@ -15,7 +16,6 @@ import materialui.components.typography.typographyH6
 import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
 import react.*
-import react.dom.a
 import react.router.dom.useHistory
 
 fun RBuilder.appMenu(handler: RHandler<AppMenuProps>) = child(AppMenuComponent, handler = handler)
@@ -104,10 +104,7 @@ private fun RBuilder.anchorItem(
     label: String,
     href: String,
     icon: String = "launch_icon"
-) = a {
-    attrs.href = href
-    attrs.target = "_blank"
-
+) = link(href) {
     listItem {
         key = id
         listItemIcon {

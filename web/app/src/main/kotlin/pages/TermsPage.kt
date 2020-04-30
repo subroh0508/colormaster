@@ -1,11 +1,11 @@
 package pages
 
+import components.atoms.link
 import materialui.components.card.card
 import materialui.components.cardcontent.cardContent
 import materialui.components.cardheader.cardHeader
 import materialui.components.typography.typographyH5
 import react.RBuilder
-import react.dom.a
 import react.dom.p
 
 @Suppress("FunctionName")
@@ -22,11 +22,10 @@ fun RBuilder.TermsPage() = StaticPage {
         cardContent {
             p {
                 +"この利用規約は、"
-                a {
-                    attrs.href = "https://twitter.com/subroh_0508"
-                    attrs.target = "_blank"
-                    +"にしこりさぶろ〜"
-                }
+                link(
+                    href = "https://twitter.com/subroh_0508",
+                    label = "にしこりさぶろ〜"
+                )
                 +"(以下「開発者」という)が、COLOR M@STER(以下「当アプリ」という)で提供するサービスの利用条件を定めるものです。"
             }
             p {
