@@ -40,7 +40,7 @@ fun RBuilder.TermsPage() = StaticPage {
 
         cardHeader {
             attrs.title {
-                typographyH5 { +"1. 当アプリの利用は自己責任でお願いします" }
+                typographyH5 { +"1. 免責事項" }
             }
         }
         cardContent {
@@ -49,6 +49,28 @@ fun RBuilder.TermsPage() = StaticPage {
             }
             p {
                 +"また、当アプリを利用したことで生じたあらゆる損害・不利益等に対して、開発者はいかなる責任も負いません。"
+            }
+        }
+    }
+
+    card {
+        attrs.className = CARD_ELEMENT_CLASS_NAME
+        attrs["variant"] = "outlined"
+
+        cardHeader {
+            attrs.title {
+                typographyH5 { +"2. Cookieの利用について" }
+            }
+        }
+        cardContent {
+            p {
+                +"当アプリでは、当アプリの改善を図るため、Google社のサービスであるGoogle Analyticsを利用し、利用者の閲覧情報を収集しています。"
+            }
+            p {
+                +"利用者がブラウザを利用してウェブサイトにアクセスすると、これらサービスがCookieを利用してデータの収集、処理をおこないます。このサービスが収集、処理するデータに、利用者個人を特定する情報は含まれておりません。"
+            }
+            p {
+                +"また、利用者は、当アプリを利用することで、Google社が行うこうしたデータ処理に対し許可を与えたものとみなします。"
             }
         }
     }
