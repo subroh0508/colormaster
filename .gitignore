@@ -4,6 +4,7 @@
 /local.properties
 .DS_Store
 /build
+/public
 /captures
 .externalNativeBuild
 /node_modules
