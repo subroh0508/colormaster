@@ -9,6 +9,12 @@ kotlin {
     target {
         useCommonJs()
         browser {
+            // Ktor's known issue
+            // Issue: https://github.com/ktorio/ktor/issues/1339
+            // YouTrack: https://youtrack.jetbrains.com/issue/KT-36484
+            dceTask {
+                keep("ktor-ktor-io.\$\$importsForInline\$\$.ktor-ktor-io.io.ktor.utils.io")
+            }
             runTask {
                 sourceMaps = true
                 devServer = KotlinWebpackConfig.DevServer(
