@@ -115,7 +115,7 @@ object Libraries {
     }
 
     object JsWrappers {
-        const val version = "pre.100-kotlin-${Kotlin.version}"
+        const val version = "pre.104-kotlin-${Kotlin.version}"
 
         const val reactVersion = "${Npm.reactVersion}-$version"
         const val react = "org.jetbrains:kotlin-react:$reactVersion"
@@ -134,7 +134,7 @@ object Libraries {
         const val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.3.14"
+            const val version = "0.3.16"
             const val core = "subroh0508.net.kotlinmaterialui:core:$version"
             const val lab = "subroh0508.net.kotlinmaterialui:lab:$version"
         }
