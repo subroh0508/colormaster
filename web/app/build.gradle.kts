@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import org.jetbrains.kotlin.gradle.targets.js.npm.NpmDependency
 
 plugins {
     kotlin("js")
@@ -91,3 +92,5 @@ val copyDistributions by tasks.registering {
 }
 
 browserWebpack.finalizedBy(copyDistributions)
+
+fun devNpm(name: String, version: String = "*") = NpmDependency(project, name, version, NpmDependency.Scope.DEV)
