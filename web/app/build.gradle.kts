@@ -64,7 +64,7 @@ kotlin {
 
                 implementation(npm(Libraries.Npm.react, Libraries.Npm.reactVersion))
                 implementation(npm(Libraries.Npm.reactDom, Libraries.Npm.reactVersion))
-                implementation(npm(Libraries.Npm.reactRouterDom, Libraries.Npm.reactRouterDomVersion))
+                implementation(npm(Libraries.Npm.reactRouterDom, "^5.2.0"))
                 implementation(npm(Libraries.Npm.styledComponent, Libraries.Npm.styledComponentVersion))
                 implementation(npm(Libraries.Npm.inlineStylePrefixer, Libraries.Npm.inlineStylePrefixerVersion))
                 implementation(npm(Libraries.Npm.abortController, Libraries.Npm.abortControllerVersion))
