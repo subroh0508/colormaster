@@ -148,7 +148,7 @@ private val useStyles = makeStyles<AlertsStyle> {
     }
     "info" {
         color = getColor(theme.palette.info.main, 60)
-        backgroundColor = getBackgroundColor(theme.palette.info.main, 90)
+        backgroundColor = getBackgroundColor(theme.palette.info.main, if (theme.palette.type == PaletteType.dark) 90 else 75)
         descendants("\$icon") {
             color = theme.palette.info.main
         }
