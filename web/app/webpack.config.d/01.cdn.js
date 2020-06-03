@@ -18,7 +18,7 @@ if (config.mode === 'production') {
       react: 'React',
       'react-dom': 'ReactDOM',
       // 'react-router-dom': 'ReactRouterDom',
-      // '@material-ui/core': 'MaterialUI',
+      '@material-ui/core': 'MaterialUI',
     },
   ];
   config.plugins.push(
@@ -40,11 +40,11 @@ if (config.mode === 'production') {
           var: 'ReactRouterDOM',
           path: 'umd/react-router-dom.min.js',
         },
+        */
         {
           name: '@material-ui/core',
           path: 'umd/material-ui.production.min.js',
         },
-        */
       ],
       pathToNodeModules: path.resolve(rootPath, 'build/js'),
     }),

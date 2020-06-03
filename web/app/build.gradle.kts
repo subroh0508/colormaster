@@ -58,7 +58,6 @@ kotlin {
                 implementation(Libraries.JsWrappers.styled)
                 implementation(Libraries.JsWrappers.extensions)
                 implementation(Libraries.JsWrappers.MaterialUi.core)
-                implementation(Libraries.JsWrappers.MaterialUi.lab)
 
                 implementation(Libraries.Kodein.js)
 

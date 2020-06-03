@@ -136,7 +136,6 @@ object Libraries {
         object MaterialUi {
             const val version = "0.4.2"
             const val core = "subroh0508.net.kotlinmaterialui:core:$version"
-            const val lab = "subroh0508.net.kotlinmaterialui:lab:$version"
         }
     }
 
