@@ -17,7 +17,7 @@ if (config.mode === 'production') {
     {
       react: 'React',
       'react-dom': 'ReactDOM',
-      // 'react-router-dom': 'ReactRouterDom',
+      'react-router-dom': 'ReactRouterDOM',
       '@material-ui/core': 'MaterialUI',
     },
   ];
@@ -34,13 +34,11 @@ if (config.mode === 'production') {
           var: 'ReactDOM',
           path: 'umd/react-dom.production.min.js',
         },
-        /*
         {
           name: 'react-router-dom',
           var: 'ReactRouterDOM',
           path: 'umd/react-router-dom.min.js',
         },
-        */
         {
           name: '@material-ui/core',
           path: 'umd/material-ui.production.min.js',
