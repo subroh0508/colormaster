@@ -2,14 +2,17 @@ package components.atoms
 
 import kotlinx.css.*
 import kotlinx.css.properties.BoxShadows
+import kotlinx.html.AttributeEnum
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onKeyDownFunction
 import materialui.components.appbar.appBar
 import materialui.components.appbar.enums.AppBarColor
 import materialui.components.appbar.enums.AppBarPosition
+import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
+import materialui.components.icon.enums.IconFontSize
 import materialui.components.icon.icon
 import materialui.components.iconbutton.enums.IconButtonEdge
 import materialui.components.iconbutton.iconButton
@@ -26,10 +29,24 @@ import materialui.styles.palette.default
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+import react.dom.span
 
 val APP_BAR_SM_UP = 408.px
 
 fun RBuilder.appBarTop(handler: RHandler<AppBarTopProps>) = child(AppBarTopComponent, handler = handler)
+
+private enum class Languages(val code: String, val label: String) {
+    LOADING("xx", "読み込み中"),
+    ENGLISH("en", "ENGLISH"),
+    JAPANESE("ja", "日本語");
+
+    fun component1() = code
+    fun component2() = label
+
+    companion object {
+        fun valueOfCode(code: String) = values().find { it.code == code } ?: LOADING
+    }
+}
 
 private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
     val classes = useStyles(props)
@@ -59,6 +76,23 @@ private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
                     attrs {
                         classes(classes.title)
                         variant = TypographyVariant.h6
+                    }
+                }
+
+                tooltip {
+                    attrs { title { +"Change Language" } }
+
+                    button {
+                        attrs {
+                            color = ButtonColor.inherit
+                            onClickFunction = { console.log("changeicon") }
+                        }
+
+                        icon { +"translate_icon" }
+                        span(classes.language) {
+                            +Languages.JAPANESE.label
+                        }
+                        icon { attrs.fontSize = IconFontSize.small; +"expand_more_icon" }
                     }
                 }
 
@@ -115,6 +149,7 @@ private external interface AppBarTopStyle {
     val appBar: String
     val appBarExpand: String
     val menuButton: String
+    val language: String
     val title: String
     val list: String
 }
@@ -140,6 +175,14 @@ private val useStyles = makeStyles<AppBarTopStyle, AppBarTopProps> {
     }
     "menuButton" {
         marginRight = theme.spacing(2)
+    }
+    "language" {
+        margin = theme.spacing(0, 0.5, 0, 1)
+        display = Display.none
+
+        (theme.breakpoints.up(Breakpoint.md)) {
+            display = Display.block
+        }
     }
     "title" {
         flexGrow = 1.0
