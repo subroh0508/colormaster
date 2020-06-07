@@ -158,5 +158,16 @@ object Libraries {
 
         const val textEncodingVersion = "0.7.0"
         const val textEncoding = "text-encoding"
+
+        object I18next {
+            const val version = "^19.4.5"
+            const val core = "i18next"
+
+            const val httpBackendVersion = "^1.0.15"
+            const val httpBackend = "i18next-http-backend"
+
+            const val reactVersion = "^11.5.0"
+            const val react = "react-i18next"
+        }
     }
 }

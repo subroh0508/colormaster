@@ -68,6 +68,9 @@ kotlin {
                 implementation(npm(Libraries.Npm.inlineStylePrefixer, Libraries.Npm.inlineStylePrefixerVersion))
                 implementation(npm(Libraries.Npm.abortController, Libraries.Npm.abortControllerVersion))
                 implementation(npm(Libraries.Npm.textEncoding, Libraries.Npm.textEncodingVersion))
+                implementation(npm(Libraries.Npm.I18next.core, Libraries.Npm.I18next.version))
+                implementation(npm(Libraries.Npm.I18next.httpBackend, Libraries.Npm.I18next.httpBackendVersion))
+                implementation(npm(Libraries.Npm.I18next.react, Libraries.Npm.I18next.reactVersion))
 
                 implementation(devNpm("html-webpack-plugin", "^3.2.0"))
                 implementation(devNpm("webpack-cdn-plugin", "^3.2.2"))
