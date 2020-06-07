@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
+
 package utilities
 
 import react.RBuilder
@@ -9,7 +11,7 @@ import react.RProps
 external object ReactI18next {
     val initReactI18next: dynamic
     val I18nextProvider: RClass<ReactI18nextProps>
-    val useTranslation: () -> Pair<T, I18next>
+    val useTranslation: () -> Array<dynamic>
 }
 
 external interface ReactI18nextProps : RProps {
@@ -19,4 +21,8 @@ external interface ReactI18nextProps : RProps {
 @Suppress("FunctionName")
 fun RBuilder.I18nextProvider(handler: RHandler<ReactI18nextProps>) = ReactI18next.I18nextProvider(handler)
 
-fun useTranslation() = ReactI18next.useTranslation()
+fun useTranslation(): Pair<T, I18next>  {
+    val jsTuple = ReactI18next.useTranslation()
+
+    return jsTuple[0] as T to jsTuple[1] as I18next
+}

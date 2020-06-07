@@ -1,10 +1,8 @@
 package containers
 
-import Languages
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
 import components.templates.appMenu
-import i18n
 import isExpandAppBar
 import kotlinext.js.jsObject
 import language
@@ -16,6 +14,7 @@ import react.*
 import react.router.dom.useHistory
 import themes.ThemeProvider
 import utilities.Actions
+import utilities.useTranslation
 import kotlin.browser.localStorage
 
 @Suppress("FunctionName")
@@ -25,10 +24,11 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
     val preferredType = if (useMediaQuery("(prefers-color-scheme: dark)")) PaletteType.dark else PaletteType.light
     val history = useHistory()
     val lang = language(history)
+    val (_, i18n) = useTranslation()
 
     val (appState, dispatch) = useReducer(
         reducer,
-        AppState(lang = lang)
+        AppState()
     )
 
     useEffect(listOf()) {
@@ -73,7 +73,6 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
 
 private data class AppState(
     val themeType: PaletteType = PaletteType.light,
-    val lang: Languages = Languages.JAPANESE,
     val openDrawer: Boolean = false
 )
 
@@ -83,7 +82,6 @@ private enum class ActionType {
 
 private external interface Payload {
     var themeType: PaletteType?
-    var lang: Languages?
     var openDrawer: Boolean?
 }
 
@@ -101,7 +99,6 @@ private val reducer = { state: AppState, action: Actions<ActionType, Payload> ->
     when (action.type) {
         ActionType.CHANGE -> AppState(
             themeType = payload.themeType ?: state.themeType,
-            lang = payload.lang ?: state.lang,
             openDrawer = payload.openDrawer ?: state.openDrawer
         )
     }

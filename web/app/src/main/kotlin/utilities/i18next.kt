@@ -11,8 +11,8 @@ private external val i18nextModule: dynamic
 @JsModule("i18next-http-backend")
 private external val httpBackendModule: dynamic
 
-val i18next: I18next = i18nextModule.default as I18next
-val httpBackend: dynamic = httpBackendModule.default
+private val i18next: I18next = i18nextModule.default as I18next
+private val httpBackend: dynamic = httpBackendModule.default
 
 external interface I18next {
     fun init(options: I18nextOptions, callback: dynamic): Promise<T>
@@ -45,6 +45,20 @@ operator fun I18nextResources.set(code: String, res: dynamic) { this.asDynamic()
 typealias T = (Array<Any>) -> String
 
 fun I18next.init(options: I18nextOptions.() -> Unit) = i18next.init(jsObject(options), undefined)
-fun I18next.t(key: String, vararg arg: Any) = i18next.t(*(arrayOf(key) + arg))
 fun T.invoke(key: String, vararg arg: Any) = invoke(arrayOf(key) + arg)
 
+fun i18nextInit() = i18next.
+    use(httpBackend).
+    use(ReactI18next.initReactI18next).
+    apply {
+        init {
+            resources("ja", require("locale/ja"))
+            lng = "ja"
+            debug = true
+            fallbackLng("ja")
+            partialBundledLanguages = true
+            backend {
+                loadPath = "/locale/{{lng}}.json"
+            }
+        }
+    }
