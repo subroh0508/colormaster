@@ -37,6 +37,10 @@ fun RouteResultHistory.toTerms() = to("/terms")
 fun RouteResultHistory.toPreview(query: String) = to("/preview?$query")
 fun RouteResultHistory.toPenlight(query: String) = push("/penlight?$query")
 
-private fun RouteResultHistory.langCode() = location.pathname.split("/")[1]
+private fun RouteResultHistory.langCode() = Languages.values().let { languages ->
+    val c = location.pathname.split("/")[1]
+
+    languages.find { it.code == c }?.code ?: ""
+}
 
 private fun RouteResultHistory.to(path: String) = push("${langCode().takeIf(String::isNotBlank)?.let { "/$it" } ?: ""}$path")
