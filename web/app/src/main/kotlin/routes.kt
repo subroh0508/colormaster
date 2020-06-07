@@ -42,8 +42,15 @@ fun isExpandAppBar(history: RouteResultHistory) = listOf(
     "/terms"
 ).contains(history.location.pathname)
 
-fun language(history: RouteResultHistory): Languages {
-    val code = history.location.pathname.split("/")[1]
+fun language(history: RouteResultHistory) = Languages.valueOfCode(history.langCode()) ?: Languages.JAPANESE
 
-    return Languages.valueOfCode(code) ?: Languages.JAPANESE
-}
+fun RouteResultHistory.toRoot() = to("/")
+fun RouteResultHistory.toHowToUse() = to("/howtouse")
+fun RouteResultHistory.toDevelopment() = to("/development")
+fun RouteResultHistory.toTerms() = to("/terms")
+fun RouteResultHistory.toPreview(query: String) = to("/preview?$query")
+fun RouteResultHistory.toPenlight(query: String) = push("/penlight?$query")
+
+private fun RouteResultHistory.langCode() = location.pathname.split("/")[1]
+
+private fun RouteResultHistory.to(path: String) = push("${langCode().takeIf(String::isNotBlank)?.let { "/$it" } ?: ""}$path")

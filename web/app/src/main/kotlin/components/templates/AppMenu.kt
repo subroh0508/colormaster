@@ -17,6 +17,10 @@ import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
 import react.*
 import react.router.dom.useHistory
+import toDevelopment
+import toHowToUse
+import toRoot
+import toTerms
 
 fun RBuilder.appMenu(handler: RHandler<AppMenuProps>) = child(AppMenuComponent, handler = handler)
 
@@ -43,21 +47,21 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
         nestedListItem(
             classes,
             id = "search-idol", label = "アイドル検索"
-        ) { history.push("/") }
+        ) { history.toRoot() }
         divider {}
         parent(classes, "このアプリについて")
         nestedListItem(
             classes,
             id = "about-howtouse", label = "使い方"
-        ) { history.push("/howtouse") }
+        ) { history.toHowToUse() }
         nestedListItem(
             classes,
             id = "about-development", label = "仕組み"
-        ) { history.push("/development") }
+        ) { history.toDevelopment() }
         nestedListItem(
             classes,
             id = "about-terms", label = "利用規約"
-        ) { history.push("/terms") }
+        ) { history.toTerms() }
         divider {}
         anchorItem(
             classes,

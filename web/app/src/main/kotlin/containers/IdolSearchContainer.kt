@@ -13,6 +13,8 @@ import org.kodein.di.erased.instance
 import pages.IdolSearchPage
 import react.*
 import react.router.dom.useHistory
+import toPenlight
+import toPreview
 import utilities.*
 
 @Suppress("FunctionName")
@@ -21,8 +23,8 @@ fun RBuilder.IdolSearchContainer() = IdolSearchControllerContext.Provider(IdolSe
 private val IdolSearchContainerImpl = functionalComponent<RProps> {
     val history = useHistory()
 
-    fun preview(items: List<IdolColor>) = history.push("/preview?${items.joinToString("&") { "id=${it.id}" }}")
-    fun turnOnPenlight(items: List<IdolColor>) = history.push("/penlight?${items.joinToString("&") { "id=${it.id}" }}")
+    fun preview(items: List<IdolColor>) = history.toPreview(items.joinToString("&") { "id=${it.id}" })
+    fun turnOnPenlight(items: List<IdolColor>) = history.toPenlight(items.joinToString("&") { "id=${it.id}" })
 
     val controller = useContext(IdolSearchControllerContext)
 
