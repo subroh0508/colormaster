@@ -1,7 +1,10 @@
 package components.atoms
 
+import Languages
 import kotlinx.css.*
 import kotlinx.css.properties.BoxShadows
+import kotlinx.html.A
+import kotlinx.html.DIV
 import kotlinx.html.id
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onKeyDownFunction
@@ -69,7 +72,12 @@ private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
                     }
                 }
 
-                child(LanguageMenuComponent) { attrs.lang = "ja" }
+                child(LanguageMenuComponent) {
+                    attrs {
+                        lang = props.lang
+                        pathname = props.pathname
+                    }
+                }
 
                 tooltip {
                     attrs { title { +if (props.themeType == PaletteType.light) "ダークテーマ" else "ライトテーマ" } }
@@ -105,12 +113,12 @@ private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
 
 external interface AppBarTopProps : RProps {
     var themeType: PaletteType
-    var lang: String
+    var lang: Languages
+    var pathname: String
     var openDrawer: Boolean
     var expand: Boolean
     @Suppress("PropertyName")
     var MenuComponent: ReactElement?
-    var onClickChangeLanguage: (event: Event) -> Unit
     var onClickChangeTheme: (event: Event) -> Unit
     var onClickMenuIcon: (event: Event) -> Unit
     var onCloseMenu: () -> Unit
@@ -121,27 +129,15 @@ fun AppBarTopProps.MenuComponent(block: RBuilder.() -> Unit) {
     MenuComponent = buildElement(block)
 }
 
-private enum class Languages(val code: String, val label: String) {
-    LOADING("xx", "読み込み中"),
-    JAPANESE("ja", "日本語"),
-    ENGLISH("en", "ENGLISH");
-
-    operator fun component1() = code
-    operator fun component2() = label
-
-    companion object {
-        fun valueOfCode(code: String) = values().find { it.code == code } ?: LOADING
-    }
-}
-
 private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { props ->
     val (languageMenu, setLanguageMenu) = useState<HTMLButtonElement?>(null)
+    val path = props.pathname.replace(props.lang.basename, "")
 
     fun handleLanguageIconClick(event: Event) = setLanguageMenu(event.currentTarget as HTMLButtonElement)
-    fun handleLanguageMenuClose(event: Event, s: String) = setLanguageMenu(null)
+    fun handleLanguageMenuClose(event: Event) = setLanguageMenu(null)
 
     tooltip {
-        attrs { title { +"Change Language" } }
+        attrs { title { +"言語切り替え" } }
 
         button {
             attrs {
@@ -161,19 +157,19 @@ private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { pro
             id = "language-menu"
             setProp("anchorEl", languageMenu)
             open = languageMenu != null
-            onClose = ::handleLanguageMenuClose
+            onClose = { e, _ -> handleLanguageIconClick(e) }
         }
 
-        Languages.values().forEach { (code, label) ->
-            if (code == Languages.LOADING.code) {
-                return@forEach
-            }
+        Languages.values().forEach { (code, label, basename) ->
 
-            menuItem {
+            menuItem(factory = { A(mapOf(), it) }) {
                 attrs {
                     key = code
-                    selected = props.lang == code
+                    href = "$basename$path"
+                    hrefLang = code
+                    selected = props.lang.code == code
                     lang = code
+                    onClickFunction = ::handleLanguageMenuClose
                 }
 
                 +label
@@ -183,7 +179,8 @@ private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { pro
 }
 
 private external interface LanguageMenuProps : RProps {
-    var lang: String
+    var lang: Languages
+    var pathname: String
 }
 
 private external interface AppBarTopStyle {

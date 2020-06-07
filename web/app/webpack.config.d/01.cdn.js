@@ -5,6 +5,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const rootPath = path.resolve(__dirname, '../../../../')
 const webAppPath = path.resolve(rootPath, 'web/app');
 
+config.output.publicPath = '/';
+
 config.plugins.push(
   new HtmlWebpackPlugin({
     template: path.resolve(webAppPath, 'build/processedResources/Js/main/index.html'),

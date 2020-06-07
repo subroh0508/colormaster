@@ -1,5 +1,6 @@
 package containers
 
+import Languages
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
 import components.templates.appMenu
@@ -17,9 +18,9 @@ import utilities.Actions
 import kotlin.browser.localStorage
 
 @Suppress("FunctionName")
-fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppFrameContainerComponent, handler = handler)
+fun RBuilder.AppFrameContainer(handler: RHandler<AppFrameContainerProps>) = child(AppFrameContainerComponent, handler = handler)
 
-private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
+private val AppFrameContainerComponent = functionalComponent<AppFrameContainerProps> { props ->
     val preferredType = if (useMediaQuery("(prefers-color-scheme: dark)")) PaletteType.dark else PaletteType.light
     val (appState, dispatch) = useReducer(
         reducer,
@@ -30,7 +31,7 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
     useEffect(listOf()) {
         dispatch(actions(ActionType.CHANGE) {
             themeType = localStorage["paletteType"]?.let { PaletteType.valueOf(it) }
-            lang = localStorage["lang"]
+            //lang = localStorage["lang"]
         })
     }
     useEffect(listOf(preferredType)) {
@@ -42,7 +43,7 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
     }
     useEffect(listOf(appState)) {
         localStorage["paletteType"] = appState.themeType.name
-        localStorage["lang"] = appState.lang
+        //localStorage["lang"] = appState.lang
     }
 
     fun closeMenu() = dispatch(actions(ActionType.CHANGE) { openDrawer = false })
@@ -54,6 +55,8 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
 
         appBarTop {
             attrs.themeType = appState.themeType
+            attrs.lang = props.lang
+            attrs.pathname = history.location.pathname
             attrs.openDrawer = appState.openDrawer
             attrs.expand = isExpandAppBar(history)
             attrs.MenuComponent {
@@ -66,6 +69,10 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
 
         props.children()
     }
+}
+
+external interface AppFrameContainerProps : RProps {
+    var lang: Languages
 }
 
 private data class AppState(
