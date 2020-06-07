@@ -1,8 +1,10 @@
 package containers
 
+import Languages
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
 import components.templates.appMenu
+import i18n
 import isExpandAppBar
 import kotlinext.js.jsObject
 import language
@@ -21,16 +23,17 @@ fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppFrameContai
 
 private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
     val preferredType = if (useMediaQuery("(prefers-color-scheme: dark)")) PaletteType.dark else PaletteType.light
+    val history = useHistory()
+    val lang = language(history)
+
     val (appState, dispatch) = useReducer(
         reducer,
-        AppState()
+        AppState(lang = lang)
     )
-    val history = useHistory()
 
     useEffect(listOf()) {
         dispatch(actions(ActionType.CHANGE) {
             themeType = localStorage["paletteType"]?.let { PaletteType.valueOf(it) }
-            //lang = localStorage["lang"]
         })
     }
     useEffect(listOf(preferredType)) {
@@ -40,10 +43,8 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
             themeType = preferredType
         })
     }
-    useEffect(listOf(appState)) {
-        localStorage["paletteType"] = appState.themeType.name
-        //localStorage["lang"] = appState.lang
-    }
+    useEffect(listOf(lang.code == i18n.language)) { i18n.changeLanguage(lang.code) }
+    useEffect(listOf(appState)) { localStorage["paletteType"] = appState.themeType.name }
 
     fun closeMenu() = dispatch(actions(ActionType.CHANGE) { openDrawer = false })
     fun toggleMenu() = dispatch(actions(ActionType.CHANGE) { openDrawer = !appState.openDrawer })
@@ -54,7 +55,7 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
 
         appBarTop {
             attrs.themeType = appState.themeType
-            attrs.lang = language(history)
+            attrs.lang = lang
             attrs.pathname = history.location.pathname
             attrs.openDrawer = appState.openDrawer
             attrs.expand = isExpandAppBar(history)
@@ -72,7 +73,7 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
 
 private data class AppState(
     val themeType: PaletteType = PaletteType.light,
-    val lang: String = "ja",
+    val lang: Languages = Languages.JAPANESE,
     val openDrawer: Boolean = false
 )
 
@@ -82,7 +83,7 @@ private enum class ActionType {
 
 private external interface Payload {
     var themeType: PaletteType?
-    var lang: String?
+    var lang: Languages?
     var openDrawer: Boolean?
 }
 
