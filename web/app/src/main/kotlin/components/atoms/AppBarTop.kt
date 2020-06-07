@@ -157,11 +157,10 @@ private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { pro
             id = "language-menu"
             setProp("anchorEl", languageMenu)
             open = languageMenu != null
-            onClose = { e, _ -> handleLanguageIconClick(e) }
+            onClose = { e, _ -> handleLanguageMenuClose(e) }
         }
 
         Languages.values().forEach { (code, label, basename) ->
-
             menuItem(factory = { A(mapOf(), it) }) {
                 attrs {
                     key = code
