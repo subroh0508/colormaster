@@ -1,12 +1,11 @@
 package containers
 
-import Languages
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
 import components.templates.appMenu
 import isExpandAppBar
 import kotlinext.js.jsObject
-import kotlinx.css.*
+import language
 import materialui.styles.palette.PaletteType
 import materialui.useMediaQuery
 import org.w3c.dom.get
@@ -18,9 +17,9 @@ import utilities.Actions
 import kotlin.browser.localStorage
 
 @Suppress("FunctionName")
-fun RBuilder.AppFrameContainer(handler: RHandler<AppFrameContainerProps>) = child(AppFrameContainerComponent, handler = handler)
+fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppFrameContainerComponent, handler = handler)
 
-private val AppFrameContainerComponent = functionalComponent<AppFrameContainerProps> { props ->
+private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
     val preferredType = if (useMediaQuery("(prefers-color-scheme: dark)")) PaletteType.dark else PaletteType.light
     val (appState, dispatch) = useReducer(
         reducer,
@@ -55,7 +54,7 @@ private val AppFrameContainerComponent = functionalComponent<AppFrameContainerPr
 
         appBarTop {
             attrs.themeType = appState.themeType
-            attrs.lang = props.lang
+            attrs.lang = language(history)
             attrs.pathname = history.location.pathname
             attrs.openDrawer = appState.openDrawer
             attrs.expand = isExpandAppBar(history)
@@ -69,10 +68,6 @@ private val AppFrameContainerComponent = functionalComponent<AppFrameContainerPr
 
         props.children()
     }
-}
-
-external interface AppFrameContainerProps : RProps {
-    var lang: Languages
 }
 
 private data class AppState(

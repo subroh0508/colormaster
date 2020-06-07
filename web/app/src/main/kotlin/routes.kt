@@ -7,20 +7,10 @@ import pages.DevelopmentPage
 import pages.HowToUsePage
 import pages.TermsPage
 import react.RBuilder
-import react.RProps
-import react.child
-import react.functionalComponent
 import react.router.dom.*
 
-fun RBuilder.routing() = browserRouter { child(AppComponent) }
-
-private val AppComponent = functionalComponent<RProps> {
-    val history = useHistory()
-    val lang = language(history)
-
+fun RBuilder.routing() = browserRouter {
     AppFrameContainer {
-        attrs.lang = lang
-
         switch {
             Languages.values().forEach { (_, _, basename) ->
                 route("$basename/preview", exact = true) { PreviewContainer() }
