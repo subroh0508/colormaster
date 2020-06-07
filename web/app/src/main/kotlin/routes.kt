@@ -36,11 +36,7 @@ private val AppComponent = functionalComponent<RProps> {
 
 fun useQuery() = URLSearchParams(useLocation().search)
 
-fun isExpandAppBar(history: RouteResultHistory) = listOf(
-    "/howtouse",
-    "/development",
-    "/terms"
-).contains(history.location.pathname)
+fun isExpandAppBar(history: RouteResultHistory) = """(/[a-z]{2})?/(howtouse|development|terms)""".toRegex().matches(history.location.pathname)
 
 fun language(history: RouteResultHistory) = Languages.valueOfCode(history.langCode()) ?: Languages.JAPANESE
 
