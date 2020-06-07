@@ -2,9 +2,10 @@ package components.atoms
 
 import kotlinx.css.*
 import kotlinx.css.properties.BoxShadows
-import kotlinx.html.AttributeEnum
+import kotlinx.html.id
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onKeyDownFunction
+import kotlinx.html.lang
 import materialui.components.appbar.appBar
 import materialui.components.appbar.enums.AppBarColor
 import materialui.components.appbar.enums.AppBarPosition
@@ -16,6 +17,8 @@ import materialui.components.icon.enums.IconFontSize
 import materialui.components.icon.icon
 import materialui.components.iconbutton.enums.IconButtonEdge
 import materialui.components.iconbutton.iconButton
+import materialui.components.menu.menu
+import materialui.components.menuitem.menuItem
 import materialui.components.toolbar.toolbar
 import materialui.components.tooltip.tooltip
 import materialui.components.typography.enums.TypographyVariant
@@ -26,27 +29,14 @@ import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.default
+import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
-import react.dom.span
 
 val APP_BAR_SM_UP = 408.px
 
 fun RBuilder.appBarTop(handler: RHandler<AppBarTopProps>) = child(AppBarTopComponent, handler = handler)
-
-private enum class Languages(val code: String, val label: String) {
-    LOADING("xx", "読み込み中"),
-    ENGLISH("en", "ENGLISH"),
-    JAPANESE("ja", "日本語");
-
-    fun component1() = code
-    fun component2() = label
-
-    companion object {
-        fun valueOfCode(code: String) = values().find { it.code == code } ?: LOADING
-    }
-}
 
 private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
     val classes = useStyles(props)
@@ -79,22 +69,7 @@ private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
                     }
                 }
 
-                tooltip {
-                    attrs { title { +"Change Language" } }
-
-                    button {
-                        attrs {
-                            color = ButtonColor.inherit
-                            onClickFunction = { console.log("changeicon") }
-                        }
-
-                        icon { +"translate_icon" }
-                        span(classes.language) {
-                            +Languages.JAPANESE.label
-                        }
-                        icon { attrs.fontSize = IconFontSize.small; +"expand_more_icon" }
-                    }
-                }
+                child(LanguageMenuComponent) { attrs.lang = "ja" }
 
                 tooltip {
                     attrs { title { +if (props.themeType == PaletteType.light) "ダークテーマ" else "ライトテーマ" } }
@@ -130,10 +105,12 @@ private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
 
 external interface AppBarTopProps : RProps {
     var themeType: PaletteType
+    var lang: String
     var openDrawer: Boolean
     var expand: Boolean
     @Suppress("PropertyName")
     var MenuComponent: ReactElement?
+    var onClickChangeLanguage: (event: Event) -> Unit
     var onClickChangeTheme: (event: Event) -> Unit
     var onClickMenuIcon: (event: Event) -> Unit
     var onCloseMenu: () -> Unit
@@ -144,12 +121,76 @@ fun AppBarTopProps.MenuComponent(block: RBuilder.() -> Unit) {
     MenuComponent = buildElement(block)
 }
 
+private enum class Languages(val code: String, val label: String) {
+    LOADING("xx", "読み込み中"),
+    JAPANESE("ja", "日本語"),
+    ENGLISH("en", "ENGLISH");
+
+    operator fun component1() = code
+    operator fun component2() = label
+
+    companion object {
+        fun valueOfCode(code: String) = values().find { it.code == code } ?: LOADING
+    }
+}
+
+private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { props ->
+    val (languageMenu, setLanguageMenu) = useState<HTMLButtonElement?>(null)
+
+    fun handleLanguageIconClick(event: Event) = setLanguageMenu(event.currentTarget as HTMLButtonElement)
+    fun handleLanguageMenuClose(event: Event, s: String) = setLanguageMenu(null)
+
+    tooltip {
+        attrs { title { +"Change Language" } }
+
+        button {
+            attrs {
+                color = ButtonColor.inherit
+                onClickFunction = ::handleLanguageIconClick
+                setProp("aria-owns", languageMenu?.let { "language-menu" } ?: undefined)
+                setProp("aria-haspopup", true)
+            }
+
+            icon { +"translate_icon" }
+            icon { attrs.fontSize = IconFontSize.small; +"expand_more_icon" }
+        }
+    }
+
+    menu {
+        attrs {
+            id = "language-menu"
+            setProp("anchorEl", languageMenu)
+            open = languageMenu != null
+            onClose = ::handleLanguageMenuClose
+        }
+
+        Languages.values().forEach { (code, label) ->
+            if (code == Languages.LOADING.code) {
+                return@forEach
+            }
+
+            menuItem {
+                attrs {
+                    key = code
+                    selected = props.lang == code
+                    lang = code
+                }
+
+                +label
+            }
+        }
+    }
+}
+
+private external interface LanguageMenuProps : RProps {
+    var lang: String
+}
+
 private external interface AppBarTopStyle {
     val root: String
     val appBar: String
     val appBarExpand: String
     val menuButton: String
-    val language: String
     val title: String
     val list: String
 }
@@ -175,14 +216,6 @@ private val useStyles = makeStyles<AppBarTopStyle, AppBarTopProps> {
     }
     "menuButton" {
         marginRight = theme.spacing(2)
-    }
-    "language" {
-        margin = theme.spacing(0, 0.5, 0, 1)
-        display = Display.none
-
-        (theme.breakpoints.up(Breakpoint.md)) {
-            display = Display.block
-        }
     }
     "title" {
         flexGrow = 1.0
