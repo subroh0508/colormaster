@@ -1,3 +1,13 @@
 {
-  "key": "こんにちは、世界！"
+  "appBar": {
+    "changeLanguage": "言語の切り替え",
+    "darkTheme": "ダークテーマ",
+    "lightTheme": "ライトテーマ"
+  },
+  "actions": {
+    "preview": "プレビュー",
+    "penlight": "ペンライト",
+    "all": "すべて",
+    "clear": "選択解除"
+  }
 }

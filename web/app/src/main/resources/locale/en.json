@@ -1,3 +1,13 @@
 {
-  "key": "Hello, World!"
+  "appBar": {
+    "changeLanguage": "Change Language",
+    "darkTheme": "Dark Theme",
+    "lightTheme": "Light Theme"
+  },
+  "actions": {
+    "preview": "PREVIEW",
+    "penlight": "PENLIGHT",
+    "all": "ALL",
+    "clear": "CLEAR"
+  }
 }

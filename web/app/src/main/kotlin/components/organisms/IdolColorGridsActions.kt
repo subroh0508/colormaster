@@ -11,6 +11,8 @@ import materialui.styles.makeStyles
 import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
 import react.*
+import utilities.invoke
+import utilities.useTranslation
 
 const val IDOL_COLOR_GRID_ACTIONS_CLASS_NAME = "idol-color-grid-actions"
 
@@ -19,6 +21,7 @@ fun RBuilder.idolColorGridsActions(handler: RHandler<IdolColorGridsActionsProps>
 private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsActionsProps> { props ->
     val classes = useStyle()
     val showLabel = useMediaQuery("@media (min-width: 380px)")
+    val (t, _) = useTranslation()
 
     buttonGroup {
         attrs.className = IDOL_COLOR_GRID_ACTIONS_CLASS_NAME
@@ -33,7 +36,7 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
                 startIcon { icon { +"palette_icon" } }
             }
 
-            if (showLabel) +"プレビュー"
+            if (showLabel) +t("actions.preview")
         }
 
         button {
@@ -45,7 +48,7 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
                 startIcon { icon { +"highlight_icon" } }
             }
 
-            if (showLabel) +"ペンライト"
+            if (showLabel) +t("actions.penlight")
         }
 
         val checkAll = props.selected.isEmpty()
@@ -59,7 +62,7 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
                 } }
             }
 
-            + if (checkAll) "すべて" else "選択解除"
+            + if (checkAll) t("actions.all") else t("actions.clear")
         }
     }
 }

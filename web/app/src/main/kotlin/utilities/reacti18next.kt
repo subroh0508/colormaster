@@ -21,8 +21,8 @@ external interface ReactI18nextProps : RProps {
 @Suppress("FunctionName")
 fun RBuilder.I18nextProvider(handler: RHandler<ReactI18nextProps>) = ReactI18next.I18nextProvider(handler)
 
-fun useTranslation(): Pair<T, I18next>  {
+fun useTranslation(): Pair<I18nextText, I18next>  {
     val jsTuple = ReactI18next.useTranslation()
 
-    return jsTuple[0] as T to jsTuple[1] as I18next
+    return jsTuple[0] as I18nextText to jsTuple[1] as I18next
 }

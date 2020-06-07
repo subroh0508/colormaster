@@ -36,6 +36,8 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+import utilities.invoke
+import utilities.useTranslation
 
 val APP_BAR_SM_UP = 408.px
 
@@ -44,6 +46,7 @@ fun RBuilder.appBarTop(handler: RHandler<AppBarTopProps>) = child(AppBarTopCompo
 private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
     val classes = useStyles(props)
     val appBarStyle = "${classes.appBar} ${if (props.expand) classes.appBarExpand else ""}"
+    val (t, _) = useTranslation()
 
     div(classes.root) {
         appBar {
@@ -80,7 +83,7 @@ private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
                 }
 
                 tooltip {
-                    attrs { title { +if (props.themeType == PaletteType.light) "ダークテーマ" else "ライトテーマ" } }
+                    attrs { title { +t("appBar.${if (props.themeType == PaletteType.light) "darkTheme" else "lightTheme"}") } }
 
                     iconButton {
                         attrs {
@@ -131,13 +134,15 @@ fun AppBarTopProps.MenuComponent(block: RBuilder.() -> Unit) {
 
 private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { props ->
     val (languageMenu, setLanguageMenu) = useState<HTMLButtonElement?>(null)
+    val (t, _) = useTranslation()
+
     val path = props.pathname.replace(props.lang.basename, "")
 
     fun handleLanguageIconClick(event: Event) = setLanguageMenu(event.currentTarget as HTMLButtonElement)
     fun handleLanguageMenuClose(event: Event) = setLanguageMenu(null)
 
     tooltip {
-        attrs { title { +"言語切り替え" } }
+        attrs { title { +t("appBar.changeLanguage") } }
 
         button {
             attrs {

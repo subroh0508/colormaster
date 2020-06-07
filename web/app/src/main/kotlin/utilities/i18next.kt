@@ -15,13 +15,15 @@ private val i18next: I18next = i18nextModule.default as I18next
 private val httpBackend: dynamic = httpBackendModule.default
 
 external interface I18next {
-    fun init(options: I18nextOptions, callback: dynamic): Promise<T>
+    fun init(options: I18nextOptions, callback: dynamic): Promise<I18nextText>
     fun use(module: dynamic): I18next
-    fun changeLanguage(lng: String): Promise<T>
+    fun changeLanguage(lng: String): Promise<I18nextText>
     fun t(vararg arg: Any): String
     val languages: Array<String>
     val language: String
 }
+
+external interface I18nextText
 
 external interface I18nextOptions {
     var lng: String
@@ -42,10 +44,8 @@ fun I18nextOptions.backend(options: I18nextBackendOptions.() -> Unit) { this.asD
 fun I18nextResources.ja(res: dynamic) { this.asDynamic()["ja.translation"] = res }
 operator fun I18nextResources.set(code: String, res: dynamic) { this.asDynamic()[code] = js("{ translation: res }") }
 
-typealias T = (Array<Any>) -> String
-
 fun I18next.init(options: I18nextOptions.() -> Unit) = i18next.init(jsObject(options), undefined)
-fun T.invoke(key: String, vararg arg: Any) = invoke(arrayOf(key) + arg)
+operator fun I18nextText.invoke(key: String, vararg arg: Any) = asDynamic()(arrayOf(key) + arg) as String
 
 fun i18nextInit() = i18next.
     use(httpBackend).
