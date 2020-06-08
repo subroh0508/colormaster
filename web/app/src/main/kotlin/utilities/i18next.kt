@@ -55,7 +55,6 @@ fun i18nextInit() = i18next.
         init {
             resources("ja", require("locale/ja"))
             lng = "ja"
-            debug = true
             fallbackLng("ja")
             partialBundledLanguages = true
             backend {

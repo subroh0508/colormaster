@@ -52,5 +52,29 @@
       "success": "Result: {{count}} idol",
       "success_plural": "Result: {{count}} idols"
     }
+  },
+  "about": {
+    "howToUse": {
+      "introduction": {
+        "title": "What can you do?",
+        "description": "<p>You can search for idols in THE IDOLM@STER series and display previews of their image colors on your PC or Smartphone.</p>"
+      },
+      "features": {
+        "title": "What features are available?",
+        "preview": {
+          "title": "Preview Mode",
+          "description": "<p>Displays \"Image Color\", \"Idol Name\", and \"Color Code\" to fill the screen.</p><p>You can <strong>instantly find out if the colors of T-shirts, tableware, stationery, etc. that you see while shopping are the colors of idols you produce </strong> on your phone! It's great👍</p>"
+        },
+        "penlight": {
+          "title": "Penlight Mode",
+          "description": "<p>Only \"Image Color\" fills the screen.</p><p>The song of your idol that suddenly starts playing at the Anime songs club event or DJ bars! But I hove nothing today😭</p><p>Farewell to this tragedy, <strong>your phone will be instantly transformed into a penlight!</strong> You're winner🏆</p>"
+        }
+      },
+      "howToUse": {
+        "title": "How To Use",
+        "description": "<0><0>Search for an idol on the search screen</0><1>Select the idols you want to preview</1><2>Tap the <strong>\"Preview\"</strong> or <strong>\"Penlight\"</strong> button</2></0>",
+        "descriptionMore": "<p>You can also <strong>\"double-tap\" the idol</strong> you want to preview to <strong>activate the penlight mode as a shortcut.</strong></p><p>Then there's the sober <0>dark theme support</0>, and you can switch themes from the <1>brightness_4_icon</1> / <2>brightness_7_icon</2> the top right corner. If you'd like to use it, you're welcome to try it out🙏</p>"
+      }
+    }
   }
 }

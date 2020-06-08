@@ -12,25 +12,33 @@ import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.components.typography.typographyH5
 import react.RBuilder
+import react.RProps
+import react.child
 import react.dom.*
+import react.functionalComponent
 import styled.css
 import styled.styledSpan
+import utilities.Trans
+import utilities.invoke
+import utilities.useTranslation
 
 @Suppress("FunctionName")
-fun RBuilder.HowToUsePage() = StaticPage {
+fun RBuilder.HowToUsePage() = StaticPage { child(HowToUseComponent) }
+
+val HowToUseComponent = functionalComponent<RProps> {
+    val (t, _) = useTranslation()
+
     card {
         attrs.className = CARD_ELEMENT_CLASS_NAME
         attrs["variant"] = "outlined"
 
         cardHeader {
             attrs.title {
-                typographyH5 { +"何ができるの？" }
+                typographyH5 { +t("about.howToUse.introduction.title") }
             }
         }
         cardContent {
-            p {
-                +"THE IDOLM@STERシリーズに登場するアイドルを検索し、PC・スマホ端末上でイメージカラーのプレビューを表示することができます。"
-            }
+            Trans { attrs.i18nKey = "about.howToUse.introduction.description" }
         }
     }
 
@@ -40,7 +48,7 @@ fun RBuilder.HowToUsePage() = StaticPage {
 
         cardHeader {
             attrs.title {
-                typographyH5 { +"どんな機能があるの？" }
+                typographyH5 { +t("about.howToUse.features.title") }
             }
         }
 
@@ -51,18 +59,11 @@ fun RBuilder.HowToUsePage() = StaticPage {
                     css { display = Display.flex; verticalAlign = VerticalAlign.middle }
 
                     icon { +"palette_icon" }
-                    strong { +"プレビューモード" }
+                    strong { +t("about.howToUse.features.preview.title") }
                 }
             }
 
-            p {
-                +"「イメージカラー」「アイドル名」「カラーコード」を画面いっぱいに表示します。"
-            }
-            p {
-                +"買い物中に目についた、"
-                strong { +"担当カラーっぽいTシャツ・食器・文房具etc.の色を瞬時にスマホで確認することができます！" }
-                +"最高ですね👍"
-            }
+            Trans { attrs.i18nKey = "about.howToUse.features.preview.description" }
 
             typography {
                 attrs.variant = TypographyVariant.subtitle1
@@ -70,21 +71,11 @@ fun RBuilder.HowToUsePage() = StaticPage {
                     css { display = Display.flex; verticalAlign = VerticalAlign.middle }
 
                     icon { +"highlight_icon" }
-                    strong { +"ペンライトモード" }
+                    strong { +t("about.howToUse.features.penlight.title") }
                 }
             }
 
-            p {
-                +"「イメージカラー」のみを画面いっぱいに表示します。"
-            }
-            p {
-                +"アニクラやDJバーで突如流れ出す担当曲！だけど今日はペンライトを持ってきていない😭"
-            }
-            p {
-                +"こんな悲劇とはもうおさらば、"
-                strong { +"あなたのスマホが瞬時にペンライトに生まれ変わります！" }
-                +"優勝間違いなし🏆"
-            }
+            Trans { attrs.i18nKey = "about.howToUse.features.penlight.description" }
         }
     }
 
@@ -94,40 +85,26 @@ fun RBuilder.HowToUsePage() = StaticPage {
 
         cardHeader {
             attrs.title {
-                typographyH5 { +"使い方" }
+                typographyH5 { +t("about.howToUse.howToUse.title") }
             }
         }
         cardContent {
-            ol {
-                li {
-                    +"検索画面でアイドルを検索する"
-                }
-                li {
-                    +"プレビューしたいアイドルを選択する"
-                }
-                li {
-                    strong { +"「プレビュー」" }
-                    +"、または"
-                    strong { +"「ペンライト」" }
-                    +"ボタンをタップする"
+            Trans {
+                attrs.i18nKey = "about.howToUse.howToUse.description"
+
+                ol {
+                    li { +"dummy" }
+                    li { +"dummy" }
+                    li { +"dummy" }
                 }
             }
 
-            p {
-                +"また、"
-                strong { +"「プレビューしたいアイドルをダブルタップ」" }
-                +"することで、"
-                strong { +"ペンライトモードをショートカット起動" }
-                +"させることができます。"
-            }
-            p {
-                +"それから、地味に"
-                strong { +"ダークテーマ対応" }
-                +"しており、右上の"
-                icon { +"brightness_4_icon" }
-                +"/"
-                icon { +"brightness_7_icon" }
-                +"からテーマ切り替えができます。使ってみたい人は是非🙏"
+            Trans {
+                attrs.i18nKey = "about.howToUse.howToUse.descriptionMore"
+
+                strong { +"dummy" }
+                icon { +"dummy" }
+                icon { +"dummy" }
             }
         }
     }
