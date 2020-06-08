@@ -21,12 +21,15 @@ import toDevelopment
 import toHowToUse
 import toRoot
 import toTerms
+import utilities.invoke
+import utilities.useTranslation
 
 fun RBuilder.appMenu(handler: RHandler<AppMenuProps>) = child(AppMenuComponent, handler = handler)
 
 private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
     val classes = useStyles()
     val history = useHistory()
+    val (t, _) = useTranslation()
 
     list {
         listItem {
@@ -43,33 +46,33 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
             }
         }
         divider {}
-        parent(classes, "検索")
+        parent(classes, t("appMenu.search.label"))
         nestedListItem(
             classes,
-            id = "search-idol", label = "アイドル検索"
+            id = "search-idol", label = t("appMenu.search.attributes")
         ) { history.toRoot() }
         divider {}
-        parent(classes, "このアプリについて")
+        parent(classes, t("appMenu.about.label"))
         nestedListItem(
             classes,
-            id = "about-howtouse", label = "使い方"
+            id = "about-howtouse", label = t("appMenu.about.howToUse")
         ) { history.toHowToUse() }
         nestedListItem(
             classes,
-            id = "about-development", label = "仕組み"
+            id = "about-development", label = t("appMenu.about.development")
         ) { history.toDevelopment() }
         nestedListItem(
             classes,
-            id = "about-terms", label = "利用規約"
+            id = "about-terms", label = t("appMenu.about.terms")
         ) { history.toTerms() }
         divider {}
         anchorItem(
             classes,
-            id = "github", label = "GitHub", href = "https://github.com/subroh0508/colormaster"
+            id = "github", label = t("appMenu.links.github"), href = "https://github.com/subroh0508/colormaster"
         )
         anchorItem(
             classes,
-            id = "twitter", label = "開発者Twitter", href = "https://twitter.com/subroh_0508"
+            id = "twitter", label = t("appMenu.links.twitter"), href = "https://twitter.com/subroh_0508"
         )
     }
 }
@@ -161,6 +164,7 @@ private val useStyles = makeStyles<AppMenuStyle> {
         width = 100.pct
         paddingLeft = theme.spacing(4)
         justifyContent = JustifyContent.flexStart
+        textTransform = TextTransform.none
     }
     "itemIcon" {
         minWidth = 36.px

@@ -5,6 +5,7 @@ import components.organisms.IDOL_COLOR_GRID_ACTIONS_CLASS_NAME
 import components.organisms.idolColorGridsActions
 import components.organisms.idolColorGrids
 import components.organisms.idolSearchBox
+import kotlinext.js.jsObject
 import kotlinx.css.*
 import kotlinx.css.properties.borderTop
 import materialui.components.drawer.enums.DrawerAnchor
@@ -23,11 +24,15 @@ import net.subroh0508.colormaster.model.UiModel
 import net.subroh0508.colormaster.model.ui.idol.Filters
 import react.*
 import react.dom.div
+import utilities.I18nextText
+import utilities.invoke
+import utilities.useTranslation
 
 fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(IdolSearchPanelComponent, handler = handler)
 
 private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps> { props ->
     val classes = useStyles()
+    val (t, _) = useTranslation()
     val isSmUp = useMediaQuery("@media (min-width: 600px)")
     val uiModel = props.model
 
@@ -51,7 +56,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             attrs.onClose = props.onCloseGrids
             attrs.onClickExpandIcon = props.onClickToggleGrids
             attrs.HeaderComponent {
-                alert(props.isOpenedGrids, uiModel)
+                alert(props.isOpenedGrids, uiModel, t)
             }
 
             div(classes.panel) {
@@ -75,21 +80,25 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     }
 }
 
-private fun RBuilder.alert(opened: Boolean, uiModel: UiModel.Search) = when {
+private fun RBuilder.alert(opened: Boolean, uiModel: UiModel.Search, t: I18nextText) = when {
     uiModel.isLoading -> warningAlert {
-        attrs.message = "検索中..."
+        attrs.message = t("searchPanel.alerts.searching")
     }
     uiModel.filters is Filters.Empty -> infoAlert {
-        attrs.message = "ランダムに10人表示中"
+        attrs.message = t("searchPanel.alerts.default")
     }
     uiModel.error != null -> errorAlert {
-        attrs.title = "エラー"
+        attrs.title = t("searchPanel.alerts.error")
         attrs.message = if (opened) uiModel.error?.message ?: "" else ""
     }
     else -> successAlert {
-        attrs.message = "検索結果: ${uiModel.items.size}件"
+        attrs.message = t("searchPanel.alerts.success", count = uiModel.items.size)
     }
 }
+
+private operator fun I18nextText.invoke(key: String, count: Int) = invoke(
+    key, jsObject { this.asDynamic()["count"] = count }
+)
 
 external interface IdolSearchPanelProps : RProps {
     var model: UiModel.Search

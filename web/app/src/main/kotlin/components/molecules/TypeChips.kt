@@ -11,6 +11,8 @@ import net.subroh0508.colormaster.model.Titles
 import net.subroh0508.colormaster.model.Types
 import react.*
 import react.dom.div
+import utilities.invoke
+import utilities.useTranslation
 
 fun RBuilder.typesChips(titles: Titles?, handler: RHandler<TypeChipsProps>) = when (titles) {
     Titles._765, Titles._ML -> typesMillionLiveChips(handler)
@@ -25,6 +27,7 @@ fun RBuilder.typesSideMChips(handler: RHandler<TypeChipsProps>) = child(TypeChip
 
 private val TypeChipsComponent = functionalComponent<TypeChipsProps> { props ->
     val classes = useStyles()
+    val (t, _) = useTranslation()
 
     div {
         typography(p = true) {
@@ -33,7 +36,7 @@ private val TypeChipsComponent = functionalComponent<TypeChipsProps> { props ->
                 variant = TypographyVariant.subtitle1
             }
 
-            +"属性"
+            +t("searchBox.attributes.type.label")
         }
 
         div(classes.checkboxes) {
@@ -44,7 +47,7 @@ private val TypeChipsComponent = functionalComponent<TypeChipsProps> { props ->
 
                     checkbox {
                         attrs {
-                            label = type.displayName
+                            label = t(type.displayNameKey)
                             isChecked = checked
                             onClick = { props.onSelect?.invoke(type, !checked) }
                         }
@@ -55,16 +58,16 @@ private val TypeChipsComponent = functionalComponent<TypeChipsProps> { props ->
     }
 }
 
-private val Types.displayName: String get() = when (this) {
-    Types.CINDERELLA_GIRLS.CU -> "Cute"
-    Types.CINDERELLA_GIRLS.CO -> "Cool"
-    Types.CINDERELLA_GIRLS.PA -> "Passion"
-    Types.MILLION_LIVE.PRINCESS -> "Princess"
-    Types.MILLION_LIVE.FAIRY -> "Fairy"
-    Types.MILLION_LIVE.ANGEL -> "Angel"
-    Types.SIDE_M.PHYSICAL -> "フィジカル"
-    Types.SIDE_M.INTELLIGENT -> "インテリ"
-    Types.SIDE_M.MENTAL -> "メンタル"
+private val Types.displayNameKey: String get() = when (this) {
+    Types.CINDERELLA_GIRLS.CU -> "searchBox.attributes.type.cute"
+    Types.CINDERELLA_GIRLS.CO -> "searchBox.attributes.type.cool"
+    Types.CINDERELLA_GIRLS.PA -> "searchBox.attributes.type.passion"
+    Types.MILLION_LIVE.PRINCESS -> "searchBox.attributes.type.princess"
+    Types.MILLION_LIVE.FAIRY -> "searchBox.attributes.type.fairy"
+    Types.MILLION_LIVE.ANGEL -> "searchBox.attributes.type.angel"
+    Types.SIDE_M.PHYSICAL -> "searchBox.attributes.type.physical"
+    Types.SIDE_M.INTELLIGENT -> "searchBox.attributes.type.intelligent"
+    Types.SIDE_M.MENTAL -> "searchBox.attributes.type.mental"
     else -> ""
 }
 

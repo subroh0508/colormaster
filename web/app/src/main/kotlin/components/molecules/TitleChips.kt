@@ -9,12 +9,14 @@ import materialui.styles.palette.primary
 import net.subroh0508.colormaster.model.Titles
 import react.*
 import react.dom.div
-import react.dom.p
+import utilities.invoke
+import utilities.useTranslation
 
 fun RBuilder.titleChips(handler: RHandler<TitleChipsProps>) = child(TitleChipsComponent, handler = handler)
 
 private val TitleChipsComponent = functionalComponent<TitleChipsProps> { props ->
     val classes = useStyles()
+    val (t, _) = useTranslation()
 
     div {
         typography(p = true) {
@@ -23,7 +25,7 @@ private val TitleChipsComponent = functionalComponent<TitleChipsProps> { props -
                 variant = TypographyVariant.subtitle1
             }
 
-            +"ブランド"
+            +t("searchBox.attributes.brands")
         }
 
         div(classes.chips) {

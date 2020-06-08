@@ -45,7 +45,8 @@ fun I18nextResources.ja(res: dynamic) { this.asDynamic()["ja.translation"] = res
 operator fun I18nextResources.set(code: String, res: dynamic) { this.asDynamic()[code] = js("{ translation: res }") }
 
 fun I18next.init(options: I18nextOptions.() -> Unit) = i18next.init(jsObject(options), undefined)
-operator fun I18nextText.invoke(key: String, vararg arg: Any) = asDynamic()(arrayOf(key) + arg) as String
+operator fun I18nextText.invoke(key: String): String = asDynamic()(key) as String
+operator fun I18nextText.invoke(key: String, args: Any): String = asDynamic()(key, args) as String
 
 fun i18nextInit() = i18next.
     use(httpBackend).
@@ -54,6 +55,7 @@ fun i18nextInit() = i18next.
         init {
             resources("ja", require("locale/ja"))
             lng = "ja"
+            debug = true
             fallbackLng("ja")
             partialBundledLanguages = true
             backend {

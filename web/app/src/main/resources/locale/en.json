@@ -4,10 +4,53 @@
     "darkTheme": "Dark Theme",
     "lightTheme": "Light Theme"
   },
+  "appMenu": {
+    "search": {
+      "label": "Search",
+      "attributes": "Name/Attributes"
+    },
+    "about": {
+      "label": "About",
+      "howToUse": "How to use",
+      "development": "How it works",
+      "terms": "Terms"
+    },
+    "links": {
+      "github": "GitHub",
+      "twitter": "Developer's Twitter"
+    }
+  },
   "actions": {
     "preview": "PREVIEW",
     "penlight": "PENLIGHT",
     "all": "ALL",
     "clear": "CLEAR"
+  },
+  "searchBox": {
+    "attributes": {
+      "idolName": "Idol's Name",
+      "brands": "Brands",
+      "type": {
+        "label": "Type",
+        "cute": "Cute",
+        "cool": "Cool",
+        "passion": "Passion",
+        "princess": "Princess",
+        "fairy": "Fairy",
+        "angel": "Angel",
+        "physical": "Physical",
+        "intelligent": "Intelligent",
+        "mental": "Mental"
+      }
+    }
+  },
+  "searchPanel": {
+    "alerts": {
+      "default": "10 idols at random",
+      "searching": "Searching...",
+      "error": "Error",
+      "success": "Result: {{count}} idol",
+      "success_plural": "Result: {{count}} idols"
+    }
   }
 }

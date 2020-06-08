@@ -16,11 +16,14 @@ import net.subroh0508.colormaster.model.ui.idol.Filters
 import react.*
 import react.dom.form
 import utilities.inputTarget
+import utilities.invoke
+import utilities.useTranslation
 
 fun RBuilder.idolSearchBox(handler: RHandler<IdolSearchBoxProps>) = child(IdolSearchBoxComponent, handler = handler)
 
 private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { props ->
     val classes = useStyle()
+    val (t, _) = useTranslation()
 
     list {
         listItem {
@@ -28,7 +31,7 @@ private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { p
                 textField {
                     attrs {
                         classes(classes.textField)
-                        label { +"アイドル名" }
+                        label { +t("searchBox.attributes.idolName") }
                         variant = FormControlVariant.outlined
                         value = props.filters.idolName?.value
                         onChangeFunction = { e -> props.onChangeIdolName(e.inputTarget().value) }

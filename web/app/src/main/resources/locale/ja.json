@@ -4,10 +4,53 @@
     "darkTheme": "ダークテーマ",
     "lightTheme": "ライトテーマ"
   },
+  "appMenu": {
+    "search": {
+      "label": "検索",
+      "attributes": "名前・属性検索"
+    },
+    "about": {
+      "label": "このアプリについて",
+      "howToUse": "使い方",
+      "development": "仕組み",
+      "terms": "利用規約"
+    },
+    "links": {
+      "github": "GitHub",
+      "twitter": "開発者Twitter"
+    }
+  },
   "actions": {
     "preview": "プレビュー",
     "penlight": "ペンライト",
     "all": "すべて",
     "clear": "選択解除"
+  },
+  "searchBox": {
+    "attributes": {
+      "idolName": "アイドル名",
+      "brands": "ブランド",
+      "type": {
+        "label": "属性",
+        "cute": "キュート",
+        "cool": "クール",
+        "passion": "パッション",
+        "princess": "プリンセス",
+        "fairy": "フェアリー",
+        "angel": "エンジェル",
+        "physical": "フィジカル",
+        "intelligent": "インテリ",
+        "mental": "メンタル"
+      }
+    }
+  },
+  "searchPanel": {
+    "alerts": {
+      "default": "ランダムに10人表示中",
+      "searching": "検索中...",
+      "error": "エラー",
+      "success": "検索結果: {{count}}人",
+      "success_plural": "検索結果: {{count}}人"
+    }
   }
 }
