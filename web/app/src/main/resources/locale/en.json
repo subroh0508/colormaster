@@ -89,6 +89,20 @@
         "title": "Found a bug! Want them to add features!",
         "description": "<0>Please report to <0>COLOR M@STER's issue page</0>!</0><1>St@r and Pull Requests are also welcome. I'll be happy to cry if you throw money at me in addition.</1><2><0>Wishlist: <0>Link</0></0></2>"
       }
+    },
+    "terms": {
+      "top": {
+        "title": "Terms of Use",
+        "description": "<0>These terms of use define the terms of use for the service provided by <0>Subroh Nishikori</0> (the \"developer\") on COLOR M@STER (the \"Application\").</0><1>By using the Application, you are deemed to have agreed to the terms and conditions of this agreement (the \"Agreement\").</1>"
+      },
+      "disclaimer": {
+        "title": "1. Disclaimer",
+        "description": "<0>The developer does not warrant that there are no defects, errors, or bugs in the Application with respect to the accuracy of the information, suitability for a particular purpose, or security.</0><1>The developer is not responsible for any damage or disadvantage caused by the use of the Application.</1>"
+      },
+      "cookie": {
+        "title": "2. About the use of cookies",
+        "description": "<0>In order to improve the Application, I use Google Analytics, a service provided by Google,inc to collect browsing information from users.</0><1>When you use your browser to access a website, these services use cookies and The data collected and processed by this service will be used for the collection and processing of data. The data collected and processed by this service does not contain any information that identifies individual users.</1><2>In addition, by using the Application, you give your permission for such data processing by Google,inc.</2>"
+      }
     }
   }
 }
