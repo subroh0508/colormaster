@@ -67,13 +67,27 @@
         },
         "penlight": {
           "title": "Penlight Mode",
-          "description": "<p>Only \"Image Color\" fills the screen.</p><p>The song of your idol that suddenly starts playing at the Anime songs club event or DJ bars! But I hove nothing today😭</p><p>Farewell to this tragedy, <strong>your phone will be instantly transformed into a penlight!</strong> You're winner🏆</p>"
+          "description": "<p>Only \"Image Color\" fills the screen.</p><p>The song of your idol that suddenly starts playing at the Anime songs club event or DJ bars! But I have nothing today😭</p><p>Farewell to this tragedy, <strong>your phone will be instantly transformed into a penlight!</strong> You're winner🏆</p>"
         }
       },
       "howToUse": {
         "title": "How To Use",
         "description": "<0><0>Search for an idol on the search screen</0><1>Select the idols you want to preview</1><2>Tap the <strong>\"Preview\"</strong> or <strong>\"Penlight\"</strong> button</2></0>",
         "descriptionMore": "<p>You can also <strong>\"double-tap\" the idol</strong> you want to preview to <strong>activate the penlight mode as a shortcut.</strong></p><p>Then there's the sober <0>dark theme support</0>, and you can switch themes from the <1>brightness_4_icon</1> / <2>brightness_7_icon</2> the top right corner. If you'd like to use it, you're welcome to try it out🙏</p>"
+      }
+    },
+    "development": {
+      "imasparql": {
+        "title": "Where do you get idol's image colors from?",
+        "description": "<0>All the data is getting from <0>im@sparql</0>.</0><1>If you find an error in the data, please report it on <0>im@sparql's issue page</0>.</1>"
+      },
+      "frontend": {
+        "title": "How is the front-end implemented?",
+        "description": "<0>This web app is implemented using <0>Kotlin Multiplatform</0>. The percentage of Kotlin in the source code is <strong>over 95%</strong>.</0><1>In other words, this web app is <strong>almost identical to Kotori Otonashi</strong>, the clerk of 765 Productions.</1><2>Also, <0>Material-UI</0> is used as a UI framework.</2>"
+      },
+      "requests": {
+        "title": "Found a bug! Want them to add features!",
+        "description": "<0>Please report to <0>COLOR M@STER's issue page</0>!</0><1>St@r and Pull Requests are also welcome. I'll be happy to cry if you throw money at me in addition.</1><2><0>Wishlist: <0>Link</0></0></2>"
       }
     }
   }

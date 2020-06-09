@@ -6,35 +6,35 @@ import materialui.components.cardcontent.cardContent
 import materialui.components.cardheader.cardHeader
 import materialui.components.typography.typographyH5
 import react.RBuilder
+import react.RProps
+import react.child
 import react.dom.*
+import react.functionalComponent
+import utilities.Trans
+import utilities.invoke
+import utilities.useTranslation
 
 @Suppress("FunctionName")
-fun RBuilder.DevelopmentPage() = StaticPage {
+fun RBuilder.DevelopmentPage() = StaticPage { child(DevelopmentComponent) }
+
+private val DevelopmentComponent = functionalComponent<RProps> {
+    val (t, _) = useTranslation()
+
     card {
         attrs.className = CARD_ELEMENT_CLASS_NAME
         attrs["variant"] = "outlined"
 
         cardHeader {
             attrs.title {
-                typographyH5 { +"イメージカラーはどこから取ってきてるの？" }
+                typographyH5 { +t("about.development.imasparql.title") }
             }
         }
         cardContent {
-            p {
-                +"必要なデータは全て"
-                link(
-                    href = "https://sparql.crssnky.xyz/imas/",
-                    label = "im@sparql"
-                )
-                +"から取得しています。"
-            }
-            p {
-                +"データに間違いを見つけた場合は、"
-                link(
-                    href = "https://github.com/imas/imasparql/issues",
-                    label = "im@sparqlのIssueページ"
-                )
-                +"にご報告ください。"
+            Trans {
+                attrs.i18nKey = "about.development.imasparql.description"
+
+                p { link(href = "https://sparql.crssnky.xyz/imas/") }
+                p { link(href = "https://github.com/imas/imasparql/issues") }
             }
         }
     }
@@ -44,31 +44,16 @@ fun RBuilder.DevelopmentPage() = StaticPage {
 
         cardHeader {
             attrs.title {
-                typographyH5 { +"フロントエンドの実装はどうなっているの？" }
+                typographyH5 { +t("about.development.frontend.title") }
             }
         }
         cardContent {
-            p {
-                +"このWebアプリは、"
-                link(
-                    href = "https://kotlinlang.org/docs/reference/multiplatform.html",
-                    label = "Kotlin Multiplatform"
-                )
-                +"を使って実装しています。ソースコードに占めるKotlinの割合は"
-                strong { +"95%を超えています。" }
-            }
-            p {
-                +"つまり、このWebアプリは765プロダクション事務員である"
-                strong { +"音無小鳥さんとほぼ同じ存在です。" }
-                +"ここテストに出ます。覚えておきましょう。"
-            }
-            p {
-                +"また、UIフレームワークとして"
-                link(
-                    href = "https://material-ui.com/",
-                    label = "Material-UI"
-                )
-                +"も利用しています。"
+            Trans {
+                attrs.i18nKey = "about.development.frontend.description"
+
+                p { link(href = "https://kotlinlang.org/docs/reference/multiplatform.html") }
+                p { +"dummy"}
+                p { link(href = "https://material-ui.com") }
             }
         }
     }
@@ -78,28 +63,18 @@ fun RBuilder.DevelopmentPage() = StaticPage {
 
         cardHeader {
             attrs.title {
-                typographyH5 { +"バグを見つけた！機能追加して欲しい！" }
+                typographyH5 { +t("about.development.requests.title") }
             }
         }
         cardContent {
-            p {
-                link(
-                    href = "https://github.com/subroh0508/colormaster/issues",
-                    label = "COLOR M@STERのIssueページ"
-                )
-                +"に報告ください。"
-            }
-            p {
-                +"St@r・Pull Requestも大歓迎です。ついでに投げ銭とかしてくれると泣いて喜びます。"
-            }
+            Trans {
+                attrs.i18nKey = "about.development.requests.description"
 
-            ul {
-                li {
-                    +"ほしいものリスト: "
-                    link(
-                        href = "https://www.amazon.jp/hz/wishlist/ls/34TBOXPWOUD8W?ref_=wl_share",
-                        label = "Link"
-                    )
+                p { link(href = "https://github.com/subroh0508/colormaster/issues") }
+                p { +"dummy" }
+
+                ul {
+                    li { link(href = "https://www.amazon.jp/hz/wishlist/ls/34TBOXPWOUD8W?ref_=wl_share") }
                 }
             }
         }

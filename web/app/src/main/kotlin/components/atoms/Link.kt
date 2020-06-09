@@ -6,7 +6,7 @@ import materialui.components.link.link as muiLink
 import materialui.styles.makeStyles
 import react.*
 
-fun RBuilder.link(href: String, label: String, target: String = "_blank") = child(LinkComponent) {
+fun RBuilder.link(href: String, label: String = "", target: String = "_blank") = child(LinkComponent) {
     attrs.href = href
     attrs.target = target
     +label
