@@ -21,6 +21,9 @@ if (config.mode === 'production') {
       'react-dom': 'ReactDOM',
       'react-router-dom': 'ReactRouterDOM',
       '@material-ui/core': 'MaterialUI',
+      'i18next': 'i18next',
+      'i18next-http-backend': 'i18nextHttpBackend',
+      'react-i18next': 'ReactI18next',
     },
   ];
   config.plugins.push(
@@ -28,23 +31,32 @@ if (config.mode === 'production') {
       modules: [
         {
           name: 'react',
-          var: 'React',
           path: 'umd/react.production.min.js',
         },
         {
           name: 'react-dom',
-          var: 'ReactDOM',
           path: 'umd/react-dom.production.min.js',
         },
         {
           name: 'react-router-dom',
-          var: 'ReactRouterDOM',
           path: 'umd/react-router-dom.min.js',
         },
         {
           name: '@material-ui/core',
           path: 'umd/material-ui.production.min.js',
         },
+        {
+          name: 'i18next',
+          path: 'dist/umd/i18next.min.js',
+        },
+        {
+          name: 'i18next-http-backend',
+          path: 'i18nextHttpBackend.min.js',
+        },
+        {
+          name: 'react-i18next',
+          path: 'react-i18next.min.js',
+        }
       ],
       pathToNodeModules: path.resolve(rootPath, 'build/js'),
     }),

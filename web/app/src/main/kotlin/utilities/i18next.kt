@@ -6,13 +6,8 @@ import kotlinext.js.jsObject
 import kotlin.js.Promise
 import kotlinext.js.require
 
-@JsModule("i18next")
-private external val i18nextModule: dynamic
-@JsModule("i18next-http-backend")
-private external val httpBackendModule: dynamic
-
-private val i18next: I18next = i18nextModule.default as I18next
-private val httpBackend: dynamic = httpBackendModule.default
+@JsModule("i18next/i18next")
+private external val i18next: I18next
 
 external interface I18next {
     fun init(options: I18nextOptions, callback: dynamic): Promise<I18nextText>
@@ -22,6 +17,11 @@ external interface I18next {
     val languages: Array<String>
     val language: String
 }
+
+@JsModule("i18next-http-backend")
+private external val httpBackendModule: dynamic
+
+private val httpBackend = if (httpBackendModule.default != undefined) httpBackendModule.default else httpBackendModule
 
 external interface I18nextText
 
@@ -44,7 +44,7 @@ fun I18nextOptions.backend(options: I18nextBackendOptions.() -> Unit) { this.asD
 fun I18nextResources.ja(res: dynamic) { this.asDynamic()["ja.translation"] = res }
 operator fun I18nextResources.set(code: String, res: dynamic) { this.asDynamic()[code] = js("{ translation: res }") }
 
-fun I18next.init(options: I18nextOptions.() -> Unit) = i18next.init(jsObject(options), undefined)
+fun I18next.init(options: I18nextOptions.() -> Unit) = init(jsObject(options), undefined)
 operator fun I18nextText.invoke(key: String): String = asDynamic()(key) as String
 operator fun I18nextText.invoke(key: String, args: Any): String = asDynamic()(key, args) as String
 
