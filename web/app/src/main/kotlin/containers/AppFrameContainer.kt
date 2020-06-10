@@ -1,5 +1,6 @@
 package containers
 
+import appKodein
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
 import components.templates.appMenu
@@ -8,6 +9,10 @@ import kotlinext.js.jsObject
 import language
 import materialui.styles.palette.PaletteType
 import materialui.useMediaQuery
+import net.subroh0508.colormaster.model.Languages
+import net.subroh0508.colormaster.model.ui.commons.AppPreference
+import org.kodein.di.KodeinAware
+import org.kodein.di.erased.instance
 import org.w3c.dom.get
 import org.w3c.dom.set
 import react.*
@@ -43,7 +48,10 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
             themeType = preferredType
         })
     }
-    useEffect(listOf(lang.code == i18n.language)) { i18n.changeLanguage(lang.code) }
+    useEffect(listOf(lang.code == i18n.language)) {
+        AppPreferenceController.changeLanguage(lang)
+        i18n.changeLanguage(lang.code)
+    }
     useEffect(listOf(appState)) { localStorage["paletteType"] = appState.themeType.name }
 
     fun closeMenu() = dispatch(actions(ActionType.CHANGE) { openDrawer = false })
@@ -102,4 +110,12 @@ private val reducer = { state: AppState, action: Actions<ActionType, Payload> ->
             openDrawer = payload.openDrawer ?: state.openDrawer
         )
     }
+}
+
+private object AppPreferenceController : KodeinAware {
+    private val browserPref: AppPreference by instance()
+
+    fun changeLanguage(lang: Languages) { browserPref.setLanguage(lang) }
+
+    override val kodein = appKodein
 }
