@@ -2,6 +2,7 @@ import containers.AppFrameContainer
 import containers.IdolSearchContainer
 import containers.PenlightContainer
 import containers.PreviewContainer
+import net.subroh0508.colormaster.model.Languages
 import org.w3c.dom.url.URLSearchParams
 import pages.DevelopmentPage
 import pages.HowToUsePage
@@ -12,13 +13,13 @@ import react.router.dom.*
 fun RBuilder.routing() = browserRouter {
     AppFrameContainer {
         switch {
-            Languages.values().forEach { (_, _, basename) ->
-                route("$basename/preview", exact = true) { PreviewContainer() }
-                route("$basename/penlight", exact = true) { PenlightContainer() }
-                route("$basename/howtouse", exact = true) { HowToUsePage() }
-                route("$basename/development", exact = true) { DevelopmentPage() }
-                route("$basename/terms", exact = true) { TermsPage() }
-                route("$basename/", exact = true) { IdolSearchContainer() }
+            Languages.values().forEach { lang ->
+                route("${lang.basename}/preview", exact = true) { PreviewContainer() }
+                route("${lang.basename}/penlight", exact = true) { PenlightContainer() }
+                route("${lang.basename}/howtouse", exact = true) { HowToUsePage() }
+                route("${lang.basename}/development", exact = true) { DevelopmentPage() }
+                route("${lang.basename}/terms", exact = true) { TermsPage() }
+                route("${lang.basename}/", exact = true) { IdolSearchContainer() }
             }
         }
     }
@@ -36,6 +37,11 @@ fun RouteResultHistory.toDevelopment() = to("/development")
 fun RouteResultHistory.toTerms() = to("/terms")
 fun RouteResultHistory.toPreview(query: String) = to("/preview?$query")
 fun RouteResultHistory.toPenlight(query: String) = push("/penlight?$query")
+
+val Languages.basename: String get() = when (this) {
+    Languages.JAPANESE -> ""
+    Languages.ENGLISH -> "/en"
+}
 
 private fun RouteResultHistory.langCode() = Languages.values().let { languages ->
     val c = location.pathname.split("/")[1]

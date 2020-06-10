@@ -1,10 +1,9 @@
 package components.atoms
 
-import Languages
+import basename
 import kotlinx.css.*
 import kotlinx.css.properties.BoxShadows
 import kotlinx.html.A
-import kotlinx.html.DIV
 import kotlinx.html.id
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onKeyDownFunction
@@ -32,6 +31,7 @@ import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.default
+import net.subroh0508.colormaster.model.Languages
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.Event
 import react.*
@@ -165,18 +165,18 @@ private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { pro
             onClose = { e, _ -> handleLanguageMenuClose(e) }
         }
 
-        Languages.values().forEach { (code, label, basename) ->
+        Languages.values().forEach { language ->
             menuItem(factory = { A(mapOf(), it) }) {
                 attrs {
-                    key = code
-                    href = "$basename$path"
-                    hrefLang = code
-                    selected = props.lang.code == code
-                    lang = code
+                    key = language.code
+                    href = "${language.basename}$path"
+                    hrefLang = language.code
+                    selected = props.lang.code == language.code
+                    lang = language.code
                     onClickFunction = ::handleLanguageMenuClose
                 }
 
-                +label
+                +language.label
             }
         }
     }

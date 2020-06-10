@@ -10,3 +10,5 @@ include(
     ":shared:infra:query",
     ":shared:infra:api"
 )
+
+enableFeaturePreview("GRADLE_METADATA")
