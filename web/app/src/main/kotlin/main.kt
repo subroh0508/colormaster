@@ -8,7 +8,10 @@ import kotlin.browser.window
 import react.Suspense
 
 val mainScope = MainScope()
-val appKodein = Kodein { import(AppModule) }
+val appKodein = Kodein {
+    import(AppModule)
+    import(AppPreferenceModule)
+}
 
 fun main() {
     window.onload = {

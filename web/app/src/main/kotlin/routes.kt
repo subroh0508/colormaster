@@ -14,12 +14,12 @@ fun RBuilder.routing() = browserRouter {
     AppFrameContainer {
         switch {
             Languages.values().forEach { lang ->
+                route("${lang.basename}/", exact = true) { IdolSearchContainer() }
                 route("${lang.basename}/preview", exact = true) { PreviewContainer() }
                 route("${lang.basename}/penlight", exact = true) { PenlightContainer() }
                 route("${lang.basename}/howtouse", exact = true) { HowToUsePage() }
                 route("${lang.basename}/development", exact = true) { DevelopmentPage() }
                 route("${lang.basename}/terms", exact = true) { TermsPage() }
-                route("${lang.basename}/", exact = true) { IdolSearchContainer() }
             }
         }
     }
