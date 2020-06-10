@@ -9,6 +9,6 @@ import org.kodein.di.erased.singleton
 
 object IdolColorsRepositories {
     val Module get() = Kodein.Module(name = "IdolColorRepository") {
-        bind<IdolColorsRepository>() with singleton { IdolColorsRepositoryImpl(instance()) }
+        bind<IdolColorsRepository>() with singleton { IdolColorsRepositoryImpl(instance(), instance()) }
     }
 }
