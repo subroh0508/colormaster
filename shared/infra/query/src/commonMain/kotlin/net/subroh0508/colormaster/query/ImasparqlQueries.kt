@@ -8,10 +8,11 @@ import net.subroh0508.colormaster.query.internal.URLEncoder
 object ImasparqlQueries {
     fun rand(lang: String, limit: Int = 10) = buildQuery("""
         SELECT * WHERE {
-          ?s schema:name ?name;
-            imas:Color ?color;
+          ?s imas:Color ?color;
             imas:Title ?title.
-          FILTER (lang(?name) = '$lang')
+          OPTIONAL { ?s schema:name ?realName. FILTER(lang(?realName) = '$lang') }  
+          OPTIONAL { ?s schema:alternateName ?altName. FILTER(lang(?altName) = '$lang') }  
+          BIND (COALESCE(?altName, ?realName) as ?name)
           FILTER (str(?title) != '1st Vision').
           BIND (REPLACE(str(?s), '$ESCAPED_ENDPOINT_RDFS_DETAIL', '') as ?id).
         }
@@ -21,14 +22,15 @@ object ImasparqlQueries {
 
     fun search(lang: String, name: IdolName?, titles: Titles?, types: Set<Types>) = buildQuery("""
         SELECT * WHERE {
-          ?s schema:name ?name;
-            imas:Color ?color;
+          ?s imas:Color ?color;
             imas:Title ?title.
+          OPTIONAL { ?s schema:name ?realName. FILTER(lang(?realName) = '$lang') }  
+          OPTIONAL { ?s schema:alternateName ?altName. FILTER(lang(?altName) = '$lang') }  
+          BIND (COALESCE(?altName, ?realName) as ?name)
           OPTIONAL { ?s imas:Division ?division }
           OPTIONAL { ?s imas:Type ?type }
           OPTIONAL { ?s imas:Category ?category }
           BIND (COALESCE(?category, ?division, ?type) as ?attribute)
-          FILTER (lang(?name) = '$lang')
           ${name?.value?.let {"FILTER (regex(?name, '.*$it.*', 'i') && str(?title) != '1st Vision')." } ?: ""}
           ${titles?.queryStr?.let { "FILTER (str(?title) = '$it')." } ?: ""}
           ${types.regexStr?.let { "FILTER regex(?attribute, '$it', 'i')." } ?: "" }
@@ -39,10 +41,11 @@ object ImasparqlQueries {
 
     fun search(lang: String, ids: List<String>) = buildQuery("""
         SELECT * WHERE {
-          ?s schema:name ?name;
-            imas:Color ?color;
+          ?s imas:Color ?color;
             imas:Title ?title.
-          FILTER (lang(?name) = '$lang')
+          OPTIONAL { ?s schema:name ?realName. FILTER(lang(?realName) = '$lang') }  
+          OPTIONAL { ?s schema:alternateName ?altName. FILTER(lang(?altName) = '$lang') }  
+          BIND (COALESCE(?altName, ?realName) as ?name)
           FILTER (str(?title) != '1st Vision').
           BIND (REPLACE(str(?s), '$ESCAPED_ENDPOINT_RDFS_DETAIL', '') as ?id).  
           ${ids.takeIf(List<String>::isNotEmpty)?.let { "FILTER (regex(?id, '(${it.joinToString("|")})', 'i'))." }}
