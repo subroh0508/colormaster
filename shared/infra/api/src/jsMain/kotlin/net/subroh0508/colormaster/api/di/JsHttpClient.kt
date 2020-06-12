@@ -7,9 +7,7 @@ import io.ktor.client.features.json.Json
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.accept
 import io.ktor.http.URLProtocol
-import io.ktor.http.userAgent
 import net.subroh0508.colormaster.api.internal.ContentType
-import net.subroh0508.colormaster.api.internal.UserAgent
 import net.subroh0508.colormaster.query.HOSTNAME
 
 internal actual val httpClient get() = HttpClient(Js) {
@@ -19,7 +17,6 @@ internal actual val httpClient get() = HttpClient(Js) {
             host = HOSTNAME
         }
         accept(ContentType.Application.SparqlJson)
-        userAgent(UserAgent)
     }
     Json {
         acceptContentTypes = listOf(ContentType.Application.SparqlJson)
