@@ -15,13 +15,11 @@ import org.kodein.di.erased.instance
 import react.*
 import useQuery
 import utilities.Actions
-import utilities.child
-import utilities.children
 import utilities.useEffectDidMount
 
 @Suppress("FunctionName")
 fun RBuilder.PenlightContainer() = FullscreenPreviewControllerContext.Provider(FullscreenPreviewController) {
-    child(FullscreenPreviewContainerComponentImpl) { model: UiModel.FullscreenPreview ->
+    childFunction(FullscreenPreviewContainerComponentImpl) { model: UiModel.FullscreenPreview ->
         previewModal {
             attrs.model = model
             attrs.PreviewComponent = FullscreenPenlightComponent
@@ -31,7 +29,7 @@ fun RBuilder.PenlightContainer() = FullscreenPreviewControllerContext.Provider(F
 
 @Suppress("FunctionName")
 fun RBuilder.PreviewContainer() = FullscreenPreviewControllerContext.Provider(FullscreenPreviewController) {
-    child(FullscreenPreviewContainerComponentImpl) { model: UiModel.FullscreenPreview ->
+    childFunction(FullscreenPreviewContainerComponentImpl) { model: UiModel.FullscreenPreview ->
         previewModal {
             attrs.model = model
             attrs.PreviewComponent = FullscreenPreviewComponent
@@ -57,7 +55,7 @@ private val FullscreenPreviewContainerComponentImpl = functionalComponent<RProps
 
     useEffectDidMount { controller.fetch(ids) }
 
-    children(props, uiModel)
+    props.children(uiModel)
 }
 
 private enum class FullscreenPreviewActionType {
