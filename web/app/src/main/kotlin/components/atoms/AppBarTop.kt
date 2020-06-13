@@ -36,6 +36,7 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+import utilities.buttonTarget
 import utilities.invoke
 import utilities.useTranslation
 
@@ -138,7 +139,7 @@ private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { pro
 
     val path = props.pathname.replace(props.lang.basename, "")
 
-    fun handleLanguageIconClick(event: Event) = setLanguageMenu(event.currentTarget as HTMLButtonElement)
+    fun handleLanguageIconClick(event: Event) = setLanguageMenu(event.buttonTarget())
     fun handleLanguageMenuClose(event: Event) = setLanguageMenu(null)
 
     tooltip {
