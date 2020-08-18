@@ -6,7 +6,7 @@ plugins {
 
 kotlin {
     android("android")
-    js { nodejs {} }
+    js(IR) { nodejs {} }
 
     sourceSets {
         val commonMain by getting {
@@ -17,7 +17,8 @@ kotlin {
 
                 implementation(Libraries.Coroutines.common)
 
-                implementation(Libraries.Serialization.common)
+                implementation(Libraries.Serialization.core)
+                implementation(Libraries.Serialization.protobuf)
 
                 implementation(Libraries.Ktor.clientCommon)
                 implementation(Libraries.Ktor.jsonCommon)
@@ -33,8 +34,6 @@ kotlin {
                 implementation(Libraries.Kotlin.reflect)
 
                 implementation(Libraries.Coroutines.android)
-
-                implementation(Libraries.Serialization.android)
 
                 implementation(Libraries.Ktor.clientAndroid)
                 implementation(Libraries.Ktor.jsonAndroid)
@@ -52,8 +51,6 @@ kotlin {
                 implementation(Libraries.Kotlin.js)
 
                 implementation(Libraries.Coroutines.js)
-
-                implementation(Libraries.Serialization.js)
 
                 implementation(Libraries.Ktor.clientJs)
                 implementation(Libraries.Ktor.jsonJs)
