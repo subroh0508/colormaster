@@ -58,12 +58,12 @@ object Libraries {
     }
 
     object Kodein {
-        const val version = "6.5.4"
+        const val version = "7.0.0"
 
-        const val common = "org.kodein.di:kodein-di-erased:$version"
-        const val android = "org.kodein.di:kodein-di-generic-jvm:$version"
+        const val common = "org.kodein.di:kodein-di:$version"
+        const val android = "org.kodein.di:kodein-di-framework-android-core:$version"
         const val frameworkAndroidX = "org.kodein.di:kodein-di-framework-android-x:$version"
-        const val js = "org.kodein.di:kodein-di-erased-js:$version"
+        const val js = "org.kodein.di:kodein-di-js:$version"
     }
 
     object Okhttp3 {

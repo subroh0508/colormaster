@@ -44,6 +44,5 @@ dependencies {
     implementation(Libraries.AndroidX.lifecycleViewModel)
     implementation(Libraries.AndroidX.lifecycleLiveData)
 
-    implementation(Libraries.Kodein.android)
     implementation(Libraries.Kodein.frameworkAndroidX)
 }
