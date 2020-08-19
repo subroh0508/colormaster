@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
@@ -14,13 +13,11 @@ import net.subroh0508.colormaster.idol.R
 import net.subroh0508.colormaster.idol.databinding.FragmentBottomSheetIdolsBinding
 import net.subroh0508.colormaster.idol.ui.adapter.IdolsAdapter
 import net.subroh0508.colormaster.idol.ui.viewmodel.IdolsViewModel
-import org.kodein.di.KodeinAware
-import org.kodein.di.KodeinTrigger
-import org.kodein.di.android.subKodein
-import org.kodein.di.android.x.kodein
-import org.kodein.di.generic.*
+import org.kodein.di.*
+import org.kodein.di.android.subDI
+import org.kodein.di.android.x.di
 
-class BottomSheetIdolsFragment : Fragment(R.layout.fragment_bottom_sheet_idols), KodeinAware {
+class BottomSheetIdolsFragment : Fragment(R.layout.fragment_bottom_sheet_idols), DIAware {
     private val idolsViewModelProvider: () -> IdolsViewModel by provider()
     private val idolsViewModel by activityViewModels<IdolsViewModel> {
         object : ViewModelProvider.NewInstanceFactory() {
@@ -34,7 +31,7 @@ class BottomSheetIdolsFragment : Fragment(R.layout.fragment_bottom_sheet_idols),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        kodeinTrigger.trigger()
+        diTrigger.trigger()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,8 +46,8 @@ class BottomSheetIdolsFragment : Fragment(R.layout.fragment_bottom_sheet_idols),
         idolsViewModel.loadItems()
     }
 
-    override val kodein by subKodein(kodein()) {
+    override val di: DI by subDI(di()) {
         bind<IdolsViewModel>() with provider { IdolsViewModel(instance()) }
     }
-    override val kodeinTrigger = KodeinTrigger()
+    override val diTrigger = DITrigger()
 }

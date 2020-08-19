@@ -3,7 +3,6 @@ package net.subroh0508.colormaster.idol.ui
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.children
-import androidx.core.view.get
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,21 +17,20 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import net.subroh0508.colormaster.idol.R
 import net.subroh0508.colormaster.idol.databinding.FragmentIdolsBinding
 import net.subroh0508.colormaster.idol.ui.viewmodel.IdolsViewModel
-import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.model.Titles
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.model.toIdolName
 import net.subroh0508.colormaster.widget.ui.FilterChip
 import net.subroh0508.colormaster.widget.ui.onCheckedChanged
-import org.kodein.di.KodeinAware
-import org.kodein.di.KodeinTrigger
-import org.kodein.di.android.subKodein
-import org.kodein.di.android.x.kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.provider
+import org.kodein.di.DIAware
+import org.kodein.di.DITrigger
+import org.kodein.di.android.subDI
+import org.kodein.di.android.x.di
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.provider
 
-class IdolsFragment : Fragment(R.layout.fragment_idols), KodeinAware {
+class IdolsFragment : Fragment(R.layout.fragment_idols), DIAware {
     private val idolsViewModelProvider: () -> IdolsViewModel by provider()
     private val idolsViewModel by activityViewModels<IdolsViewModel> {
         object : ViewModelProvider.NewInstanceFactory() {
@@ -142,10 +140,10 @@ class IdolsFragment : Fragment(R.layout.fragment_idols), KodeinAware {
         binding.fragmentBottomSheetIdols.background = materialShapeDrawable
     }
 
-    override val kodein by subKodein(kodein()) {
+    override val di by subDI(di()) {
         bind<IdolsViewModel>() with provider { IdolsViewModel(instance()) }
     }
-    override val kodeinTrigger = KodeinTrigger()
+    override val diTrigger = DITrigger()
 
     private val Types.displayName: String get() = when (this) {
         Types.CINDERELLA_GIRLS.CU -> getString(R.string.type_cinderella_cu)

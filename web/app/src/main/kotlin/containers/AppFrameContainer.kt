@@ -1,6 +1,6 @@
 package containers
 
-import appKodein
+import appDI
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
 import components.templates.appMenu
@@ -11,8 +11,8 @@ import materialui.styles.palette.PaletteType
 import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
-import org.kodein.di.KodeinAware
-import org.kodein.di.erased.instance
+import org.kodein.di.DIAware
+import org.kodein.di.instance
 import org.w3c.dom.get
 import org.w3c.dom.set
 import react.*
@@ -112,10 +112,10 @@ private val reducer = { state: AppState, action: Actions<ActionType, Payload> ->
     }
 }
 
-private object AppPreferenceController : KodeinAware {
+private object AppPreferenceController : DIAware {
     private val browserPref: AppPreference by instance()
 
     fun changeLanguage(lang: Languages) { browserPref.setLanguage(lang) }
 
-    override val kodein = appKodein
+    override val di = appDI
 }

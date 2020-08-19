@@ -1,6 +1,6 @@
 package containers
 
-import appKodein
+import appDI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mainScope
@@ -8,8 +8,8 @@ import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.model.UiModel.Search.IdolColorItem
 import net.subroh0508.colormaster.model.ui.idol.Filters
 import net.subroh0508.colormaster.repository.IdolColorsRepository
-import org.kodein.di.KodeinAware
-import org.kodein.di.erased.instance
+import org.kodein.di.DIAware
+import org.kodein.di.instance
 import pages.IdolSearchPage
 import react.*
 import react.router.dom.useHistory
@@ -89,7 +89,7 @@ private val reducer = { state: UiModel.Search, action: Actions<IdolSearchActionT
 
 private val IdolSearchControllerContext = createContext<IdolSearchController>()
 
-private object IdolSearchController : CoroutineScope by mainScope, KodeinAware {
+private object IdolSearchController : CoroutineScope by mainScope, DIAware {
     const val LIMIT = 10
 
     val repository: IdolColorsRepository by instance()
@@ -100,5 +100,5 @@ private object IdolSearchController : CoroutineScope by mainScope, KodeinAware {
         else
             repository.search(filters.idolName, filters.title, filters.types)
 
-    override val kodein = appKodein
+    override val di = appDI
 }

@@ -1,6 +1,6 @@
 import kotlinx.coroutines.MainScope
 import net.subroh0508.colormaster.components.core.AppModule
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 import react.dom.render
 import utilities.*
 import kotlin.browser.document
@@ -8,7 +8,7 @@ import kotlin.browser.window
 import react.Suspense
 
 val mainScope = MainScope()
-val appKodein = Kodein {
+val appDI = DI {
     import(AppModule)
     import(AppPreferenceModule)
 }

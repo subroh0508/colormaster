@@ -1,6 +1,6 @@
 package containers
 
-import appKodein
+import appDI
 import components.organisms.FullscreenPenlightComponent
 import components.organisms.FullscreenPreviewComponent
 import components.templates.previewModal
@@ -10,8 +10,8 @@ import mainScope
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.UiModel
 import net.subroh0508.colormaster.repository.IdolColorsRepository
-import org.kodein.di.KodeinAware
-import org.kodein.di.erased.instance
+import org.kodein.di.DIAware
+import org.kodein.di.instance
 import react.*
 import useQuery
 import utilities.Actions
@@ -82,10 +82,10 @@ private val reducer = { state: UiModel.FullscreenPreview, action: Actions<Fullsc
 
 private val FullscreenPreviewControllerContext = createContext<FullscreenPreviewController>()
 
-private object FullscreenPreviewController : CoroutineScope by mainScope, KodeinAware {
+private object FullscreenPreviewController : CoroutineScope by mainScope, DIAware {
     val repository: IdolColorsRepository by instance()
 
     suspend fun fetchItems(ids: List<String>) = repository.search(ids)
 
-    override val kodein = appKodein
+    override val di = appDI
 }
