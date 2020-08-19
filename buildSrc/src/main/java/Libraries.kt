@@ -59,7 +59,7 @@ object Libraries {
     }
 
     object Kodein {
-        const val version = "7.0.0"
+        const val version = "7.1.0-master-87"
 
         const val common = "org.kodein.di:kodein-di:$version"
         const val android = "org.kodein.di:kodein-di-framework-android-core:$version"

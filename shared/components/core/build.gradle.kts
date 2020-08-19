@@ -5,7 +5,7 @@ plugins {
 
 kotlin {
     android("android")
-    js(IR) { nodejs {} }
+    js(LEGACY) { nodejs {} }
 
     sourceSets {
         val commonMain by getting {
