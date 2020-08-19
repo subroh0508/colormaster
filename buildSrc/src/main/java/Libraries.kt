@@ -40,7 +40,7 @@ object Libraries {
     }
 
     object Ktor {
-        const val version = "1.3.2-1.4.0-rc"
+        const val version = "1.4.0"
 
         const val clientCommon = "io.ktor:ktor-client-core:$version"
         const val clientAndroid = "io.ktor:ktor-client-okhttp:$version"
