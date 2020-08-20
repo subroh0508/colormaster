@@ -2,13 +2,18 @@ package net.subroh0508.colormaster.api.serializer
 
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 @Serializer(forClass = Response.Results::class)
 internal class ResultsSerializer<T: Any>(
     private val bindingSerializer: KSerializer<T>
 ) : KSerializer<Response.Results<T>> {
     @kotlinx.serialization.InternalSerializationApi
-    override val descriptor: SerialDescriptor = SerialDescriptor("Response.Results") {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Response.Results") {
         element("bindings", bindingSerializer.descriptor)
     }
 
@@ -28,11 +33,11 @@ internal class ResultsSerializer<T: Any>(
                     ListSerializer(bindingSerializer)
                 ))
             }
-        } while (i != CompositeDecoder.READ_DONE && i != CompositeDecoder.UNKNOWN_NAME)
+        } while (i != CompositeDecoder.DECODE_DONE && i != CompositeDecoder.UNKNOWN_NAME)
         inp.endStructure(descriptor)
 
         return Response.Results(bindings)
     }
 
-    override fun serialize(encoder: Encoder, obj: Response.Results<T>) = Unit
+    override fun serialize(encoder: Encoder, value: Response.Results<T>) = Unit
 }

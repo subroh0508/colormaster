@@ -20,6 +20,11 @@ internal actual val httpClient get() = HttpClient(Js) {
     }
     Json {
         acceptContentTypes = listOf(ContentType.Application.SparqlJson)
-        serializer = KotlinxSerializer(kotlinx.serialization.json.Json.nonstrict)
+        serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
+                isLenient = true
+                ignoreUnknownKeys = true
+                allowSpecialFloatingPointValues = true
+                useArrayPolymorphism = true
+        })
     }
 }
