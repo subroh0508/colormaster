@@ -11,7 +11,7 @@ object Libraries {
     }
 
     object Kotlin {
-        const val version = "1.3.72"
+        const val version = "1.4.0"
 
         const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
         const val android = "org.jetbrains.kotlin:kotlin-stdlib:$version"
@@ -22,24 +22,25 @@ object Libraries {
     }
 
     object Serialization {
-        const val version = "0.20.0"
+        const val version = "1.0.0-RC"
 
-        const val common = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$version"
+        const val core = "org.jetbrains.kotlinx:kotlinx-serialization-core:$version"
+        const val protobuf = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$version"
         const val js = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$version"
         const val ios = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$version"
     }
 
     object Coroutines {
-        const val version = "1.3.5"
+        const val version = "1.3.9"
 
-        const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
+        const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val js = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
     }
 
     object Ktor {
-        const val version = "1.3.2"
+        const val version = "1.4.0"
 
         const val clientCommon = "io.ktor:ktor-client-core:$version"
         const val clientAndroid = "io.ktor:ktor-client-okhttp:$version"
@@ -58,7 +59,7 @@ object Libraries {
     }
 
     object Kodein {
-        const val version = "7.0.0"
+        const val version = "7.1.0-master-87"
 
         const val common = "org.kodein.di:kodein-di:$version"
         const val android = "org.kodein.di:kodein-di-framework-android-core:$version"
@@ -109,13 +110,13 @@ object Libraries {
     }
 
     object Html {
-        const val version = "0.7.1"
+        const val version = "0.7.2"
 
         const val js = "org.jetbrains.kotlinx:kotlinx-html-js:$version"
     }
 
     object JsWrappers {
-        const val version = "pre.104-kotlin-${Kotlin.version}"
+        const val version = "pre.111-kotlin-${Kotlin.version}"
 
         const val reactVersion = "${Npm.reactVersion}-$version"
         const val react = "org.jetbrains:kotlin-react:$reactVersion"
@@ -134,7 +135,7 @@ object Libraries {
         const val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.4.2"
+            const val version = "0.5.0-beta2"
             const val core = "subroh0508.net.kotlinmaterialui:core:$version"
         }
     }

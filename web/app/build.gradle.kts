@@ -7,15 +7,17 @@ plugins {
 }
 
 kotlin {
-    target {
+    js(LEGACY) {
         useCommonJs()
+        binaries.executable()
+
         browser {
             // Ktor's known issue
             // Issue: https://github.com/ktorio/ktor/issues/1339
             // YouTrack: https://youtrack.jetbrains.com/issue/KT-36484
-            dceTask {
-                keep("ktor-ktor-io.\$\$importsForInline\$\$.ktor-ktor-io.io.ktor.utils.io")
-            }
+            // dceTask {
+            //     keep("ktor-ktor-io.\$\$importsForInline\$\$.ktor-ktor-io.io.ktor.utils.io")
+            // }
             runTask {
                 sourceMaps = true
                 devServer = KotlinWebpackConfig.DevServer(
@@ -47,7 +49,8 @@ kotlin {
                 implementation(Libraries.Ktor.jsonJs)
                 implementation(Libraries.Ktor.serializationJs)
 
-                implementation(Libraries.Serialization.js)
+                implementation(Libraries.Serialization.core)
+                implementation(Libraries.Serialization.protobuf)
 
                 implementation(Libraries.Html.js)
 
@@ -97,5 +100,3 @@ val copyDistributions by tasks.registering {
 }
 
 browserWebpack.finalizedBy(copyDistributions)
-
-fun devNpm(name: String, version: String = "*") = NpmDependency(project, name, version, NpmDependency.Scope.DEV)
