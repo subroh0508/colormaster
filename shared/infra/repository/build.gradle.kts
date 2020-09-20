@@ -18,7 +18,6 @@ kotlin {
 
                 implementation(Libraries.Coroutines.common)
 
-                implementation(Libraries.Kodein.common)
                 implementation(Libraries.Koin.common)
             }
         }
@@ -30,10 +29,8 @@ kotlin {
 
                 implementation(Libraries.Coroutines.android)
 
-                implementation(Libraries.Kodein.android)
                 implementation(Libraries.Koin.android)
-                implementation(Libraries.Koin.jvmExt)
-            }
+                }
         }
         val jsMain by getting {
             dependsOn(commonMain)
@@ -42,7 +39,6 @@ kotlin {
 
                 implementation(Libraries.Coroutines.js)
 
-                implementation(Libraries.Kodein.js)
                 implementation(Libraries.Koin.js)
             }
         }

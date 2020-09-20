@@ -24,7 +24,6 @@ kotlin {
                 implementation(Libraries.Ktor.jsonCommon)
                 implementation(Libraries.Ktor.serializationCommon)
 
-                implementation(Libraries.Kodein.common)
                 implementation(Libraries.Koin.common)
             }
         }
@@ -43,10 +42,8 @@ kotlin {
                 implementation(Libraries.Okhttp3.client)
                 implementation(Libraries.Okhttp3.loggingIntercerptor)
 
-                implementation(Libraries.Kodein.android)
                 implementation(Libraries.Koin.android)
-                implementation(Libraries.Koin.jvmExt)
-            }
+                }
         }
         val jsMain by getting {
             dependsOn(commonMain)
@@ -59,7 +56,6 @@ kotlin {
                 implementation(Libraries.Ktor.jsonJs)
                 implementation(Libraries.Ktor.serializationJs)
 
-                implementation(Libraries.Kodein.js)
                 implementation(Libraries.Koin.js)
             }
         }

@@ -59,15 +59,6 @@ object Libraries {
         const val serializationJs = "io.ktor:ktor-client-serialization-js:$version"
     }
 
-    object Kodein {
-        const val version = "7.1.0"
-
-        const val common = "org.kodein.di:kodein-di:$version"
-        const val android = "org.kodein.di:kodein-di-framework-android-core:$version"
-        const val frameworkAndroidX = "org.kodein.di:kodein-di-framework-android-x:$version"
-        const val js = "org.kodein.di:kodein-di-js:$version"
-    }
-
     object Koin {
         const val version = "3.0.0-alpha-4"
 
@@ -75,7 +66,6 @@ object Libraries {
         const val android = "org.koin:koin-android:$version"
         const val androidXScope = "org.koin:koin-androidx-scope:$version"
         const val androidXViewModel = "org.koin:koin-androidx-viewmodel:$version"
-        const val jvmExt = "org.koin:koin-core-ext:$version"
         const val js = "org.koin:koin-core-js:$version"
     }
 
