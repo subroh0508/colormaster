@@ -1,5 +1,5 @@
 import kotlinx.coroutines.MainScope
-import net.subroh0508.colormaster.components.core.createAppModule
+import net.subroh0508.colormaster.components.core.AppModule
 import org.koin.core.context.startKoin
 import org.koin.dsl.koinApplication
 import react.dom.render
@@ -10,8 +10,7 @@ import react.Suspense
 
 val mainScope = MainScope()
 val appDI = koinApplication {
-    createAppModule()
-    modules(AppPreferenceModule)
+    modules(AppModule + AppPreferenceModule)
 }
 
 fun main() {

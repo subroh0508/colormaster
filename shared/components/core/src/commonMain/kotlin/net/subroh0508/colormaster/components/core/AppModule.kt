@@ -2,8 +2,5 @@ package net.subroh0508.colormaster.components.core
 
 import net.subroh0508.colormaster.api.di.Api
 import net.subroh0508.colormaster.repository.di.IdolColorsRepositories
-import org.koin.core.KoinApplication
 
-fun KoinApplication.createAppModule() {
-    modules(Api.Module, IdolColorsRepositories.Module)
-}
+val AppModule get() = Api.Module + IdolColorsRepositories.Module
