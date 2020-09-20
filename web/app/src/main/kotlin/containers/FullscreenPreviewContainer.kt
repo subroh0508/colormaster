@@ -10,8 +10,8 @@ import mainScope
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.UiModel
 import net.subroh0508.colormaster.repository.IdolColorsRepository
-import org.kodein.di.DIAware
-import org.kodein.di.instance
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import react.*
 import useQuery
 import utilities.Actions
@@ -82,10 +82,10 @@ private val reducer = { state: UiModel.FullscreenPreview, action: Actions<Fullsc
 
 private val FullscreenPreviewControllerContext = createContext<FullscreenPreviewController>()
 
-private object FullscreenPreviewController : CoroutineScope by mainScope, DIAware {
-    val repository: IdolColorsRepository by instance()
+private object FullscreenPreviewController : CoroutineScope by mainScope, KoinComponent {
+    val repository: IdolColorsRepository by inject()
 
     suspend fun fetchItems(ids: List<String>) = repository.search(ids)
 
-    override val di = appDI
+    override fun getKoin() = appDI.koin
 }

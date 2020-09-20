@@ -11,8 +11,8 @@ import materialui.styles.palette.PaletteType
 import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
-import org.kodein.di.DIAware
-import org.kodein.di.instance
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import org.w3c.dom.get
 import org.w3c.dom.set
 import react.*
@@ -112,10 +112,10 @@ private val reducer = { state: AppState, action: Actions<ActionType, Payload> ->
     }
 }
 
-private object AppPreferenceController : DIAware {
-    private val browserPref: AppPreference by instance()
+private object AppPreferenceController : KoinComponent {
+    private val browserPref: AppPreference by inject()
 
     fun changeLanguage(lang: Languages) { browserPref.setLanguage(lang) }
 
-    override val di = appDI
+    override fun getKoin() = appDI.koin
 }
