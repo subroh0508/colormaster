@@ -80,7 +80,7 @@ object Libraries {
     }
 
     object Okhttp3 {
-        const val version = "3.14.2"
+        const val version = "4.6.0"
 
         const val client = "com.squareup.okhttp3:okhttp:$version"
         const val loggingIntercerptor = "com.squareup.okhttp3:logging-interceptor:$version"

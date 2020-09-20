@@ -21,13 +21,11 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 internal actual val httpClient get() = HttpClient(OkHttp) {
     engine {
-        /*
         if (BuildConfig.DEBUG) {
             val loggingInterceptor = HttpLoggingInterceptor()
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             addInterceptor(loggingInterceptor)
         }
-        */
     }
     defaultRequest {
         url {
