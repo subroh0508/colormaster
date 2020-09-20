@@ -8,6 +8,7 @@ object Libraries {
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Kotlin.version}"
         const val kotlinSerialization = "org.jetbrains.kotlin:kotlin-serialization:${Kotlin.version}"
         const val navigationSafeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:${AndroidX.Navigation.version}"
+        const val koin = "org.koin:koin-gradle-plugin:${Koin.version}"
     }
 
     object Kotlin {
@@ -65,6 +66,15 @@ object Libraries {
         const val android = "org.kodein.di:kodein-di-framework-android-core:$version"
         const val frameworkAndroidX = "org.kodein.di:kodein-di-framework-android-x:$version"
         const val js = "org.kodein.di:kodein-di-js:$version"
+    }
+
+    object Koin {
+        const val version = "3.0.0-alpha-4"
+
+        const val common = "org.koin:koin-core:$version"
+        const val android = "org.koin:koin-android:$version"
+        const val jvmExt = "org.koin:koin-core-ext:$version"
+        const val js = "org.koin:koin-core-js:$version"
     }
 
     object Okhttp3 {

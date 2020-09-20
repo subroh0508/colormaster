@@ -23,6 +23,7 @@ kotlin {
                 implementation(Libraries.Ktor.serializationCommon)
 
                 implementation(Libraries.Kodein.common)
+                implementation(Libraries.Koin.common)
             }
         }
         val androidMain by getting {
@@ -40,6 +41,8 @@ kotlin {
                 implementation(Libraries.AndroidX.lifecycleLiveData)
 
                 implementation(Libraries.Kodein.android)
+                implementation(Libraries.Koin.android)
+                implementation(Libraries.Koin.jvmExt)
             }
         }
         val jsMain by getting {
@@ -54,6 +57,7 @@ kotlin {
                 implementation(Libraries.Ktor.serializationJs)
 
                 implementation(Libraries.Kodein.js)
+                implementation(Libraries.Koin.js)
             }
         }
     }

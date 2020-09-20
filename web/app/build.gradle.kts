@@ -63,6 +63,7 @@ kotlin {
                 implementation(Libraries.JsWrappers.MaterialUi.core)
 
                 implementation(Libraries.Kodein.js)
+                implementation(Libraries.Koin.js)
 
                 implementation(npm(Libraries.Npm.react, Libraries.Npm.reactVersion))
                 implementation(npm(Libraries.Npm.reactDom, Libraries.Npm.reactVersion))
