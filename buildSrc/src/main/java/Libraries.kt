@@ -73,6 +73,8 @@ object Libraries {
 
         const val common = "org.koin:koin-core:$version"
         const val android = "org.koin:koin-android:$version"
+        const val androidXScope = "org.koin:koin-androidx-scope:$version"
+        const val androidXViewModel = "org.koin:koin-androidx-viewmodel:$version"
         const val jvmExt = "org.koin:koin-core-ext:$version"
         const val js = "org.koin:koin-core-js:$version"
     }

@@ -26,5 +26,7 @@ dependencies {
 
     implementation(Libraries.Kodein.frameworkAndroidX)
     implementation(Libraries.Koin.android)
+    implementation(Libraries.Koin.androidXScope)
+    implementation(Libraries.Koin.androidXViewModel)
     implementation(Libraries.Koin.jvmExt)
 }

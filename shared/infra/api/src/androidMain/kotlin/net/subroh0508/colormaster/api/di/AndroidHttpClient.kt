@@ -21,11 +21,13 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 internal actual val httpClient get() = HttpClient(OkHttp) {
     engine {
+        /*
         if (BuildConfig.DEBUG) {
             val loggingInterceptor = HttpLoggingInterceptor()
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             addInterceptor(loggingInterceptor)
         }
+        */
     }
     defaultRequest {
         url {
@@ -37,6 +39,11 @@ internal actual val httpClient get() = HttpClient(OkHttp) {
     }
     Json {
         acceptContentTypes = listOf(ContentType.Application.SparqlJson)
-        serializer = KotlinxSerializer(Json.nonstrict)
+        serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
+            isLenient = true
+            ignoreUnknownKeys = true
+            allowSpecialFloatingPointValues = true
+            useArrayPolymorphism = true
+        })
     }
 }

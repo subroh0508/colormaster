@@ -5,9 +5,6 @@ import android.view.View
 import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.ChipGroup
@@ -22,22 +19,10 @@ import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.model.toIdolName
 import net.subroh0508.colormaster.widget.ui.FilterChip
 import net.subroh0508.colormaster.widget.ui.onCheckedChanged
-import org.kodein.di.DIAware
-import org.kodein.di.DITrigger
-import org.kodein.di.android.subDI
-import org.kodein.di.android.x.di
-import org.kodein.di.bind
-import org.kodein.di.instance
-import org.kodein.di.provider
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class IdolsFragment : Fragment(R.layout.fragment_idols), DIAware {
-    private val idolsViewModelProvider: () -> IdolsViewModel by provider()
-    private val idolsViewModel by activityViewModels<IdolsViewModel> {
-        object : ViewModelProvider.NewInstanceFactory() {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T = idolsViewModelProvider() as T
-        }
-    }
+class IdolsFragment : Fragment(R.layout.fragment_idols) {
+    private val idolsViewModel: IdolsViewModel by sharedViewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -139,11 +124,6 @@ class IdolsFragment : Fragment(R.layout.fragment_idols), DIAware {
         }
         binding.fragmentBottomSheetIdols.background = materialShapeDrawable
     }
-
-    override val di by subDI(di()) {
-        bind<IdolsViewModel>() with provider { IdolsViewModel(instance()) }
-    }
-    override val diTrigger = DITrigger()
 
     private val Types.displayName: String get() = when (this) {
         Types.CINDERELLA_GIRLS.CU -> getString(R.string.type_cinderella_cu)
