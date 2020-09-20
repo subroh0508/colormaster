@@ -59,7 +59,7 @@ object Libraries {
     }
 
     object Kodein {
-        const val version = "7.1.0-master-87"
+        const val version = "7.1.0"
 
         const val common = "org.kodein.di:kodein-di:$version"
         const val android = "org.kodein.di:kodein-di-framework-android-core:$version"
@@ -135,8 +135,8 @@ object Libraries {
         const val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.5.0-beta2"
-            const val core = "subroh0508.net.kotlinmaterialui:core:$version"
+            const val version = "0.5.1"
+            const val core = "net.subroh0508.kotlinmaterialui:core:$version"
         }
     }
 
