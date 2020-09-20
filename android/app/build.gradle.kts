@@ -45,4 +45,6 @@ dependencies {
     implementation(Libraries.AndroidX.lifecycleLiveData)
 
     implementation(Libraries.Kodein.frameworkAndroidX)
+    implementation(Libraries.Koin.android)
+    implementation(Libraries.Koin.jvmExt)
 }

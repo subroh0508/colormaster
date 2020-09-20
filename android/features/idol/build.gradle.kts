@@ -25,4 +25,6 @@ dependencies {
     implementation(Libraries.AndroidX.material)
 
     implementation(Libraries.Kodein.frameworkAndroidX)
+    implementation(Libraries.Koin.android)
+    implementation(Libraries.Koin.jvmExt)
 }
