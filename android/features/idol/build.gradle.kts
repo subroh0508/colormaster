@@ -24,5 +24,7 @@ dependencies {
     implementation(Libraries.AndroidX.lifecycleLiveData)
     implementation(Libraries.AndroidX.material)
 
-    implementation(Libraries.Kodein.frameworkAndroidX)
-}
+    implementation(Libraries.Koin.android)
+    implementation(Libraries.Koin.androidXScope)
+    implementation(Libraries.Koin.androidXViewModel)
+    }

@@ -12,12 +12,6 @@ kotlin {
         binaries.executable()
 
         browser {
-            // Ktor's known issue
-            // Issue: https://github.com/ktorio/ktor/issues/1339
-            // YouTrack: https://youtrack.jetbrains.com/issue/KT-36484
-            // dceTask {
-            //     keep("ktor-ktor-io.\$\$importsForInline\$\$.ktor-ktor-io.io.ktor.utils.io")
-            // }
             runTask {
                 sourceMaps = true
                 devServer = KotlinWebpackConfig.DevServer(
@@ -62,7 +56,7 @@ kotlin {
                 implementation(Libraries.JsWrappers.extensions)
                 implementation(Libraries.JsWrappers.MaterialUi.core)
 
-                implementation(Libraries.Kodein.js)
+                implementation(Libraries.Koin.js)
 
                 implementation(npm(Libraries.Npm.react, Libraries.Npm.reactVersion))
                 implementation(npm(Libraries.Npm.reactDom, Libraries.Npm.reactVersion))

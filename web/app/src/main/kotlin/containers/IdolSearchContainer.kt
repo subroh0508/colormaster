@@ -8,8 +8,8 @@ import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.model.UiModel.Search.IdolColorItem
 import net.subroh0508.colormaster.model.ui.idol.Filters
 import net.subroh0508.colormaster.repository.IdolColorsRepository
-import org.kodein.di.DIAware
-import org.kodein.di.instance
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import pages.IdolSearchPage
 import react.*
 import react.router.dom.useHistory
@@ -89,10 +89,10 @@ private val reducer = { state: UiModel.Search, action: Actions<IdolSearchActionT
 
 private val IdolSearchControllerContext = createContext<IdolSearchController>()
 
-private object IdolSearchController : CoroutineScope by mainScope, DIAware {
+private object IdolSearchController : CoroutineScope by mainScope, KoinComponent {
     const val LIMIT = 10
 
-    val repository: IdolColorsRepository by instance()
+    val repository: IdolColorsRepository by inject()
 
     suspend fun fetchItems(filters: Filters) =
         if (filters is Filters.Empty)
@@ -100,5 +100,5 @@ private object IdolSearchController : CoroutineScope by mainScope, DIAware {
         else
             repository.search(filters.idolName, filters.title, filters.types)
 
-    override val di = appDI
+    override fun getKoin() = appDI.koin
 }

@@ -9,6 +9,7 @@ buildscript {
         classpath(Libraries.GradlePlugin.kotlin)
         classpath(Libraries.GradlePlugin.android)
         classpath(Libraries.GradlePlugin.kotlinSerialization)
+        classpath(Libraries.GradlePlugin.koin)
     }
 }
 
@@ -20,5 +21,6 @@ allprojects {
         maven(url = "http://dl.bintray.com/kotlin/kotlin-js-wrappers")
         maven(url = "https://dl.bintray.com/kodein-framework/kodein-dev")
         maven(url = "https://dl.bintray.com/subroh0508/maven")
+        maven("https://dl.bintray.com/ekito/koin")
     }
 }

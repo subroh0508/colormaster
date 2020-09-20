@@ -1,13 +1,17 @@
 package net.subroh0508.colormaster.androidapp
 
 import android.app.Application
-import net.subroh0508.colormaster.components.core.AppModule
-import org.kodein.di.DI
-import org.kodein.di.DIAware
+import net.subroh0508.colormaster.components.core.createAppModule
+import net.subroh0508.colormaster.idol.ui.di.MainIdolsModule
+import org.koin.core.context.startKoin
 
-class ColorMasterApplication : Application(), DIAware {
-    override val di by DI.lazy {
-        import(AppModule)
-        import(AppPreferenceModule)
+class ColorMasterApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin {
+            createAppModule()
+            modules(AppPreferenceModule + MainIdolsModule)
+        }
     }
 }
