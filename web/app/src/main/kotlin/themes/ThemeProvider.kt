@@ -1,14 +1,12 @@
 package themes
 
 import kotlinx.css.Color
-import kotlinx.css.color
 import materialui.components.cssbaseline.cssBaseline
 import materialui.styles.createMuiTheme
 import materialui.styles.muitheme.options.palette
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.options.*
 import materialui.styles.themeprovider.themeProvider
-import materialui.styles.withStyles
 import react.*
 
 @Suppress("FunctionName")

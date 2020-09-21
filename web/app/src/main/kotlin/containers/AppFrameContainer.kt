@@ -20,7 +20,7 @@ import react.router.dom.useHistory
 import themes.ThemeProvider
 import utilities.Actions
 import utilities.useTranslation
-import kotlin.browser.localStorage
+import kotlinx.browser.localStorage
 
 @Suppress("FunctionName")
 fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppFrameContainerComponent, handler = handler)

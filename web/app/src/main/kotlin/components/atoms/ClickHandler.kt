@@ -4,7 +4,7 @@ import kotlinx.html.js.onClickFunction
 import net.subroh0508.colormaster.utilities.currentTimeMillis
 import react.*
 import react.dom.div
-import kotlin.browser.window
+import kotlinx.browser.window
 
 fun RBuilder.clickHandler(handler: RHandler<ClickHandlerProps>) = child(ClickHandlerComponent, handler = handler)
 

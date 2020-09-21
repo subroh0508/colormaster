@@ -4,8 +4,8 @@ import org.koin.core.context.startKoin
 import org.koin.dsl.koinApplication
 import react.dom.render
 import utilities.*
-import kotlin.browser.document
-import kotlin.browser.window
+import kotlinx.browser.document
+import kotlinx.browser.window
 import react.Suspense
 
 val mainScope = MainScope()
