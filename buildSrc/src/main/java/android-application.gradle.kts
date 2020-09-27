@@ -32,10 +32,8 @@ androidAppExt {
         it.java.setSrcDirs(files("src/${it.name}/kotlin"))
     }
 
-    dataBinding {
-        isEnabled = true
-    }
     buildFeatures {
+        dataBinding = true
         compose = true
     }
     composeOptions {
