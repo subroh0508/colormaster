@@ -4,7 +4,7 @@ plugins {
     id("com.android.application")
 }
 
-android {
+androidExt {
     compileSdkVersion(Android.Versions.compileSdk)
 
     defaultConfig {

@@ -1,3 +1,5 @@
+import java.util.*
+
 plugins {
     `kotlin-dsl`
 }
@@ -8,7 +10,13 @@ repositories {
     maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
 }
 
+val props = Properties().apply {
+    file("../gradle.properties").inputStream().use(this::load)
+}
+
+fun version(target: String) = props.getProperty("${target}.version")
+
 dependencies {
-    implementation("com.android.tools.build:gradle:3.6.1")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0")
+    implementation("com.android.tools.build:gradle:${version("android-gradle-plugin")}")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${version("kotlin")}")
 }

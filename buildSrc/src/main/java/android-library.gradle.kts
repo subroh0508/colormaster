@@ -4,7 +4,7 @@ plugins {
     id("com.android.library")
 }
 
-android {
+androidExt {
     compileSdkVersion(Android.Versions.compileSdk)
 
     defaultConfig {
@@ -15,6 +15,8 @@ android {
             sourceCompatibility = JavaVersion.VERSION_1_8
             targetCompatibility = JavaVersion.VERSION_1_8
         }
+
+        buildConfigField("String", "VERSION_CODE", "\"${Android.versionCode}\"")
     }
 
     buildTypes {

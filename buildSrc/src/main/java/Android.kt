@@ -1,3 +1,9 @@
+@file:Suppress("HardcodedStringLiteral")
+
+import com.android.build.gradle.BaseExtension
+import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
+
 object Android {
     const val applicationId = "net.subroh0508.colormaster"
     const val versionCode = 1
@@ -9,3 +15,7 @@ object Android {
         const val targetSdk = 28
     }
 }
+
+val Project.androidGradlePlugin get() = "com.android.tools.build:gradle:${version("android-gradle-plugin")}"
+
+internal fun Project.androidExt(configure: BaseExtension.() -> Unit) = (this as ExtensionAware).extensions.configure("android", configure)

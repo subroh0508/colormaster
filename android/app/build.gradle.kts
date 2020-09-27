@@ -45,4 +45,4 @@ dependencies {
     implementation(Libraries.AndroidX.lifecycleLiveData)
 
     implementation(Libraries.Koin.android)
-    }
+}
