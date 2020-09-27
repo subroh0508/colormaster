@@ -27,6 +27,7 @@ androidLibExt {
 
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.useIR = true
     }
     sourceSets.forEach {
         it.java.setSrcDirs(files("src/${it.name}/kotlin"))

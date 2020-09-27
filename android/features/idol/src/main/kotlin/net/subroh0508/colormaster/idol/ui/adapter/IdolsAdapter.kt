@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_footer.view.*
-import kotlinx.android.synthetic.main.item_idol_color.view.*
+// import kotlinx.android.synthetic.main.item_footer.view.*
+// import kotlinx.android.synthetic.main.item_idol_color.view.*
 import net.subroh0508.colormaster.idol.R
 import net.subroh0508.colormaster.idol.ui.viewmodel.IdolsViewModel
 import net.subroh0508.colormaster.model.UiModel
@@ -56,6 +56,7 @@ class IdolsAdapter(
 
     class MainViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: IdolColorItem) = with (itemView) {
+            /*
             val (it, selected) = item
 
             setBackgroundColor(Color.parseColor(it.color))
@@ -68,11 +69,13 @@ class IdolsAdapter(
 
             name.setTextColor(textColor)
             colorCode.setTextColor(textColor)
+            */
         }
     }
 
     class FooterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(state: UiModel.Search?) = with (itemView) {
+            /*
             message.visibility =
                 if (state?.isLoading == false && (state.items.isEmpty() || state.error != null))
                     View.VISIBLE
@@ -88,6 +91,7 @@ class IdolsAdapter(
                 state?.isLoading == false && state.error != null -> state.error?.localizedMessage
                 else -> ""
             }
+            */
         }
     }
 }

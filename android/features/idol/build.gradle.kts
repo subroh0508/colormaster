@@ -17,6 +17,9 @@ dependencies {
 
     implementation(Libraries.Jetpack.appCompat)
     implementation(Libraries.Jetpack.coreKtx)
+    implementation(Libraries.Jetpack.Compose.ui)
+    implementation(Libraries.Jetpack.Compose.material)
+    implementation(Libraries.Jetpack.Compose.uiTooling)
     implementation(Libraries.Jetpack.constraintLayout)
     implementation(Libraries.Jetpack.coordinatorLayout)
     implementation(Libraries.Jetpack.recyclerView)
@@ -27,4 +30,4 @@ dependencies {
     implementation(Libraries.Koin.android)
     implementation(Libraries.Koin.androidXScope)
     implementation(Libraries.Koin.androidXViewModel)
-    }
+}
