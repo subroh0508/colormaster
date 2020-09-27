@@ -1,5 +1,5 @@
+@Suppress("HardcodedStringLiteral", "unused")
 
-@Suppress("unused")
 object Libraries {
     object GradlePlugin {
         const val buildToolsVersion = "3.6.1"
@@ -7,7 +7,7 @@ object Libraries {
         const val android = "com.android.tools.build:gradle:$buildToolsVersion"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Kotlin.version}"
         const val kotlinSerialization = "org.jetbrains.kotlin:kotlin-serialization:${Kotlin.version}"
-        const val navigationSafeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:${AndroidX.Navigation.version}"
+        const val navigationSafeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:${Jetpack.Navigation.version}"
         const val koin = "org.koin:koin-gradle-plugin:${Koin.version}"
     }
 
@@ -76,13 +76,17 @@ object Libraries {
         const val loggingIntercerptor = "com.squareup.okhttp3:logging-interceptor:$version"
     }
 
-    object AndroidX {
-        const val coreVersion = "1.2.0"
+    object Jetpack {
+        private const val coreVersion = "1.3.1"
         const val coreKtx = "androidx.core:core-ktx:$coreVersion"
 
-        const val appCompatVersion = "1.1.0"
+        private const val appCompatVersion = "1.2.0"
         const val appCompat = "androidx.appcompat:appcompat:$appCompatVersion"
 
+        private const val activityVersion = "1.2.0-alpha08"
+        const val activity = "androidx.activity:activity-ktx:$activityVersion"
+
+        // ↓Jetpack Composeに移行したら削除↓
         const val constraintLayoutVersion = "2.0.0-beta4"
         const val constraintLayout = "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
 
@@ -98,6 +102,7 @@ object Libraries {
         const val lifecycleVersion = "2.2.0"
         const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
         const val lifecycleLiveData = "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+        // ↑Jetpack Composeに移行したら削除↑
 
         const val materialVersion = "1.2.0-alpha05"
         const val material = "com.google.android.material:material:$materialVersion"
@@ -108,6 +113,20 @@ object Libraries {
             const val runtimeKtx = "androidx.navigation:navigation-runtime-ktx:$version"
             const val fragmentKtx = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
+        }
+
+        object Compose {
+            const val version = "1.0.0-alpha02"
+
+            const val ui = "androidx.compose.ui:ui:$version"
+            const val material = "androidx.compose.material:material:$version"
+            const val uiTooling = "androidx.ui:ui-tooling:$version"
+        }
+
+        object Lifecycle {
+            private const val version = "2.3.0-alpha07"
+
+            const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
     }
 

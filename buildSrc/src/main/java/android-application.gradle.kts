@@ -4,17 +4,12 @@ plugins {
     id("com.android.application")
 }
 
-androidExt {
+androidAppExt {
     compileSdkVersion(Android.Versions.compileSdk)
 
     defaultConfig {
         minSdkVersion(Android.Versions.minSdk)
         targetSdkVersion(Android.Versions.targetSdk)
-
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
-        }
     }
 
     buildTypes {
@@ -24,15 +19,26 @@ androidExt {
         }
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions.jvmTarget = "1.8"
     }
-
     sourceSets.forEach {
         it.java.setSrcDirs(files("src/${it.name}/kotlin"))
     }
 
     dataBinding {
         isEnabled = true
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = Libraries.Jetpack.Compose.version
+        kotlinCompilerVersion = kotlinVersion
     }
 }

@@ -36,13 +36,16 @@ dependencies {
 
     implementation(Libraries.Coroutines.android)
 
-    implementation(Libraries.AndroidX.appCompat)
-    implementation(Libraries.AndroidX.coreKtx)
-    implementation(Libraries.AndroidX.constraintLayout)
-    implementation(Libraries.AndroidX.drawerLayout)
-    implementation(Libraries.AndroidX.recyclerView)
-    implementation(Libraries.AndroidX.lifecycleViewModel)
-    implementation(Libraries.AndroidX.lifecycleLiveData)
+    implementation(Libraries.Jetpack.appCompat)
+    implementation(Libraries.Jetpack.coreKtx)
+    implementation(Libraries.Jetpack.Compose.ui)
+    implementation(Libraries.Jetpack.Compose.material)
+    implementation(Libraries.Jetpack.Compose.uiTooling)
+    implementation(Libraries.Jetpack.constraintLayout)
+    implementation(Libraries.Jetpack.drawerLayout)
+    implementation(Libraries.Jetpack.recyclerView)
+    implementation(Libraries.Jetpack.lifecycleViewModel)
+    implementation(Libraries.Jetpack.lifecycleLiveData)
 
     implementation(Libraries.Koin.android)
 }
