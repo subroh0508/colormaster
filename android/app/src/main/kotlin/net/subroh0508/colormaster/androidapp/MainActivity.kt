@@ -2,12 +2,25 @@ package net.subroh0508.colormaster.androidapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.ColumnScope.alignWithSiblings
+import androidx.compose.foundation.text.FirstBaseline
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.materialIcon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.unit.Dp
 import androidx.databinding.DataBindingUtil
+import androidx.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.databinding.ActivityMainBinding
 import net.subroh0508.colormaster.androidapp.ui.HelloWorldJetpackComposeTheme
 
@@ -23,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             HelloWorldJetpackComposeTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    MainDrawer()
                 }
             }
         }
@@ -33,4 +46,122 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
+}
+
+@Composable
+fun MainDrawer() {
+    val scaffoldState = rememberScaffoldState()
+
+    Scaffold(
+        topBar = { TopBar(scaffoldState) },
+        drawerContent = { DrawerContent() },
+        bodyContent = { Text("Body Content") },
+        scaffoldState = scaffoldState
+    )
+}
+
+@Composable
+fun TopBar(scaffoldState: ScaffoldState) {
+    TopAppBar {
+        IconButton(
+            onClick = { scaffoldState.drawerState.open {  } },
+            modifier = Modifier.align(Alignment.CenterVertically)
+        ) {
+            Icon(
+                painter = VectorPainter(asset = Icons.Default.Menu),
+                modifier = Modifier.size(Dp(24F))
+                    .align(Alignment.CenterVertically)
+            )
+        }
+        Spacer(Modifier.preferredWidth(Dp(16F)))
+        Text(
+            text = "COLOR M@STER",
+            modifier = Modifier.fillMaxWidth()
+                .align(Alignment.CenterVertically),
+            style = MaterialTheme.typography.h6
+        )
+    }
+}
+
+@Composable
+fun DrawerContent() {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Spacer(Modifier.preferredHeight(Dp(24F)))
+        Column(
+            modifier = Modifier.fillMaxWidth()
+                .padding(start = Dp(16F), bottom = Dp(18F))
+        ) {
+            Text(
+                text = "COLOR M@STER",
+                style = MaterialTheme.typography.h6,
+                modifier = Modifier.preferredHeight(Dp(36F))
+            )
+            Text(
+                text = "v2020.09.20.01-beta",
+                style = MaterialTheme.typography.subtitle1,
+                modifier = Modifier.preferredHeight(Dp(20F))
+            )
+        }
+        Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .02F))
+        Text(
+            text = "検索",
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.preferredHeight(Dp(28F))
+                .padding(start = Dp(16F))
+        )
+        DrawerButton(
+            asset = Icons.Default.Search,
+            label = "名前・属性検索"
+        ) {}
+        Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .02F))
+        Text(
+            text = "このアプリについて",
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.preferredHeight(Dp(28F))
+                .padding(start = Dp(16F))
+        )
+        DrawerButton(
+            asset = Icons.Default.Search,
+            label = "使い方"
+        ) {}
+        DrawerButton(
+            asset = Icons.Default.Search,
+            label = "仕組み"
+        ) {}
+        DrawerButton(
+            asset = Icons.Default.Search,
+            label = "利用規約"
+        ) {}
+        Spacer(Modifier.preferredHeight(Dp(8F)))
+    }
+}
+
+@Composable
+fun DrawerButton(
+    asset: VectorAsset,
+    label: String,
+    onClick: () -> Unit
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth()
+            .preferredHeight(Dp(48F))
+    ) {
+        Spacer(Modifier.preferredWidth(Dp(16F)))
+        Icon(painter = VectorPainter(asset = asset))
+        Spacer(Modifier.preferredWidth(Dp(16F)))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.body2,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview("Scaffold")
+@Composable
+fun PreviewScaffold() {
+    HelloWorldJetpackComposeTheme(darkTheme = true) {
+        Surface { MainDrawer() }
+    }
 }
