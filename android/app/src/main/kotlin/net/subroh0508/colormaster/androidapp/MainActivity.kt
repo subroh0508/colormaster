@@ -5,13 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.ColumnScope.alignWithSiblings
-import androidx.compose.foundation.text.FirstBaseline
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.materialIcon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -95,39 +92,48 @@ fun DrawerContent() {
                 text = "COLOR M@STER",
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.preferredHeight(Dp(36F))
+                    .wrapContentHeight(Alignment.Bottom)
             )
             Text(
                 text = "v2020.09.20.01-beta",
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.caption,
                 modifier = Modifier.preferredHeight(Dp(20F))
+                    .wrapContentHeight(Alignment.Bottom)
             )
         }
-        Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .02F))
+        Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .12F))
         Text(
             text = "検索",
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.caption,
             modifier = Modifier.preferredHeight(Dp(28F))
                 .padding(start = Dp(16F))
+                .wrapContentHeight(Alignment.Bottom)
         )
+        Spacer(Modifier.preferredHeight(Dp(8F)))
         DrawerButton(
             asset = Icons.Default.Search,
             label = "名前・属性検索"
         ) {}
-        Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .02F))
+        Spacer(Modifier.preferredHeight(Dp(8F)))
+        Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .12F))
         Text(
             text = "このアプリについて",
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.caption,
             modifier = Modifier.preferredHeight(Dp(28F))
                 .padding(start = Dp(16F))
+                .wrapContentHeight(Alignment.Bottom)
         )
+        Spacer(Modifier.preferredHeight(Dp(8F)))
         DrawerButton(
             asset = Icons.Default.Search,
             label = "使い方"
         ) {}
+        Spacer(Modifier.preferredHeight(Dp(8F)))
         DrawerButton(
             asset = Icons.Default.Search,
             label = "仕組み"
         ) {}
+        Spacer(Modifier.preferredHeight(Dp(8F)))
         DrawerButton(
             asset = Icons.Default.Search,
             label = "利用規約"
