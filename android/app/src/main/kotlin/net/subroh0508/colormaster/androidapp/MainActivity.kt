@@ -144,6 +144,7 @@ fun DrawerButton(
 ) {
     TextButton(
         onClick = onClick,
+        contentColor = MaterialTheme.colors.onSurface,
         modifier = Modifier.fillMaxWidth()
             .preferredHeight(Dp(48F))
     ) {
