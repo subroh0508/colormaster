@@ -3,10 +3,13 @@ package net.subroh0508.colormaster.androidapp
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
@@ -16,6 +19,7 @@ import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.databinding.DataBindingUtil
 import androidx.ui.tooling.preview.Preview
@@ -27,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
     }
 
+    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             HelloWorldJetpackComposeTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    MainDrawer()
+                    Backdrop()
                 }
             }
         }
@@ -46,31 +51,47 @@ fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
 
+@ExperimentalMaterialApi
+@Composable
+fun Backdrop() {
+    val backdropScaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
+
+    BackdropScaffold(
+        scaffoldState = backdropScaffoldState,
+        appBar = { TopBar(backdropScaffoldState) },
+        backLayerContent = {
+            Text("BackLayerContent")
+        },
+        frontLayerContent = {
+            Text("FrontLayerContent")
+        }
+    )
+}
+
+
 @Composable
 fun MainDrawer() {
     val scaffoldState = rememberScaffoldState()
 
+    /*
     Scaffold(
         topBar = { TopBar(scaffoldState) },
         drawerContent = { DrawerContent() },
         bodyContent = { Text("Body Content") },
         scaffoldState = scaffoldState
     )
+    */
 }
 
+@ExperimentalMaterialApi
 @Composable
-fun TopBar(scaffoldState: ScaffoldState) {
+fun TopBar(backdropScaffoldState: BackdropScaffoldState) {
     TopAppBar {
-        IconButton(
-            onClick = { scaffoldState.drawerState.open {  } },
+        Image(
+            asset = vectorResource(R.drawable.ic_menu),
             modifier = Modifier.align(Alignment.CenterVertically)
-        ) {
-            Icon(
-                painter = VectorPainter(asset = Icons.Default.Menu),
-                modifier = Modifier.size(Dp(24F))
-                    .align(Alignment.CenterVertically)
-            )
-        }
+                .clickable(onClick = { })
+        )
         Spacer(Modifier.preferredWidth(Dp(16F)))
         Text(
             text = stringResource(R.string.app_name),
