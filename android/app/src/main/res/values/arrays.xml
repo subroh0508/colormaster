@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="main_tabs">
+        <item>@string/main_tabs_search_idol_name</item>
+        <item>@string/main_tabs_search_unit_name</item>
+        <item>@string/main_tabs_search_camera</item>
+    </string-array>
+</resources>

@@ -2,25 +2,30 @@ package net.subroh0508.colormaster.androidapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Icon
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.databinding.DataBindingUtil
 import androidx.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.databinding.ActivityMainBinding
@@ -93,12 +98,43 @@ fun TopBar(backdropScaffoldState: BackdropScaffoldState) {
                 .clickable(onClick = { })
         )
         Spacer(Modifier.preferredWidth(Dp(16F)))
-        Text(
-            text = stringResource(R.string.app_name),
-            modifier = Modifier.fillMaxWidth()
-                .align(Alignment.CenterVertically),
-            style = MaterialTheme.typography.h6
-        )
+
+        MainTabs(modifier = Modifier.weight(1F).align(Alignment.CenterVertically))
+    }
+}
+
+@Composable
+fun MainTabs(modifier: Modifier) {
+    var tabSelected by remember { mutableStateOf(0) }
+
+    ScrollableTabRow(
+        selectedTabIndex = tabSelected,
+        contentColor = MaterialTheme.colors.onSurface,
+        indicator = {},
+        divider = {},
+        modifier = modifier
+    ) {
+        stringArrayResource(R.array.main_tabs).forEachIndexed { index, title ->
+            val selected = index == tabSelected
+
+            var textModifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
+            if (selected) {
+                textModifier =
+                    Modifier.border(BorderStroke(2.dp, Color.White), RoundedCornerShape(16.dp))
+                        .then(textModifier)
+            }
+
+            Tab(
+                selected = selected,
+                onClick = { tabSelected = index }
+            ) {
+                Text(
+                    title,
+                    style = MaterialTheme.typography.h6,
+                    modifier = textModifier
+                )
+            }
+        }
     }
 }
 
