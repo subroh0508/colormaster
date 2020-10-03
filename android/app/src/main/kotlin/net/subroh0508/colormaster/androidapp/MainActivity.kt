@@ -91,7 +91,10 @@ fun MainDrawer() {
 @ExperimentalMaterialApi
 @Composable
 fun TopBar(backdropScaffoldState: BackdropScaffoldState) {
-    TopAppBar {
+    Row(
+        Modifier.preferredHeight(56.dp)
+            .background(MaterialTheme.colors.background)
+    ) {
         Image(
             asset = vectorResource(R.drawable.ic_menu),
             modifier = Modifier.align(Alignment.CenterVertically)
@@ -109,6 +112,7 @@ fun MainTabs(modifier: Modifier) {
 
     ScrollableTabRow(
         selectedTabIndex = tabSelected,
+        backgroundColor = MaterialTheme.colors.background,
         contentColor = MaterialTheme.colors.onSurface,
         indicator = {},
         divider = {},
