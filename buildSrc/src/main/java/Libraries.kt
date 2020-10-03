@@ -116,7 +116,7 @@ object Libraries {
         }
 
         object Compose {
-            const val version = "1.0.0-alpha03"
+            const val version = "1.0.0-alpha04"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val material = "androidx.compose.material:material:$version"
