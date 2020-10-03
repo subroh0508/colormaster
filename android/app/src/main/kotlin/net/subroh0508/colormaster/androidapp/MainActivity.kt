@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.databinding.DataBindingUtil
 import androidx.ui.tooling.preview.Preview
@@ -72,7 +73,7 @@ fun TopBar(scaffoldState: ScaffoldState) {
         }
         Spacer(Modifier.preferredWidth(Dp(16F)))
         Text(
-            text = "COLOR M@STER",
+            text = stringResource(R.string.app_name),
             modifier = Modifier.fillMaxWidth()
                 .align(Alignment.CenterVertically),
             style = MaterialTheme.typography.h6
@@ -89,7 +90,7 @@ fun DrawerContent() {
                 .padding(start = Dp(16F), bottom = Dp(18F))
         ) {
             Text(
-                text = "COLOR M@STER",
+                text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.preferredHeight(Dp(36F))
                     .wrapContentHeight(Alignment.Bottom)
@@ -103,7 +104,7 @@ fun DrawerContent() {
         }
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .12F))
         Text(
-            text = "検索",
+            text = stringResource(R.string.app_menu_search_label),
             style = MaterialTheme.typography.caption,
             modifier = Modifier.preferredHeight(Dp(28F))
                 .padding(start = Dp(16F))
@@ -112,12 +113,12 @@ fun DrawerContent() {
         Spacer(Modifier.preferredHeight(Dp(8F)))
         DrawerButton(
             asset = Icons.Default.Search,
-            label = "名前・属性検索"
+            label = stringResource(R.string.app_menu_search_attributes)
         ) {}
         Spacer(Modifier.preferredHeight(Dp(8F)))
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .12F))
         Text(
-            text = "このアプリについて",
+            text = stringResource(R.string.app_menu_about_label),
             style = MaterialTheme.typography.caption,
             modifier = Modifier.preferredHeight(Dp(28F))
                 .padding(start = Dp(16F))
@@ -126,17 +127,17 @@ fun DrawerContent() {
         Spacer(Modifier.preferredHeight(Dp(8F)))
         DrawerButton(
             asset = Icons.Default.Search,
-            label = "使い方"
+            label = stringResource(R.string.app_menu_about_how_to_use)
         ) {}
         Spacer(Modifier.preferredHeight(Dp(8F)))
         DrawerButton(
             asset = Icons.Default.Search,
-            label = "仕組み"
+            label = stringResource(R.string.app_menu_about_development)
         ) {}
         Spacer(Modifier.preferredHeight(Dp(8F)))
         DrawerButton(
             asset = Icons.Default.Search,
-            label = "利用規約"
+            label = stringResource(R.string.app_menu_about_terms)
         ) {}
         Spacer(Modifier.preferredHeight(Dp(8F)))
     }

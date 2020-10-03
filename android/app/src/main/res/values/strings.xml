@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">AndroidApp</string>
+    <string name="app_name" translatable="false">COLOR M@STER</string>
+
+    <string name="app_menu_search_label">検索</string>
+    <string name="app_menu_search_attributes">名前・属性検索</string>
+    <string name="app_menu_about_label">このアプリについて</string>
+    <string name="app_menu_about_how_to_use">使い方</string>
+    <string name="app_menu_about_development">仕組み</string>
+    <string name="app_menu_about_terms">利用規約</string>
 </resources>
