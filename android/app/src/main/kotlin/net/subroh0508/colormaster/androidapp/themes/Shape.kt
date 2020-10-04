@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.androidapp.ui
+package net.subroh0508.colormaster.androidapp.themes
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
