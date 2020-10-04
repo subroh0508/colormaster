@@ -13,7 +13,8 @@ private val DarkColorPalette = darkColors(
         primaryVariant = deepOrange200,
         secondary = teal200,
         surface = gray900,
-        background = darkBackground
+        background = darkBackground,
+        onPrimary = Color.Black,
 )
 
 private val LightColorPalette = lightColors(
@@ -21,7 +22,8 @@ private val LightColorPalette = lightColors(
         primaryVariant = deepOrange900,
         secondary = teal200,
         surface = Color.White,
-        background = lightBackground
+        background = lightBackground,
+        onPrimary = Color.White,
 
         /* Other default colors to override
     background = Color.White,
@@ -32,22 +34,6 @@ private val LightColorPalette = lightColors(
     onSurface = Color.Black,
     */
 )
-
-@Composable
-fun HelloWorldJetpackComposeTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
-
-    MaterialTheme(
-            colors = colors,
-            typography = typography,
-            shapes = shapes,
-            content = content
-    )
-}
 
 @Composable
 fun ColorMasterTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {

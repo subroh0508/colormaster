@@ -22,7 +22,7 @@ fun DrawerMenuList(
 ) {
     label?.let {
         Text(
-            text = label,
+            text = it,
             style = MaterialTheme.typography.caption,
             modifier = Modifier.preferredHeight(28.dp)
                 .padding(start = 16.dp)
