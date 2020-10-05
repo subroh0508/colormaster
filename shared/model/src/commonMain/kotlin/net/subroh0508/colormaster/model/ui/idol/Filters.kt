@@ -1,7 +1,7 @@
 package net.subroh0508.colormaster.model.ui.idol
 
 import net.subroh0508.colormaster.model.IdolName
-import net.subroh0508.colormaster.model.Titles
+import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.model.UnitName
 
@@ -61,13 +61,13 @@ sealed class Filters {
         override val unitName: UnitName? = null
     }
 
-    val title: Titles? get() = when (this) {
-        is _765AS -> Titles._765
-        is _MillionStars -> Titles._ML
-        is _CinderellaGirls -> Titles._CG
-        is _ShinyColors -> Titles._SC
-        is _SideM -> Titles._315
-        is _876Pro -> Titles._876
+    val title: Brands? get() = when (this) {
+        is _765AS -> Brands._765
+        is _MillionStars -> Brands._ML
+        is _CinderellaGirls -> Brands._CG
+        is _ShinyColors -> Brands._SC
+        is _SideM -> Brands._315
+        is _876Pro -> Brands._876
         else -> null
     }
 
@@ -106,14 +106,14 @@ sealed class Filters {
 
     companion object {
         @Suppress("UNCHECKED_CAST")
-        operator fun invoke(idolName: IdolName?, titles: Titles?, types: Set<Types> = emptySet()) = when (titles) {
+        operator fun invoke(idolName: IdolName?, brands: Brands?, types: Set<Types> = emptySet()) = when (brands) {
             null -> idolName?.let(::NoTitle) ?: Empty
-            Titles._765 -> _765AS(idolName, types as Set<Types.MILLION_LIVE>, null)
-            Titles._ML -> _MillionStars(idolName, types as Set<Types.MILLION_LIVE>, null)
-            Titles._CG -> _CinderellaGirls(idolName, types as Set<Types.CINDERELLA_GIRLS>, null)
-            Titles._SC -> _ShinyColors(idolName, null)
-            Titles._315 -> _SideM(idolName, types as Set<Types.SIDE_M>, null)
-            Titles._876 -> _876Pro(idolName)
+            Brands._765 -> _765AS(idolName, types as Set<Types.MILLION_LIVE>, null)
+            Brands._ML -> _MillionStars(idolName, types as Set<Types.MILLION_LIVE>, null)
+            Brands._CG -> _CinderellaGirls(idolName, types as Set<Types.CINDERELLA_GIRLS>, null)
+            Brands._SC -> _ShinyColors(idolName, null)
+            Brands._315 -> _SideM(idolName, types as Set<Types.SIDE_M>, null)
+            Brands._876 -> _876Pro(idolName)
         }
     }
 }

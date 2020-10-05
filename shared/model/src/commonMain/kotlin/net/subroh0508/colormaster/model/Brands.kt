@@ -1,7 +1,7 @@
 package net.subroh0508.colormaster.model
 
 @Suppress("EnumEntryName")
-enum class Titles(
+enum class Brands(
     val displayName: String,
     val queryStr: String
 ) {

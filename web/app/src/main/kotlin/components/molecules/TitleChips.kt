@@ -6,7 +6,7 @@ import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.styles.makeStyles
 import materialui.styles.palette.primary
-import net.subroh0508.colormaster.model.Titles
+import net.subroh0508.colormaster.model.Brands
 import react.*
 import react.dom.div
 import utilities.invoke
@@ -29,7 +29,7 @@ private val TitleChipsComponent = functionalComponent<TitleChipsProps> { props -
         }
 
         div(classes.chips) {
-            Titles.values().forEach { title ->
+            Brands.values().forEach { title ->
                 val checked = props.title == title
 
                 chip {
@@ -45,8 +45,8 @@ private val TitleChipsComponent = functionalComponent<TitleChipsProps> { props -
 }
 
 external interface TitleChipsProps : RProps {
-    var title: Titles?
-    var onSelect: ((Titles, Boolean) -> Unit)?
+    var title: Brands?
+    var onSelect: ((Brands, Boolean) -> Unit)?
 }
 
 private external interface TitleChipsStyle {

@@ -45,7 +45,7 @@ class IdolsViewModel(
         }
     }
 
-    fun filterChanged(title: Titles, checked: Boolean) {
+    fun filterChanged(title: Brands, checked: Boolean) {
         val filters = filterLiveData.requireValue()
 
         filterLiveData.value = if (checked) Filters(filters.idolName, title) else Filters.Empty

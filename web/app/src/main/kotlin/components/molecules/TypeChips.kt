@@ -7,17 +7,17 @@ import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.styles.makeStyles
 import materialui.styles.palette.primary
-import net.subroh0508.colormaster.model.Titles
+import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
 import react.*
 import react.dom.div
 import utilities.invoke
 import utilities.useTranslation
 
-fun RBuilder.typesChips(titles: Titles?, handler: RHandler<TypeChipsProps>) = when (titles) {
-    Titles._765, Titles._ML -> typesMillionLiveChips(handler)
-    Titles._CG -> typesCinderellaGirlsChips(handler)
-    Titles._315 -> typesSideMChips(handler)
+fun RBuilder.typesChips(brands: Brands?, handler: RHandler<TypeChipsProps>) = when (brands) {
+    Brands._765, Brands._ML -> typesMillionLiveChips(handler)
+    Brands._CG -> typesCinderellaGirlsChips(handler)
+    Brands._315 -> typesSideMChips(handler)
     else -> null
 }
 

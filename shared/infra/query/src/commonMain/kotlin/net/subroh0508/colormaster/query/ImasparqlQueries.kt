@@ -1,7 +1,7 @@
 package net.subroh0508.colormaster.query
 
 import net.subroh0508.colormaster.model.IdolName
-import net.subroh0508.colormaster.model.Titles
+import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.query.internal.URLEncoder
 
@@ -20,7 +20,7 @@ object ImasparqlQueries {
         LIMIT $limit
     """.trimIndentAndBr())
 
-    fun search(lang: String, name: IdolName?, titles: Titles?, types: Set<Types>) = buildQuery("""
+    fun search(lang: String, name: IdolName?, brands: Brands?, types: Set<Types>) = buildQuery("""
         SELECT * WHERE {
           ?s imas:Color ?color;
             imas:Title ?title.
@@ -32,7 +32,7 @@ object ImasparqlQueries {
           OPTIONAL { ?s imas:Category ?category }
           BIND (COALESCE(?category, ?division, ?type) as ?attribute)
           ${name?.value?.let {"FILTER (regex(?name, '.*$it.*', 'i') && str(?title) != '1st Vision')." } ?: ""}
-          ${titles?.queryStr?.let { "FILTER (str(?title) = '$it')." } ?: ""}
+          ${brands?.queryStr?.let { "FILTER (str(?title) = '$it')." } ?: ""}
           ${types.regexStr?.let { "FILTER regex(?attribute, '$it', 'i')." } ?: "" }
           BIND (REPLACE(str(?s), '$ESCAPED_ENDPOINT_RDFS_DETAIL', '') as ?id).
         }

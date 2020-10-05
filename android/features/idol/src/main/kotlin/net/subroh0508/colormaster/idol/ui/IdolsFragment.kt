@@ -14,7 +14,7 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import net.subroh0508.colormaster.idol.R
 import net.subroh0508.colormaster.idol.databinding.FragmentIdolsBinding
 import net.subroh0508.colormaster.idol.ui.viewmodel.IdolsViewModel
-import net.subroh0508.colormaster.model.Titles
+import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.model.toIdolName
 import net.subroh0508.colormaster.widget.ui.FilterChip
@@ -42,9 +42,9 @@ class IdolsFragment : Fragment(R.layout.fragment_idols) {
 
         idolsViewModel.uiModel.observe(viewLifecycleOwner) { (_, filters, _, _) ->
             binding.imasTitleFilters.setupFilter(
-                allFilterSet = Titles.values().toSet(),
+                allFilterSet = Brands.values().toSet(),
                 currentFilterSet = filters.title?.let(::setOf) ?: setOf(),
-                filterName = Titles::displayName
+                filterName = Brands::displayName
             ) { checked, title -> idolsViewModel.filterChanged(title, checked) }
             binding.attributesFilters.setupFilter(
                 allFilterSet = filters.allTypes,

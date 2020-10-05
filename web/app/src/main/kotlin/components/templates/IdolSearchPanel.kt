@@ -18,7 +18,7 @@ import materialui.styles.palette.divider
 import materialui.styles.palette.paper
 import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.Titles
+import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.model.UiModel
 import net.subroh0508.colormaster.model.ui.idol.Filters
@@ -105,7 +105,7 @@ external interface IdolSearchPanelProps : RProps {
     var isOpenedGrids: Boolean
     var onClickToggleGrids: () -> Unit
     var onChangeIdolName: (String) -> Unit
-    var onSelectTitle: (Titles, Boolean) -> Unit
+    var onSelectTitle: (Brands, Boolean) -> Unit
     var onSelectType: (Types, Boolean) -> Unit
     var onClickIdolColor: (IdolColor, Boolean) -> Unit
     var onDoubleClickIdolColor: (IdolColor) -> Unit

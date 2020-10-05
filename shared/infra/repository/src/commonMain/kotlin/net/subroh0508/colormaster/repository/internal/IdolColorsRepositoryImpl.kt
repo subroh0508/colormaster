@@ -14,8 +14,8 @@ internal class IdolColorsRepositoryImpl(
 ) : IdolColorsRepository {
     override suspend fun rand(limit: Int): List<IdolColor> = imasparqlClient.search(ImasparqlQueries.rand(appPreference.lang.code, limit)).toIdolColors()
 
-    override suspend fun search(name: IdolName?, titles: Titles?, types: Set<Types>) =
-        imasparqlClient.search(ImasparqlQueries.search(appPreference.lang.code, name, titles, types)).toIdolColors()
+    override suspend fun search(name: IdolName?, brands: Brands?, types: Set<Types>) =
+        imasparqlClient.search(ImasparqlQueries.search(appPreference.lang.code, name, brands, types)).toIdolColors()
 
     override suspend fun search(ids: List<String>): List<IdolColor>  =
         imasparqlClient.search(ImasparqlQueries.search(appPreference.lang.code, ids)).toIdolColors()

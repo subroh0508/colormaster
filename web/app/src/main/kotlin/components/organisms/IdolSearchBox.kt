@@ -10,7 +10,7 @@ import materialui.components.list.list
 import materialui.components.listitem.listItem
 import materialui.components.textfield.textField
 import materialui.styles.makeStyles
-import net.subroh0508.colormaster.model.Titles
+import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.model.ui.idol.Filters
 import react.*
@@ -63,7 +63,7 @@ private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { p
 external interface IdolSearchBoxProps : RProps {
     var filters: Filters
     var onChangeIdolName: (String) -> Unit
-    var onSelectTitle: (Titles, Boolean) -> Unit
+    var onSelectTitle: (Brands, Boolean) -> Unit
     var onSelectType: (Types, Boolean) -> Unit
 }
 
