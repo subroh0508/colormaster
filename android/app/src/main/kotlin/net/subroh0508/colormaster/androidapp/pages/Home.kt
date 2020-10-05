@@ -14,7 +14,7 @@ import androidx.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.components.atoms.DrawerHeader
 import net.subroh0508.colormaster.androidapp.components.molecules.DrawerMenuList
-import net.subroh0508.colormaster.androidapp.components.organsims.HomeTopBar
+import net.subroh0508.colormaster.androidapp.components.organisms.HomeTopBar
 import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawer
 
 @Composable

@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.androidapp.components.organsims
+package net.subroh0508.colormaster.androidapp.components.organisms
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
