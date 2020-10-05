@@ -1,3 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="AppTheme.ColorMaster" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/deep_orange_900</item>
+        <item name="colorPrimaryDark">@color/gray_50</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="AppTheme.ColorMaster.DayNight" parent="AppTheme.ColorMaster"/>
 </resources>
