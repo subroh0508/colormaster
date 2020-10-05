@@ -1,28 +1,42 @@
 package net.subroh0508.colormaster.androidapp.pages
 
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.components.atoms.DrawerHeader
 import net.subroh0508.colormaster.androidapp.components.molecules.DrawerMenuList
 import net.subroh0508.colormaster.androidapp.components.organisms.HomeTopBar
-import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawer
+import net.subroh0508.colormaster.androidapp.components.organisms.SearchBox
+import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawerBackdrop
+import net.subroh0508.colormaster.model.ui.idol.Filters
 
 @Composable
 @ExperimentalMaterialApi
+@ExperimentalLayout
 fun Home() {
-    ModalDrawer(
+    ModalDrawerBackdrop(
+        appBar = { drawerState ->
+            HomeTopBar(
+                titles = stringArrayResource(R.array.main_tabs),
+                drawerState = drawerState,
+            )
+        },
         drawerContent = { HomeDrawerContent() },
-        bodyContent = { HomeBodyContent(it) },
+        backLayerContent = { BackLayerContent() },
+        frontLayerContent = {
+            Text("FrontLayerContent")
+        },
     )
 }
 
@@ -54,25 +68,23 @@ private fun HomeDrawerContent() {
 
 @Composable
 @ExperimentalMaterialApi
-private fun HomeBodyContent(drawerState: DrawerState) {
-    val backdropScaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
+@ExperimentalLayout
+private fun BackLayerContent() {
+    val (filters, setFilters) = remember { mutableStateOf<Filters>(Filters.Empty)}
 
-    BackdropScaffold(
-        scaffoldState = backdropScaffoldState,
-        appBar = {
-            HomeTopBar(
-                titles = stringArrayResource(R.array.main_tabs),
-                drawerState = drawerState,
-            )
-        },
-        backLayerContent = { Text("BackLayerContent") },
-        frontLayerContent = { Text("FrontLayerContent") },
-    )
+    Surface(color = MaterialTheme.colors.background) {
+        SearchBox(
+            filters,
+            onFiltersChange = { setFilters(it) },
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+    }
 }
 
 @Preview
 @Composable
 @ExperimentalMaterialApi
+@ExperimentalLayout
 fun PreviewHome() {
     Home()
 }

@@ -2,6 +2,7 @@ package net.subroh0508.colormaster.androidapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.material.*
 import androidx.compose.ui.platform.setContent
 import androidx.databinding.DataBindingUtil
@@ -14,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @ExperimentalMaterialApi
+    @ExperimentalLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

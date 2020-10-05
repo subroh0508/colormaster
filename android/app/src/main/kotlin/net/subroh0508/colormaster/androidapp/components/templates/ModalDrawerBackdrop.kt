@@ -6,17 +6,28 @@ import androidx.compose.runtime.Composable
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 
 @Composable
-fun ModalDrawer(
+@ExperimentalMaterialApi
+fun ModalDrawerBackdrop(
+    appBar: @Composable (DrawerState) -> Unit,
     drawerContent: @Composable ColumnScope.() -> Unit,
-    bodyContent: @Composable (DrawerState) -> Unit,
+    backLayerContent: @Composable () -> Unit,
+    frontLayerContent: @Composable () -> Unit,
 ) {
     val modalDrawerState = rememberDrawerState(DrawerValue.Closed)
+    val backdropScaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
 
     ModalDrawerFrame {
         ModalDrawerLayout(
             drawerState = modalDrawerState,
             drawerContent = drawerContent,
-            bodyContent = { bodyContent(modalDrawerState) },
+            bodyContent = {
+                BackdropScaffold(
+                    scaffoldState = backdropScaffoldState,
+                    appBar = { appBar(modalDrawerState) },
+                    backLayerContent = backLayerContent,
+                    frontLayerContent = frontLayerContent,
+                )
+            },
         )
     }
 }
