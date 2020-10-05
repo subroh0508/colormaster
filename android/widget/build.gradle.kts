@@ -5,6 +5,8 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":shared:model"))
+
     implementation(Libraries.Kotlin.android)
     implementation(Libraries.Kotlin.reflect)
 

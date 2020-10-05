@@ -11,4 +11,7 @@
     <string name="main_tabs_search_idol_name">アイドル名</string>
     <string name="main_tabs_search_unit_name">ユニット名</string>
     <string name="main_tabs_search_camera">カメラ</string>
+
+    <string name="search_box_label_brands">ブランド</string>
+    <string name="search_box_label_type">属性</string>
 </resources>

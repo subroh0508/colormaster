@@ -2,8 +2,7 @@ package net.subroh0508.colormaster.androidapp.components.atoms
 
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,23 +19,25 @@ fun Checkbox(
     checked: Boolean,
     label: String? = null,
     onCheckedChange: (Boolean) -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
     if (label == null) {
         ComposeCheckbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
             checkedColor = MaterialTheme.colors.primary,
+            modifier = modifier,
         )
 
         return
     }
 
-    Row {
+    Row(modifier) {
         ComposeCheckbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
             checkedColor = MaterialTheme.colors.primary,
-            modifier = Modifier.preferredSize(42.dp),
+            modifier = Modifier.padding(end = 9.dp),
         )
         Text(
             label,
@@ -52,8 +53,18 @@ fun Checkbox(
 fun CheckboxPreview_Light() {
     ColorMasterTheme(darkTheme = false) {
         Row(Modifier.background(color = lightBackground)) {
-            Checkbox(label = "Selected", checked = true, onCheckedChange = {})
-            Checkbox(label = "Not Selected", checked = false, onCheckedChange = {})
+            Checkbox(
+                label = "Selected",
+                checked = true,
+                onCheckedChange = {},
+                modifier = Modifier.padding(end = 9.dp),
+            )
+            Checkbox(
+                label = "Not Selected",
+                checked = false,
+                onCheckedChange = {},
+                modifier = Modifier.padding(start = 9.dp),
+            )
         }
     }
 }
@@ -63,8 +74,18 @@ fun CheckboxPreview_Light() {
 fun CheckboxPreview_Dark() {
     ColorMasterTheme(darkTheme = true) {
         Row(Modifier.background(color = darkBackground)) {
-            Checkbox(label = "Selected", checked = true, onCheckedChange = {})
-            Checkbox(label = "Not Selected", checked = false, onCheckedChange = {})
+            Checkbox(
+                label = "Selected",
+                checked = true,
+                onCheckedChange = {},
+                modifier = Modifier.padding(end = 9.dp),
+            )
+            Checkbox(
+                label = "Not Selected",
+                checked = false,
+                onCheckedChange = {},
+                modifier = Modifier.padding(start = 9.dp),
+            )
         }
     }
 }
