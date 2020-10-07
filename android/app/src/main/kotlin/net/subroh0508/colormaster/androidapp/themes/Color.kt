@@ -1,6 +1,7 @@
 package net.subroh0508.colormaster.androidapp.themes
 
 import androidx.compose.ui.graphics.Color
+import net.subroh0508.colormaster.model.HexColor
 
 val teal200 = Color(0xFF03DAC5)
 
@@ -16,7 +17,7 @@ val gray900 = Color(0xFF212121)
 val lightBackground = Color(0xFFFAFAFA)
 val darkBackground = Color(0xFF121212)
 
-fun String.hexToColor() = android.graphics.Color.parseColor(this).let { hex ->
+fun HexColor.hexToColor() = android.graphics.Color.parseColor("#$value").let { hex ->
     Color(
             red = (hex and 0xFF0000) shr 16,
             green = (hex and 0xFF00) shr 8,
