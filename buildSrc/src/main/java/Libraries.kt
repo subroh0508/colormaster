@@ -136,6 +136,13 @@ object Libraries {
         const val js = "org.jetbrains.kotlinx:kotlinx-html-js:$version"
     }
 
+    object Css {
+        const val version = "1.0.0-${JsWrappers.version}"
+
+        const val jvm = "org.jetbrains:kotlin-css-jvm:$version"
+        const val js = "org.jetbrains:kotlin-css-js:$version"
+    }
+
     object JsWrappers {
         const val version = "pre.111-kotlin-${Kotlin.version}"
 
@@ -145,9 +152,6 @@ object Libraries {
 
         const val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-$version"
         const val reactRouterDom = "org.jetbrains:kotlin-react-router-dom:$reactRouterDomVersion"
-
-        const val cssVersion = "1.0.0-$version"
-        const val css = "org.jetbrains:kotlin-css-js:$cssVersion"
 
         const val styledVersion = "1.0.0-$version"
         const val styled = "org.jetbrains:kotlin-styled:$styledVersion"

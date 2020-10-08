@@ -47,5 +47,7 @@ dependencies {
     implementation(Libraries.Jetpack.lifecycleViewModel)
     implementation(Libraries.Jetpack.lifecycleLiveData)
 
+    implementation(Libraries.Css.jvm)
+
     implementation(Libraries.Koin.android)
 }

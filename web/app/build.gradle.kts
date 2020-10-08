@@ -47,11 +47,11 @@ kotlin {
                 implementation(Libraries.Serialization.protobuf)
 
                 implementation(Libraries.Html.js)
+                implementation(Libraries.Css.js)
 
                 implementation(Libraries.JsWrappers.react)
                 implementation(Libraries.JsWrappers.reactDom)
                 implementation(Libraries.JsWrappers.reactRouterDom)
-                implementation(Libraries.JsWrappers.css)
                 implementation(Libraries.JsWrappers.styled)
                 implementation(Libraries.JsWrappers.extensions)
                 implementation(Libraries.JsWrappers.MaterialUi.core)
