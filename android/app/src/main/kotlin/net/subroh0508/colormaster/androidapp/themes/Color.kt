@@ -17,6 +17,11 @@ val gray900 = Color(0xFF212121)
 val lightBackground = Color(0xFFFAFAFA)
 val darkBackground = Color(0xFF121212)
 
+val blue500 = Color(0xFF2196F3)
+val green500 = Color(0xFF4CAF50)
+val orange500 = Color(0xFFFF9800)
+val red500 = Color(0xFFF44336)
+
 fun HexColor.hexToColor() = android.graphics.Color.parseColor("#$value").let { hex ->
     Color(
             red = (hex and 0xFF0000) shr 16,
