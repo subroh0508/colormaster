@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -91,7 +92,7 @@ private fun Color.darken(percent: Float) = Color(
 @Composable
 fun PreviewAlerts_Light() {
     ColorMasterTheme(darkTheme = false) {
-        val modifier = Modifier.padding(8.dp)
+        val modifier = Modifier.width(200.dp).padding(8.dp)
 
         Column(Modifier.background(lightBackground)) {
             InfoAlert("Sample Text", modifier)
@@ -106,7 +107,7 @@ fun PreviewAlerts_Light() {
 @Composable
 fun PreviewAlerts_Dark() {
     ColorMasterTheme(darkTheme = true) {
-        val modifier = Modifier.padding(8.dp)
+        val modifier = Modifier.width(200.dp).padding(8.dp)
 
         Column(Modifier.background(darkBackground)) {
             InfoAlert("Sample Text", modifier)

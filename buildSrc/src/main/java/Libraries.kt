@@ -139,7 +139,6 @@ object Libraries {
     object Css {
         const val version = "1.0.0-${JsWrappers.version}"
 
-        const val jvm = "org.jetbrains:kotlin-css-jvm:$version"
         const val js = "org.jetbrains:kotlin-css-js:$version"
     }
 
