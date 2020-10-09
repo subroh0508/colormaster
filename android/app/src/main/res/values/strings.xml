@@ -14,4 +14,9 @@
 
     <string name="search_box_label_brands">ブランド</string>
     <string name="search_box_label_type">属性</string>
+
+    <string name="search_state_label_random">ランダムに10人表示中</string>
+    <string name="search_state_label_waiting">検索中&#8230;</string>
+    <string name="search_state_label_error">エラー: %s</string>
+    <string name="search_state_label_searched">検索結果: %d人</string>
 </resources>
