@@ -7,9 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +40,7 @@ fun ColorListItem(
         Box(modifier.fillMaxWidth()) {
             if (selected) {
                 Icon(
-                    Icons.Default.CheckCircle,
+                    Icons.Outlined.CheckCircle,
                     modifier = Modifier.align(Alignment.CenterStart),
                 )
             }
