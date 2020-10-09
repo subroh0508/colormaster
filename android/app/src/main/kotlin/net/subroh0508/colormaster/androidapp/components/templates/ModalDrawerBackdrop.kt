@@ -26,6 +26,7 @@ fun ModalDrawerBackdrop(
                     appBar = { appBar(modalDrawerState) },
                     backLayerContent = backLayerContent,
                     frontLayerContent = frontLayerContent,
+                    backLayerBackgroundColor = MaterialTheme.colors.background,
                 )
             },
         )
