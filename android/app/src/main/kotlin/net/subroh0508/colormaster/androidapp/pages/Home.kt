@@ -5,8 +5,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -19,6 +19,7 @@ import net.subroh0508.colormaster.androidapp.components.organisms.ColorLists
 import net.subroh0508.colormaster.androidapp.components.organisms.HomeTopBar
 import net.subroh0508.colormaster.androidapp.components.organisms.SearchBox
 import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawerBackdrop
+import net.subroh0508.colormaster.androidapp.viewmodel.IdolSearchViewModel
 import net.subroh0508.colormaster.model.HexColor
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.UiModel
@@ -28,7 +29,9 @@ import net.subroh0508.colormaster.model.ui.idol.SearchState
 @Composable
 @ExperimentalMaterialApi
 @ExperimentalLayout
-fun Home(uiModel: UiModel.Search) {
+fun Home(viewModel: IdolSearchViewModel) {
+    val uiModel: UiModel.Search by viewModel.uiModel.collectAsState(initial = UiModel.Search.INITIALIZED)
+
     ModalDrawerBackdrop(
         appBar = { drawerState ->
             HomeTopBar(
@@ -37,7 +40,7 @@ fun Home(uiModel: UiModel.Search) {
             )
         },
         drawerContent = { HomeDrawerContent() },
-        backLayerContent = { BackLayerContent() },
+        backLayerContent = { BackLayerContent(uiModel.filters) { viewModel.searchParams = it } },
         frontLayerContent = { FrontLayerContent(uiModel) },
     )
 }
@@ -71,13 +74,11 @@ private fun HomeDrawerContent() {
 @Composable
 @ExperimentalMaterialApi
 @ExperimentalLayout
-private fun BackLayerContent() {
-    val (filters, setFilters) = remember { mutableStateOf<Filters>(Filters.Empty)}
-
+private fun BackLayerContent(filters: Filters, onFiltersChange: (Filters) -> Unit) {
     Surface(color = MaterialTheme.colors.background) {
         SearchBox(
             filters,
-            onFiltersChange = { setFilters(it) },
+            onFiltersChange,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         )
     }
@@ -120,5 +121,5 @@ fun PreviewHome() {
         error = null,
     )
 
-    Home(uiModel)
+    //Home(uiModel)
 }
