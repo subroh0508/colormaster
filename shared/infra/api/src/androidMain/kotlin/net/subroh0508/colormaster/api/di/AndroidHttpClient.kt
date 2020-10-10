@@ -26,6 +26,11 @@ internal actual val httpClient get() = HttpClient(OkHttp) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             addInterceptor(loggingInterceptor)
         }
+
+        // @see https://github.com/ktorio/ktor/issues/1708
+        config {
+            retryOnConnectionFailure(true)
+        }
     }
     defaultRequest {
         url {
