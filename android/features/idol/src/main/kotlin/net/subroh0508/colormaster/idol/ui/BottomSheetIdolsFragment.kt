@@ -13,6 +13,7 @@ import net.subroh0508.colormaster.idol.ui.viewmodel.IdolsViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class BottomSheetIdolsFragment : Fragment(R.layout.fragment_bottom_sheet_idols) {
+    /*
     private val idolsViewModel: IdolsViewModel by sharedViewModel()
 
     private val linearLayoutManager: LinearLayoutManager by lazy { LinearLayoutManager(context) }
@@ -29,4 +30,5 @@ class BottomSheetIdolsFragment : Fragment(R.layout.fragment_bottom_sheet_idols) 
         idolsViewModel.uiModel.observe(viewLifecycleOwner) { adapter.notifyDataSetChanged() }
         idolsViewModel.loadItems()
     }
+    */
 }

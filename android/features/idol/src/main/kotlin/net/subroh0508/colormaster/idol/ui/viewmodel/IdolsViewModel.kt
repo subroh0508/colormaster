@@ -22,10 +22,10 @@ class IdolsViewModel(
         UiModel.Search.INITIALIZED,
         liveData1 = idolsLoadStateLiveData,
         liveData2 = filterLiveData
-    ) { uiModel, loadState, filters ->
+    ) { (items), loadState, filters ->
 
         UiModel.Search(
-            loadState.getValueOrNull()?.map(::IdolColorItem) ?: uiModel.items,
+            loadState.getValueOrNull()?.map(::IdolColorItem) ?: items,
             filters,
             loadState.getErrorOrNull(),
             loadState.isLoading

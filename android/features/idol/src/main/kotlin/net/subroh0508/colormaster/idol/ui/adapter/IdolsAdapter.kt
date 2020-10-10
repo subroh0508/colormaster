@@ -44,15 +44,18 @@ class IdolsAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        /*
         when (holder) {
             is MainViewHolder -> holder.bind(viewModel.items[position])
             is FooterViewHolder -> holder.bind(viewModel.uiModel.value)
         }
+
+        */
     }
 
-    override fun getItemCount() = viewModel.itemCount + 1
-    override fun getItemId(position: Int) = if (position == itemCount - 1) Long.MAX_VALUE else viewModel.itemId(position)
-    override fun getItemViewType(position: Int) = if (position == itemCount - 1) FOOTER_ITEM_VIEW else MAIN_ITEM_VIEW
+    override fun getItemCount() = /*viewModel.itemCount +*/ 1
+    override fun getItemId(position: Int) = 0L/*if (position == itemCount - 1) Long.MAX_VALUE else viewModel.itemId(position)*/
+    override fun getItemViewType(position: Int) = 0/*if (position == itemCount - 1) FOOTER_ITEM_VIEW else MAIN_ITEM_VIEW*/
 
     class MainViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: IdolColorItem) = with (itemView) {

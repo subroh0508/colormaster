@@ -45,7 +45,8 @@ dependencies {
     implementation(Libraries.Jetpack.drawerLayout)
     implementation(Libraries.Jetpack.recyclerView)
     implementation(Libraries.Jetpack.lifecycleViewModel)
-    implementation(Libraries.Jetpack.lifecycleLiveData)
 
     implementation(Libraries.Koin.android)
+    implementation(Libraries.Koin.androidXScope)
+    implementation(Libraries.Koin.androidXViewModel)
 }
