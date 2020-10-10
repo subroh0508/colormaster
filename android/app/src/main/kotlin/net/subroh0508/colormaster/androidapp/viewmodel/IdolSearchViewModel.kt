@@ -38,7 +38,10 @@ class IdolSearchViewModel(
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
             runCatching { repository.rand(10) }
                 .onSuccess { _idolsLoadState.value = LoadState.Loaded(it) }
-                .onFailure { _idolsLoadState.value = LoadState.Error(it) }
+                .onFailure {
+                    it.printStackTrace()
+                    _idolsLoadState.value = LoadState.Error(it)
+                }
         }
 
         _idolsLoadState.value = LoadState.Loading
@@ -46,10 +49,18 @@ class IdolSearchViewModel(
     }
 
     fun search() {
+        if (searchParams == Filters.Empty) {
+            loadRandom()
+            return
+        }
+
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
             runCatching { repository.search(searchParams.idolName, searchParams.title, searchParams.types) }
                 .onSuccess { _idolsLoadState.value = LoadState.Loaded(it) }
-                .onFailure { _idolsLoadState.value = LoadState.Error(it) }
+                .onFailure {
+                    it.printStackTrace()
+                    _idolsLoadState.value = LoadState.Error(it)
+                }
         }
 
         _idolsLoadState.value = LoadState.Loading

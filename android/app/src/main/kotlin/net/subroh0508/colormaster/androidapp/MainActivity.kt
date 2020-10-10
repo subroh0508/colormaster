@@ -7,10 +7,10 @@ import androidx.compose.material.*
 import androidx.compose.ui.platform.setContent
 import net.subroh0508.colormaster.androidapp.pages.Home
 import net.subroh0508.colormaster.androidapp.viewmodel.IdolSearchViewModel
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel: IdolSearchViewModel by inject()
+    private val viewModel: IdolSearchViewModel by viewModel()
 
     @ExperimentalMaterialApi
     @ExperimentalLayout
@@ -18,5 +18,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent { Home(viewModel) }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.loadRandom()
     }
 }
