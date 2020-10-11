@@ -2,8 +2,9 @@ package net.subroh0508.colormaster.presentation.search.model
 
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.ui.idol.SearchState
+import net.subroh0508.colormaster.utilities.LoadState
 
-class ManualSearchUiModel(
+class ManualSearchUiModel internal constructor(
     val items: List<IdolColorListItem>,
     val params: SearchParams,
     val error: Throwable? = null,
@@ -11,6 +12,13 @@ class ManualSearchUiModel(
 ) {
     companion object {
         val INITIALIZED = ManualSearchUiModel(listOf(), SearchParams.EMPTY)
+
+        operator fun invoke(params: SearchParams, loadState: LoadState) = ManualSearchUiModel(
+            loadState.getValueOrNull<List<IdolColor>>()?.map(::IdolColorListItem) ?: listOf(),
+            params,
+            loadState.getErrorOrNull(),
+            loadState.isLoading,
+        )
     }
 
     val searchState get() = when {
