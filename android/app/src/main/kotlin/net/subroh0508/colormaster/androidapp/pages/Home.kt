@@ -1,5 +1,6 @@
 package net.subroh0508.colormaster.androidapp.pages
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -18,6 +19,7 @@ import net.subroh0508.colormaster.androidapp.components.molecules.DrawerMenuList
 import net.subroh0508.colormaster.androidapp.components.organisms.ColorLists
 import net.subroh0508.colormaster.androidapp.components.organisms.HomeTopBar
 import net.subroh0508.colormaster.androidapp.components.organisms.SearchBox
+import net.subroh0508.colormaster.androidapp.components.templates.HEADER_HEIGHT
 import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawerBackdrop
 import net.subroh0508.colormaster.androidapp.viewmodel.IdolSearchViewModel
 import net.subroh0508.colormaster.model.HexColor
@@ -75,13 +77,13 @@ private fun HomeDrawerContent() {
 @ExperimentalMaterialApi
 @ExperimentalLayout
 private fun BackLayerContent(filters: Filters, onFiltersChange: (Filters) -> Unit) {
-    Surface(color = MaterialTheme.colors.background) {
-        SearchBox(
-            filters,
-            onFiltersChange,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        )
-    }
+    SearchBox(
+        filters,
+        onFiltersChange,
+        modifier = Modifier.fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .background(MaterialTheme.colors.background),
+    )
 }
 
 @Composable
@@ -89,7 +91,11 @@ private fun FrontLayerContent(uiModel: UiModel.Search) {
     Column {
         val modifier = Modifier.padding(8.dp)
 
-        SearchStateLabel(uiModel, modifier = modifier.fillMaxWidth())
+        SearchStateLabel(
+            uiModel,
+            modifier = modifier.fillMaxWidth()
+                .preferredHeight(HEADER_HEIGHT),
+        )
         ColorLists(uiModel.items, modifier = modifier)
     }
 }

@@ -3,7 +3,10 @@ package net.subroh0508.colormaster.androidapp.components.templates
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
+
+val HEADER_HEIGHT = 56.dp
 
 @Composable
 @ExperimentalMaterialApi
@@ -22,6 +25,7 @@ fun ModalDrawerBackdrop(
             drawerContent = drawerContent,
             bodyContent = {
                 BackdropScaffold(
+                    headerHeight = HEADER_HEIGHT,
                     scaffoldState = backdropScaffoldState,
                     appBar = { appBar(modalDrawerState) },
                     backLayerContent = backLayerContent,
