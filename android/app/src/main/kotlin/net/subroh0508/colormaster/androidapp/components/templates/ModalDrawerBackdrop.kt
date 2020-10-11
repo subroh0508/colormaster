@@ -13,8 +13,8 @@ val HEADER_HEIGHT = 56.dp
 fun ModalDrawerBackdrop(
     appBar: @Composable (DrawerState) -> Unit,
     drawerContent: @Composable ColumnScope.() -> Unit,
-    backLayerContent: @Composable () -> Unit,
-    frontLayerContent: @Composable () -> Unit,
+    backLayerContent: @Composable (BackdropScaffoldState) -> Unit,
+    frontLayerContent: @Composable (BackdropScaffoldState) -> Unit,
 ) {
     val modalDrawerState = rememberDrawerState(DrawerValue.Closed)
     val backdropScaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
@@ -28,8 +28,8 @@ fun ModalDrawerBackdrop(
                     headerHeight = HEADER_HEIGHT,
                     scaffoldState = backdropScaffoldState,
                     appBar = { appBar(modalDrawerState) },
-                    backLayerContent = backLayerContent,
-                    frontLayerContent = frontLayerContent,
+                    backLayerContent = { backLayerContent(backdropScaffoldState) },
+                    frontLayerContent = { frontLayerContent(backdropScaffoldState) },
                     backLayerBackgroundColor = MaterialTheme.colors.background,
                 )
             },
