@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="orange_200">#ffcc80</color>
 
+    <color name="deep_orange_900">#bf360c</color>
+
+    <color name="black_121212">#121212</color>
+    <color name="gray_50">#FAFAFA</color>
 </resources>

@@ -19,4 +19,16 @@
     <string name="search_state_label_waiting">検索中&#8230;</string>
     <string name="search_state_label_error">エラー: %s</string>
     <string name="search_state_label_searched">検索結果: %d人</string>
+
+    <string name="type_cinderella_cu">Cute</string>
+    <string name="type_cinderella_co">Cool</string>
+    <string name="type_cinderella_pa">Passion</string>
+
+    <string name="type_million_princess">Princess</string>
+    <string name="type_million_fairy">Fairy</string>
+    <string name="type_million_angel">Angel</string>
+
+    <string name="type_side_m_physical">フィジカル</string>
+    <string name="type_side_m_intelligent">インテリ</string>
+    <string name="type_side_m_mental">メンタル</string>
 </resources>

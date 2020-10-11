@@ -25,8 +25,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":android:widget"))
-    implementation(project(":android:features:idol"))
     implementation(project(":shared:utilities"))
     implementation(project(":shared:model"))
     implementation(project(":shared:components:core"))
@@ -47,6 +45,7 @@ dependencies {
     implementation(Libraries.Jetpack.drawerLayout)
     implementation(Libraries.Jetpack.recyclerView)
     implementation(Libraries.Jetpack.lifecycleViewModel)
+    implementation(Libraries.Jetpack.material)
 
     implementation(Libraries.Koin.android)
     implementation(Libraries.Koin.androidXScope)

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="Widget.ColorMaster.MaterialToolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="android:background">?colorPrimarySurface</item>
-        <item name="android:elevation">0dp</item>
-        <item name="contentInsetStartWithNavigation">0dp</item>
-        <item name="titleTextColor">?colorOnPrimarySurface</item>
-    </style>
-</resources>

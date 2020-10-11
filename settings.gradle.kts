@@ -1,7 +1,5 @@
 include(
     ":android:app",
-    ":android:features:idol",
-    ":android:widget",
     ":web:app",
     ":shared:utilities",
     ":shared:model",
