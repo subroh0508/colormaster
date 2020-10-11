@@ -5,8 +5,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mainScope
 import net.subroh0508.colormaster.model.*
-import net.subroh0508.colormaster.model.UiModel.Search.IdolColorItem
-import net.subroh0508.colormaster.model.ui.idol.Filters
+import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
+import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
+import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -28,35 +29,35 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
 
     val controller = useContext(IdolSearchControllerContext)
 
-    val (uiModel, dispatch) = useReducer(reducer, UiModel.Search.INITIALIZED)
+    val (uiModel, dispatch) = useReducer(reducer, ManualSearchUiModel.INITIALIZED)
 
-    fun onChangeIdolName(filters: Filters, name: String?) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, filters = Filters(name.toIdolName(), filters.title, filters.types)))
-    fun onSelectTitle(filters: Filters, title: Brands, checked: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, filters = if (checked) Filters(filters.idolName, title) else Filters.Empty))
-    fun onSelectType(filters: Filters, type: Types, checked: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, filters = if (checked) filters + type else filters - type))
-    fun onSuccess(items: List<IdolColor>) = dispatch(actions(type = IdolSearchActionTypes.ON_SUCCESS, items = items.map(::IdolColorItem)))
+    fun onChangeIdolName(params: SearchParams, name: String?) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, params = params.change(name.toIdolName())))
+    fun onSelectBrands(params: SearchParams, brands: Brands, checked: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, params = params.change(if (checked) brands else null)))
+    fun onSelectType(params: SearchParams, type: Types, checked: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_CHANGE_FILTER, params = params.change(type, checked)))
+    fun onSuccess(items: List<IdolColor>) = dispatch(actions(type = IdolSearchActionTypes.ON_SUCCESS, items = items.map(::IdolColorListItem)))
     fun onFailure(e: Throwable) = dispatch(actions(type = IdolSearchActionTypes.ON_FAILURE, error = e))
-    fun onSelectIdol(item: IdolColor, selected: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_SELECT, items = listOf(IdolColorItem(item, selected))))
+    fun onSelectIdol(item: IdolColor, selected: Boolean) = dispatch(actions(type = IdolSearchActionTypes.ON_SELECT, items = listOf(IdolColorListItem(item, selected))))
     fun onSelectAll(selected: Boolean) = dispatch(actions(type = if (selected) IdolSearchActionTypes.ON_SELECT_ALL else IdolSearchActionTypes.ON_CLEAR_ALL))
 
-    fun IdolSearchController.search(filters: Filters = Filters.Empty) = launch {
-        runCatching { fetchItems(filters) }
+    fun IdolSearchController.search(params: SearchParams = SearchParams.EMPTY) = launch {
+        runCatching { fetchItems(params) }
                 .onSuccess(::onSuccess)
                 .onFailure(::onFailure)
     }
 
     useEffectDidMount { controller.search() }
-    useDebounceEffect(uiModel.filters, 500) { controller.search(it) }
+    useDebounceEffect(uiModel.params, 500) { controller.search(it) }
 
     IdolSearchPage {
         attrs.model = uiModel
-        attrs.onChangeIdolName = { name -> onChangeIdolName(uiModel.filters, name) }
-        attrs.onSelectTitle = { title, checked -> onSelectTitle(uiModel.filters, title, checked) }
-        attrs.onSelectType = { type, checked -> onSelectType(uiModel.filters, type, checked) }
+        attrs.onChangeIdolName = { name -> onChangeIdolName(uiModel.params, name) }
+        attrs.onSelectTitle = { title, checked -> onSelectBrands(uiModel.params, title, checked) }
+        attrs.onSelectType = { type, checked -> onSelectType(uiModel.params, type, checked) }
         attrs.onClickIdolColor = { item, selected -> onSelectIdol(item, selected) }
         attrs.onClickSelectAll = { selected -> onSelectAll(selected) }
         attrs.onDoubleClickIdolColor = { item -> turnOnPenlight(listOf(item)) }
-        attrs.onClickPreview = { preview(uiModel.selected) }
-        attrs.onClickPenlight = { turnOnPenlight(uiModel.selected) }
+        attrs.onClickPreview = { preview(uiModel.selectedItems) }
+        attrs.onClickPenlight = { turnOnPenlight(uiModel.selectedItems) }
     }
 }
 
@@ -66,21 +67,21 @@ private enum class IdolSearchActionTypes {
 
 private fun actions(
     type: IdolSearchActionTypes,
-    filters: Filters = Filters.Empty,
-    items: List<IdolColorItem> = listOf(),
+    params: SearchParams = SearchParams.EMPTY,
+    items: List<IdolColorListItem> = listOf(),
     error: Throwable? = null
-) = actions<IdolSearchActionTypes, UiModel.Search> {
+) = actions<IdolSearchActionTypes, ManualSearchUiModel> {
     this.type = type
-    this.payload = UiModel.Search(filters = filters, items = items, error = error)
+    this.payload = ManualSearchUiModel(params = params, items = items, error = error)
 }
 
-private val reducer = { state: UiModel.Search, action: Actions<IdolSearchActionTypes, UiModel.Search> ->
-    val (items, filters, error, _) = action.payload
+private val reducer = { state: ManualSearchUiModel, action: Actions<IdolSearchActionTypes, ManualSearchUiModel> ->
+    val (items, params, error, _) = action.payload
 
     when (action.type) {
-        IdolSearchActionTypes.ON_CHANGE_FILTER -> state.copy(items = listOf(), filters = filters, error = null, isLoading = true)
+        IdolSearchActionTypes.ON_CHANGE_FILTER -> state.copy(items = listOf(), params = params, error = null, isLoading = true)
         IdolSearchActionTypes.ON_SUCCESS -> state.copy(items = items, error = null, isLoading = false)
-        IdolSearchActionTypes.ON_SELECT -> state.copy(items = state.items.map { item -> items.first().let { (color, selected) -> if (color.id == item.idolColor.id) item.copy(selected = selected) else item } })
+        IdolSearchActionTypes.ON_SELECT -> state.copy(items = state.items.map { item -> items.first().let { if (it.id == item.id) item.copy(selected = it.selected) else item } })
         IdolSearchActionTypes.ON_SELECT_ALL -> state.copy(items = state.items.map { it.copy(selected = true) })
         IdolSearchActionTypes.ON_CLEAR_ALL -> state.copy(items = state.items.map { it.copy(selected = false) })
         IdolSearchActionTypes.ON_FAILURE -> state.copy(items = listOf(), error = error, isLoading = false)
@@ -94,11 +95,11 @@ private object IdolSearchController : CoroutineScope by mainScope, KoinComponent
 
     val repository: IdolColorsRepository by inject()
 
-    suspend fun fetchItems(filters: Filters) =
-        if (filters is Filters.Empty)
+    suspend fun fetchItems(params: SearchParams) =
+        if (params == SearchParams.EMPTY)
             repository.rand(LIMIT)
         else
-            repository.search(filters.idolName, filters.title, filters.types)
+            repository.search(params.idolName, params.brands, params.types)
 
     override fun getKoin() = appDI.koin
 }

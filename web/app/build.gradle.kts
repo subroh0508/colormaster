@@ -34,6 +34,7 @@ kotlin {
                 implementation(project(":shared:components:core"))
                 implementation(project(":shared:model"))
                 implementation(project(":shared:infra:repository"))
+                implementation(project(":shared:presentation:search"))
 
                 implementation(Libraries.Kotlin.js)
 

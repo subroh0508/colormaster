@@ -3,7 +3,7 @@ package net.subroh0508.colormaster.presentation.search.model
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.utilities.LoadState
 
-class ManualSearchUiModel internal constructor(
+data class ManualSearchUiModel(
     val items: List<IdolColorListItem>,
     val params: SearchParams,
     val error: Throwable? = null,

@@ -20,8 +20,8 @@ import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
-import net.subroh0508.colormaster.model.UiModel
-import net.subroh0508.colormaster.model.ui.idol.Filters
+import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
+import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.*
 import react.dom.div
 import utilities.I18nextText
@@ -43,7 +43,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
         div(classes.searchBox) {
             div(classes.searchBoxTop) {}
             idolSearchBox {
-                attrs.filters = uiModel.filters
+                attrs.params = uiModel.params
                 attrs.onChangeIdolName = props.onChangeIdolName
                 attrs.onSelectTitle = props.onSelectTitle
                 attrs.onSelectType = props.onSelectType
@@ -70,7 +70,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             div(actionsStyle) {
                 div(classes.toolbar) {}
                 idolColorGridsActions {
-                    attrs.selected = uiModel.selected
+                    attrs.selected = uiModel.selectedItems
                     attrs.onClickPreview = props.onClickPreview
                     attrs.onClickPenlight = props.onClickPenlight
                     attrs.onClickSelectAll = props.onClickSelectAll
@@ -80,11 +80,11 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     }
 }
 
-private fun RBuilder.alert(opened: Boolean, uiModel: UiModel.Search, t: I18nextText) = when {
+private fun RBuilder.alert(opened: Boolean, uiModel: ManualSearchUiModel, t: I18nextText) = when {
     uiModel.isLoading -> warningAlert {
         attrs.message = t("searchPanel.alerts.searching")
     }
-    uiModel.filters is Filters.Empty -> infoAlert {
+    uiModel.params == SearchParams.EMPTY -> infoAlert {
         attrs.message = t("searchPanel.alerts.default")
     }
     uiModel.error != null -> errorAlert {
@@ -101,7 +101,7 @@ private operator fun I18nextText.invoke(key: String, count: Int) = invoke(
 )
 
 external interface IdolSearchPanelProps : RProps {
-    var model: UiModel.Search
+    var model: ManualSearchUiModel
     var isOpenedGrids: Boolean
     var onClickToggleGrids: () -> Unit
     var onChangeIdolName: (String) -> Unit

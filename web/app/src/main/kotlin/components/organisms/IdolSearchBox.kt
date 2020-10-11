@@ -12,7 +12,7 @@ import materialui.components.textfield.textField
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
-import net.subroh0508.colormaster.model.ui.idol.Filters
+import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.*
 import react.dom.form
 import utilities.inputTarget
@@ -33,7 +33,7 @@ private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { p
                         classes(classes.textField)
                         label { +t("searchBox.attributes.idolName") }
                         variant = FormControlVariant.outlined
-                        value = props.filters.idolName?.value
+                        value = props.params.idolName?.value
                         onChangeFunction = { e -> props.onChangeIdolName(e.inputTarget().value) }
                     }
                 }
@@ -43,16 +43,16 @@ private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { p
         listItem {
             titleChips {
                 attrs {
-                    title = props.filters.title
+                    title = props.params.brands
                     onSelect = props.onSelectTitle
                 }
             }
         }
 
         listItem {
-            typesChips(props.filters.title) {
+            typesChips(props.params.brands) {
                 attrs {
-                    types = props.filters.types
+                    types = props.params.types
                     onSelect = props.onSelectType
                 }
             }
@@ -61,7 +61,7 @@ private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { p
 }
 
 external interface IdolSearchBoxProps : RProps {
-    var filters: Filters
+    var params: SearchParams
     var onChangeIdolName: (String) -> Unit
     var onSelectTitle: (Brands, Boolean) -> Unit
     var onSelectType: (Types, Boolean) -> Unit
