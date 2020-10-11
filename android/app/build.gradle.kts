@@ -27,9 +27,11 @@ android {
 dependencies {
     implementation(project(":android:widget"))
     implementation(project(":android:features:idol"))
+    implementation(project(":shared:utilities"))
     implementation(project(":shared:model"))
     implementation(project(":shared:components:core"))
     implementation(project(":shared:infra:repository"))
+    implementation(project(":shared:presentation:search"))
 
     implementation(Libraries.Kotlin.android)
     implementation(Libraries.Kotlin.reflect)

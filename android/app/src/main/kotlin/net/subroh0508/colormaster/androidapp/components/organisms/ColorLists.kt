@@ -7,13 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import net.subroh0508.colormaster.androidapp.components.atoms.ColorListItem
-import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.UiModel
+import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
 
 @Composable
 fun ColorLists(
-    items: List<UiModel.Search.IdolColorItem>,
-    onClick: (IdolColor) -> Unit = {},
+    items: List<IdolColorListItem>,
+    onClick: (IdolColorListItem) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val listItemModifier = Modifier.padding(vertical = 4.dp)
@@ -24,9 +23,9 @@ fun ColorLists(
         modifier = modifier,
     ) { item ->
         ColorListItem(
-            item.idolColor.name,
-            item.idolColor.hexColor,
-            onClick = { onClick(item.idolColor) },
+            item.name.value,
+            item.hexColor,
+            onClick = { onClick(item) },
             modifier = listItemModifier,
         )
     }

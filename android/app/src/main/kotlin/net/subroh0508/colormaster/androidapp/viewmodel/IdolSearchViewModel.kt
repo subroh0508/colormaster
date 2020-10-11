@@ -8,30 +8,24 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.UiModel
-import net.subroh0508.colormaster.model.UiModel.Search.IdolColorItem
-import net.subroh0508.colormaster.model.ui.commons.LoadState
-import net.subroh0508.colormaster.model.ui.idol.Filters
+import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
+import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.repository.IdolColorsRepository
+import net.subroh0508.colormaster.utilities.LoadState
 
 class IdolSearchViewModel(
     private val repository: IdolColorsRepository,
 ) : ViewModel() {
     @ExperimentalCoroutinesApi
-    private val _searchParams: MutableStateFlow<Filters> by lazy { MutableStateFlow(Filters.Empty) }
+    private val _searchParams: MutableStateFlow<SearchParams> by lazy { MutableStateFlow(SearchParams.EMPTY) }
     @ExperimentalCoroutinesApi
-    private val _idolsLoadState: MutableStateFlow<LoadState<List<IdolColor>>> by lazy { MutableStateFlow(LoadState.Loaded(listOf())) }
+    private val _idolsLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<IdolColor>>(listOf())) }
 
     @FlowPreview
     @ExperimentalCoroutinesApi
-    val uiModel: Flow<UiModel.Search>
+    val uiModel: Flow<ManualSearchUiModel>
         get() = combine(_searchParams, _idolsLoadState) { params, loadState ->
-            UiModel.Search(
-                loadState.getValueOrNull()?.map(::IdolColorItem) ?: listOf(),
-                params,
-                loadState.getErrorOrNull(),
-                loadState.isLoading,
-            )
+            ManualSearchUiModel(params, loadState)
         }.apply { launchIn(viewModelScope) }
 
     fun loadRandom() {
@@ -49,13 +43,13 @@ class IdolSearchViewModel(
     }
 
     fun search() {
-        if (searchParams == Filters.Empty) {
+        if (searchParams.isEmpty()) {
             loadRandom()
             return
         }
 
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-            runCatching { repository.search(searchParams.idolName, searchParams.title, searchParams.types) }
+            runCatching { repository.search(searchParams.idolName, searchParams.brands, searchParams.types) }
                 .onSuccess { _idolsLoadState.value = LoadState.Loaded(it) }
                 .onFailure {
                     it.printStackTrace()
@@ -67,7 +61,7 @@ class IdolSearchViewModel(
         job.start()
     }
 
-    var searchParams: Filters
+    var searchParams: SearchParams
         get() = _searchParams.value
         set(value) {
             _searchParams.value = value

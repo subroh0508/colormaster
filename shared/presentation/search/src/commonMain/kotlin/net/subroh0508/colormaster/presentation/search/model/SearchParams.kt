@@ -5,12 +5,14 @@ import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.model.UnitName
 
-data class SearchParams internal constructor(
+data class SearchParams(
     val idolName: IdolName?,
     val brands: Brands?,
     val types: Set<Types>,
     val unitName: UnitName?,
 ) {
+    fun isEmpty() = this == EMPTY
+
     fun change(idolName: IdolName?) = copy(idolName = idolName)
     fun change(brands: Brands?) = copy(brands = brands, types = setOf(), unitName = null)
     fun change(type: Types, checked: Boolean) = copy(

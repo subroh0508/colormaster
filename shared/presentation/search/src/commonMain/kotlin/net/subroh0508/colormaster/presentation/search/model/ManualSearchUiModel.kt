@@ -1,7 +1,6 @@
 package net.subroh0508.colormaster.presentation.search.model
 
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.ui.idol.SearchState
 import net.subroh0508.colormaster.utilities.LoadState
 
 class ManualSearchUiModel internal constructor(

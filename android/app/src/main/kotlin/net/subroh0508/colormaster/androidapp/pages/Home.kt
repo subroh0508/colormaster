@@ -25,17 +25,15 @@ import net.subroh0508.colormaster.androidapp.components.organisms.SearchBox
 import net.subroh0508.colormaster.androidapp.components.templates.HEADER_HEIGHT
 import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawerBackdrop
 import net.subroh0508.colormaster.androidapp.viewmodel.IdolSearchViewModel
-import net.subroh0508.colormaster.model.HexColor
-import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.UiModel
-import net.subroh0508.colormaster.model.ui.idol.Filters
-import net.subroh0508.colormaster.model.ui.idol.SearchState
+import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
+import net.subroh0508.colormaster.presentation.search.model.SearchParams
+import net.subroh0508.colormaster.presentation.search.model.SearchState
 
 @Composable
 @ExperimentalMaterialApi
 @ExperimentalLayout
 fun Home(viewModel: IdolSearchViewModel) {
-    val uiModel: UiModel.Search by viewModel.uiModel.collectAsState(initial = UiModel.Search.INITIALIZED)
+    val uiModel: ManualSearchUiModel by viewModel.uiModel.collectAsState(initial = ManualSearchUiModel.INITIALIZED)
 
     ModalDrawerBackdrop(
         appBar = { drawerState ->
@@ -45,7 +43,7 @@ fun Home(viewModel: IdolSearchViewModel) {
             )
         },
         drawerContent = { HomeDrawerContent() },
-        backLayerContent = { BackLayerContent(uiModel.filters) { viewModel.searchParams = it } },
+        backLayerContent = { BackLayerContent(uiModel.params) { viewModel.searchParams = it } },
         frontLayerContent = { backdropScaffoldState ->
             FrontLayerContent(uiModel, backdropScaffoldState)
         },
@@ -81,10 +79,10 @@ private fun HomeDrawerContent() {
 @Composable
 @ExperimentalMaterialApi
 @ExperimentalLayout
-private fun BackLayerContent(filters: Filters, onFiltersChange: (Filters) -> Unit) {
+private fun BackLayerContent(params: SearchParams, onParamsChange: (SearchParams) -> Unit) {
     SearchBox(
-        filters,
-        onFiltersChange,
+        params,
+        onParamsChange,
         modifier = Modifier.fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .background(MaterialTheme.colors.background),
@@ -94,7 +92,7 @@ private fun BackLayerContent(filters: Filters, onFiltersChange: (Filters) -> Uni
 @Composable
 @ExperimentalMaterialApi
 private fun FrontLayerContent(
-    uiModel: UiModel.Search,
+    uiModel: ManualSearchUiModel,
     backdropScaffoldState: BackdropScaffoldState,
 ) {
     Column {
@@ -120,7 +118,7 @@ private fun FrontLayerContent(
 
 @Composable
 private fun SearchStateLabel(
-    uiModel: UiModel.Search,
+    uiModel: ManualSearchUiModel,
     endAsset: VectorAsset,
     onClick: () -> Unit,
     modifier: Modifier,
@@ -136,16 +134,5 @@ private fun SearchStateLabel(
 @ExperimentalMaterialApi
 @ExperimentalLayout
 fun PreviewHome() {
-    val uiModel = UiModel.Search(
-        listOf(
-            UiModel.Search.IdolColorItem(IdolColor("Mitsumine_Yuika", "三峰結華", HexColor("3B91C4"))),
-            UiModel.Search.IdolColorItem(IdolColor("Hachimiya_Meguru", "八宮めぐる", HexColor("FFE012"))),
-            UiModel.Search.IdolColorItem(IdolColor("Higuchi_Madoka", "樋口円香",  HexColor("BE1E3E"))),
-            UiModel.Search.IdolColorItem(IdolColor("Arisugawa_Natsuha", "有栖川夏葉", HexColor("90E677"))),
-        ),
-        Filters.Empty,
-        error = null,
-    )
-
     //Home(uiModel)
 }

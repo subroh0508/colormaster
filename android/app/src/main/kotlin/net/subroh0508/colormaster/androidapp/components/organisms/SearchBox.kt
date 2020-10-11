@@ -18,29 +18,25 @@ import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 import net.subroh0508.colormaster.androidapp.themes.lightBackground
 import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
-import net.subroh0508.colormaster.model.ui.idol.Filters
+import net.subroh0508.colormaster.presentation.search.model.SearchParams
 
 @Composable
 @ExperimentalLayout
 fun SearchBox(
-    filters: Filters,
-    onFiltersChange: (Filters) -> Unit = {},
+    params: SearchParams,
+    onParamsChange: (SearchParams) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Column(Modifier.fillMaxWidth() + modifier) {
         BrandChips(
-            filters.title,
-            onChipSelected = { brand ->
-                onFiltersChange(Filters(idolName = filters.idolName, brands = brand))
-            },
+            params.brands,
+            onChipSelected = { brand -> onParamsChange(params.change(brand)) },
         )
         Spacer(Modifier.preferredHeight(16.dp))
         TypeChips(
-            filters.title,
-            filters.types,
-            onTypeChecked = { type, checked ->
-                onFiltersChange(if (checked) filters + type else filters - type)
-            },
+            params.brands,
+            params.types,
+            onTypeChecked = { type, checked -> onParamsChange(params.change(type, checked)) },
         )
     }
 }
@@ -128,22 +124,20 @@ private fun Types.label(): String = when (this) {
 @Composable
 @ExperimentalLayout
 fun SearchBoxPreview_Light() {
-    val (filters, setFilters) = remember {
-        mutableStateOf<Filters>(
-            Filters._MillionStars(
-                idolName = null,
-                types = setOf(
-                    Types.MILLION_LIVE.PRINCESS,
-                    Types.MILLION_LIVE.FAIRY
-                ),
-                unitName = null,
+    val (params, setParams) = remember {
+        mutableStateOf(
+            SearchParams(
+                null,
+                Brands._ML,
+                setOf(Types.MILLION_LIVE.PRINCESS, Types.MILLION_LIVE.FAIRY),
+                null,
             )
         )
     }
 
     ColorMasterTheme(darkTheme = false) {
         Row(Modifier.background(color = lightBackground)) {
-            SearchBox(filters, onFiltersChange = { setFilters(it) })
+            SearchBox(params, onParamsChange = { setParams(it) })
         }
     }
 }
