@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mainScope
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.UiModel
+import net.subroh0508.colormaster.presentation.preview.model.FullscreenPreviewUiModel
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -19,7 +19,7 @@ import utilities.useEffectDidMount
 
 @Suppress("FunctionName")
 fun RBuilder.PenlightContainer() = FullscreenPreviewControllerContext.Provider(FullscreenPreviewController) {
-    childFunction(FullscreenPreviewContainerComponentImpl) { model: UiModel.FullscreenPreview ->
+    childFunction(FullscreenPreviewContainerComponentImpl) { model: FullscreenPreviewUiModel ->
         previewModal {
             attrs.model = model
             attrs.PreviewComponent = FullscreenPenlightComponent
@@ -29,7 +29,7 @@ fun RBuilder.PenlightContainer() = FullscreenPreviewControllerContext.Provider(F
 
 @Suppress("FunctionName")
 fun RBuilder.PreviewContainer() = FullscreenPreviewControllerContext.Provider(FullscreenPreviewController) {
-    childFunction(FullscreenPreviewContainerComponentImpl) { model: UiModel.FullscreenPreview ->
+    childFunction(FullscreenPreviewContainerComponentImpl) { model: FullscreenPreviewUiModel ->
         previewModal {
             attrs.model = model
             attrs.PreviewComponent = FullscreenPreviewComponent
@@ -42,7 +42,7 @@ private val FullscreenPreviewContainerComponentImpl = functionalComponent<RProps
 
     val controller = useContext(FullscreenPreviewControllerContext)
 
-    val (uiModel, dispatch) = useReducer(reducer, UiModel.FullscreenPreview.INITIALIZED)
+    val (uiModel, dispatch) = useReducer(reducer, FullscreenPreviewUiModel.INITIALIZED)
 
     fun onSuccess(items: List<IdolColor>) = dispatch(actions(type = FullscreenPreviewActionType.ON_SUCCESS, items = items))
     fun onFailure(e: Throwable) = dispatch(actions(type = FullscreenPreviewActionType.ON_FAILURE, error = e))
@@ -66,12 +66,12 @@ private fun actions(
     type: FullscreenPreviewActionType,
     items: List<IdolColor> = listOf(),
     error: Throwable? = null
-) = utilities.actions<FullscreenPreviewActionType, UiModel.FullscreenPreview> {
+) = utilities.actions<FullscreenPreviewActionType, FullscreenPreviewUiModel> {
     this.type = type
-    this.payload = UiModel.FullscreenPreview(items = items, error = error)
+    this.payload = FullscreenPreviewUiModel(items = items, error = error)
 }
 
-private val reducer = { state: UiModel.FullscreenPreview, action: Actions<FullscreenPreviewActionType, UiModel.FullscreenPreview> ->
+private val reducer = { state: FullscreenPreviewUiModel, action: Actions<FullscreenPreviewActionType, FullscreenPreviewUiModel> ->
     val (items, error, _) = action.payload
 
     when (action.type) {

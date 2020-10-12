@@ -5,13 +5,13 @@ import materialui.components.dialog.dialog
 import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogcontenttext.dialogContentText
 import materialui.components.dialogtitle.dialogTitle
-import net.subroh0508.colormaster.model.UiModel
+import net.subroh0508.colormaster.presentation.preview.model.FullscreenPreviewUiModel
 import react.*
 
 fun RBuilder.previewModal(handler: RHandler<PreviewModalProps>) = child(PreviewModalComponent, handler = handler)
 
 external interface PreviewModalProps : RProps {
-    var model: UiModel.FullscreenPreview
+    var model: FullscreenPreviewUiModel
     @Suppress("PropertyName")
     var PreviewComponent: FunctionalComponent<FullscreenModalProps>
 }
