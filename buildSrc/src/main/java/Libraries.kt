@@ -12,7 +12,7 @@ object Libraries {
     }
 
     object Kotlin {
-        const val version = "1.4.0"
+        const val version = "1.4.10"
 
         const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
         const val android = "org.jetbrains.kotlin:kotlin-stdlib:$version"
@@ -143,7 +143,7 @@ object Libraries {
     }
 
     object JsWrappers {
-        const val version = "pre.111-kotlin-${Kotlin.version}"
+        const val version = "pre.121-kotlin-${Kotlin.version}"
 
         const val reactVersion = "${Npm.reactVersion}-$version"
         const val react = "org.jetbrains:kotlin-react:$reactVersion"
@@ -152,14 +152,14 @@ object Libraries {
         const val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-$version"
         const val reactRouterDom = "org.jetbrains:kotlin-react-router-dom:$reactRouterDomVersion"
 
-        const val styledVersion = "1.0.0-$version"
+        const val styledVersion = "${Npm.styledComponentVersion}-$version"
         const val styled = "org.jetbrains:kotlin-styled:$styledVersion"
 
         const val extensionsVersion = "1.0.1-$version"
         const val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.5.1"
+            const val version = "0.5.2"
             const val core = "net.subroh0508.kotlinmaterialui:core:$version"
         }
     }
@@ -172,7 +172,7 @@ object Libraries {
         const val reactRouterDomVersion = "5.1.2"
         const val reactRouterDom = "react-router-dom"
 
-        const val styledComponentVersion = "^4.3.2"
+        const val styledComponentVersion = "5.2.0"
         const val styledComponent = "styled-components"
 
         const val inlineStylePrefixerVersion = "^5.1.0"

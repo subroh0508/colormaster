@@ -18,11 +18,11 @@ import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.utilities.throttleFirst
 import react.*
+import styled.ReactModule
 import styled.animation
 import utilities.isMobile
 
-fun RBuilder.colorGridItem(handler: RHandler<ColorGridItem>) = child(
-    ColorGridItemComponent, handler = handler)
+fun RBuilder.colorGridItem(handler: RHandler<ColorGridItem>) = child(ColorGridItemComponent, handler = handler)
 
 private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { props ->
     val classes = useStyles(props)
@@ -121,14 +121,20 @@ private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
         transform.scale(0.9)
     }
     "mouseOver" {
-        animation(0.1.s, fillMode = FillMode.forwards) {
-            100 { transform.scale(0.9) }
+        // Workaround
+        if (js("process.env.NODE_ENV === 'production'")) {
+            animation(0.1.s, fillMode = FillMode.forwards) {
+                100 { transform.scale(0.9) }
+            }
         }
     }
     "mouseOut" {
-        animation(0.1.s, fillMode = FillMode.forwards) {
-            0 { transform.scale(0.9) }
-            100 { transform.scale(1.0) }
+        // Workaround
+        if (js("process.env.NODE_ENV === 'production'")) {
+            animation(0.1.s, fillMode = FillMode.forwards) {
+                0 { transform.scale(0.9) }
+                100 { transform.scale(1.0) }
+            }
         }
     }
     "checkIcon" {
