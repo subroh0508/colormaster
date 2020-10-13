@@ -175,7 +175,7 @@ object Libraries {
         const val styledComponentVersion = "5.2.0"
         const val styledComponent = "styled-components"
 
-        const val inlineStylePrefixerVersion = "^5.1.0"
+        const val inlineStylePrefixerVersion = "^6.0.0"
         const val inlineStylePrefixer = "inline-style-prefixer"
 
         const val abortControllerVersion = "3.0.0"
