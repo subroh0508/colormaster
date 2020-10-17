@@ -19,6 +19,8 @@ kotlin {
             dependencies {
                 implementation(Libraries.Kotlin.android)
                 implementation(Libraries.Coroutines.android)
+
+                implementation(Libraries.Jetpack.lifecycleViewModel)
             }
         }
         val jsMain by getting {
