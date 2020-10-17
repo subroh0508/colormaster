@@ -6,11 +6,15 @@ import react.dom.render
 import utilities.*
 import kotlinx.browser.document
 import kotlinx.browser.window
+import net.subroh0508.colormaster.presentation.preview.viewmodel.PreviewViewModel
+import org.koin.dsl.module
 import react.Suspense
 
 val mainScope = MainScope()
 val appDI = koinApplication {
-    modules(AppModule + AppPreferenceModule)
+    modules(AppModule + AppPreferenceModule + module {
+        single { PreviewViewModel(get()) }
+    })
 }
 
 fun main() {
