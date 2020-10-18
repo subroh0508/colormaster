@@ -12,6 +12,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":shared:model"))
+                implementation(project(":shared:infra:repository"))
                 implementation(project(":shared:utilities"))
 
                 implementation(Libraries.Kotlin.common)
@@ -23,6 +24,8 @@ kotlin {
             dependencies {
                 implementation(Libraries.Kotlin.android)
                 implementation(Libraries.Coroutines.android)
+
+                implementation(Libraries.Jetpack.lifecycleViewModel)
             }
         }
         val jsMain by getting {

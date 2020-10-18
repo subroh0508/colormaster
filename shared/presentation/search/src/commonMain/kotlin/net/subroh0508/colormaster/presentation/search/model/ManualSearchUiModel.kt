@@ -12,8 +12,10 @@ data class ManualSearchUiModel(
     companion object {
         val INITIALIZED = ManualSearchUiModel(listOf(), SearchParams.EMPTY)
 
-        operator fun invoke(params: SearchParams, loadState: LoadState) = ManualSearchUiModel(
-            loadState.getValueOrNull<List<IdolColor>>()?.map(::IdolColorListItem) ?: listOf(),
+        operator fun invoke(params: SearchParams, loadState: LoadState, selected: List<String>) = ManualSearchUiModel(
+            loadState.getValueOrNull<List<IdolColor>>()
+                ?.map { IdolColorListItem(it, selected.contains(it.id)) }
+                ?: listOf(),
             params,
             loadState.getErrorOrNull(),
             loadState.isLoading,
