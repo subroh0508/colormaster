@@ -24,10 +24,10 @@ import net.subroh0508.colormaster.androidapp.components.organisms.HomeTopBar
 import net.subroh0508.colormaster.androidapp.components.organisms.SearchBox
 import net.subroh0508.colormaster.androidapp.components.templates.HEADER_HEIGHT
 import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawerBackdrop
-import net.subroh0508.colormaster.androidapp.viewmodel.IdolSearchViewModel
 import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.model.SearchState
+import net.subroh0508.colormaster.presentation.search.viewmodel.IdolSearchViewModel
 
 @Composable
 @ExperimentalMaterialApi

@@ -21,12 +21,14 @@ class IdolSearchViewModel(
     @ExperimentalCoroutinesApi
     private val _idolsLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<IdolColor>>(listOf())) }
 
+    /*
     @FlowPreview
     @ExperimentalCoroutinesApi
     val uiModel: Flow<ManualSearchUiModel>
         get() = combine(_searchParams, _idolsLoadState) { params, loadState ->
             ManualSearchUiModel(params, loadState)
         }.apply { launchIn(viewModelScope) }
+    */
 
     fun loadRandom() {
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {

@@ -1,8 +1,8 @@
 package net.subroh0508.colormaster.androidapp
 
 import android.app.Application
-import net.subroh0508.colormaster.androidapp.viewmodel.IdolSearchViewModel
 import net.subroh0508.colormaster.components.core.AppModule
+import net.subroh0508.colormaster.presentation.search.viewmodel.IdolSearchViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module

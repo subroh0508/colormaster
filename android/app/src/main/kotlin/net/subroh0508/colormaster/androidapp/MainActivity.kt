@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.material.*
 import androidx.compose.ui.platform.setContent
 import net.subroh0508.colormaster.androidapp.pages.Home
-import net.subroh0508.colormaster.androidapp.viewmodel.IdolSearchViewModel
+import net.subroh0508.colormaster.presentation.search.viewmodel.IdolSearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
