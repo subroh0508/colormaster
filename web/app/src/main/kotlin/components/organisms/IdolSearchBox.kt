@@ -17,13 +17,21 @@ import react.*
 import react.dom.form
 import utilities.inputTarget
 import utilities.invoke
+import utilities.useDebounceEffect
 import utilities.useTranslation
 
 fun RBuilder.idolSearchBox(handler: RHandler<IdolSearchBoxProps>) = child(IdolSearchBoxComponent, handler = handler)
 
+private const val DEBOUNCE_TIMEOUT_MILLS = 500L
+
 private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { props ->
     val classes = useStyle()
     val (t, _) = useTranslation()
+
+    val (idolName, setIdolName) = useState("")
+
+    useEffect(listOf(props.idolName)) { setIdolName(props.idolName ?: "") }
+    useDebounceEffect(idolName, DEBOUNCE_TIMEOUT_MILLS) { props.onChangeIdolName(it) }
 
     list {
         listItem {
@@ -33,8 +41,8 @@ private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { p
                         classes(classes.textField)
                         label { +t("searchBox.attributes.idolName") }
                         variant = FormControlVariant.outlined
-                        value = props.params.idolName?.value
-                        onChangeFunction = { e -> props.onChangeIdolName(e.inputTarget().value) }
+                        value = idolName
+                        onChangeFunction = { e -> setIdolName(e.inputTarget().value) }
                     }
                 }
             }
@@ -66,6 +74,8 @@ external interface IdolSearchBoxProps : RProps {
     var onSelectTitle: (Brands, Boolean) -> Unit
     var onSelectType: (Types, Boolean) -> Unit
 }
+
+private val IdolSearchBoxProps.idolName: String? get() = params.idolName?.value
 
 private external interface IdolSearchBoxStyle {
     val form: String
