@@ -33,8 +33,6 @@ import net.subroh0508.colormaster.presentation.search.viewmodel.IdolSearchViewMo
 @ExperimentalMaterialApi
 @ExperimentalLayout
 fun Home(viewModel: IdolSearchViewModel) {
-    val uiModel: ManualSearchUiModel by viewModel.uiModel.collectAsState(initial = ManualSearchUiModel.INITIALIZED)
-
     ModalDrawerBackdrop(
         appBar = { drawerState ->
             HomeTopBar(
@@ -43,9 +41,9 @@ fun Home(viewModel: IdolSearchViewModel) {
             )
         },
         drawerContent = { HomeDrawerContent() },
-        backLayerContent = { BackLayerContent(uiModel.params) { viewModel.searchParams = it } },
+        backLayerContent = { BackLayerContent(viewModel) { viewModel.searchParams = it } },
         frontLayerContent = { backdropScaffoldState ->
-            FrontLayerContent(uiModel, backdropScaffoldState)
+            FrontLayerContent(viewModel, backdropScaffoldState)
         },
     )
 }
@@ -79,9 +77,14 @@ private fun HomeDrawerContent() {
 @Composable
 @ExperimentalMaterialApi
 @ExperimentalLayout
-private fun BackLayerContent(params: SearchParams, onParamsChange: (SearchParams) -> Unit) {
+private fun BackLayerContent(
+    viewModel: IdolSearchViewModel,
+    onParamsChange: (SearchParams) -> Unit,
+) {
+    val uiModel: ManualSearchUiModel by viewModel.uiModel.collectAsState(initial = ManualSearchUiModel.INITIALIZED)
+
     SearchBox(
-        params,
+        uiModel.params,
         onParamsChange,
         modifier = Modifier.fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -92,9 +95,11 @@ private fun BackLayerContent(params: SearchParams, onParamsChange: (SearchParams
 @Composable
 @ExperimentalMaterialApi
 private fun FrontLayerContent(
-    uiModel: ManualSearchUiModel,
+    viewModel: IdolSearchViewModel,
     backdropScaffoldState: BackdropScaffoldState,
 ) {
+    val uiModel: ManualSearchUiModel by viewModel.uiModel.collectAsState(initial = ManualSearchUiModel.INITIALIZED)
+
     Column {
         SearchStateLabel(
             uiModel,
@@ -112,7 +117,11 @@ private fun FrontLayerContent(
                 .preferredHeight(HEADER_HEIGHT)
                 .padding(8.dp),
         )
-        ColorLists(uiModel.items, modifier = Modifier.padding(8.dp))
+        ColorLists(
+            uiModel.items,
+            onSelect = viewModel::select,
+            modifier = Modifier.padding(8.dp),
+        )
     }
 }
 

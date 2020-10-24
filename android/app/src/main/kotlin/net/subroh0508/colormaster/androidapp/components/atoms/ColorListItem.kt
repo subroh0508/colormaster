@@ -29,13 +29,17 @@ fun ColorListItem(
     color: HexColor,
     selected: Boolean = false,
     onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Card(
         elevation = 4.dp,
         backgroundColor = color.hexToColor(),
         contentColor = if (color.isBrighter) Color.Black else Color.White,
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier.clickable(
+            onClick = onClick,
+            onLongClick = onLongClick,
+        ),
     ) {
         Box(modifier.fillMaxWidth()) {
             if (selected) {
