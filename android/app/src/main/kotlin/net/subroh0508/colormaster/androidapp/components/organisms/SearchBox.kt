@@ -9,15 +9,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.components.atoms.Checkbox
 import net.subroh0508.colormaster.androidapp.components.atoms.Chip
+import net.subroh0508.colormaster.androidapp.components.atoms.DebounceTextField
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 import net.subroh0508.colormaster.androidapp.themes.lightBackground
 import net.subroh0508.colormaster.model.Brands
+import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 
@@ -29,7 +30,13 @@ fun SearchBox(
     modifier: Modifier = Modifier,
 ) {
     Column(Modifier.fillMaxWidth() + modifier) {
-
+        DebounceTextField(
+            params.idolName?.value,
+            labelRes = R.string.search_box_label_idol_name,
+            onTextChanged = { name -> onParamsChange(params.change(name?.let(::IdolName))) },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Spacer(Modifier.preferredHeight(16.dp))
         BrandChips(
             params.brands,
             onChipSelected = { brand -> onParamsChange(params.change(brand)) },
@@ -55,6 +62,7 @@ private fun BrandChips(
     )
     Spacer(Modifier.preferredHeight(16.dp))
     FlowRow(
+        mainAxisSize = SizeMode.Expand,
         mainAxisSpacing = 8.dp,
         crossAxisSpacing = 8.dp,
     ) {
@@ -93,7 +101,9 @@ private fun TypeChips(
         style = MaterialTheme.typography.subtitle1,
     )
     Spacer(Modifier.preferredHeight(16.dp))
-    FlowRow {
+    FlowRow(
+        mainAxisSize = SizeMode.Expand,
+    ) {
         types.forEachIndexed { i, type ->
             Checkbox(
                 label = type.label(),

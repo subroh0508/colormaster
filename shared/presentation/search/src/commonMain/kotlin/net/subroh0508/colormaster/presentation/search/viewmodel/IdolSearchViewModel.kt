@@ -30,7 +30,7 @@ class IdolSearchViewModel(
     val uiModel: Flow<ManualSearchUiModel>
         get() = combine(_searchParams, _idolsLoadState, _selected) { params, loadState, selected ->
             ManualSearchUiModel(params, loadState, selected)
-        }.apply { launchIn(viewModelScope) }
+        }.distinctUntilChanged().apply { launchIn(viewModelScope) }
 
     fun loadRandom() {
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
@@ -68,6 +68,8 @@ class IdolSearchViewModel(
     var searchParams: SearchParams
         get() = _searchParams.value
         set(value) {
+            if (_searchParams.value == value) return
+
             _searchParams.value = value
             search()
         }

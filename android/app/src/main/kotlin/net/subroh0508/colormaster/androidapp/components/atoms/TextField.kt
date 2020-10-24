@@ -1,5 +1,6 @@
 package net.subroh0508.colormaster.androidapp.components.atoms
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Text
 import androidx.compose.material.MaterialTheme
@@ -8,28 +9,47 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.ui.tooling.preview.Preview
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 import net.subroh0508.colormaster.androidapp.themes.captionTextStyle
 
+private const val DEBOUNCE_TIME_MILLIS = 500L
+
 @Composable
-fun TextField(
+fun DebounceTextField(
     text: String? = null,
     label: String = "",
-    onTextChanged: (String) -> Unit = {},
+    debounceTimeMillis: Long = DEBOUNCE_TIME_MILLIS,
+    onTextChanged: (String?) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var textFieldState by remember { mutableStateOf(TextFieldValue()) }
+    val debounceFlowState = remember { MutableStateFlow("") }
 
-    onCommit(text) { textFieldState = TextFieldValue(text = text ?: "") }
+    onCommit(text) {
+        if (text == textFieldState.text) return@onCommit
+
+        textFieldState = TextFieldValue(text = text ?: "")
+    }
+
+    LaunchedTask {
+        debounceFlowState.debounce(debounceTimeMillis)
+            .collect { onTextChanged(it.takeIf(String::isNotBlank)) }
+    }
 
     OutlinedTextField(
         value = textFieldState,
         label = { Text(label, style = captionTextStyle) },
         onValueChange = {
             textFieldState = it
-            onTextChanged(textFieldState.text)
+            debounceFlowState.value = textFieldState.text
         },
         textStyle = MaterialTheme.typography.body1,
         modifier = modifier,
@@ -37,14 +57,16 @@ fun TextField(
 }
 
 @Composable
-fun TextField(
+fun DebounceTextField(
     text: String? = null,
     @StringRes labelRes: Int? = null,
-    onTextChanged: (String) -> Unit = {},
+    debounceTimeMillis: Long = DEBOUNCE_TIME_MILLIS,
+    onTextChanged: (String?) -> Unit = {},
     modifier: Modifier = Modifier,
-) = TextField(
+) = DebounceTextField(
     text = text,
     label = labelRes?.let { stringResource(it) } ?: "",
+    debounceTimeMillis = debounceTimeMillis,
     onTextChanged = onTextChanged,
     modifier = modifier,
 )
@@ -56,10 +78,10 @@ fun TextFieldPreview_Light() {
 
     ColorMasterTheme(darkTheme = false) {
         Surface(color = MaterialTheme.colors.background) {
-            TextField(
+            DebounceTextField(
                 text = text,
                 label = "文字列",
-                onTextChanged = { setText(it) },
+                onTextChanged = { setText(it ?: "") },
             )
         }
     }
@@ -72,10 +94,10 @@ fun TextFieldPreview_Dark() {
 
     ColorMasterTheme(darkTheme = true) {
         Surface(color = MaterialTheme.colors.background) {
-            TextField(
+            DebounceTextField(
                 text = text,
                 label = "文字列",
-                onTextChanged = { setText(it) },
+                onTextChanged = { setText(it ?: "") },
             )
         }
     }
