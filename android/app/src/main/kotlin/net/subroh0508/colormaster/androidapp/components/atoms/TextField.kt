@@ -1,6 +1,5 @@
 package net.subroh0508.colormaster.androidapp.components.atoms
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Text
 import androidx.compose.material.MaterialTheme
@@ -9,14 +8,11 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.ui.tooling.preview.Preview
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 import net.subroh0508.colormaster.androidapp.themes.captionTextStyle
 
@@ -31,7 +27,7 @@ fun DebounceTextField(
     modifier: Modifier = Modifier,
 ) {
     var textFieldState by remember { mutableStateOf(TextFieldValue()) }
-    val debounceFlowState = remember { MutableStateFlow("") }
+    val debounceFlowState by remember { mutableStateOf(MutableStateFlow("")) }
 
     onCommit(text) {
         if (text == textFieldState.text) return@onCommit
@@ -39,7 +35,7 @@ fun DebounceTextField(
         textFieldState = TextFieldValue(text = text ?: "")
     }
 
-    LaunchedTask {
+    LaunchedTask(onTextChanged) {
         debounceFlowState.debounce(debounceTimeMillis)
             .collect { onTextChanged(it.takeIf(String::isNotBlank)) }
     }
