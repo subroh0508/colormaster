@@ -11,6 +11,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -31,6 +32,7 @@ fun DrawerButton(
         Text(
             text = label,
             style = MaterialTheme.typography.body2,
+            textAlign = TextAlign.Justify,
             modifier = Modifier.fillMaxWidth(),
         )
     }

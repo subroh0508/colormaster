@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.R
@@ -76,6 +77,7 @@ fun Alert(
             )
             Text(
                 message,
+                textAlign = TextAlign.Justify,
                 modifier = Modifier.weight(1.0F, true)
                     .align(Alignment.CenterVertically),
             )
