@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.R
@@ -28,6 +29,7 @@ fun SearchBox(
     modifier: Modifier = Modifier,
 ) {
     Column(Modifier.fillMaxWidth() + modifier) {
+
         BrandChips(
             params.brands,
             onChipSelected = { brand -> onParamsChange(params.change(brand)) },
