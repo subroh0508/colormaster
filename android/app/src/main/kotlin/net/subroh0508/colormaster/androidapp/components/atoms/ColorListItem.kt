@@ -5,6 +5,7 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -17,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
@@ -26,21 +28,52 @@ import net.subroh0508.colormaster.androidapp.themes.lightBackground
 import net.subroh0508.colormaster.model.HexColor
 
 @Composable
-fun ColorListItem(
+fun SquareColorListItem(
+    label: String,
+    color: HexColor,
+    modifier: Modifier = Modifier,
+) = ColorListItem(
+    label, color,
+    shape = RoundedCornerShape(0.dp),
+    modifier = modifier,
+)
+
+@Composable
+fun RoundedColorListItem(
     label: String,
     color: HexColor,
     selected: Boolean = false,
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
+    onDoubleClick: () -> Unit = {},
     modifier: Modifier = Modifier,
+) = ColorListItem(
+    label, color, selected,
+    onClick, onLongClick, onDoubleClick,
+    shape = MaterialTheme.shapes.medium,
+    modifier = modifier,
+)
+
+@Composable
+private fun ColorListItem(
+    label: String,
+    color: HexColor,
+    selected: Boolean = false,
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
+    onDoubleClick: () -> Unit = {},
+    shape: Shape,
+    modifier: Modifier,
 ) {
     Card(
         elevation = 4.dp,
         backgroundColor = color.hexToColor(),
         contentColor = if (color.isBrighter) Color.Black else Color.White,
+        shape = shape,
         modifier = modifier.clickable(
             onClick = onClick,
             onLongClick = onLongClick,
+            onDoubleClick = onDoubleClick,
         ),
     ) {
         Box(modifier.fillMaxWidth()) {
@@ -91,7 +124,7 @@ fun PreviewColorListItem() {
     Column {
         Column(Modifier.width(240.dp).background(lightBackground)) {
             items.forEach { (label, color) ->
-                ColorListItem(
+                RoundedColorListItem(
                     label,
                     color,
                     selected = selected.contains(label),
@@ -103,7 +136,7 @@ fun PreviewColorListItem() {
 
         Column(Modifier.width(240.dp).background(darkBackground)) {
             items.forEach { (label, color) ->
-                ColorListItem(
+                RoundedColorListItem(
                     label,
                     color,
                     selected = selected.contains(label),

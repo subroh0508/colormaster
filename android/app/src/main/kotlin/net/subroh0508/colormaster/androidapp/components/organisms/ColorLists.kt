@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import net.subroh0508.colormaster.androidapp.components.atoms.ColorListItem
+import net.subroh0508.colormaster.androidapp.components.atoms.RoundedColorListItem
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
 
@@ -18,7 +18,7 @@ private enum class UiState {
 fun ColorLists(
     items: List<IdolColorListItem>,
     onSelect: (IdolColor, Boolean) -> Unit = { _, _ -> },
-    onClick: (IdolColorListItem) -> Unit = {},
+    onDoubleClick: (IdolColor) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var uiState by remember { mutableStateOf(UiState.Preview) }
@@ -54,10 +54,11 @@ fun ColorLists(
     ) { (id, name, hexColor, selected) ->
         val idolColor = IdolColor(id, name.value, hexColor)
 
-        ColorListItem(
+        RoundedColorListItem(
             name.value, hexColor, selected,
             onClick = { handleOnClick(idolColor) },
             onLongClick = { handleOnLongClick(idolColor) },
+            onDoubleClick = { onDoubleClick(idolColor) },
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
         )
     }
