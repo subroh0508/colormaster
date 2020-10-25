@@ -81,7 +81,7 @@ private fun BackLayerContent(
     viewModel: IdolSearchViewModel,
     onParamsChange: (SearchParams) -> Unit,
 ) {
-    val uiModel: ManualSearchUiModel by viewModel.uiModel.collectAsState(initial = ManualSearchUiModel.INITIALIZED)
+    val uiModel by viewModel.uiModel.collectAsState(initial = ManualSearchUiModel.INITIALIZED)
 
     SearchBox(
         uiModel.params,

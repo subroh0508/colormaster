@@ -30,6 +30,7 @@ dependencies {
     implementation(project(":shared:components:core"))
     implementation(project(":shared:infra:repository"))
     implementation(project(":shared:presentation:search"))
+    implementation(project(":shared:presentation:preview"))
 
     implementation(Libraries.Kotlin.android)
     implementation(Libraries.Kotlin.reflect)
