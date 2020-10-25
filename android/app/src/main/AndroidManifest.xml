@@ -22,7 +22,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".pages.activity.PreviewActivity"/>
+        <activity android:name=".pages.activity.PreviewActivity"
+            android:theme="@style/AppTheme.ColorMaster.Fullscreen"/>
     </application>
 
 </manifest>
