@@ -44,6 +44,7 @@ fun SelectableColorListItem(
             if (selected) {
                 Icon(
                     Icons.Outlined.CheckCircle,
+                    tint = if (color.isBrighter) Color.Black else Color.White,
                     modifier = Modifier.align(Alignment.CenterStart),
                 )
             }
