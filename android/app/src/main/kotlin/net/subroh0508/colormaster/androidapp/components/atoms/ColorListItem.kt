@@ -5,7 +5,6 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -28,42 +27,15 @@ import net.subroh0508.colormaster.androidapp.themes.lightBackground
 import net.subroh0508.colormaster.model.HexColor
 
 @Composable
-fun SquareColorListItem(
-    label: String,
-    color: HexColor,
-    modifier: Modifier = Modifier,
-) = ColorListItem(
-    label, color,
-    shape = RoundedCornerShape(0.dp),
-    modifier = modifier,
-)
-
-@Composable
-fun RoundedColorListItem(
+fun ColorListItem(
     label: String,
     color: HexColor,
     selected: Boolean = false,
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
     onDoubleClick: () -> Unit = {},
+    shape: Shape = MaterialTheme.shapes.medium,
     modifier: Modifier = Modifier,
-) = ColorListItem(
-    label, color, selected,
-    onClick, onLongClick, onDoubleClick,
-    shape = MaterialTheme.shapes.medium,
-    modifier = modifier,
-)
-
-@Composable
-private fun ColorListItem(
-    label: String,
-    color: HexColor,
-    selected: Boolean = false,
-    onClick: () -> Unit = {},
-    onLongClick: () -> Unit = {},
-    onDoubleClick: () -> Unit = {},
-    shape: Shape,
-    modifier: Modifier,
 ) {
     Card(
         elevation = 4.dp,
@@ -84,7 +56,10 @@ private fun ColorListItem(
                 )
             }
 
-            Column(Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+                    .align(Alignment.Center),
+            ) {
                 Text(
                     label,
                     style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Medium),
@@ -124,7 +99,7 @@ fun PreviewColorListItem() {
     Column {
         Column(Modifier.width(240.dp).background(lightBackground)) {
             items.forEach { (label, color) ->
-                RoundedColorListItem(
+                ColorListItem(
                     label,
                     color,
                     selected = selected.contains(label),
@@ -136,7 +111,7 @@ fun PreviewColorListItem() {
 
         Column(Modifier.width(240.dp).background(darkBackground)) {
             items.forEach { (label, color) ->
-                RoundedColorListItem(
+                ColorListItem(
                     label,
                     color,
                     selected = selected.contains(label),

@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.R
+import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.components.atoms.*
 import net.subroh0508.colormaster.androidapp.components.molecules.DrawerMenuList
 import net.subroh0508.colormaster.androidapp.components.organisms.ColorLists
@@ -32,7 +33,10 @@ import net.subroh0508.colormaster.presentation.search.viewmodel.IdolSearchViewMo
 @Composable
 @ExperimentalMaterialApi
 @ExperimentalLayout
-fun Home(viewModel: IdolSearchViewModel) {
+fun Home(
+    viewModel: IdolSearchViewModel,
+    launchPreviewScreen: (ScreenType, List<String>) -> Unit,
+) {
     ModalDrawerBackdrop(
         appBar = { drawerState ->
             HomeTopBar(
@@ -43,7 +47,7 @@ fun Home(viewModel: IdolSearchViewModel) {
         drawerContent = { HomeDrawerContent() },
         backLayerContent = { BackLayerContent(viewModel) { viewModel.searchParams = it } },
         frontLayerContent = { backdropScaffoldState ->
-            FrontLayerContent(viewModel, backdropScaffoldState)
+            FrontLayerContent(viewModel, backdropScaffoldState, launchPreviewScreen)
         },
     )
 }
@@ -97,6 +101,7 @@ private fun BackLayerContent(
 private fun FrontLayerContent(
     viewModel: IdolSearchViewModel,
     backdropScaffoldState: BackdropScaffoldState,
+    launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
     val uiModel: ManualSearchUiModel by viewModel.uiModel.collectAsState(initial = ManualSearchUiModel.INITIALIZED)
 
@@ -120,6 +125,7 @@ private fun FrontLayerContent(
         ColorLists(
             uiModel.items,
             onSelect = viewModel::select,
+            onDoubleClick = { launchPreviewScreen(ScreenType.Penlight, listOf(it.id)) },
             modifier = Modifier.padding(8.dp),
         )
     }
