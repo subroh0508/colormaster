@@ -10,7 +10,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -77,13 +79,13 @@ fun PreviewColorListItem() {
         "有栖川夏葉" to HexColor("90E677"),
     )
 
-    val (selected, setSelected) = remember { mutableStateOf(listOf("樋口円香", "有栖川夏葉")) }
+    var selected by remember { mutableStateOf(listOf("樋口円香", "有栖川夏葉")) }
 
     fun onClick(label: String): () -> Unit = {
-        if (selected.contains(label))
-            setSelected(selected - listOf(label))
-        else
-            setSelected(selected + listOf(label))
+        selected = if (selected.contains(label))
+                       selected - listOf(label)
+                   else
+                       selected + listOf(label)
     }
 
     Column {
