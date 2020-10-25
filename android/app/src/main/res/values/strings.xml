@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name" translatable="false">COLOR M@STER</string>
 
+    <string name="loading">読み込み中&#8230;</string>
+    <string name="close">閉じる</string>
+    <string name="cancel">キャンセル</string>
+    <string name="error">エラー</string>
+
     <string name="app_menu_search_label">検索</string>
     <string name="app_menu_search_attributes">名前・属性検索</string>
     <string name="app_menu_about_label">このアプリについて</string>
@@ -37,4 +42,6 @@
     <string name="type_side_m_physical">フィジカル</string>
     <string name="type_side_m_intelligent">インテリ</string>
     <string name="type_side_m_mental">メンタル</string>
+
+    <string name="preview_loading_error">読み込みエラーが発生しました</string>
 </resources>

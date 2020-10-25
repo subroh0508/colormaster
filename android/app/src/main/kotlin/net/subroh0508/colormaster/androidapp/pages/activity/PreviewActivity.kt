@@ -24,7 +24,7 @@ class PreviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent { Preview(intent.screenType, viewModel) }
+        setContent { Preview(intent.screenType, viewModel, ::finish) }
 
         if (intent.screenType == ScreenType.Penlight) {
             lifecycle.addObserver(penlightController)
