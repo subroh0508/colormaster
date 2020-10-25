@@ -30,7 +30,6 @@ fun SelectableColorListItem(
     selected: Boolean = false,
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
-    onDoubleClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -39,7 +38,6 @@ fun SelectableColorListItem(
         modifier = modifier.clickable(
             onClick = onClick,
             onLongClick = onLongClick,
-            onDoubleClick = onDoubleClick,
         ),
     ) {
         Box(modifier.fillMaxWidth()) {

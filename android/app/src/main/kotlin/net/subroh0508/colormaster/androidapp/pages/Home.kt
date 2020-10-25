@@ -125,7 +125,7 @@ private fun FrontLayerContent(
         ColorLists(
             uiModel.items,
             onSelect = viewModel::select,
-            onDoubleClick = { launchPreviewScreen(ScreenType.Penlight, listOf(it.id)) },
+            onClick = { launchPreviewScreen(ScreenType.Penlight, listOf(it.id)) },
             modifier = Modifier.padding(8.dp),
         )
     }

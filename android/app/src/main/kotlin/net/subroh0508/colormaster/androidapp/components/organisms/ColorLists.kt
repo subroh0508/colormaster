@@ -18,7 +18,7 @@ private enum class UiState {
 fun ColorLists(
     items: List<IdolColorListItem>,
     onSelect: (IdolColor, Boolean) -> Unit = { _, _ -> },
-    onDoubleClick: (IdolColor) -> Unit = {},
+    onClick: (IdolColor) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var uiState by remember { mutableStateOf(UiState.Preview) }
@@ -42,7 +42,10 @@ fun ColorLists(
     }
 
     fun handleOnClick(item: IdolColor) {
-        if (uiState == UiState.Preview) return
+        if (uiState == UiState.Preview) {
+            onClick(item)
+            return
+        }
 
         handleOnLongClick(item)
     }
@@ -58,7 +61,6 @@ fun ColorLists(
             name.value, hexColor, selected,
             onClick = { handleOnClick(idolColor) },
             onLongClick = { handleOnLongClick(idolColor) },
-            onDoubleClick = { onDoubleClick(idolColor) },
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
         )
     }
