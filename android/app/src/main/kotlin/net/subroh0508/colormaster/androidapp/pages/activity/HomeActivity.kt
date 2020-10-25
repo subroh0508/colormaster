@@ -25,7 +25,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.loadRandom()
+        viewModel.search()
     }
 
     private fun launchPreviewActivity(
