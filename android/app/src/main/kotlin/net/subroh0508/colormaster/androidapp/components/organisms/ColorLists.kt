@@ -24,6 +24,10 @@ fun ColorLists(
     var uiState by remember { mutableStateOf(UiState.Preview) }
     val selectedIds = items.filter(IdolColorListItem::selected).map(IdolColorListItem::id)
 
+    onCommit(items.map(IdolColorListItem::id)) {
+        uiState = UiState.Preview
+    }
+
     fun handleOnLongClick(item: IdolColor) {
         onSelect(item, !selectedIds.contains(item.id))
         if (uiState == UiState.Select && (selectedIds - listOf(item.id)).isEmpty()) {
@@ -43,8 +47,6 @@ fun ColorLists(
         handleOnLongClick(item)
     }
 
-    val listItemModifier = Modifier.padding(vertical = 4.dp)
-
     LazyColumnFor(
         items,
         contentPadding = PaddingValues(top = 4.dp, bottom = 4.dp),
@@ -56,7 +58,7 @@ fun ColorLists(
             name.value, hexColor, selected,
             onClick = { handleOnClick(idolColor) },
             onLongClick = { handleOnLongClick(idolColor) },
-            modifier = listItemModifier,
+            modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
         )
     }
 }
