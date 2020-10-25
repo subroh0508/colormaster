@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.runtime.Composable
@@ -16,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.components.atoms.ColorItemContent
@@ -33,14 +31,11 @@ fun SelectableColorListItem(
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
     onDoubleClick: () -> Unit = {},
-    shape: Shape = MaterialTheme.shapes.medium,
     modifier: Modifier = Modifier,
 ) {
     Card(
         elevation = 4.dp,
         backgroundColor = color.hexToColor(),
-        contentColor = if (color.isBrighter) Color.Black else Color.White,
-        shape = shape,
         modifier = modifier.clickable(
             onClick = onClick,
             onLongClick = onLongClick,
