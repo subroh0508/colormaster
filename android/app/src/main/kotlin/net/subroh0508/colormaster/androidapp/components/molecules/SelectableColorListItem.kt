@@ -1,7 +1,6 @@
-package net.subroh0508.colormaster.androidapp.components.atoms
+package net.subroh0508.colormaster.androidapp.components.molecules
 
 import androidx.compose.foundation.Icon
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,16 +17,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import net.subroh0508.colormaster.androidapp.components.atoms.ColorItemContent
 import net.subroh0508.colormaster.androidapp.themes.darkBackground
 import net.subroh0508.colormaster.androidapp.themes.hexToColor
 import net.subroh0508.colormaster.androidapp.themes.lightBackground
 import net.subroh0508.colormaster.model.HexColor
 
 @Composable
-fun ColorListItem(
+fun SelectableColorListItem(
     label: String,
     color: HexColor,
     selected: Boolean = false,
@@ -56,23 +55,11 @@ fun ColorListItem(
                 )
             }
 
-            Column(
+            ColorItemContent(
+                label, color,
                 modifier = Modifier.fillMaxWidth()
                     .align(Alignment.Center),
-            ) {
-                Text(
-                    label,
-                    style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Medium),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                        .padding(top = 8.dp, start = 24.dp, end = 24.dp),
-                )
-                Text(
-                    "#${color.value}",
-                    style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Medium),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                        .padding(bottom = 8.dp, start = 24.dp, end = 24.dp),
-                )
-            }
+            )
         }
     }
 }
@@ -99,7 +86,7 @@ fun PreviewColorListItem() {
     Column {
         Column(Modifier.width(240.dp).background(lightBackground)) {
             items.forEach { (label, color) ->
-                ColorListItem(
+                SelectableColorListItem(
                     label,
                     color,
                     selected = selected.contains(label),
@@ -111,7 +98,7 @@ fun PreviewColorListItem() {
 
         Column(Modifier.width(240.dp).background(darkBackground)) {
             items.forEach { (label, color) ->
-                ColorListItem(
+                SelectableColorListItem(
                     label,
                     color,
                     selected = selected.contains(label),

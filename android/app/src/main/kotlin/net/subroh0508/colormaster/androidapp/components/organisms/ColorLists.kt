@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import net.subroh0508.colormaster.androidapp.components.atoms.ColorListItem
+import net.subroh0508.colormaster.androidapp.components.molecules.SelectableColorListItem
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
 
@@ -54,7 +54,7 @@ fun ColorLists(
     ) { (id, name, hexColor, selected) ->
         val idolColor = IdolColor(id, name.value, hexColor)
 
-        ColorListItem(
+        SelectableColorListItem(
             name.value, hexColor, selected,
             onClick = { handleOnClick(idolColor) },
             onLongClick = { handleOnLongClick(idolColor) },

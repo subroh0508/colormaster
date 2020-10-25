@@ -7,6 +7,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.platform.setContent
 import net.subroh0508.colormaster.androidapp.pages.Preview
 import net.subroh0508.colormaster.androidapp.previewIdolIds
+import net.subroh0508.colormaster.androidapp.screenType
 import net.subroh0508.colormaster.presentation.preview.viewmodel.PreviewViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -18,7 +19,7 @@ class PreviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent { Preview(viewModel) }
+        setContent { Preview(intent.screenType, viewModel) }
     }
 
     override fun onResume() {
