@@ -25,6 +25,7 @@ import net.subroh0508.colormaster.androidapp.components.organisms.HomeTopBar
 import net.subroh0508.colormaster.androidapp.components.organisms.SearchBox
 import net.subroh0508.colormaster.androidapp.components.templates.HEADER_HEIGHT
 import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawerBackdrop
+import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.model.SearchState
@@ -126,6 +127,9 @@ private fun FrontLayerContent(
             uiModel.items,
             onSelect = viewModel::select,
             onClick = { launchPreviewScreen(ScreenType.Penlight, listOf(it.id)) },
+            onPreviewClick = { launchPreviewScreen(ScreenType.Preview, uiModel.selectedItems.map(IdolColor::id)) },
+            onPenlightClick = { launchPreviewScreen(ScreenType.Penlight, uiModel.selectedItems.map(IdolColor::id)) },
+            onAllClick = viewModel::selectAll,
             modifier = Modifier.fillMaxSize(),
         )
     }

@@ -29,6 +29,9 @@ fun ColorLists(
     items: List<IdolColorListItem>,
     onSelect: (IdolColor, Boolean) -> Unit = { _, _ -> },
     onClick: (IdolColor) -> Unit = {},
+    onPreviewClick: () -> Unit = {},
+    onPenlightClick: () -> Unit = {},
+    onAllClick: (Boolean) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var uiState by remember { mutableStateOf(UiState.Preview) }
@@ -80,6 +83,9 @@ fun ColorLists(
 
         BottomButtons(
             isEmpty = selectedIds.isEmpty(),
+            onPreviewClick = onPreviewClick,
+            onPenlightClick = onPenlightClick,
+            onAllClick = onAllClick,
             modifier = Modifier.align(Alignment.BottomCenter)
                 .background(color = MaterialTheme.colors.surface),
         )
@@ -100,6 +106,7 @@ private fun BottomButtons(
             stringResource(R.string.search_box_bottom_preview),
             vectorResource(R.drawable.ic_palette_24dp),
             onClick = onPreviewClick,
+            enabled = !isEmpty,
             shape = RoundedCornerShape(
                 topLeft = 4.dp,
                 topRight = 0.dp,
@@ -113,6 +120,7 @@ private fun BottomButtons(
             stringResource(R.string.search_box_bottom_penlight),
             vectorResource(R.drawable.ic_highlight_24dp),
             onClick = onPenlightClick,
+            enabled = !isEmpty,
             shape = RoundedCornerShape(0.dp),
             modifier = Modifier.weight(1.0F, true),
         )
