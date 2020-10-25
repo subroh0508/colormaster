@@ -16,6 +16,11 @@
     <string name="search_box_label_brands">ブランド</string>
     <string name="search_box_label_type">属性</string>
 
+    <string name="search_box_bottom_preview">プレビュー</string>
+    <string name="search_box_bottom_penlight">ペンライト</string>
+    <string name="search_box_bottom_all">すべて</string>
+    <string name="search_box_bottom_clear">選択解除</string>
+
     <string name="search_state_label_random">ランダムに10人表示中</string>
     <string name="search_state_label_waiting">検索中&#8230;</string>
     <string name="search_state_label_error">エラー: %s</string>

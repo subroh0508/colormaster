@@ -126,7 +126,7 @@ private fun FrontLayerContent(
             uiModel.items,
             onSelect = viewModel::select,
             onClick = { launchPreviewScreen(ScreenType.Penlight, listOf(it.id)) },
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }
