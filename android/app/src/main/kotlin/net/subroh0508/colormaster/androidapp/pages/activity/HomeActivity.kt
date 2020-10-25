@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.androidapp
+package net.subroh0508.colormaster.androidapp.pages.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +9,7 @@ import net.subroh0508.colormaster.androidapp.pages.Home
 import net.subroh0508.colormaster.presentation.search.viewmodel.IdolSearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity() {
     private val viewModel: IdolSearchViewModel by viewModel()
 
     @ExperimentalMaterialApi

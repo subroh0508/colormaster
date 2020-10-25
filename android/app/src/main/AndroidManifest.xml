@@ -13,7 +13,7 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme.ColorMaster.DayNight"
         android:name=".ColorMasterApplication">
-        <activity android:name=".MainActivity"
+        <activity android:name=".pages.activity.HomeActivity"
             android:windowSoftInputMode="stateUnspecified|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
