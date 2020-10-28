@@ -14,21 +14,20 @@ internal class IdolColorsRepositoryImpl(
     private val database: IdolColorsDatabase,
     private val appPreference: AppPreference,
 ) : IdolColorsRepository {
-    override suspend fun rand(limit: Int): List<IdolColor> = imasparqlClient.search(ImasparqlQueries.rand(appPreference.lang.code, limit)).toIdolColors()
+    override suspend fun rand(limit: Int) =
+        imasparqlClient.search(ImasparqlQueries.rand(appPreference.lang.code, limit)).toIdolColors()
 
     override suspend fun search(name: IdolName?, brands: Brands?, types: Set<Types>) =
         imasparqlClient.search(ImasparqlQueries.search(appPreference.lang.code, name, brands, types)).toIdolColors()
 
-    override suspend fun search(ids: List<String>): List<IdolColor>  =
+    override suspend fun search(ids: List<String>)  =
         imasparqlClient.search(ImasparqlQueries.search(appPreference.lang.code, ids)).toIdolColors()
 
-    override suspend fun favorite(id: String) {
+    override suspend fun getFavoriteIdolIds(): Set<String> = database.getFavorites()
 
-    }
+    override suspend fun favorite(id: String) = database.addFavorite(id)
 
-    override suspend fun unfavorite(id: String) {
-
-    }
+    override suspend fun unfavorite(id: String) = database.removeFavorite(id)
 
     private fun Response<IdolColorJson>.toIdolColors(): List<IdolColor> = results.bindings.mapNotNull { (idMap, nameMap, colorMap) ->
         val id = idMap["value"] ?: return@mapNotNull null
