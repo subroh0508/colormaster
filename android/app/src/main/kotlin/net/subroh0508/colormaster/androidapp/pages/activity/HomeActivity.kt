@@ -26,6 +26,7 @@ class HomeActivity : AppCompatActivity() {
         super.onResume()
 
         viewModel.search()
+        viewModel.loadFavorites()
     }
 
     private fun launchPreviewActivity(

@@ -22,14 +22,21 @@ class IdolSearchViewModel(
     private val _idolsLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<IdolColor>>(listOf())) }
     @ExperimentalCoroutinesApi
     private val _selected: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
+    @ExperimentalCoroutinesApi
+    private val _favorites: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
 
     private val items: List<IdolColor> get() = _idolsLoadState.value.getValueOrNull() ?: listOf()
 
     @FlowPreview
     @ExperimentalCoroutinesApi
     val uiModel: Flow<ManualSearchUiModel>
-        get() = combine(_searchParams, _idolsLoadState, _selected) { params, loadState, selected ->
-            ManualSearchUiModel(params, loadState, selected)
+        get() = combine(
+            _searchParams,
+            _idolsLoadState,
+            _selected,
+            _favorites,
+        ) { params, loadState, selected, favorites ->
+            ManualSearchUiModel(params, loadState, selected, favorites)
         }.distinctUntilChanged().apply { launchIn(viewModelScope) }
 
     fun loadRandom() {
@@ -76,6 +83,24 @@ class IdolSearchViewModel(
 
     fun select(item: IdolColor, selected: Boolean) { _selected.value = if (selected) _selected.value + listOf(item.id) else _selected.value - listOf(item.id) }
     fun selectAll(selected: Boolean) { _selected.value = if (selected) items.map(IdolColor::id) else listOf() }
+
+    fun loadFavorites() {
+        viewModelScope.launch { _favorites.value = repository.getFavoriteIdolIds() }
+    }
+
+    fun favorite(id: String) {
+        viewModelScope.launch {
+            repository.favorite(id)
+            _favorites.value = repository.getFavoriteIdolIds()
+        }
+    }
+
+    fun unfavorite(id: String) {
+        viewModelScope.launch {
+            repository.unfavorite(id)
+            _favorites.value = repository.getFavoriteIdolIds()
+        }
+    }
 
     private fun startLoading() {
         _idolsLoadState.value = LoadState.Loading

@@ -23,7 +23,7 @@ internal class IdolColorsRepositoryImpl(
     override suspend fun search(ids: List<String>)  =
         imasparqlClient.search(ImasparqlQueries.search(appPreference.lang.code, ids)).toIdolColors()
 
-    override suspend fun getFavoriteIdolIds(): Set<String> = database.getFavorites()
+    override suspend fun getFavoriteIdolIds(): List<String> = database.getFavorites().toList()
 
     override suspend fun favorite(id: String) = database.addFavorite(id)
 

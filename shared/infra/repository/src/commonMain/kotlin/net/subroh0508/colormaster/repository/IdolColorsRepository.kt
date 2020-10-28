@@ -12,7 +12,7 @@ interface IdolColorsRepository {
 
     suspend fun search(ids: List<String>): List<IdolColor>
 
-    suspend fun getFavoriteIdolIds(): Set<String>
+    suspend fun getFavoriteIdolIds(): List<String>
 
     suspend fun favorite(id: String)
 
