@@ -13,6 +13,7 @@ kotlin {
                 implementation(project(":shared:model"))
                 implementation(project(":shared:infra:repository"))
                 implementation(project(":shared:infra:api"))
+                implementation(project(":shared:infra:db"))
 
                 implementation(Libraries.Kotlin.common)
 

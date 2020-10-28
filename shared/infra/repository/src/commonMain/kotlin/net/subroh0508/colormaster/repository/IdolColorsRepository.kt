@@ -11,4 +11,8 @@ interface IdolColorsRepository {
     suspend fun search(name: IdolName?, brands: Brands?, types: Set<Types>): List<IdolColor>
 
     suspend fun search(ids: List<String>): List<IdolColor>
+
+    suspend fun favorite(id: String)
+
+    suspend fun unfavorite(id: String)
 }

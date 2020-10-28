@@ -12,6 +12,7 @@ kotlin {
             dependencies {
                 implementation(project(":shared:model"))
                 implementation(project(":shared:infra:api"))
+                implementation(project(":shared:infra:db"))
                 implementation(project(":shared:infra:query"))
 
                 implementation(Libraries.Kotlin.common)
