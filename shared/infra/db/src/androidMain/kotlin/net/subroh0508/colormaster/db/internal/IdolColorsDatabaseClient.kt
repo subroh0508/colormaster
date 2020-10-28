@@ -1,13 +1,17 @@
 package net.subroh0508.colormaster.db.internal
 
-import android.content.SharedPreferences
+import android.app.Application
+import android.content.Context
 import androidx.core.content.edit
 import net.subroh0508.colormaster.db.IdolColorsDatabase
+import net.subroh0508.colormaster.db.IdolColorsDatabase.Companion.FAVORITE_DB
 import net.subroh0508.colormaster.db.IdolColorsDatabase.Companion.FAVORITE_KEY
 
 internal actual class IdolColorsDatabaseClient(
-    private val preferences: SharedPreferences
+    app: Application,
 ) : IdolColorsDatabase {
+    private val preferences = app.getSharedPreferences(FAVORITE_DB, Context.MODE_PRIVATE)
+
     override suspend fun addFavorite(id: String) =
         preferences.edit { putStringSet(FAVORITE_KEY, idsFromLocal.apply { add(id) }) }
 

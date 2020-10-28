@@ -14,6 +14,7 @@ class ColorMasterApplication : Application() {
 
         startKoin {
             modules(AppModule + AppPreferenceModule + module {
+                single<Application> { this@ColorMasterApplication }
                 viewModel { IdolSearchViewModel(get()) }
                 viewModel { PreviewViewModel(get()) }
             })
