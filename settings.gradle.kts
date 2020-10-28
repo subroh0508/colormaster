@@ -7,6 +7,7 @@ include(
     ":shared:infra:repository",
     ":shared:infra:query",
     ":shared:infra:api",
+    ":shared:infra:db",
     ":shared:presentation:search",
     ":shared:presentation:preview"
 )
