@@ -6,6 +6,7 @@ interface IdolColorsDatabase {
         internal const val FAVORITE_KEY = "FAVORITE"
     }
 
+    suspend fun getFavorites(): Set<String>
     suspend fun addFavorite(id: String)
     suspend fun removeFavorite(id: String)
 }

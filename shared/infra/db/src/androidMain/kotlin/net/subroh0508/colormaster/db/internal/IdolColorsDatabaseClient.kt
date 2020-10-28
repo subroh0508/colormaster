@@ -12,12 +12,12 @@ internal actual class IdolColorsDatabaseClient(
 ) : IdolColorsDatabase {
     private val preferences = app.getSharedPreferences(FAVORITE_DB, Context.MODE_PRIVATE)
 
+    override suspend fun getFavorites() =
+        preferences.getStringSet(FAVORITE_KEY, setOf()) ?: setOf()
+
     override suspend fun addFavorite(id: String) =
-        preferences.edit { putStringSet(FAVORITE_KEY, idsFromLocal.apply { add(id) }) }
+        preferences.edit { putStringSet(FAVORITE_KEY, getFavorites().toMutableSet().apply { add(id) }) }
 
     override suspend fun removeFavorite(id: String) =
-        preferences.edit { putStringSet(FAVORITE_KEY, idsFromLocal.apply { remove(id) }) }
-
-    private val idsFromLocal: MutableSet<String>
-        get() = preferences.getStringSet(FAVORITE_KEY, setOf())?.toMutableSet() ?: mutableSetOf()
+        preferences.edit { putStringSet(FAVORITE_KEY, getFavorites().toMutableSet().apply { remove(id) }) }
 }
