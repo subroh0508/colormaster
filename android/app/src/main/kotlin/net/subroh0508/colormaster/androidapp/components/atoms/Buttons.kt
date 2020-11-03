@@ -32,9 +32,8 @@ fun OutlinedButton(
 ) = ComposeOutlinedButton(
     onClick = onClick,
     enabled = enabled,
-    contentColor = ButtonConstants.defaultButtonContentColor(
-        enabled,
-        MaterialTheme.colors.onSurface,
+    colors = ButtonConstants.defaultOutlinedButtonColors(
+        contentColor = MaterialTheme.colors.onSurface,
     ),
     shape = shape,
     contentPadding = PaddingValues(

@@ -29,13 +29,16 @@ private fun ColumnScope.StaticColorListItem(
     label: String,
     color: HexColor,
 ) {
-    Box(
-        modifier = Modifier.fillMaxWidth()
-            .weight(1.0F, true)
-            .background(color = color.hexToColor())
-    ) {
-        if (type == ScreenType.Penlight) return@Box
+    val boxModifier = Modifier.fillMaxWidth()
+        .weight(1.0F, true)
+        .background(color = color.hexToColor())
 
+    if (type == ScreenType.Penlight) {
+        Box(modifier = boxModifier)
+        return
+    }
+
+    Box(modifier = boxModifier) {
         ColorItemContent(
             label, color,
             modifier = Modifier.fillMaxWidth()

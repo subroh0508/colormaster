@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.material.ButtonConstants
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -22,7 +23,9 @@ fun DrawerButton(
 ) {
     TextButton(
         onClick = onClick,
-        contentColor = MaterialTheme.colors.onSurface,
+        colors = ButtonConstants.defaultTextButtonColors(
+            contentColor = MaterialTheme.colors.onSurface,
+        ),
         modifier = Modifier.fillMaxWidth()
             .preferredHeight(48.dp),
     ) {

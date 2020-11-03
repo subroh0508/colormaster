@@ -3,6 +3,7 @@ package net.subroh0508.colormaster.androidapp.components.atoms
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.CheckboxConstants
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +26,9 @@ fun Checkbox(
         ComposeCheckbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
-            checkedColor = MaterialTheme.colors.primary,
+            colors = CheckboxConstants.defaultColors(
+                checkedColor = MaterialTheme.colors.primary,
+            ),
             modifier = modifier,
         )
 
@@ -36,7 +39,9 @@ fun Checkbox(
         ComposeCheckbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
-            checkedColor = MaterialTheme.colors.primary,
+            colors = CheckboxConstants.defaultColors(
+                checkedColor = MaterialTheme.colors.primary,
+            ),
             modifier = Modifier.padding(end = 9.dp),
         )
         Text(
