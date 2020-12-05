@@ -1,5 +1,6 @@
 package net.subroh0508.colormaster.androidapp.themes
 
+import android.graphics.Color.parseColor as androidParseColor
 import androidx.compose.ui.graphics.Color
 import net.subroh0508.colormaster.model.HexColor
 
@@ -22,7 +23,7 @@ val green500 = Color(0xFF4CAF50)
 val orange500 = Color(0xFFFF9800)
 val red500 = Color(0xFFF44336)
 
-fun HexColor.hexToColor() = android.graphics.Color.parseColor("#$value").let { hex ->
+fun HexColor.hexToColor() = androidParseColor("#$value").let { hex ->
     Color(
             red = (hex and 0xFF0000) shr 16,
             green = (hex and 0xFF00) shr 8,

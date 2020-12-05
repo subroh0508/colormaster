@@ -1,6 +1,6 @@
 package net.subroh0508.colormaster.androidapp.components.atoms
 
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CheckboxConstants

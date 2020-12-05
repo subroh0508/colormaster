@@ -1,12 +1,13 @@
 package net.subroh0508.colormaster.androidapp.components.atoms
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.ui.tooling.preview.Preview
@@ -35,7 +36,7 @@ fun DebounceTextField(
         textFieldState = TextFieldValue(text = text ?: "")
     }
 
-    LaunchedTask(onTextChanged) {
+    LaunchedEffect(onTextChanged) {
         debounceFlowState.debounce(debounceTimeMillis)
             .collect { onTextChanged(it.takeIf(String::isNotBlank)) }
     }
@@ -47,7 +48,10 @@ fun DebounceTextField(
             textFieldState = it
             debounceFlowState.value = textFieldState.text
         },
-        textStyle = MaterialTheme.typography.body1,
+        // Do not become onSurface without overriding the character color
+        textStyle = MaterialTheme.typography.body1.copy(
+            MaterialTheme.colors.onSurface,
+        ),
         modifier = modifier,
     )
 }

@@ -1,6 +1,6 @@
 package net.subroh0508.colormaster.androidapp.pages
 
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.TextButton

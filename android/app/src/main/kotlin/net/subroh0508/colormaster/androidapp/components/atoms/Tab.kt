@@ -1,11 +1,12 @@
 package net.subroh0508.colormaster.androidapp.components.atoms
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Tab as MaterialTab
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,7 +24,7 @@ fun Tab(
                 .then(textModifier)
     }
 
-    androidx.compose.material.Tab(
+    MaterialTab(
         selected = selected,
         onClick = onClick,
     ) {
