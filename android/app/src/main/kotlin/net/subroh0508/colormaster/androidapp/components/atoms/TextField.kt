@@ -48,10 +48,7 @@ fun DebounceTextField(
             textFieldState = it
             debounceFlowState.value = textFieldState.text
         },
-        // Do not become onSurface without overriding the character color
-        textStyle = MaterialTheme.typography.body1.copy(
-            MaterialTheme.colors.onSurface,
-        ),
+        textStyle = MaterialTheme.typography.body1,
         modifier = modifier,
     )
 }
