@@ -2,7 +2,7 @@ package net.subroh0508.colormaster.androidapp.components.organisms
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -62,22 +62,23 @@ fun ColorLists(
     }
 
     Box(modifier) {
-        LazyColumnFor(
-            items,
-            contentPadding = PaddingValues(top = 4.dp, bottom = 4.dp),
+        LazyColumn(
             modifier = Modifier.padding(
                 start = 4.dp, top = 8.dp, end = 4.dp, bottom = 52.dp,
             ),
-        ) { (id, name, hexColor, selected) ->
-            val idolColor = IdolColor(id, name.value, hexColor)
+            contentPadding = PaddingValues(top = 4.dp, bottom = 4.dp)
+        ) {
+            items(items) { (id, name, hexColor, selected) ->
+                val idolColor = IdolColor(id, name.value, hexColor)
 
-            SelectableColorListItem(
-                name.value, hexColor,
-                selected = selected,
-                onClick = { handleOnClick(idolColor) },
-                onLongClick = { handleOnLongClick(idolColor) },
-                modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
-            )
+                SelectableColorListItem(
+                    name.value, hexColor,
+                    selected = selected,
+                    onClick = { handleOnClick(idolColor) },
+                    onLongClick = { handleOnLongClick(idolColor) },
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
+                )
+            }
         }
 
         BottomButtons(
