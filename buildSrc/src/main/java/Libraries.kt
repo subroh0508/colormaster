@@ -12,7 +12,7 @@ object Libraries {
     }
 
     object Kotlin {
-        const val version = "1.4.10"
+        const val version = "1.4.21"
 
         const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
         const val android = "org.jetbrains.kotlin:kotlin-stdlib:$version"
@@ -33,7 +33,7 @@ object Libraries {
     }
 
     object Coroutines {
-        const val version = "1.3.9"
+        const val version = "1.4.2"
 
         const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
@@ -41,7 +41,7 @@ object Libraries {
     }
 
     object Ktor {
-        const val version = "1.4.0"
+        const val version = "1.4.3"
 
         const val clientCommon = "io.ktor:ktor-client-core:$version"
         const val clientAndroid = "io.ktor:ktor-client-okhttp:$version"
@@ -116,11 +116,11 @@ object Libraries {
         }
 
         object Compose {
-            const val version = "1.0.0-alpha07"
+            const val version = "1.0.0-alpha09"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val material = "androidx.compose.material:material:$version"
-            const val uiTooling = "androidx.ui:ui-tooling:$version"
+            const val uiTooling = "androidx.compose.ui:ui-tooling:$version"
         }
 
         object Lifecycle {
@@ -143,7 +143,7 @@ object Libraries {
     }
 
     object JsWrappers {
-        const val version = "pre.124-kotlin-${Kotlin.version}"
+        const val version = "pre.132-kotlin-${Kotlin.version}"
 
         const val reactVersion = "${Npm.reactVersion}-$version"
         const val react = "org.jetbrains:kotlin-react:$reactVersion"
@@ -159,17 +159,17 @@ object Libraries {
         const val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.5.3"
+            const val version = "0.5.4"
             const val core = "net.subroh0508.kotlinmaterialui:core:$version"
         }
     }
 
     object Npm {
-        const val reactVersion = "16.13.1"
+        const val reactVersion = "17.0.0"
         const val react = "react"
         const val reactDom = "react-dom"
 
-        const val reactRouterDomVersion = "5.1.2"
+        const val reactRouterDomVersion = "5.2.0"
         const val reactRouterDom = "react-router-dom"
 
         const val styledComponentVersion = "5.2.0"
@@ -191,7 +191,7 @@ object Libraries {
             const val httpBackendVersion = "^1.0.15"
             const val httpBackend = "i18next-http-backend"
 
-            const val reactVersion = "^11.5.0"
+            const val reactVersion = "^11.8.0"
             const val react = "react-i18next"
         }
     }

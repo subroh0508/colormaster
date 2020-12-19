@@ -8,12 +8,7 @@ import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.accept
 import io.ktor.http.URLProtocol
 import io.ktor.http.userAgent
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.modules.serializersModule
-import kotlinx.serialization.modules.serializersModuleOf
 import net.subroh0508.colormaster.api.BuildConfig
-import net.subroh0508.colormaster.api.ImasparqlClient
 import net.subroh0508.colormaster.api.internal.ContentType
 import net.subroh0508.colormaster.api.internal.UserAgent
 import net.subroh0508.colormaster.query.HOSTNAME
