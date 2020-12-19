@@ -11,13 +11,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun DrawerButton(
-    asset: VectorAsset,
+    asset: ImageVector,
     label: String,
     onClick: () -> Unit,
 ) {

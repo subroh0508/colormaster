@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.components.atoms.Checkbox
 import net.subroh0508.colormaster.androidapp.components.atoms.Chip
@@ -29,7 +29,7 @@ fun SearchBox(
     onParamsChange: (SearchParams) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    Column(Modifier.fillMaxWidth() + modifier) {
+    Column(Modifier.fillMaxWidth().then(modifier)) {
         DebounceTextField(
             params.idolName?.value,
             labelRes = R.string.search_box_label_idol_name,

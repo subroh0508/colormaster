@@ -12,10 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 import net.subroh0508.colormaster.androidapp.themes.darkBackground
@@ -24,7 +24,7 @@ import net.subroh0508.colormaster.androidapp.themes.lightBackground
 @Composable
 fun OutlinedButton(
     label: String,
-    asset: VectorAsset? = null,
+    asset: ImageVector? = null,
     enabled: Boolean = true,
     onClick: () -> Unit = {},
     shape: Shape = MaterialTheme.shapes.small,

@@ -16,49 +16,49 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.themes.*
 
 @Composable
 fun InfoAlert(
     message: String,
-    endAsset: VectorAsset? = null,
+    endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) = Alert(Icons.Outlined.Info, message, blue500, endAsset, onClickEndIcon, modifier)
 @Composable
 fun SuccessAlert(
     message: String,
-    endAsset: VectorAsset? = null,
+    endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) = Alert(Icons.Outlined.CheckCircle, message, green500, endAsset, onClickEndIcon, modifier)
 @Composable
 fun WarningAlert(
     message: String,
-    endAsset: VectorAsset? = null,
+    endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) = Alert(Icons.Outlined.Warning, message, orange500, endAsset, onClickEndIcon, modifier)
 @Composable
 fun ErrorAlert(
     message: String,
-    endAsset: VectorAsset? = null,
+    endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) = Alert(vectorResource(R.drawable.ic_error_outline_24dp), message, red500, endAsset, onClickEndIcon, modifier)
 
 @Composable
 fun Alert(
-    asset: VectorAsset,
+    asset: ImageVector,
     message: String,
     color: Color,
-    endAsset: VectorAsset? = null,
+    endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
@@ -70,7 +70,7 @@ fun Alert(
     ) {
         Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
             Icon(
-                asset = asset,
+                imageVector = asset,
                 tint = color,
                 modifier = Modifier.padding(end = 12.dp)
                     .align(Alignment.CenterVertically),
@@ -84,7 +84,7 @@ fun Alert(
 
             if (endAsset != null) {
                 Icon(
-                    asset = endAsset,
+                    imageVector = endAsset,
                     tint = MaterialTheme.colors.onSurface,
                     modifier = Modifier.padding(start = 12.dp)
                         .align(Alignment.CenterVertically)

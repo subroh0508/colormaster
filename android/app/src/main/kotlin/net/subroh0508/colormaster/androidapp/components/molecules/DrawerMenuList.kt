@@ -10,14 +10,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import net.subroh0508.colormaster.androidapp.components.atoms.DrawerButton
 
 @Composable
 fun DrawerMenuList(
     label: String? = null,
-    items: Array<Pair<VectorAsset, String>>,
+    items: Array<Pair<ImageVector, String>>,
     onClick: (String) -> Unit,
 ) {
     label?.let {

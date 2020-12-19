@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 import net.subroh0508.colormaster.androidapp.themes.darkBackground
 import net.subroh0508.colormaster.androidapp.themes.lightBackground
