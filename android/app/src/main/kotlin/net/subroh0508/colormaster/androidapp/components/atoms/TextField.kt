@@ -21,11 +21,11 @@ private const val DEBOUNCE_TIME_MILLIS = 500L
 
 @Composable
 fun DebounceTextField(
+    modifier: Modifier = Modifier,
     text: String? = null,
     label: String = "",
     debounceTimeMillis: Long = DEBOUNCE_TIME_MILLIS,
     onTextChanged: (String?) -> Unit = {},
-    modifier: Modifier = Modifier,
 ) {
     var textFieldState by remember { mutableStateOf(TextFieldValue()) }
     val debounceFlowState by remember { mutableStateOf(MutableStateFlow("")) }
@@ -58,11 +58,11 @@ fun DebounceTextField(
 
 @Composable
 fun DebounceTextField(
+    modifier: Modifier = Modifier,
     text: String? = null,
     @StringRes labelRes: Int? = null,
     debounceTimeMillis: Long = DEBOUNCE_TIME_MILLIS,
     onTextChanged: (String?) -> Unit = {},
-    modifier: Modifier = Modifier,
 ) = DebounceTextField(
     text = text,
     label = labelRes?.let { stringResource(it) } ?: "",

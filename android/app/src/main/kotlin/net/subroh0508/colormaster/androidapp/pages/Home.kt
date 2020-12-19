@@ -90,7 +90,7 @@ private fun BackLayerContent(
 
     SearchBox(
         uiModel.params,
-        onParamsChange,
+        onParamsChange = onParamsChange,
         modifier = Modifier.fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .background(MaterialTheme.colors.background),
@@ -142,10 +142,10 @@ private fun SearchStateLabel(
     onClick: () -> Unit,
     modifier: Modifier,
 ) = when (uiModel.searchState) {
-    SearchState.RANDOM -> InfoAlert(stringResource(R.string.search_state_label_random), endAsset, onClick, modifier)
-    SearchState.WAITING -> WarningAlert(stringResource(R.string.search_state_label_waiting), endAsset, onClick, modifier)
-    SearchState.SEARCHED -> SuccessAlert(stringResource(R.string.search_state_label_searched, uiModel.items.size), endAsset, onClick, modifier)
-    SearchState.ERROR -> ErrorAlert(stringResource(R.string.search_state_label_error, uiModel.error?.message ?: ""), endAsset, onClick, modifier)
+    SearchState.RANDOM -> InfoAlert(stringResource(R.string.search_state_label_random), modifier, endAsset, onClick)
+    SearchState.WAITING -> WarningAlert(stringResource(R.string.search_state_label_waiting), modifier, endAsset, onClick)
+    SearchState.SEARCHED -> SuccessAlert(stringResource(R.string.search_state_label_searched, uiModel.items.size), modifier, endAsset, onClick)
+    SearchState.ERROR -> ErrorAlert(stringResource(R.string.search_state_label_error, uiModel.error?.message ?: ""), modifier, endAsset, onClick)
 }
 
 @Preview

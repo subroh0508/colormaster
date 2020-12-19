@@ -27,40 +27,40 @@ import net.subroh0508.colormaster.androidapp.themes.*
 @Composable
 fun InfoAlert(
     message: String,
+    modifier: Modifier = Modifier,
     endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
-    modifier: Modifier = Modifier,
-) = Alert(Icons.Outlined.Info, message, blue500, endAsset, onClickEndIcon, modifier)
+) = Alert(Icons.Outlined.Info, message, blue500, modifier, endAsset, onClickEndIcon)
 @Composable
 fun SuccessAlert(
     message: String,
+    modifier: Modifier = Modifier,
     endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
-    modifier: Modifier = Modifier,
-) = Alert(Icons.Outlined.CheckCircle, message, green500, endAsset, onClickEndIcon, modifier)
+) = Alert(Icons.Outlined.CheckCircle, message, green500, modifier, endAsset, onClickEndIcon)
 @Composable
 fun WarningAlert(
     message: String,
+    modifier: Modifier = Modifier,
     endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
-    modifier: Modifier = Modifier,
-) = Alert(Icons.Outlined.Warning, message, orange500, endAsset, onClickEndIcon, modifier)
+) = Alert(Icons.Outlined.Warning, message, orange500, modifier, endAsset, onClickEndIcon)
 @Composable
 fun ErrorAlert(
     message: String,
+    modifier: Modifier = Modifier,
     endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
-    modifier: Modifier = Modifier,
-) = Alert(vectorResource(R.drawable.ic_error_outline_24dp), message, red500, endAsset, onClickEndIcon, modifier)
+) = Alert(vectorResource(R.drawable.ic_error_outline_24dp), message, red500, modifier, endAsset, onClickEndIcon)
 
 @Composable
 fun Alert(
     asset: ImageVector,
     message: String,
     color: Color,
+    modifier: Modifier = Modifier,
     endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
-    modifier: Modifier = Modifier,
 ) {
     Card(
         elevation = 0.dp,

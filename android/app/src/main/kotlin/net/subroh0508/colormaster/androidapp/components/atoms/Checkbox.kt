@@ -18,9 +18,9 @@ import androidx.compose.material.Checkbox as ComposeCheckbox
 @Composable
 fun Checkbox(
     checked: Boolean,
+    modifier: Modifier = Modifier,
     label: String? = null,
     onCheckedChange: (Boolean) -> Unit = {},
-    modifier: Modifier = Modifier,
 ) {
     if (label == null) {
         ComposeCheckbox(

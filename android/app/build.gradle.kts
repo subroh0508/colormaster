@@ -1,7 +1,6 @@
 plugins {
     `android-application`
     kotlin("android")
-    kotlin("android.extensions")
 }
 
 android {

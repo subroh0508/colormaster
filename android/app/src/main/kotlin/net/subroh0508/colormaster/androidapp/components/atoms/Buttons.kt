@@ -24,11 +24,11 @@ import net.subroh0508.colormaster.androidapp.themes.lightBackground
 @Composable
 fun OutlinedButton(
     label: String,
+    modifier: Modifier = Modifier,
     asset: ImageVector? = null,
     enabled: Boolean = true,
     onClick: () -> Unit = {},
     shape: Shape = MaterialTheme.shapes.small,
-    modifier: Modifier = Modifier,
 ) = ComposeOutlinedButton(
     onClick = onClick,
     enabled = enabled,

@@ -6,8 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,12 +25,12 @@ private enum class UiState {
 @Composable
 fun ColorLists(
     items: List<IdolColorListItem>,
+    modifier: Modifier = Modifier,
     onSelect: (IdolColor, Boolean) -> Unit = { _, _ -> },
     onClick: (IdolColor) -> Unit = {},
     onPreviewClick: () -> Unit = {},
     onPenlightClick: () -> Unit = {},
     onAllClick: (Boolean) -> Unit = {},
-    modifier: Modifier = Modifier,
 ) {
     var uiState by remember { mutableStateOf(UiState.Preview) }
     val selectedIds = items.filter(IdolColorListItem::selected).map(IdolColorListItem::id)
@@ -74,7 +72,8 @@ fun ColorLists(
             val idolColor = IdolColor(id, name.value, hexColor)
 
             SelectableColorListItem(
-                name.value, hexColor, selected,
+                name.value, hexColor,
+                selected = selected,
                 onClick = { handleOnClick(idolColor) },
                 onLongClick = { handleOnLongClick(idolColor) },
                 modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
@@ -95,16 +94,16 @@ fun ColorLists(
 @Composable
 private fun BottomButtons(
     isEmpty: Boolean,
+    modifier: Modifier = Modifier,
     onPenlightClick: () -> Unit = {},
     onPreviewClick: () -> Unit = {},
     onAllClick: (Boolean) -> Unit = {},
-    modifier: Modifier = Modifier,
 ) = Column(modifier) {
     Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .12F))
     Row(Modifier.padding(8.dp)) {
         OutlinedButton(
             stringResource(R.string.search_box_bottom_preview),
-            vectorResource(R.drawable.ic_palette_24dp),
+            asset = vectorResource(R.drawable.ic_palette_24dp),
             onClick = onPreviewClick,
             enabled = !isEmpty,
             shape = RoundedCornerShape(
@@ -118,7 +117,7 @@ private fun BottomButtons(
 
         OutlinedButton(
             stringResource(R.string.search_box_bottom_penlight),
-            vectorResource(R.drawable.ic_highlight_24dp),
+            asset = vectorResource(R.drawable.ic_highlight_24dp),
             onClick = onPenlightClick,
             enabled = !isEmpty,
             shape = RoundedCornerShape(0.dp),
@@ -133,7 +132,7 @@ private fun BottomButtons(
 
         OutlinedButton(
             stringResource(toggleLabelRes),
-            vectorResource(toggleAssetRes),
+            asset = vectorResource(toggleAssetRes),
             onClick = { onAllClick(isEmpty) },
             shape = RoundedCornerShape(
                 topLeft = 0.dp,

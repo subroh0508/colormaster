@@ -27,10 +27,10 @@ import net.subroh0508.colormaster.model.HexColor
 fun SelectableColorListItem(
     label: String,
     color: HexColor,
+    modifier: Modifier = Modifier,
     selected: Boolean = false,
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
-    modifier: Modifier = Modifier,
 ) {
     Card(
         elevation = 4.dp,

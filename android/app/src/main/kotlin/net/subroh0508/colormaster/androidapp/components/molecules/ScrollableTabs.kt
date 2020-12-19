@@ -9,9 +9,9 @@ import net.subroh0508.colormaster.androidapp.components.atoms.Tab
 @Composable
 fun ScrollableTabs(
     titles: Array<String>,
+    modifier: Modifier = Modifier,
     selectedIndex: Int = 0,
     onClick: (String) -> Unit = {},
-    modifier: Modifier = Modifier,
 ) {
     var tabSelected by remember { mutableStateOf(selectedIndex) }
 

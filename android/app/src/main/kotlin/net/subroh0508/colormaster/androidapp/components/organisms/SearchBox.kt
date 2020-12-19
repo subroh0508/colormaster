@@ -26,12 +26,12 @@ import net.subroh0508.colormaster.presentation.search.model.SearchParams
 @ExperimentalLayout
 fun SearchBox(
     params: SearchParams,
-    onParamsChange: (SearchParams) -> Unit = {},
     modifier: Modifier = Modifier,
+    onParamsChange: (SearchParams) -> Unit = {},
 ) {
     Column(Modifier.fillMaxWidth().then(modifier)) {
         DebounceTextField(
-            params.idolName?.value,
+            text = params.idolName?.value,
             labelRes = R.string.search_box_label_idol_name,
             onTextChanged = { name -> onParamsChange(params.change(name?.let(::IdolName))) },
             modifier = Modifier.fillMaxWidth(),
