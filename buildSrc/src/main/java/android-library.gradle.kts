@@ -16,10 +16,11 @@ androidLibExt {
 
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -29,6 +30,7 @@ androidLibExt {
         kotlinOptions.jvmTarget = "1.8"
         kotlinOptions.useIR = true
     }
+
     sourceSets.forEach {
         it.java.setSrcDirs(files("src/${it.name}/kotlin"))
     }
@@ -37,6 +39,7 @@ androidLibExt {
         dataBinding = true
         compose = true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = Libraries.Jetpack.Compose.version
         kotlinCompilerVersion = kotlinVersion
