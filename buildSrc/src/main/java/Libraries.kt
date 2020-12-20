@@ -2,10 +2,6 @@
 
 object Libraries {
     object GradlePlugin {
-        const val buildToolsVersion = "3.6.1"
-
-        const val android = "com.android.tools.build:gradle:$buildToolsVersion"
-        const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Kotlin.version}"
         const val kotlinSerialization = "org.jetbrains.kotlin:kotlin-serialization:${Kotlin.version}"
         const val navigationSafeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:${Jetpack.Navigation.version}"
         const val koin = "org.koin:koin-gradle-plugin:${Koin.version}"
