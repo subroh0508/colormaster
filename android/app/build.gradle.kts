@@ -11,15 +11,10 @@ android {
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
-
     packagingOptions {
-        exclude("META-INF/*")
+        resources {
+            excludes.add("META-INF/*")
+        }
     }
 }
 

@@ -14,7 +14,7 @@ androidAppExt {
 
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -28,6 +28,7 @@ androidAppExt {
         kotlinOptions.jvmTarget = "1.8"
         kotlinOptions.useIR = true
     }
+
     sourceSets.forEach {
         it.java.setSrcDirs(files("src/${it.name}/kotlin"))
     }
@@ -36,6 +37,7 @@ androidAppExt {
         dataBinding = true
         compose = true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = Libraries.Jetpack.Compose.version
         kotlinCompilerVersion = kotlinVersion
