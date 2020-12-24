@@ -10,7 +10,7 @@ object ImasparqlQueries {
         SELECT * WHERE {
           ?s imas:Color ?color;
             imas:Title ?title.
-          ${realNameQuery(lang)}
+          OPTIONAL { ?s schema:name ?realName. FILTER(lang(?realName) = '$lang') }
           OPTIONAL { ?s schema:alternateName ?altName. FILTER(lang(?altName) = '$lang') }  
           BIND (COALESCE(?altName, ?realName) as ?name)
           FILTER (str(?title) != '1st Vision').
@@ -24,7 +24,7 @@ object ImasparqlQueries {
         SELECT * WHERE {
           ?s imas:Color ?color;
             imas:Title ?title.
-          ${realNameQuery(lang)}
+          OPTIONAL { ?s schema:name ?realName. FILTER(lang(?realName) = '$lang') }
           OPTIONAL { ?s schema:alternateName ?altName. FILTER(lang(?altName) = '$lang') }  
           BIND (COALESCE(?altName, ?realName) as ?name)
           OPTIONAL { ?s imas:Division ?division }
@@ -43,7 +43,7 @@ object ImasparqlQueries {
         SELECT * WHERE {
           ?s imas:Color ?color;
             imas:Title ?title.
-          ${realNameQuery(lang)}
+          OPTIONAL { ?s schema:name ?realName. FILTER(lang(?realName) = '$lang') }
           OPTIONAL { ?s schema:alternateName ?altName. FILTER(lang(?altName) = '$lang') }  
           BIND (COALESCE(?altName, ?realName) as ?name)
           FILTER (str(?title) != '1st Vision').
@@ -51,19 +51,6 @@ object ImasparqlQueries {
           ${ids.takeIf(List<String>::isNotEmpty)?.let { "FILTER (regex(?id, '(${it.joinToString("|")})', 'i'))." }}
         }
     """.trimIndentAndBr())
-
-    private fun realNameQuery(lang: String) =
-            if (lang == "ja")
-                """
-                OPTIONAL { ?s schema:name ?realName. FILTER(lang(?realName) = 'ja') }
-                """.trimIndentAndBr()
-            else
-                """
-                OPTIONAL { ?s schema:name ?fullName. FILTER(lang(?fullName) = '$lang') }
-                OPTIONAL { ?s schema:familyName ?familyName. FILTER(lang(?familyName) = '$lang') }
-                OPTIONAL { ?s schema:givenName ?givenName. FILTER(lang(?givenName) = '$lang') }
-                BIND (IF (BOUND(?givenName) && BOUND(?familyName), CONCAT (?givenName, ' ', ?familyName), ?fullName) as ?realName)
-                """.trimIndentAndBr()
 
     private val Set<Types>.regexStr get() =
         mapNotNull { it.queryStr }.takeIf(List<String>::isNotEmpty)?.joinToString("|")?.let { "($it)" }
