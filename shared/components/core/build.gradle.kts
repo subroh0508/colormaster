@@ -38,10 +38,8 @@ kotlin {
                 implementation(Libraries.Ktor.jsonAndroid)
                 implementation(Libraries.Ktor.serializationAndroid)
 
-                implementation(Libraries.Jetpack.lifecycleLiveData)
-
                 implementation(Libraries.Koin.android)
-                }
+            }
         }
         val jsMain by getting {
             dependsOn(commonMain)

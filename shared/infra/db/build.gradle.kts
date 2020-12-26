@@ -29,7 +29,7 @@ kotlin {
 
                 implementation(Libraries.Coroutines.android)
 
-                implementation(Libraries.Jetpack.coreKtx)
+                implementation(Libraries.Jetpack.core)
 
                 implementation(Libraries.Koin.android)
             }

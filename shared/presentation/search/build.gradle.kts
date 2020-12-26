@@ -25,7 +25,7 @@ kotlin {
                 implementation(Libraries.Kotlin.android)
                 implementation(Libraries.Coroutines.android)
 
-                implementation(Libraries.Jetpack.lifecycleViewModel)
+                implementation(Libraries.Jetpack.Lifecycle.viewModel)
             }
         }
         val jsMain by getting {

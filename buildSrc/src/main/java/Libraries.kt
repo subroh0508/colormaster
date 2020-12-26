@@ -3,7 +3,6 @@
 object Libraries {
     object GradlePlugin {
         const val kotlinSerialization = "org.jetbrains.kotlin:kotlin-serialization:${Kotlin.version}"
-        const val navigationSafeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:${Jetpack.Navigation.version}"
         const val koin = "org.koin:koin-gradle-plugin:${Koin.version}"
     }
 
@@ -74,7 +73,7 @@ object Libraries {
 
     object Jetpack {
         private const val coreVersion = "1.3.1"
-        const val coreKtx = "androidx.core:core-ktx:$coreVersion"
+        const val core = "androidx.core:core-ktx:$coreVersion"
 
         private const val appCompatVersion = "1.2.0"
         const val appCompat = "androidx.appcompat:appcompat:$appCompatVersion"
@@ -82,34 +81,8 @@ object Libraries {
         private const val activityVersion = "1.2.0-alpha08"
         const val activity = "androidx.activity:activity-ktx:$activityVersion"
 
-        // ↓Jetpack Composeに移行したら削除↓
-        const val constraintLayoutVersion = "2.0.0-beta4"
-        const val constraintLayout = "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
-
-        const val coordinatorLayoutVersion = "1.1.0"
-        const val coordinatorLayout = "androidx.coordinatorlayout:coordinatorlayout:$coordinatorLayoutVersion"
-
-        const val drawerLayoutVersion = "1.0.0"
-        const val drawerLayout = "androidx.drawerlayout:drawerlayout:$drawerLayoutVersion"
-
-        const val recyclerViewVersion = "1.1.0"
-        const val recyclerView = "androidx.recyclerview:recyclerview:$recyclerViewVersion"
-
-        const val lifecycleVersion = "2.2.0"
-        const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
-        const val lifecycleLiveData = "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
-        // ↑Jetpack Composeに移行したら削除↑
-
-        const val materialVersion = "1.2.0-alpha05"
+        private const val materialVersion = "1.2.0-alpha05"
         const val material = "com.google.android.material:material:$materialVersion"
-
-        object Navigation {
-            const val version = "2.2.1"
-
-            const val runtimeKtx = "androidx.navigation:navigation-runtime-ktx:$version"
-            const val fragmentKtx = "androidx.navigation:navigation-fragment-ktx:$version"
-            const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
-        }
 
         object Compose {
             const val version = "1.0.0-alpha09"
@@ -141,17 +114,17 @@ object Libraries {
     object JsWrappers {
         const val version = "pre.132-kotlin-${Kotlin.version}"
 
-        const val reactVersion = "${Npm.reactVersion}-$version"
+        private const val reactVersion = "${Npm.reactVersion}-$version"
         const val react = "org.jetbrains:kotlin-react:$reactVersion"
         const val reactDom = "org.jetbrains:kotlin-react-dom:$reactVersion"
 
-        const val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-$version"
+        private const val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-$version"
         const val reactRouterDom = "org.jetbrains:kotlin-react-router-dom:$reactRouterDomVersion"
 
-        const val styledVersion = "${Npm.styledComponentVersion}-$version"
+        private const val styledVersion = "${Npm.styledComponentVersion}-$version"
         const val styled = "org.jetbrains:kotlin-styled:$styledVersion"
 
-        const val extensionsVersion = "1.0.1-$version"
+        private const val extensionsVersion = "1.0.1-$version"
         const val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
