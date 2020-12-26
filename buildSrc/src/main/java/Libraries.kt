@@ -25,6 +25,8 @@ object Libraries {
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val js = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
+
+        const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
     }
 
     object Ktor {
@@ -162,6 +164,7 @@ object Libraries {
         private const val version = "1.10.3"
 
         const val core = "io.mockk:mockk-common:$version"
+        const val android = "io.mockk:mockk:$version"
     }
 
     object Kotest {
