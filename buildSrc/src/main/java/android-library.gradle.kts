@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -30,7 +31,12 @@ androidLibExt {
         kotlinOptions.jvmTarget = "1.8"
         kotlinOptions.useIR = true
     }
-    tasks.withType(Test::useJUnitPlatform)
+    tasks.withType<Test> {
+        useJUnitPlatform()
+        testLogging {
+            events = setOf(TestLogEvent.PASSED, TestLogEvent.FAILED, TestLogEvent.SKIPPED)
+        }
+    }
 
     sourceSets.forEach {
         it.java.setSrcDirs(files("src/${it.name}/kotlin"))
