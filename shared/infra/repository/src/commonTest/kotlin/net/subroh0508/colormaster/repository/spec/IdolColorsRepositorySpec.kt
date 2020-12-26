@@ -17,7 +17,6 @@ import net.subroh0508.colormaster.api.internal.ContentType
 import net.subroh0508.colormaster.db.IdolColorsDatabase
 import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
-import net.subroh0508.colormaster.query.ImasparqlQueries
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import net.subroh0508.colormaster.repository.di.IdolColorsRepositories
 import net.subroh0508.colormaster.repository.json.rand
