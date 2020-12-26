@@ -14,6 +14,8 @@ fun Project.kotlinMpp(configure: KotlinMultiplatformExtension.() -> Unit) =
             val commonMain by getting
             val commonTest by getting {
                 dependencies {
+                    implementation(project(":shared:test"))
+
                     implementation(Libraries.MockK.core)
                     implementation(Libraries.Kotest.engine)
                     implementation(Libraries.Kotest.assertion)
@@ -22,6 +24,7 @@ fun Project.kotlinMpp(configure: KotlinMultiplatformExtension.() -> Unit) =
             val androidMain by getting
             val androidTest by getting {
                 dependencies {
+                    implementation(Libraries.MockK.android)
                     implementation(Libraries.Kotest.runnerJunit5)
                 }
             }
