@@ -7,7 +7,7 @@ class SearchByIdQuery(
     ids: List<String>,
 ) : ImasparqlQuery() {
     override val rawQuery = """
-        SELECT * WHERE {
+        SELECT ?id ?name ?color WHERE {
           ?s imas:Color ?color;
             imas:Title ?title.
           OPTIONAL { ?s schema:name ?realName. FILTER(lang(?realName) = '$lang') }

@@ -4,7 +4,7 @@ import net.subroh0508.colormaster.query.internal.ESCAPED_ENDPOINT_RDFS_DETAIL
 
 class RandomQuery(lang: String, limit: Int = 10) : ImasparqlQuery() {
     override val rawQuery = """
-        SELECT * WHERE {
+        SELECT ?id ?name ?color WHERE {
           ?s imas:Color ?color;
             imas:Title ?title.
           OPTIONAL { ?s schema:name ?realName. FILTER(lang(?realName) = '$lang') }
