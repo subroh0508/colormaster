@@ -43,6 +43,8 @@ object Libraries {
         const val serializationIosArm64 = "io.ktor:ktor-client-serialization-iosarm64:$version"
         const val serializationIosX64 = "io.ktor:ktor-client-serialization-iosx64:$version"
         const val serializationJs = "io.ktor:ktor-client-serialization-js:$version"
+
+        const val clientMock = "io.ktor:ktor-client-mock:$version"
     }
 
     object Koin {
@@ -159,7 +161,7 @@ object Libraries {
     object MockK {
         private const val version = "1.10.3"
 
-        const val core = "io.mockk:mockk:$version"
+        const val core = "io.mockk:mockk-common:$version"
     }
 
     object Kotest {
