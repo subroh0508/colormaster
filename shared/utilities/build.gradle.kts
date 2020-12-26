@@ -11,23 +11,14 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(Libraries.Kotlin.common)
-                implementation(Libraries.Coroutines.common)
+                implementation(Libraries.Coroutines.core)
             }
         }
         val androidMain by getting {
             dependencies {
-                implementation(Libraries.Kotlin.android)
-                implementation(Libraries.Coroutines.android)
-
                 implementation(Libraries.Jetpack.Lifecycle.viewModel)
             }
         }
-        val jsMain by getting {
-            dependencies {
-                implementation(Libraries.Kotlin.js)
-                implementation(Libraries.Coroutines.js)
-            }
-        }
+        val jsMain by getting
     }
 }

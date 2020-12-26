@@ -37,8 +37,6 @@ kotlin {
                 implementation(project(":shared:presentation:search"))
                 implementation(project(":shared:presentation:preview"))
 
-                implementation(Libraries.Kotlin.js)
-
                 implementation(Libraries.Coroutines.js)
 
                 implementation(Libraries.Ktor.clientJs)
@@ -46,7 +44,6 @@ kotlin {
                 implementation(Libraries.Ktor.serializationJs)
 
                 implementation(Libraries.Serialization.core)
-                implementation(Libraries.Serialization.protobuf)
 
                 implementation(Libraries.Html.js)
                 implementation(Libraries.Css.js)

@@ -9,21 +9,9 @@ kotlin {
     js(LEGACY) { nodejs {} }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(Libraries.Kotlin.common)
-            }
-        }
-        val androidMain by getting {
-            dependencies {
-                implementation(Libraries.Kotlin.android)
-            }
-        }
-        val jsMain by getting {
-            dependencies {
-                implementation(Libraries.Kotlin.js)
-            }
-        }
+        val commonMain by getting
+        val androidMain by getting
+        val jsMain by getting
 
         all {
             languageSettings.enableLanguageFeature("InlineClasses")

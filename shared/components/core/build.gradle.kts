@@ -15,45 +15,20 @@ kotlin {
                 implementation(project(":shared:infra:api"))
                 implementation(project(":shared:infra:db"))
 
-                implementation(Libraries.Kotlin.common)
+                implementation(Libraries.Coroutines.core)
 
-                implementation(Libraries.Coroutines.common)
+                implementation(Libraries.Ktor.client)
+                implementation(Libraries.Ktor.json)
+                implementation(Libraries.Ktor.serialization)
 
-                implementation(Libraries.Ktor.clientCommon)
-                implementation(Libraries.Ktor.jsonCommon)
-                implementation(Libraries.Ktor.serializationCommon)
-
-                implementation(Libraries.Koin.common)
+                implementation(Libraries.Koin.core)
             }
         }
         val androidMain by getting {
-            dependsOn(commonMain)
             dependencies {
-                implementation(Libraries.Kotlin.android)
                 implementation(Libraries.Kotlin.reflect)
-
-                implementation(Libraries.Coroutines.android)
-
-                implementation(Libraries.Ktor.clientAndroid)
-                implementation(Libraries.Ktor.jsonAndroid)
-                implementation(Libraries.Ktor.serializationAndroid)
-
-                implementation(Libraries.Koin.android)
             }
         }
-        val jsMain by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(Libraries.Kotlin.js)
-
-                implementation(Libraries.Coroutines.js)
-
-                implementation(Libraries.Ktor.clientJs)
-                implementation(Libraries.Ktor.jsonJs)
-                implementation(Libraries.Ktor.serializationJs)
-
-                implementation(Libraries.Koin.js)
-            }
-        }
+        val jsMain by getting
     }
 }

@@ -15,25 +15,14 @@ kotlin {
                 implementation(project(":shared:infra:repository"))
                 implementation(project(":shared:utilities"))
 
-                implementation(Libraries.Kotlin.common)
-                implementation(Libraries.Coroutines.common)
+                implementation(Libraries.Coroutines.core)
             }
         }
         val androidMain by getting {
-            dependsOn(commonMain)
             dependencies {
-                implementation(Libraries.Kotlin.android)
-                implementation(Libraries.Coroutines.android)
-
                 implementation(Libraries.Jetpack.Lifecycle.viewModel)
             }
         }
-        val jsMain by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(Libraries.Kotlin.js)
-                implementation(Libraries.Coroutines.js)
-            }
-        }
+        val jsMain by getting
     }
 }

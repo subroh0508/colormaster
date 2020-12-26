@@ -26,7 +26,6 @@ dependencies {
     implementation(project(":shared:presentation:search"))
     implementation(project(":shared:presentation:preview"))
 
-    implementation(Libraries.Kotlin.android)
     implementation(Libraries.Kotlin.reflect)
 
     implementation(Libraries.Coroutines.android)

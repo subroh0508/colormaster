@@ -13,51 +13,26 @@ kotlin {
             dependencies {
                 implementation(project(":shared:infra:query"))
 
-                implementation(Libraries.Kotlin.common)
-
-                implementation(Libraries.Coroutines.common)
+                implementation(Libraries.Coroutines.core)
 
                 implementation(Libraries.Serialization.core)
-                implementation(Libraries.Serialization.protobuf)
 
-                implementation(Libraries.Ktor.clientCommon)
-                implementation(Libraries.Ktor.jsonCommon)
-                implementation(Libraries.Ktor.serializationCommon)
+                implementation(Libraries.Ktor.client)
+                implementation(Libraries.Ktor.json)
+                implementation(Libraries.Ktor.serialization)
 
-                implementation(Libraries.Koin.common)
+                implementation(Libraries.Koin.core)
             }
         }
         val androidMain by getting {
-            dependsOn(commonMain)
             dependencies {
-                implementation(Libraries.Kotlin.android)
                 implementation(Libraries.Kotlin.reflect)
 
-                implementation(Libraries.Coroutines.android)
-
-                implementation(Libraries.Ktor.clientAndroid)
-                implementation(Libraries.Ktor.jsonAndroid)
-                implementation(Libraries.Ktor.serializationAndroid)
-
+                implementation(Libraries.Ktor.clientOkHttp)
                 implementation(Libraries.Okhttp3.client)
                 implementation(Libraries.Okhttp3.loggingIntercerptor)
-
-                implementation(Libraries.Koin.android)
-                }
-        }
-        val jsMain by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(Libraries.Kotlin.js)
-
-                implementation(Libraries.Coroutines.js)
-
-                implementation(Libraries.Ktor.clientJs)
-                implementation(Libraries.Ktor.jsonJs)
-                implementation(Libraries.Ktor.serializationJs)
-
-                implementation(Libraries.Koin.js)
             }
         }
+        val jsMain by getting
     }
 }

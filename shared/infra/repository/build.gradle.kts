@@ -15,33 +15,16 @@ kotlin {
                 implementation(project(":shared:infra:db"))
                 implementation(project(":shared:infra:query"))
 
-                implementation(Libraries.Kotlin.common)
+                implementation(Libraries.Coroutines.core)
 
-                implementation(Libraries.Coroutines.common)
-
-                implementation(Libraries.Koin.common)
+                implementation(Libraries.Koin.core)
             }
         }
         val androidMain by getting {
-            dependsOn(commonMain)
             dependencies {
-                implementation(Libraries.Kotlin.android)
                 implementation(Libraries.Kotlin.reflect)
-
-                implementation(Libraries.Coroutines.android)
-
-                implementation(Libraries.Koin.android)
-                }
-        }
-        val jsMain by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(Libraries.Kotlin.js)
-
-                implementation(Libraries.Coroutines.js)
-
-                implementation(Libraries.Koin.js)
             }
         }
+        val jsMain by getting
     }
 }
