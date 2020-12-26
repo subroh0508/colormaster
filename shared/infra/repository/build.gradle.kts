@@ -3,10 +3,7 @@ plugins {
     `android-library`
 }
 
-kotlin {
-    android("android")
-    js(LEGACY) { nodejs {} }
-
+kotlinMpp {
     sourceSets {
         val commonMain by getting {
             dependencies {

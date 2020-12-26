@@ -4,10 +4,7 @@ plugins {
     id("kotlinx-serialization")
 }
 
-kotlin {
-    android("android")
-    js(LEGACY) { nodejs {} }
-
+kotlinMpp {
     sourceSets {
         val commonMain by getting {
             dependencies {
