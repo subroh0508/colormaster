@@ -39,7 +39,7 @@ class IdolColorsRepositorySpec : FunSpec() {
         }
 
         modules(
-            Api.MockModule(block()) + module {
+            Api.Module(block()) + module {
                 single { mockDatabase }
                 single { appPreference }
             } + IdolColorsRepositories.Module
