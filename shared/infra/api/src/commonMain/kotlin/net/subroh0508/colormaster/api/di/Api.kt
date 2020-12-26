@@ -12,4 +12,10 @@ object Api {
         single { httpClient }
         single<ImasparqlClient> { ImasparqlApiClient(get()) }
     }
+
+    @Suppress("FunctionName")
+    fun MockModule(client: HttpClient) = module {
+        single { client }
+        single<ImasparqlClient> { ImasparqlApiClient(get()) }
+    }
 }

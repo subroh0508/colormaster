@@ -17,6 +17,12 @@ kotlinMpp {
                 implementation(Libraries.Koin.core)
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(Libraries.Ktor.client)
+                implementation(Libraries.Ktor.clientMock)
+            }
+        }
         val androidMain by getting {
             dependencies {
                 implementation(Libraries.Kotlin.reflect)
