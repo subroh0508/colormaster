@@ -41,7 +41,7 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
                     }
                 }
                 attrs.secondary {
-                    +"v2020.12.19.01-beta"
+                    +"v2020.12.27.01-beta"
                 }
             }
         }
