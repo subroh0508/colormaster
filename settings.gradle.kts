@@ -9,7 +9,8 @@ include(
     ":shared:infra:api",
     ":shared:infra:db",
     ":shared:presentation:search",
-    ":shared:presentation:preview"
+    ":shared:presentation:preview",
+    ":shared:test"
 )
 
 enableFeaturePreview("GRADLE_METADATA")

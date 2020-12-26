@@ -6,7 +6,9 @@ import net.subroh0508.colormaster.api.serializer.Response
 import net.subroh0508.colormaster.db.IdolColorsDatabase
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
-import net.subroh0508.colormaster.query.ImasparqlQueries
+import net.subroh0508.colormaster.query.RandomQuery
+import net.subroh0508.colormaster.query.SearchByIdQuery
+import net.subroh0508.colormaster.query.SearchBySomeParamsQuery
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 
 internal class IdolColorsRepositoryImpl(
@@ -15,13 +17,13 @@ internal class IdolColorsRepositoryImpl(
     private val appPreference: AppPreference,
 ) : IdolColorsRepository {
     override suspend fun rand(limit: Int) =
-        imasparqlClient.search(ImasparqlQueries.rand(appPreference.lang.code, limit)).toIdolColors()
+        imasparqlClient.search(RandomQuery(appPreference.lang.code, limit).build()).toIdolColors()
 
     override suspend fun search(name: IdolName?, brands: Brands?, types: Set<Types>) =
-        imasparqlClient.search(ImasparqlQueries.search(appPreference.lang.code, name, brands, types)).toIdolColors()
+        imasparqlClient.search(SearchBySomeParamsQuery(appPreference.lang.code, name, brands, types).build()).toIdolColors()
 
     override suspend fun search(ids: List<String>)  =
-        imasparqlClient.search(ImasparqlQueries.search(appPreference.lang.code, ids)).toIdolColors()
+        imasparqlClient.search(SearchByIdQuery(appPreference.lang.code, ids).build()).toIdolColors()
 
     override suspend fun getFavoriteIdolIds(): List<String> = database.getFavorites().toList()
 

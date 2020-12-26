@@ -8,8 +8,9 @@ import org.koin.dsl.module
 internal expect val httpClient: HttpClient
 
 object Api {
-    val Module get() = module {
-        single { httpClient }
+    @Suppress("FunctionName")
+    fun Module(client: HttpClient = httpClient) = module {
+        single { client }
         single<ImasparqlClient> { ImasparqlApiClient(get()) }
     }
 }

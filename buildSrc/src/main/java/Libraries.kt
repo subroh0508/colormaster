@@ -25,6 +25,8 @@ object Libraries {
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val js = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
+
+        const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
     }
 
     object Ktor {
@@ -43,6 +45,8 @@ object Libraries {
         const val serializationIosArm64 = "io.ktor:ktor-client-serialization-iosarm64:$version"
         const val serializationIosX64 = "io.ktor:ktor-client-serialization-iosx64:$version"
         const val serializationJs = "io.ktor:ktor-client-serialization-js:$version"
+
+        const val clientMock = "io.ktor:ktor-client-mock:$version"
     }
 
     object Koin {
@@ -154,5 +158,20 @@ object Libraries {
             const val reactVersion = "^11.8.0"
             const val react = "react-i18next"
         }
+    }
+
+    object MockK {
+        private const val version = "1.10.3"
+
+        const val core = "io.mockk:mockk-common:$version"
+        const val android = "io.mockk:mockk:$version"
+    }
+
+    object Kotest {
+        private const val version = "4.3.2"
+
+        const val engine = "io.kotest:kotest-framework-engine:$version"
+        const val runnerJunit5 = "io.kotest:kotest-runner-junit5:$version"
+        const val assertion = "io.kotest:kotest-assertions-core:$version"
     }
 }

@@ -3,10 +3,7 @@ plugins {
     `android-library`
 }
 
-kotlin {
-    android("android")
-    js(LEGACY) { nodejs {} }
-
+kotlinMpp {
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -18,6 +15,12 @@ kotlin {
                 implementation(Libraries.Coroutines.core)
 
                 implementation(Libraries.Koin.core)
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(Libraries.Ktor.client)
+                implementation(Libraries.Ktor.clientMock)
             }
         }
         val androidMain by getting {
