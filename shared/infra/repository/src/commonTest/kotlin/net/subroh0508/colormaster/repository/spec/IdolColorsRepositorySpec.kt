@@ -4,9 +4,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.should
 import io.ktor.client.*
-import io.ktor.client.engine.mock.*
-import io.ktor.http.*
-import io.mockk.*
 import net.subroh0508.colormaster.api.di.Api
 import net.subroh0508.colormaster.db.IdolColorsDatabase
 import net.subroh0508.colormaster.model.*
@@ -17,16 +14,14 @@ import net.subroh0508.colormaster.repository.mock.getRandomIdols
 import net.subroh0508.colormaster.repository.mock.mockRandom
 import net.subroh0508.colormaster.repository.mock.mockSearchById
 import net.subroh0508.colormaster.repository.mock.mockSearchByParams
-import net.subroh0508.colormaster.test.runTest
-import org.koin.core.context.startKoin
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class IdolColorsRepositorySpec : FunSpec() {
-    private val mockDatabase: IdolColorsDatabase = mockk {
-        coEvery { getFavorites() } returns setOf()
-        coEvery { addFavorite(any()) } just Runs
-        coEvery { removeFavorite(any()) } just Runs
+    private val mockDatabase: IdolColorsDatabase = object : IdolColorsDatabase {
+        override suspend fun getFavorites() = setOf<String>()
+        override suspend fun addFavorite(id: String) = Unit
+        override suspend fun removeFavorite(id: String) = Unit
     }
 
     private fun mockApi(
@@ -53,11 +48,7 @@ class IdolColorsRepositorySpec : FunSpec() {
                     test("it should return idols at random") {
                         val repository = mockApi(lang) { mockRandom(lang, 10) }
 
-                        runTest {
-                            val idols = repository.rand(10)
-
-                            idols should containExactlyInAnyOrder(getRandomIdols(lang))
-                        }
+                        repository.rand(10) should containExactlyInAnyOrder(getRandomIdols(lang))
                     }
                 }
             }
@@ -78,11 +69,11 @@ class IdolColorsRepositorySpec : FunSpec() {
                                 mockSearchByParams(lang, param(lang), res = expects(lang).toTypedArray())
                             }
 
-                            runTest {
-                                val idols = repository.search(name = param(lang), brands = null, types = setOf())
-
-                                idols should containExactlyInAnyOrder(expects(lang))
-                            }
+                            repository.search(
+                                name = param(lang),
+                                brands = null,
+                                types = setOf(),
+                            ) should containExactlyInAnyOrder(expects(lang))
                         }
                     }
 
@@ -98,11 +89,11 @@ class IdolColorsRepositorySpec : FunSpec() {
                                 mockSearchByParams(lang, brands = Brands._876, res = expects(lang).toTypedArray())
                             }
 
-                            runTest {
-                                val idols = repository.search(name = null, brands = Brands._876, types = setOf())
-
-                                idols should containExactlyInAnyOrder(expects(lang))
-                            }
+                            repository.search(
+                                name = null,
+                                brands = Brands._876,
+                                types = setOf(),
+                            ) should containExactlyInAnyOrder(expects(lang))
                         }
                     }
 
@@ -119,11 +110,11 @@ class IdolColorsRepositorySpec : FunSpec() {
                                 mockSearchByParams(lang, brands = Brands._765, types = setOf(Types.MILLION_LIVE.PRINCESS), res = expects(lang).toTypedArray())
                             }
 
-                            runTest {
-                                val idols = repository.search(name = null, brands = Brands._765, types = setOf(Types.MILLION_LIVE.PRINCESS))
-
-                                idols should containExactlyInAnyOrder(expects(lang))
-                            }
+                            repository.search(
+                                name = null,
+                                brands = Brands._765,
+                                types = setOf(Types.MILLION_LIVE.PRINCESS),
+                            ) should containExactlyInAnyOrder(expects(lang))
                         }
                     }
 
@@ -139,11 +130,7 @@ class IdolColorsRepositorySpec : FunSpec() {
                                 mockSearchById(lang, ids = ids, res = expects(lang).toTypedArray())
                             }
 
-                            runTest {
-                                val idols = repository.search(ids = ids)
-
-                                idols should containExactlyInAnyOrder(expects(lang))
-                            }
+                            repository.search(ids = ids) should containExactlyInAnyOrder(expects(lang))
                         }
                     }
                 }
