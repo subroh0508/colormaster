@@ -17,8 +17,6 @@ private val headers = headersOf(
 )
 
 fun mockRandom(lang: Languages, limit: Int) = mockApi { req ->
-    val url = req.url
-    println(url)
     if (req.url.parameters["query"] == RandomQuery(lang.code, limit).plainQuery) {
         return@mockApi respond(toJson(lang.code, getRandomIdols(lang)), headers = headers)
     }
