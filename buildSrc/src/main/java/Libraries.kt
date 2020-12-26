@@ -14,9 +14,9 @@ object Libraries {
     }
 
     object Serialization {
-        const val version = "1.0.0-RC"
+        const val version = "1.0.1"
 
-        const val core = "org.jetbrains.kotlinx:kotlinx-serialization-core:$version"
+        const val core = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version"
     }
 
     object Coroutines {
