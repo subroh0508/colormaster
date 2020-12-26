@@ -10,19 +10,17 @@ import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import io.mockk.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.api.di.Api
 import net.subroh0508.colormaster.api.internal.ContentType
 import net.subroh0508.colormaster.db.IdolColorsDatabase
 import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
+import net.subroh0508.colormaster.query.RandomQuery
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import net.subroh0508.colormaster.repository.di.IdolColorsRepositories
 import net.subroh0508.colormaster.repository.json.rand
 import net.subroh0508.colormaster.test.runTest
 import org.koin.core.context.startKoin
-import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class IdolColorsRepositorySpec : FunSpec() {
@@ -33,20 +31,10 @@ class IdolColorsRepositorySpec : FunSpec() {
                     "Content-Type" to listOf(ContentType.Application.SparqlJson.toString())
                 )
 
-                respond(rand, headers = headers)
-
-                /*
-                val query = req.url.parameters["query"]
-                val endpoint = req.url.toString().replace("${URLProtocol.HTTP.name}://${req.url.host}", "")
-                when (query) {
-                    ImasparqlQueries.rand("ja") -> {
-                        respond(rand, headers = headersOf(
-                            "Content-Type" to listOf(ContentType.Application.SparqlJson.toString())
-                        ))
-                    }
+                when (req.url.parameters["query"]) {
+                    RandomQuery("ja").plainQuery -> respond(rand, headers = headers)
                     else -> respondBadRequest()
                 }
-                */
             }
         }
     }

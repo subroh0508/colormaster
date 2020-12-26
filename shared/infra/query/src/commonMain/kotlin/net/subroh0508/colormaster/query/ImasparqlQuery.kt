@@ -11,20 +11,20 @@ abstract class ImasparqlQuery {
         private const val PREFIX_RDFS = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
     }
 
-    abstract val rawQuery: String
+    protected abstract val rawQuery: String
+
+    val plainQuery get() = buildString {
+        append(PREFIX_SCHEMA)
+        append(PREFIX_IMAS)
+        append(PREFIX_RDFS)
+
+        append(rawQuery)
+    }
 
     fun build() = buildString {
         append(ENDPOINT_MAIN)
         append("?output=json")
         append("&query=")
-
-        val plainQuery = buildString {
-            append(PREFIX_SCHEMA)
-            append(PREFIX_IMAS)
-            append(PREFIX_RDFS)
-
-            append(rawQuery)
-        }
 
         append(URLEncoder.encode(plainQuery))
     }
