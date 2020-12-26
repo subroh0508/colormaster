@@ -1,0 +1,3 @@
+package net.subroh0508.colormaster.repository.json
+
+val rand = "{\"head\":{\"vars\":[\"s\",\"color\",\"title\",\"realName\",\"altName\",\"name\",\"id\"]},\"results\":{\"bindings\":[{\"s\":{\"type\":\"uri\",\"value\":\"https://sparql.crssnky.xyz/imasrdf/RDFs/detail/Akizuki_Ritsuko\"},\"color\":{\"type\":\"literal\",\"datatype\":\"http://www.w3.org/2001/XMLSchema#hexBinary\",\"value\":\"01A860\"},\"title\":{\"type\":\"literal\",\"xml:lang\":\"en\",\"value\":\"765AS\"},\"realName\":{\"type\":\"literal\",\"xml:lang\":\"ja\",\"value\":\"秋月律子\"},\"name\":{\"type\":\"literal\",\"xml:lang\":\"ja\",\"value\":\"秋月律子\"},\"id\":{\"type\":\"literal\",\"value\":\"Akizuki_Ritsuko\"}}]}}"
