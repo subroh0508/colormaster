@@ -58,7 +58,7 @@ private fun HomeDrawerContent() {
     Column(Modifier.fillMaxSize()) {
         DrawerHeader(
             title = stringResource(R.string.app_name),
-            subtext = "v2020.09.20.01-beta",
+            subtext = "v2020.09.20-beta01",
         )
         DrawerMenuList(
             label = stringResource(R.string.app_menu_search_label),
