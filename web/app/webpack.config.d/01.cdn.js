@@ -9,7 +9,7 @@ config.output.publicPath = '/';
 
 config.plugins.push(
   new HtmlWebpackPlugin({
-    template: path.resolve(webAppPath, 'build/processedResources/Js/main/index.html'),
+    template: path.resolve(webAppPath, 'build/processedResources/js/main/index.html'),
     filename: path.resolve(webAppPath, 'build/distributions/index.html'),
   }),
 );
@@ -64,4 +64,4 @@ if (config.mode === 'production') {
 }
 
 // TODO Move to another file on Kotlin 1.4
-config.resolve.modules.unshift(path.resolve(webAppPath, 'build/processedResources/Js/main'));
+config.resolve.modules.unshift(path.resolve(webAppPath, 'build/processedResources/js/main'));
