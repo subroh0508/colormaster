@@ -12,9 +12,6 @@ kotlin {
         binaries.executable()
 
         browser {
-            dceTask {
-                dceOptions.devMode = true
-            }
             runTask {
                 sourceMaps = true
                 devServer = KotlinWebpackConfig.DevServer(
