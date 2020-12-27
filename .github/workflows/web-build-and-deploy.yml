@@ -23,3 +23,10 @@ jobs:
             ${{ runner.os }}-gradle-
       - name: Build for production with Gradle
         run: ./gradlew :web:app:browserProductionWebpack --stacktrace
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: web-app-artfacts
+          path: ./public
+
+
