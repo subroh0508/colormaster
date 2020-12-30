@@ -7,13 +7,10 @@ import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.should
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.impl.annotations.MockK
 import net.subroh0508.colormaster.model.*
+import net.subroh0508.colormaster.presentation.preview.MockIdolColorsRepository
 import net.subroh0508.colormaster.presentation.preview.model.FullscreenPreviewUiModel
 import net.subroh0508.colormaster.presentation.preview.viewmodel.PreviewViewModel
-import net.subroh0508.colormaster.repository.IdolColorsRepository
 import net.subroh0508.colormaster.test.TestScope
 import net.subroh0508.colormaster.test.ViewModelSpec
 import net.subroh0508.colormaster.test.collectOnTestScope
@@ -21,15 +18,12 @@ import net.subroh0508.colormaster.test.collectOnTestScope
 class PreviewViewModelSpec : ViewModelSpec() {
     private val observedUiModels: MutableList<FullscreenPreviewUiModel> = mutableListOf()
 
-    @MockK
-    lateinit var repository: IdolColorsRepository
+    private val repository = MockIdolColorsRepository()
 
     lateinit var viewModel: PreviewViewModel
 
     override fun beforeTest(testCase: TestCase) {
         super.beforeTest(testCase)
-
-        MockKAnnotations.init(this, relaxed = true, relaxUnitFun = true)
 
         viewModel = PreviewViewModel(repository, TestScope()/* for JS Runtime */)
         observedUiModels.clear()
@@ -49,7 +43,7 @@ class PreviewViewModelSpec : ViewModelSpec() {
         )
 
         test("#fetch: when repository#search returns idols colors it should post FullscreenPreviewUiModel with filled list") {
-            coEvery { repository.search(idols.map(IdolColor::id)) } returns idols
+            repository.responseOfSearch = { idols }
 
             subject { viewModel.fetch(idols.map(IdolColor::id)) }.also { models ->
                 models should haveSize(3)
@@ -74,7 +68,7 @@ class PreviewViewModelSpec : ViewModelSpec() {
         test("#fetch: when repository#search raises Exception it should post FullscreenPreviewUiModel with empty") {
             val error = IllegalStateException()
 
-            coEvery { repository.search(idols.map(IdolColor::id)) } throws error
+            repository.responseOfSearch = { throw error }
 
             subject { viewModel.fetch(idols.map(IdolColor::id)) }.also { models ->
                 models should haveSize(3)
