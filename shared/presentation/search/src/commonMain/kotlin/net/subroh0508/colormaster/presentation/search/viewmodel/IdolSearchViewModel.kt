@@ -1,12 +1,8 @@
 package net.subroh0508.colormaster.presentation.search.viewmodel
 
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.repository.IdolColorsRepository
@@ -15,7 +11,8 @@ import net.subroh0508.colormaster.utilities.ViewModel
 
 class IdolSearchViewModel(
     private val repository: IdolColorsRepository,
-) : ViewModel() {
+    coroutineScope: CoroutineScope? = null,
+) : ViewModel(coroutineScope) {
     @ExperimentalCoroutinesApi
     private val _searchParams: MutableStateFlow<SearchParams> by lazy { MutableStateFlow(SearchParams.EMPTY) }
     @ExperimentalCoroutinesApi

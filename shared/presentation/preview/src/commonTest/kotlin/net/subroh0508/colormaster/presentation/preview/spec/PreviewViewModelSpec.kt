@@ -9,6 +9,7 @@ import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.should
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.presentation.preview.MockIdolColorsRepository
+import net.subroh0508.colormaster.presentation.preview.mockSearch
 import net.subroh0508.colormaster.presentation.preview.model.FullscreenPreviewUiModel
 import net.subroh0508.colormaster.presentation.preview.viewmodel.PreviewViewModel
 import net.subroh0508.colormaster.test.TestScope
@@ -43,7 +44,7 @@ class PreviewViewModelSpec : ViewModelSpec() {
         )
 
         test("#fetch: when repository#search returns idols colors it should post FullscreenPreviewUiModel with filled list") {
-            repository.responseOfSearch = { idols }
+            repository.mockSearch(idols.map(IdolColor::id)) { idols }
 
             subject { viewModel.fetch(idols.map(IdolColor::id)) }.also { models ->
                 models should haveSize(3)
@@ -65,10 +66,10 @@ class PreviewViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#fetch: when repository#search raises Exception it should post FullscreenPreviewUiModel with empty") {
+        test("#fetch: when repository#search raises Exception it should post FullscreenPreviewUiModel with empty list") {
             val error = IllegalStateException()
 
-            repository.responseOfSearch = { throw error }
+            repository.mockSearch(idols.map(IdolColor::id)) { throw error }
 
             subject { viewModel.fetch(idols.map(IdolColor::id)) }.also { models ->
                 models should haveSize(3)
