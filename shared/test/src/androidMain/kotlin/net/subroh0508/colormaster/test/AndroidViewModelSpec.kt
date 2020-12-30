@@ -11,7 +11,7 @@ import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 
-actual abstract class ViewModelSpec : FunSpec() {
+actual abstract class ViewModelSpec actual constructor() : FunSpec() {
     @ExperimentalCoroutinesApi
     private val testDispatcher: TestCoroutineDispatcher by lazy(::TestCoroutineDispatcher)
     @ExperimentalCoroutinesApi
