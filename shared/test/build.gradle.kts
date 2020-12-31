@@ -13,7 +13,11 @@ kotlinMpp {
                 implementation(Libraries.Kotest.assertion)
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation(Libraries.Coroutines.test)
+            }
+        }
         val jsMain by getting
     }
 }

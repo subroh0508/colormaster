@@ -24,6 +24,7 @@ fun Project.kotlinMpp(configure: KotlinMultiplatformExtension.() -> Unit) =
             val androidMain by getting
             val androidTest by getting {
                 dependencies {
+                    implementation(Libraries.Coroutines.test)
                     implementation(Libraries.MockK.android)
                     implementation(Libraries.Kotest.runnerJunit5)
                 }
