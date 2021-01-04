@@ -8,8 +8,4 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @Suppress("FunctionName")
-fun TestScope() = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-
-inline fun <T> Flow<T>.collectOnTestScope(
-    crossinline action: suspend (value: T) -> Unit,
-) = TestScope().launch { collect(action) }
+fun TestScope() = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)

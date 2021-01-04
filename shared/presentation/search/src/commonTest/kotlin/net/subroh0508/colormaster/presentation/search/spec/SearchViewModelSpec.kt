@@ -7,6 +7,8 @@ import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.should
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.presentation.search.MockIdolColorsRepository
 import net.subroh0508.colormaster.presentation.search.everyRand
@@ -17,7 +19,6 @@ import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.viewmodel.IdolSearchViewModel
 import net.subroh0508.colormaster.test.TestScope
 import net.subroh0508.colormaster.test.ViewModelSpec
-import net.subroh0508.colormaster.test.collectOnTestScope
 
 class SearchViewModelSpec : ViewModelSpec() {
     private val observedUiModels: MutableList<ManualSearchUiModel> = mutableListOf()
@@ -32,7 +33,8 @@ class SearchViewModelSpec : ViewModelSpec() {
         viewModel = IdolSearchViewModel(repository, TestScope()/* for JS Runtime */)
         observedUiModels.clear()
 
-        viewModel.uiModel.collectOnTestScope { observedUiModels.add(it) }
+        viewModel.uiModel.onEach { observedUiModels.add(it) }
+            .launchIn(TestScope())
     }
 
     private val randomIdols = listOf(
