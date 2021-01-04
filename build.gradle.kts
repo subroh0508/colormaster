@@ -24,3 +24,5 @@ allprojects {
         maven("https://dl.bintray.com/ekito/koin")
     }
 }
+
+testDebugUnitTestReport()
