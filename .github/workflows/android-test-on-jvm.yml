@@ -22,4 +22,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Run test with Gradle
-        run: ./gradlew testDebugUnitTest --stacktrace
+        run: ./gradlew testDebugUnitTest --stacktrace testDebugUnitTestReport --stacktrace
+      - name: Archive test results artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: all-jvm-test-reports
+          path: ./build/reports/allTests/testDebugUnitTest
