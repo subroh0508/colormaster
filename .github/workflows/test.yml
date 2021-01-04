@@ -1,4 +1,4 @@
-name: "[Android] Unit Test on JVM"
+name: "[JVM/Web] Unit Test"
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  test:
+  jvm-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,10 +21,17 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-      - name: Run test with Gradle
+      - name: Run test on JVM
         run: ./gradlew testDebugUnitTest --stacktrace testDebugUnitTestReport --stacktrace
-      - name: Archive test results artifact
+      - name: Run test on JS
+        run: ./gradlew jsNodeTest --stacktrace jsNodeTestReport --stacktrace
+      - name: Archive test on JVM results artifact
         uses: actions/upload-artifact@master
         with:
           name: all-jvm-test-reports
           path: ./build/reports/allTests/testDebugUnitTest
+      - name: Archive test on JS results artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: all-js-test-reports
+          path: ./build/reports/allTests/jsNodeTest
