@@ -7,6 +7,8 @@ import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.should
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.presentation.preview.MockIdolColorsRepository
 import net.subroh0508.colormaster.presentation.preview.mockSearch
@@ -14,7 +16,6 @@ import net.subroh0508.colormaster.presentation.preview.model.FullscreenPreviewUi
 import net.subroh0508.colormaster.presentation.preview.viewmodel.PreviewViewModel
 import net.subroh0508.colormaster.test.TestScope
 import net.subroh0508.colormaster.test.ViewModelSpec
-import net.subroh0508.colormaster.test.collectOnTestScope
 
 class PreviewViewModelSpec : ViewModelSpec() {
     private val observedUiModels: MutableList<FullscreenPreviewUiModel> = mutableListOf()
@@ -29,7 +30,8 @@ class PreviewViewModelSpec : ViewModelSpec() {
         viewModel = PreviewViewModel(repository, TestScope()/* for JS Runtime */)
         observedUiModels.clear()
 
-        viewModel.uiModel.collectOnTestScope { observedUiModels.add(it) }
+        viewModel.uiModel.onEach { observedUiModels.add(it) }
+            .launchIn(TestScope())
     }
 
     private fun subject(block: () -> Unit): List<FullscreenPreviewUiModel> {

@@ -26,3 +26,4 @@ allprojects {
 }
 
 testDebugUnitTestReport()
+jsNodeTestReport()
