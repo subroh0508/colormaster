@@ -1,7 +1,8 @@
 package net.subroh0508.colormaster.query
 
 class SuggestLiveQuery(
-    dateRange: Pair<String, String>?, name: String?
+    dateRange: Pair<String, String>? = null,
+    name: String? = null,
 )  : ImasparqlQuery() {
     override val rawQuery = """
         SELECT ?liveName WHERE {

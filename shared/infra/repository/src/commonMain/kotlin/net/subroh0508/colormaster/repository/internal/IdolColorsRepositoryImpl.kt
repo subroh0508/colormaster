@@ -17,13 +17,22 @@ internal class IdolColorsRepositoryImpl(
     private val appPreference: AppPreference,
 ) : IdolColorsRepository {
     override suspend fun rand(limit: Int) =
-        imasparqlClient.search(RandomQuery(appPreference.lang.code, limit).build()).toIdolColors()
+        imasparqlClient.search(
+            RandomQuery(appPreference.lang.code, limit).build(),
+            IdolColorJson.serializer(),
+        ).toIdolColors()
 
     override suspend fun search(name: IdolName?, brands: Brands?, types: Set<Types>) =
-        imasparqlClient.search(SearchByNameQuery(appPreference.lang.code, name, brands, types).build()).toIdolColors()
+        imasparqlClient.search(
+            SearchByNameQuery(appPreference.lang.code, name, brands, types).build(),
+            IdolColorJson.serializer(),
+        ).toIdolColors()
 
     override suspend fun search(ids: List<String>)  =
-        imasparqlClient.search(SearchByIdQuery(appPreference.lang.code, ids).build()).toIdolColors()
+        imasparqlClient.search(SearchByIdQuery(
+            appPreference.lang.code, ids).build(),
+            IdolColorJson.serializer(),
+        ).toIdolColors()
 
     override suspend fun getFavoriteIdolIds(): List<String> = database.getFavorites().toList()
 

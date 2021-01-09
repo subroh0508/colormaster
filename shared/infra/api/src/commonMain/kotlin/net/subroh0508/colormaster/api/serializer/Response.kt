@@ -3,7 +3,7 @@ package net.subroh0508.colormaster.api.serializer
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Response<T>(
+data class Response<out T>(
     val head: Vars,
     @Serializable(with = ResultsSerializer::class)
     val results: Results<T>
@@ -13,7 +13,7 @@ data class Response<T>(
         val vars: List<String>
     )
 
-    data class Results<T>(
+    data class Results<out T>(
         val bindings: List<T>
     )
 }
