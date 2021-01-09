@@ -5,7 +5,7 @@ import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.query.internal.ESCAPED_ENDPOINT_RDFS_DETAIL
 
-class SearchBySomeParamsQuery(
+class SearchByNameQuery(
     lang: String,
     name: IdolName?, brands: Brands?, types: Set<Types>,
 ) : ImasparqlQuery() {

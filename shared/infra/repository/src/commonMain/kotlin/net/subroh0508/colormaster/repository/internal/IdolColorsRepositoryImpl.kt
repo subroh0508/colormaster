@@ -8,7 +8,7 @@ import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import net.subroh0508.colormaster.query.RandomQuery
 import net.subroh0508.colormaster.query.SearchByIdQuery
-import net.subroh0508.colormaster.query.SearchBySomeParamsQuery
+import net.subroh0508.colormaster.query.SearchByNameQuery
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 
 internal class IdolColorsRepositoryImpl(
@@ -20,7 +20,7 @@ internal class IdolColorsRepositoryImpl(
         imasparqlClient.search(RandomQuery(appPreference.lang.code, limit).build()).toIdolColors()
 
     override suspend fun search(name: IdolName?, brands: Brands?, types: Set<Types>) =
-        imasparqlClient.search(SearchBySomeParamsQuery(appPreference.lang.code, name, brands, types).build()).toIdolColors()
+        imasparqlClient.search(SearchByNameQuery(appPreference.lang.code, name, brands, types).build()).toIdolColors()
 
     override suspend fun search(ids: List<String>)  =
         imasparqlClient.search(SearchByIdQuery(appPreference.lang.code, ids).build()).toIdolColors()

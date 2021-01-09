@@ -7,7 +7,7 @@ import net.subroh0508.colormaster.api.internal.ContentType
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.query.RandomQuery
 import net.subroh0508.colormaster.query.SearchByIdQuery
-import net.subroh0508.colormaster.query.SearchBySomeParamsQuery
+import net.subroh0508.colormaster.query.SearchByNameQuery
 import net.subroh0508.colormaster.test.jsonIdolColor
 import net.subroh0508.colormaster.test.resultJsonOfIdolColors
 import net.subroh0508.colormaster.test.mockApi
@@ -28,7 +28,7 @@ fun mockSearchByParams(
     lang: Languages, name: IdolName? = null, brands: Brands? = null, types: Set<Types> = setOf(),
     vararg res: IdolColor,
 ) = mockApi { req ->
-    if (req.url.parameters["query"] == SearchBySomeParamsQuery(lang.code, name, brands, types).plainQuery) {
+    if (req.url.parameters["query"] == SearchByNameQuery(lang.code, name, brands, types).plainQuery) {
         return@mockApi respond(toJson(lang.code, res.toList()), headers = headers)
     }
 

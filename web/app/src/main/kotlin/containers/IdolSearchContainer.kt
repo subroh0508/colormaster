@@ -53,7 +53,7 @@ private class IdolSearchContainerComponent :
     override fun RBuilder.render() {
         IdolSearchPage {
             attrs.model = state.uiModel
-            attrs.onChangeIdolName = { name -> viewModel.searchParams = params.change(name.takeIf(String::isNotBlank)?.let(::IdolName)) }
+            attrs.onChangeIdolName = { name -> viewModel.searchParams = params.change(name.toIdolName()) }
             attrs.onSelectTitle = { brands, checked -> viewModel.searchParams = params.change(if (checked) brands else null) }
             attrs.onSelectType = { type, checked -> viewModel.searchParams = params.change(type, checked) }
             attrs.onClickIdolColor = viewModel::select

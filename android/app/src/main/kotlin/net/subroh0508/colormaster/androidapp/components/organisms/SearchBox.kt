@@ -33,7 +33,7 @@ fun SearchBox(
         DebounceTextField(
             text = params.idolName?.value,
             labelRes = R.string.search_box_label_idol_name,
-            onTextChanged = { name -> onParamsChange(params.change(name?.let(::IdolName))) },
+            onTextChanged = { name -> onParamsChange(params.change(name.toIdolName())) },
             modifier = Modifier.fillMaxWidth(),
         )
         Spacer(Modifier.preferredHeight(16.dp))
