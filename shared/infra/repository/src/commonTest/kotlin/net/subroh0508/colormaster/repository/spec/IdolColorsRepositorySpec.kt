@@ -10,10 +10,7 @@ import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import net.subroh0508.colormaster.repository.di.IdolColorsRepositories
-import net.subroh0508.colormaster.repository.mock.getRandomIdols
-import net.subroh0508.colormaster.repository.mock.mockRandom
-import net.subroh0508.colormaster.repository.mock.mockSearchById
-import net.subroh0508.colormaster.repository.mock.mockSearchByName
+import net.subroh0508.colormaster.repository.mock.*
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -102,6 +99,21 @@ class IdolColorsRepositorySpec : FunSpec() {
                     brands = Brands._765,
                     types = setOf(Types.MILLION_LIVE.PRINCESS),
                 ) should containExactlyInAnyOrder(expectsByBrandAndTypes(lang))
+            }
+
+            fun expectsByLive(lang: Languages) = listOf(
+                IdolColor("Sakuragi_Mano", if (lang == Languages.JAPANESE) "櫻木真乃" else "Mano Sakuragi", HexColor("FFBAD6")),
+                IdolColor("Kazano_Hiori", if (lang == Languages.JAPANESE) "風野灯織" else "Hirori Kazano", HexColor("144384")),
+                IdolColor("Hachimiya_Meguru", if (lang == Languages.JAPANESE) "八宮めぐる" else "Meguru Hachimiya", HexColor("FFE012")),
+            )
+
+            test("#search(by live): when lang = '${lang.code}' it should return idols") {
+                val live = LiveName("THE IDOLM@STER SHINY COLORS MUSIC DAWN Day1")
+                val repository = mockApi(lang) {
+                    mockSearchByLive(lang, LiveName("THE IDOLM@STER SHINY COLORS MUSIC DAWN Day1"), res = expectsByLive(lang).toTypedArray())
+                }
+
+                repository.search(live) should containExactlyInAnyOrder(expectsByLive(lang))
             }
 
             fun expectsById(lang: Languages) = listOf(

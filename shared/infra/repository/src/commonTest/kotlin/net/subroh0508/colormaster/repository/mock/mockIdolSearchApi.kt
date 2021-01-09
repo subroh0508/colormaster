@@ -6,6 +6,7 @@ import io.ktor.util.*
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.query.RandomQuery
 import net.subroh0508.colormaster.query.SearchByIdQuery
+import net.subroh0508.colormaster.query.SearchByLiveQuery
 import net.subroh0508.colormaster.query.SearchByNameQuery
 import net.subroh0508.colormaster.test.jsonIdolColor
 import net.subroh0508.colormaster.test.resultJson
@@ -24,6 +25,17 @@ fun mockSearchByName(
     vararg res: IdolColor,
 ) = mockApi { req ->
     if (req.url.parameters["query"] == SearchByNameQuery(lang.code, name, brands, types).plainQuery) {
+        return@mockApi respond(toJson(lang.code, res.toList()), headers = headers)
+    }
+
+    return@mockApi respondBadRequest()
+}
+
+fun mockSearchByLive(
+    lang: Languages, liveName: LiveName?,
+    vararg res: IdolColor,
+) = mockApi { req ->
+    if (req.url.parameters["query"] == SearchByLiveQuery(lang.code, liveName).plainQuery) {
         return@mockApi respond(toJson(lang.code, res.toList()), headers = headers)
     }
 
