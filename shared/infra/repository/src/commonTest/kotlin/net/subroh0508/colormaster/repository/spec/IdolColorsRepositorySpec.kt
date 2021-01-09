@@ -13,7 +13,7 @@ import net.subroh0508.colormaster.repository.di.IdolColorsRepositories
 import net.subroh0508.colormaster.repository.mock.getRandomIdols
 import net.subroh0508.colormaster.repository.mock.mockRandom
 import net.subroh0508.colormaster.repository.mock.mockSearchById
-import net.subroh0508.colormaster.repository.mock.mockSearchByParams
+import net.subroh0508.colormaster.repository.mock.mockSearchByName
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -57,7 +57,7 @@ class IdolColorsRepositorySpec : FunSpec() {
 
             test("#search(by name): when lang = '${lang.code}' it should return idols") {
                 val repository = mockApi(lang) {
-                    mockSearchByParams(lang, param(lang), res = expectsByName(lang).toTypedArray())
+                    mockSearchByName(lang, param(lang), res = expectsByName(lang).toTypedArray())
                 }
 
                 repository.search(
@@ -75,7 +75,7 @@ class IdolColorsRepositorySpec : FunSpec() {
 
             test("#search(by brand): when lang = '${lang.code}' it should return idols") {
                 val repository = mockApi(lang) {
-                    mockSearchByParams(lang, brands = Brands._876, res = expectsByBrand(lang).toTypedArray())
+                    mockSearchByName(lang, brands = Brands._876, res = expectsByBrand(lang).toTypedArray())
                 }
 
                 repository.search(
@@ -94,7 +94,7 @@ class IdolColorsRepositorySpec : FunSpec() {
 
             test("#search(by brand and types): when lang = '${lang.code}' it should return idols") {
                 val repository = mockApi(lang) {
-                    mockSearchByParams(lang, brands = Brands._765, types = setOf(Types.MILLION_LIVE.PRINCESS), res = expectsByBrandAndTypes(lang).toTypedArray())
+                    mockSearchByName(lang, brands = Brands._765, types = setOf(Types.MILLION_LIVE.PRINCESS), res = expectsByBrandAndTypes(lang).toTypedArray())
                 }
 
                 repository.search(

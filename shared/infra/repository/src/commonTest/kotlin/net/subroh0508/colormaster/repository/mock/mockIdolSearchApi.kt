@@ -3,18 +3,13 @@ package net.subroh0508.colormaster.repository.mock
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import io.ktor.util.*
-import net.subroh0508.colormaster.api.internal.ContentType
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.query.RandomQuery
 import net.subroh0508.colormaster.query.SearchByIdQuery
 import net.subroh0508.colormaster.query.SearchByNameQuery
 import net.subroh0508.colormaster.test.jsonIdolColor
-import net.subroh0508.colormaster.test.resultJsonOfIdolColors
+import net.subroh0508.colormaster.test.resultJson
 import net.subroh0508.colormaster.test.mockApi
-
-private val headers = headersOf(
-    "Content-Type" to listOf(ContentType.Application.SparqlJson.toString())
-)
 
 fun mockRandom(lang: Languages, limit: Int) = mockApi { req ->
     if (req.url.parameters["query"] == RandomQuery(lang.code, limit).plainQuery) {
@@ -24,7 +19,7 @@ fun mockRandom(lang: Languages, limit: Int) = mockApi { req ->
     return@mockApi respondBadRequest()
 }
 
-fun mockSearchByParams(
+fun mockSearchByName(
     lang: Languages, name: IdolName? = null, brands: Brands? = null, types: Set<Types> = setOf(),
     vararg res: IdolColor,
 ) = mockApi { req ->
@@ -59,7 +54,7 @@ fun getRandomIdols(lang: Languages) = listOf(
     IdolColor("Ichikawa_Hinana", if (lang == Languages.JAPANESE) "市川雛菜" else "Hinana Ichikawa", HexColor("FFC639")),
 )
 
-private fun toJson(lang: String, res: List<IdolColor>) = resultJsonOfIdolColors {
+private fun toJson(lang: String, res: List<IdolColor>) = resultJson {
     res.joinToString(",") { (id, name, hexColor) ->
         jsonIdolColor(lang, id, name, hexColor.value)
     }

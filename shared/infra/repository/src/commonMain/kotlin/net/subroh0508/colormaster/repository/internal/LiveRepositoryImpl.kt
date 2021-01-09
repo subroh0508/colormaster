@@ -12,10 +12,10 @@ internal class LiveRepositoryImpl(
     override suspend fun suggest(dateRange: Pair<String, String>) = imasparqlClient.search(
         SuggestLiveQuery(dateRange = dateRange).build(),
         LiveNameJson.serializer(),
-    ).results.bindings.map { (name) -> LiveName(name) }
+    ).results.bindings.mapNotNull { (nameMap) -> LiveName(nameMap["value"] ?: return@mapNotNull null) }
 
     override suspend fun suggest(name: String?) = imasparqlClient.search(
         SuggestLiveQuery(name = name).build(),
         LiveNameJson.serializer(),
-    ).results.bindings.map { (name) -> LiveName(name) }
+    ).results.bindings.mapNotNull { (nameMap) -> LiveName(nameMap["value"] ?: return@mapNotNull null) }
 }
