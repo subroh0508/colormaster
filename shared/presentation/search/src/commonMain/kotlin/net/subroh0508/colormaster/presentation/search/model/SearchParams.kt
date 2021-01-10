@@ -1,9 +1,7 @@
 package net.subroh0508.colormaster.presentation.search.model
 
-import net.subroh0508.colormaster.model.Brands
-import net.subroh0508.colormaster.model.IdolName
-import net.subroh0508.colormaster.model.Types
-import net.subroh0508.colormaster.model.UnitName
+import net.subroh0508.colormaster.model.*
+import net.subroh0508.colormaster.utilities.DateNum
 
 sealed class SearchParams {
     abstract fun isEmpty(): Boolean
@@ -38,6 +36,34 @@ sealed class SearchParams {
 
         companion object {
             val EMPTY = ByName(null, null, setOf(), null)
+        }
+    }
+
+    data class ByLive(
+        val liveName: LiveName?,
+        val query: String?,
+        val date: DateNum?,
+        val suggests: List<LiveName>,
+    ) : SearchParams() {
+        override fun isEmpty() = this == EMPTY
+
+        fun change(rawQuery: String?) = when {
+            rawQuery == null -> copy(liveName = null, query = null, date = null)
+            isNumber(rawQuery) -> copy(date = DateNum(rawQuery.toInt()), query = null)
+            else -> copy(query = rawQuery.takeIf(String::isNotBlank), date = null)
+        }
+
+        fun suggests(suggests: List<LiveName>) = copy(suggests = suggests)
+
+        fun select(liveName: LiveName) = EMPTY.copy(liveName = liveName)
+        fun clear() = EMPTY
+
+        private fun isNumber(rawQuery: String) = DATE_NUMBER_PATTERN.toRegex().matches(rawQuery)
+
+        companion object {
+            val EMPTY = ByLive(null, null, null, listOf())
+
+            private const val DATE_NUMBER_PATTERN = """^[0-9]+$"""
         }
     }
 }
