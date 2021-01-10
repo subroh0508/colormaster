@@ -9,12 +9,13 @@ import net.subroh0508.colormaster.repository.IdolColorsRepository
 import net.subroh0508.colormaster.utilities.LoadState
 import net.subroh0508.colormaster.utilities.ViewModel
 
-abstract class SearchViewModel(
-    private val repository: IdolColorsRepository,
+abstract class SearchViewModel<T: SearchParams>(
+    protected val idolColorsRepository: IdolColorsRepository,
+    emptyParams: T,
     coroutineScope: CoroutineScope? = null,
 ) : ViewModel(coroutineScope) {
     @ExperimentalCoroutinesApi
-    private val _searchParams: MutableStateFlow<SearchParams> by lazy { MutableStateFlow(SearchParams.ByName.EMPTY) }
+    private val _searchParams: MutableStateFlow<T> by lazy { MutableStateFlow(emptyParams) }
     @ExperimentalCoroutinesApi
     private val _idolsLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<IdolColor>>(listOf())) }
     @ExperimentalCoroutinesApi
@@ -38,7 +39,7 @@ abstract class SearchViewModel(
 
     fun loadRandom() {
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-            runCatching { repository.rand(10) }
+            runCatching { idolColorsRepository.rand(10) }
                 .onSuccess { _idolsLoadState.value = LoadState.Loaded(it) }
                 .onFailure {
                     it.printStackTrace()
@@ -69,7 +70,7 @@ abstract class SearchViewModel(
         job.start()
     }
 
-    var searchParams: SearchParams
+    var searchParams: T
         get() = _searchParams.value
         set(value) {
             if (_searchParams.value == value) return
@@ -78,24 +79,26 @@ abstract class SearchViewModel(
             search()
         }
 
+    protected abstract suspend fun search(params: T): List<IdolColor>
+
     fun select(item: IdolColor, selected: Boolean) { _selected.value = if (selected) _selected.value + listOf(item.id) else _selected.value - listOf(item.id) }
     fun selectAll(selected: Boolean) { _selected.value = if (selected) items.map(IdolColor::id) else listOf() }
 
     fun loadFavorites() {
-        viewModelScope.launch { _favorites.value = repository.getFavoriteIdolIds() }
+        viewModelScope.launch { _favorites.value = idolColorsRepository.getFavoriteIdolIds() }
     }
 
     fun favorite(id: String) {
         viewModelScope.launch {
-            repository.favorite(id)
-            _favorites.value = repository.getFavoriteIdolIds()
+            idolColorsRepository.favorite(id)
+            _favorites.value = idolColorsRepository.getFavoriteIdolIds()
         }
     }
 
     fun unfavorite(id: String) {
         viewModelScope.launch {
-            repository.unfavorite(id)
-            _favorites.value = repository.getFavoriteIdolIds()
+            idolColorsRepository.unfavorite(id)
+            _favorites.value = idolColorsRepository.getFavoriteIdolIds()
         }
     }
 
@@ -105,7 +108,7 @@ abstract class SearchViewModel(
     }
 
     private suspend fun search(params: SearchParams) = when (params) {
-        is SearchParams.ByName -> repository.search(params.idolName, params.brands, params.types)
-        is SearchParams.ByLive -> params.liveName?.let { repository.search(it) } ?: listOf()
+        is SearchParams.ByName -> idolColorsRepository.search(params.idolName, params.brands, params.types)
+        is SearchParams.ByLive -> params.liveName?.let { idolColorsRepository.search(it) } ?: listOf()
     }
 }
