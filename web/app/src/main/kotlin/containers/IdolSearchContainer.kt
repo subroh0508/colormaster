@@ -6,7 +6,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.model.*
-import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
+import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 import org.koin.core.KoinComponent
@@ -36,7 +36,7 @@ private class IdolSearchContainerComponent :
     private val viewModel: SearchByNameViewModel by inject()
 
     override fun IdolSearchState.init() {
-        uiModel = ManualSearchUiModel.INITIALIZED
+        uiModel = SearchUiModel.ByName.INITIALIZED
     }
 
     override fun componentDidMount() {
@@ -52,9 +52,9 @@ private class IdolSearchContainerComponent :
     override fun RBuilder.render() {
         IdolSearchPage {
             attrs.model = state.uiModel
-            attrs.onChangeIdolName = { name -> viewModel.searchParams = change(params, name.toIdolName()) }
-            attrs.onSelectTitle = { brands, checked -> viewModel.searchParams = change(params, brands, checked) }
-            attrs.onSelectType = { type, checked -> viewModel.searchParams = change(params, type, checked) }
+            attrs.onChangeIdolName = { name -> viewModel.setSearchParams(change(params, name.toIdolName())) }
+            attrs.onSelectTitle = { brands, checked -> viewModel.setSearchParams(change(params, brands, checked)) }
+            attrs.onSelectType = { type, checked -> viewModel.setSearchParams(change(params, type, checked)) }
             attrs.onClickIdolColor = viewModel::select
             attrs.onClickSelectAll = viewModel::selectAll
             attrs.onDoubleClickIdolColor = { item -> props.showPenlight(listOf(item)) }
@@ -86,5 +86,5 @@ private external interface IdolSearchProps: RProps {
 }
 
 private external interface IdolSearchState : RState {
-    var uiModel: ManualSearchUiModel
+    var uiModel: SearchUiModel
 }

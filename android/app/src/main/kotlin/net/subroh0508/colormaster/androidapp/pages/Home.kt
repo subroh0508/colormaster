@@ -26,16 +26,16 @@ import net.subroh0508.colormaster.androidapp.components.organisms.SearchBox
 import net.subroh0508.colormaster.androidapp.components.templates.HEADER_HEIGHT
 import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawerBackdrop
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.model.SearchState
-import net.subroh0508.colormaster.presentation.search.viewmodel.IdolSearchViewModel
+import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
+import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 
 @Composable
 @ExperimentalMaterialApi
 @ExperimentalLayout
 fun Home(
-    viewModel: IdolSearchViewModel,
+    viewModel: SearchByNameViewModel,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
     ModalDrawerBackdrop(
@@ -46,7 +46,7 @@ fun Home(
             )
         },
         drawerContent = { HomeDrawerContent() },
-        backLayerContent = { BackLayerContent(viewModel) { viewModel.searchParams = it } },
+        backLayerContent = { BackLayerContent(viewModel, viewModel::setSearchParams) },
         frontLayerContent = { backdropScaffoldState ->
             FrontLayerContent(viewModel, backdropScaffoldState, launchPreviewScreen)
         },
@@ -83,10 +83,10 @@ private fun HomeDrawerContent() {
 @ExperimentalMaterialApi
 @ExperimentalLayout
 private fun BackLayerContent(
-    viewModel: IdolSearchViewModel,
+    viewModel: SearchByNameViewModel,
     onParamsChange: (SearchParams) -> Unit,
 ) {
-    val uiModel by viewModel.uiModel.collectAsState(initial = ManualSearchUiModel.INITIALIZED)
+    val uiModel by viewModel.uiModel.collectAsState(initial = SearchUiModel.ByName.INITIALIZED)
 
     SearchBox(
         uiModel.params,
@@ -100,11 +100,11 @@ private fun BackLayerContent(
 @Composable
 @ExperimentalMaterialApi
 private fun FrontLayerContent(
-    viewModel: IdolSearchViewModel,
+    viewModel: SearchByNameViewModel,
     backdropScaffoldState: BackdropScaffoldState,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
-    val uiModel: ManualSearchUiModel by viewModel.uiModel.collectAsState(initial = ManualSearchUiModel.INITIALIZED)
+    val uiModel by viewModel.uiModel.collectAsState(initial = SearchUiModel.ByName.INITIALIZED)
 
     Column {
         SearchStateLabel(
@@ -137,7 +137,7 @@ private fun FrontLayerContent(
 
 @Composable
 private fun SearchStateLabel(
-    uiModel: ManualSearchUiModel,
+    uiModel: SearchUiModel,
     endAsset: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier,

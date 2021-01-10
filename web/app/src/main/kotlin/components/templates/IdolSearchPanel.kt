@@ -20,7 +20,7 @@ import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
-import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
+import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.*
 import react.dom.div
@@ -84,7 +84,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     }
 }
 
-private fun RBuilder.alert(opened: Boolean, uiModel: ManualSearchUiModel, t: I18nextText) = when {
+private fun RBuilder.alert(opened: Boolean, uiModel: SearchUiModel, t: I18nextText) = when {
     uiModel.isLoading -> warningAlert {
         attrs.message = t("searchPanel.alerts.searching")
     }
@@ -105,7 +105,7 @@ private operator fun I18nextText.invoke(key: String, count: Int) = invoke(
 )
 
 external interface IdolSearchPanelProps : RProps {
-    var model: ManualSearchUiModel
+    var model: SearchUiModel
     var isOpenedGrids: Boolean
     var onClickToggleGrids: () -> Unit
     var onChangeIdolName: (String) -> Unit

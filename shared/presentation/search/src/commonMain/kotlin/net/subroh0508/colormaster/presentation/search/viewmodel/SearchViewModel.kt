@@ -3,7 +3,7 @@ package net.subroh0508.colormaster.presentation.search.viewmodel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
+import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import net.subroh0508.colormaster.utilities.LoadState
@@ -15,35 +15,27 @@ abstract class SearchViewModel<T: SearchParams>(
     coroutineScope: CoroutineScope? = null,
 ) : ViewModel(coroutineScope) {
     @ExperimentalCoroutinesApi
-    private val _searchParams: MutableStateFlow<T> by lazy { MutableStateFlow(emptyParams) }
+    protected val searchParams: MutableStateFlow<T> by lazy { MutableStateFlow(emptyParams) }
     @ExperimentalCoroutinesApi
-    private val _idolsLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<IdolColor>>(listOf())) }
+    protected val idolsLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<IdolColor>>(listOf())) }
     @ExperimentalCoroutinesApi
-    private val _selected: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
+    protected val selected: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
     @ExperimentalCoroutinesApi
-    private val _favorites: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
+    protected val favorites: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
 
-    private val items: List<IdolColor> get() = _idolsLoadState.value.getValueOrNull() ?: listOf()
+    private val items: List<IdolColor> get() = idolsLoadState.value.getValueOrNull() ?: listOf()
 
     @FlowPreview
     @ExperimentalCoroutinesApi
-    val uiModel: Flow<ManualSearchUiModel>
-        get() = combine(
-            _searchParams,
-            _idolsLoadState,
-            _selected,
-            _favorites,
-        ) { params, loadState, selected, favorites ->
-            ManualSearchUiModel(params, loadState, selected, favorites)
-        }.distinctUntilChanged().apply { launchIn(viewModelScope) }
+    abstract val uiModel: Flow<SearchUiModel>
 
     fun loadRandom() {
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
             runCatching { idolColorsRepository.rand(10) }
-                .onSuccess { _idolsLoadState.value = LoadState.Loaded(it) }
+                .onSuccess { idolsLoadState.value = LoadState.Loaded(it) }
                 .onFailure {
                     it.printStackTrace()
-                    _idolsLoadState.value = LoadState.Error(it)
+                    idolsLoadState.value = LoadState.Error(it)
                 }
         }
 
@@ -53,11 +45,11 @@ abstract class SearchViewModel<T: SearchParams>(
 
     open fun search() {
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-            runCatching { search(searchParams) }
-                .onSuccess { _idolsLoadState.value = LoadState.Loaded(it) }
+            runCatching { search(searchParams.value) }
+                .onSuccess { idolsLoadState.value = LoadState.Loaded(it) }
                 .onFailure {
                     it.printStackTrace()
-                    _idolsLoadState.value = LoadState.Error(it)
+                    idolsLoadState.value = LoadState.Error(it)
                 }
         }
 
@@ -65,40 +57,39 @@ abstract class SearchViewModel<T: SearchParams>(
         job.start()
     }
 
-    var searchParams: T
-        get() = _searchParams.value
-        set(value) {
-            if (_searchParams.value == value) return
+    fun setSearchParams(params: SearchParams) {
+        if (searchParams.value == params) return
 
-            _searchParams.value = value
-            search()
-        }
+        @Suppress("UNCHECKED_CAST")
+        searchParams.value = params as T
+        search()
+    }
 
     protected abstract suspend fun search(params: T): List<IdolColor>
 
-    fun select(item: IdolColor, selected: Boolean) { _selected.value = if (selected) _selected.value + listOf(item.id) else _selected.value - listOf(item.id) }
-    fun selectAll(selected: Boolean) { _selected.value = if (selected) items.map(IdolColor::id) else listOf() }
+    fun select(item: IdolColor, selected: Boolean) { this.selected.value = if (selected) this.selected.value + listOf(item.id) else this.selected.value - listOf(item.id) }
+    fun selectAll(selected: Boolean) { this.selected.value = if (selected) items.map(IdolColor::id) else listOf() }
 
     fun loadFavorites() {
-        viewModelScope.launch { _favorites.value = idolColorsRepository.getFavoriteIdolIds() }
+        viewModelScope.launch { favorites.value = idolColorsRepository.getFavoriteIdolIds() }
     }
 
     fun favorite(id: String) {
         viewModelScope.launch {
             idolColorsRepository.favorite(id)
-            _favorites.value = idolColorsRepository.getFavoriteIdolIds()
+            favorites.value = idolColorsRepository.getFavoriteIdolIds()
         }
     }
 
     fun unfavorite(id: String) {
         viewModelScope.launch {
             idolColorsRepository.unfavorite(id)
-            _favorites.value = idolColorsRepository.getFavoriteIdolIds()
+            favorites.value = idolColorsRepository.getFavoriteIdolIds()
         }
     }
 
     private fun startLoading() {
-        _idolsLoadState.value = LoadState.Loading
-        _selected.value = listOf()
+        idolsLoadState.value = LoadState.Loading
+        selected.value = listOf()
     }
 }

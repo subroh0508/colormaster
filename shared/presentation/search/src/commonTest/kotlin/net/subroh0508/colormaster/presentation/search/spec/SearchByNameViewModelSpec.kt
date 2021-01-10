@@ -14,14 +14,14 @@ import net.subroh0508.colormaster.presentation.search.MockIdolColorsRepository
 import net.subroh0508.colormaster.presentation.search.everyRand
 import net.subroh0508.colormaster.presentation.search.everySearch
 import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
-import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
+import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 import net.subroh0508.colormaster.test.TestScope
 import net.subroh0508.colormaster.test.ViewModelSpec
 
 class SearchByNameViewModelSpec : ViewModelSpec() {
-    private val observedUiModels: MutableList<ManualSearchUiModel> = mutableListOf()
+    private val observedUiModels: MutableList<SearchUiModel> = mutableListOf()
 
     private val repository = MockIdolColorsRepository()
 
@@ -71,7 +71,7 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
         IdolColor("Hagiwara_Yukiho", "萩原雪歩", HexColor("D3DDE9")),
     )
 
-    private fun subject(block: () -> Unit): List<ManualSearchUiModel> {
+    private fun subject(block: () -> Unit): List<SearchUiModel> {
         block()
         return observedUiModels
     }
@@ -139,7 +139,7 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
 
             repository.everySearch(expectIdolName = byName) { _, _, _ -> byNameIdols }
 
-            subject { viewModel.searchParams = params }.also { models ->
+            subject { viewModel.setSearchParams(params) }.also { models ->
                 models should haveSize(4)
                 models.last() should {
                     it.items should containExactlyInAnyOrder(byNameIdols.map(::IdolColorListItem))
@@ -153,7 +153,7 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
 
             repository.everySearch(expectBrands = byBrand) { _, _, _ -> byBrandIdols }
 
-            subject { viewModel.searchParams = params }.also { models ->
+            subject { viewModel.setSearchParams(params) }.also { models ->
                 models should haveSize(4)
                 models.last() should {
                     it.items should containExactlyInAnyOrder(byBrandIdols.map(::IdolColorListItem))
@@ -168,7 +168,7 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
 
             repository.everySearch(expectBrands = brand, expectTypes = setOf(type)) { _, _, _ -> byBrandAndTypeIdols }
 
-            subject { viewModel.searchParams = params }.also { models ->
+            subject { viewModel.setSearchParams(params) }.also { models ->
                 models should haveSize(4)
                 models.last() should {
                     it.items should containExactlyInAnyOrder(byBrandAndTypeIdols.map(::IdolColorListItem))

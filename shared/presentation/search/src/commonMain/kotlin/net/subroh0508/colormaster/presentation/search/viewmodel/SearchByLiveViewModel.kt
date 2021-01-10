@@ -3,11 +3,11 @@ package net.subroh0508.colormaster.presentation.search.viewmodel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.LiveName
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
+import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import net.subroh0508.colormaster.repository.LiveRepository
 import net.subroh0508.colormaster.utilities.LoadState
@@ -18,10 +18,22 @@ class SearchByLiveViewModel(
     coroutineScope: CoroutineScope? = null,
 ) : SearchViewModel<SearchParams.ByLive>(idolColorsRepository, SearchParams.ByLive.EMPTY, coroutineScope) {
     @ExperimentalCoroutinesApi
-    private val _liveLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<LiveName>>(listOf())) }
+    private val liveLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<LiveName>>(listOf())) }
+
+    @ExperimentalCoroutinesApi
+    override val uiModel: Flow<SearchUiModel>
+        get() = combine(
+            searchParams,
+            idolsLoadState,
+            liveLoadState,
+            selected,
+            favorites,
+        ) { params, idolsLoadState, liveLoadState, selected, favorites ->
+            SearchUiModel(params, idolsLoadState, liveLoadState, selected, favorites)
+        }.distinctUntilChanged().apply { launchIn(viewModelScope) }
 
     override fun search() =
-        if (searchParams.liveName == null)
+        if (searchParams.value.liveName == null)
             fetchLiveNameSuggests()
         else
             super.search()
@@ -31,7 +43,7 @@ class SearchByLiveViewModel(
     } ?: listOf()
 
     private fun fetchLiveNameSuggests() {
-        val (_, query, date) = searchParams
+        val (_, query, date) = searchParams.value
 
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
             runCatching {
@@ -42,11 +54,11 @@ class SearchByLiveViewModel(
                     else -> listOf()
                 }
             }
-                .onSuccess { _liveLoadState.value = LoadState.Loaded(it) }
-                .onFailure { _liveLoadState.value = LoadState.Error(it) }
+                .onSuccess { liveLoadState.value = LoadState.Loaded(it) }
+                .onFailure { liveLoadState.value = LoadState.Error(it) }
         }
 
-        _liveLoadState.value = LoadState.Loading
+        liveLoadState.value = LoadState.Loading
         job.start()
     }
 }
