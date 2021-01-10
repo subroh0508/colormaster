@@ -39,14 +39,18 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     val drawerAnchor = if (isSmUp) DrawerAnchor.right else DrawerAnchor.bottom
     val actionsStyle = "${classes.actions} ${if (props.isOpenedGrids) "" else classes.actionsHide}"
 
+    val params = uiModel.params
+
     div(classes.root) {
         div(classes.searchBox) {
             div(classes.searchBoxTop) {}
-            idolSearchBox {
-                attrs.params = uiModel.params
-                attrs.onChangeIdolName = props.onChangeIdolName
-                attrs.onSelectTitle = props.onSelectTitle
-                attrs.onSelectType = props.onSelectType
+            when (params) {
+                is SearchParams.ByName -> idolSearchBox {
+                    attrs.params = params
+                    attrs.onChangeIdolName = props.onChangeIdolName
+                    attrs.onSelectTitle = props.onSelectTitle
+                    attrs.onSelectType = props.onSelectType
+                }
             }
         }
 
@@ -84,7 +88,7 @@ private fun RBuilder.alert(opened: Boolean, uiModel: ManualSearchUiModel, t: I18
     uiModel.isLoading -> warningAlert {
         attrs.message = t("searchPanel.alerts.searching")
     }
-    uiModel.params == SearchParams.EMPTY -> infoAlert {
+    uiModel.params.isEmpty() -> infoAlert {
         attrs.message = t("searchPanel.alerts.default")
     }
     uiModel.error != null -> errorAlert {

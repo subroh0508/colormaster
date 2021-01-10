@@ -4,7 +4,6 @@ import appDI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
@@ -53,15 +52,28 @@ private class IdolSearchContainerComponent :
     override fun RBuilder.render() {
         IdolSearchPage {
             attrs.model = state.uiModel
-            attrs.onChangeIdolName = { name -> viewModel.searchParams = params.change(name.toIdolName()) }
-            attrs.onSelectTitle = { brands, checked -> viewModel.searchParams = params.change(if (checked) brands else null) }
-            attrs.onSelectType = { type, checked -> viewModel.searchParams = params.change(type, checked) }
+            attrs.onChangeIdolName = { name -> viewModel.searchParams = change(params, name.toIdolName()) }
+            attrs.onSelectTitle = { brands, checked -> viewModel.searchParams = change(params, brands, checked) }
+            attrs.onSelectType = { type, checked -> viewModel.searchParams = change(params, type, checked) }
             attrs.onClickIdolColor = viewModel::select
             attrs.onClickSelectAll = viewModel::selectAll
             attrs.onDoubleClickIdolColor = { item -> props.showPenlight(listOf(item)) }
             attrs.onClickPreview = { props.showPreview(selectedItems) }
             attrs.onClickPenlight = { props.showPenlight(selectedItems) }
         }
+    }
+
+    private fun change(params: SearchParams, idolName: IdolName?) = when (params) {
+        is SearchParams.ByName -> params.change(idolName)
+        else -> params
+    }
+    private fun change(params: SearchParams, brands: Brands?, checked: Boolean) = when (params) {
+        is SearchParams.ByName -> params.change(if (checked) brands else null)
+        else -> params
+    }
+    private fun change(params: SearchParams, type: Types, checked: Boolean) = when (params) {
+        is SearchParams.ByName -> params.change(type, checked)
+        else -> params
     }
 
     private val params: SearchParams get() = state.uiModel.params

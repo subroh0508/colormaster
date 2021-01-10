@@ -14,7 +14,7 @@ class IdolSearchViewModel(
     coroutineScope: CoroutineScope? = null,
 ) : ViewModel(coroutineScope) {
     @ExperimentalCoroutinesApi
-    private val _searchParams: MutableStateFlow<SearchParams> by lazy { MutableStateFlow(SearchParams.EMPTY) }
+    private val _searchParams: MutableStateFlow<SearchParams> by lazy { MutableStateFlow(SearchParams.ByName.EMPTY) }
     @ExperimentalCoroutinesApi
     private val _idolsLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<IdolColor>>(listOf())) }
     @ExperimentalCoroutinesApi
@@ -57,7 +57,7 @@ class IdolSearchViewModel(
         }
 
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-            runCatching { repository.search(searchParams.idolName, searchParams.brands, searchParams.types) }
+            runCatching { search(searchParams) }
                 .onSuccess { _idolsLoadState.value = LoadState.Loaded(it) }
                 .onFailure {
                     it.printStackTrace()
@@ -102,5 +102,9 @@ class IdolSearchViewModel(
     private fun startLoading() {
         _idolsLoadState.value = LoadState.Loading
         _selected.value = listOf()
+    }
+
+    private suspend fun search(params: SearchParams) = when (params) {
+        is SearchParams.ByName -> repository.search(params.idolName, params.brands, params.types)
     }
 }

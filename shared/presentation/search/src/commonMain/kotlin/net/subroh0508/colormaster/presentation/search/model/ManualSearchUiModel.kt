@@ -10,7 +10,7 @@ data class ManualSearchUiModel(
     val isLoading: Boolean = false,
 ) {
     companion object {
-        val INITIALIZED = ManualSearchUiModel(listOf(), SearchParams.EMPTY)
+        val INITIALIZED = ManualSearchUiModel(listOf(), SearchParams.ByName.EMPTY)
 
         operator fun invoke(
             params: SearchParams,
@@ -30,7 +30,7 @@ data class ManualSearchUiModel(
     val searchState get() = when {
         error != null -> SearchState.ERROR
         isLoading -> SearchState.WAITING
-        params == SearchParams.EMPTY -> SearchState.RANDOM
+        params.isEmpty() -> SearchState.RANDOM
         else -> SearchState.SEARCHED
     }
 

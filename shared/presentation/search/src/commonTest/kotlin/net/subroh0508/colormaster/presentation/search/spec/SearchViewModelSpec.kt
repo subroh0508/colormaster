@@ -135,7 +135,7 @@ class SearchViewModelSpec : ViewModelSpec() {
         }
 
         test("#search: when change idol name it should post ManualSearchUiModel with filled list") {
-            val params = SearchParams.EMPTY.change(byName)
+            val params = SearchParams.ByName.EMPTY.change(byName)
 
             repository.everySearch(expectIdolName = byName) { _, _, _ -> byNameIdols }
 
@@ -149,7 +149,7 @@ class SearchViewModelSpec : ViewModelSpec() {
         }
 
         test("#search: when change brand it should post ManualSearchUiModel with filled list") {
-            val params = SearchParams.EMPTY.change(byBrand)
+            val params = SearchParams.ByName.EMPTY.change(byBrand)
 
             repository.everySearch(expectBrands = byBrand) { _, _, _ -> byBrandIdols }
 
@@ -164,7 +164,7 @@ class SearchViewModelSpec : ViewModelSpec() {
 
         test("#search: when change brand and type it should post ManualSearchUiModel with filled list") {
             val (brand, type) = byBrandAndType
-            val params = SearchParams.EMPTY.change(brand).change(type, checked = true)
+            val params = SearchParams.ByName.EMPTY.change(brand).change(type, checked = true)
 
             repository.everySearch(expectBrands = brand, expectTypes = setOf(type)) { _, _, _ -> byBrandAndTypeIdols }
 
