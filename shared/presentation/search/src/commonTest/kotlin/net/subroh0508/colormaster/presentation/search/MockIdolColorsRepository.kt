@@ -10,7 +10,7 @@ class MockIdolColorsRepository : IdolColorsRepository {
     var expectedLiveName: LiveName? = null
     var everyRand: (Int) -> List<IdolColor> = { listOf() }
     var everySearchByName: (IdolName?, Brands?, Set<Types>) -> List<IdolColor> = { _, _, _ -> listOf() }
-    var everySearchByLive: (LiveName?) -> List<IdolColor> = { listOf() }
+    var everySearchByLive: (LiveName) -> List<IdolColor> = { listOf() }
 
     override suspend fun favorite(id: String) = Unit
     override suspend fun unfavorite(id: String) = Unit
@@ -38,7 +38,7 @@ fun MockIdolColorsRepository.everyRand(block: (Int) -> List<IdolColor>) {
     everyRand = block
 }
 
-fun MockIdolColorsRepository.everySearch(
+fun MockIdolColorsRepository.everySearchByName(
     expectIdolName: IdolName? = null,
     expectBrands: Brands? = null,
     expectTypes: Set<Types> = setOf(),
@@ -48,4 +48,12 @@ fun MockIdolColorsRepository.everySearch(
     expectedBrands = expectBrands
     expectedTypes = expectTypes
     everySearchByName = block
+}
+
+fun MockIdolColorsRepository.everySearchByLive(
+    expectLiveName: LiveName,
+    block: (LiveName) -> List<IdolColor>,
+) {
+    expectedLiveName = expectLiveName
+    everySearchByLive = block
 }

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.presentation.search.MockIdolColorsRepository
 import net.subroh0508.colormaster.presentation.search.everyRand
-import net.subroh0508.colormaster.presentation.search.everySearch
+import net.subroh0508.colormaster.presentation.search.everySearchByName
 import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
@@ -77,7 +77,7 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
     }
 
     init {
-        test("#rand: when repository#rand returns idols colors it should post ManualSearchUiModel with filled list") {
+        test("#rand: when repository#rand returns idols colors it should post SearchUiModel with filled list") {
             repository.everyRand { randomIdols }
 
             subject(viewModel::loadRandom).also { models ->
@@ -100,7 +100,7 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#rand: when repository#rand raise Exception it should post ManualSearchUiModel with empty list") {
+        test("#rand: when repository#rand raise Exception it should post SearchUiModel with empty list") {
             val error = IllegalStateException()
 
             repository.everyRand { throw error }
@@ -125,7 +125,7 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#search: when search params is empty it should post ManualSearchUiModel with filled list") {
+        test("#search: when search params is empty it should post SearchUiModel with filled list") {
             repository.everyRand { randomIdols }
 
             subject(viewModel::search).also { models ->
@@ -134,10 +134,10 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#search: when change idol name it should post ManualSearchUiModel with filled list") {
+        test("#search: when change idol name it should post SearchUiModel with filled list") {
             val params = SearchParams.ByName.EMPTY.change(byName)
 
-            repository.everySearch(expectIdolName = byName) { _, _, _ -> byNameIdols }
+            repository.everySearchByName(expectIdolName = byName) { _, _, _ -> byNameIdols }
 
             subject { viewModel.setSearchParams(params) }.also { models ->
                 models should haveSize(4)
@@ -148,10 +148,10 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#search: when change brand it should post ManualSearchUiModel with filled list") {
+        test("#search: when change brand it should post SearchUiModel with filled list") {
             val params = SearchParams.ByName.EMPTY.change(byBrand)
 
-            repository.everySearch(expectBrands = byBrand) { _, _, _ -> byBrandIdols }
+            repository.everySearchByName(expectBrands = byBrand) { _, _, _ -> byBrandIdols }
 
             subject { viewModel.setSearchParams(params) }.also { models ->
                 models should haveSize(4)
@@ -162,11 +162,11 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#search: when change brand and type it should post ManualSearchUiModel with filled list") {
+        test("#search: when change brand and type it should post SearchUiModel with filled list") {
             val (brand, type) = byBrandAndType
             val params = SearchParams.ByName.EMPTY.change(brand).change(type, checked = true)
 
-            repository.everySearch(expectBrands = brand, expectTypes = setOf(type)) { _, _, _ -> byBrandAndTypeIdols }
+            repository.everySearchByName(expectBrands = brand, expectTypes = setOf(type)) { _, _, _ -> byBrandAndTypeIdols }
 
             subject { viewModel.setSearchParams(params) }.also { models ->
                 models should haveSize(4)
@@ -177,7 +177,7 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#select: when change selected item it should post ManualSearchUiModel with select state") {
+        test("#select: when change selected item it should post SearchUiModel with select state") {
             repository.everyRand { randomIdols }
 
             subject {
@@ -197,7 +197,7 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#selectAll: when change selected item it should post ManualSearchUiModel with select state") {
+        test("#selectAll: when change selected item it should post SearchUiModel with select state") {
             repository.everyRand { randomIdols }
 
             subject {

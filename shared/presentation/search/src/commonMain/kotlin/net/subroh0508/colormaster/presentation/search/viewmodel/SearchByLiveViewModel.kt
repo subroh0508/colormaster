@@ -32,11 +32,11 @@ class SearchByLiveViewModel(
             SearchUiModel(params, idolsLoadState, liveLoadState, selected, favorites)
         }.distinctUntilChanged().apply { launchIn(viewModelScope) }
 
-    override fun search() =
-        if (searchParams.value.liveName == null)
-            fetchLiveNameSuggests()
-        else
-            super.search()
+    override fun search() = when {
+        searchParams.value.isEmpty() -> Unit
+        searchParams.value.liveName == null -> fetchLiveNameSuggests()
+        else -> super.search()
+    }
 
     override suspend fun search(params: SearchParams.ByLive) = params.liveName?.let {
         idolColorsRepository.search(it)
