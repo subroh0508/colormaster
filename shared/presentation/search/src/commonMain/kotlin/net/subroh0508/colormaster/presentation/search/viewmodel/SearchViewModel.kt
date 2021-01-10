@@ -9,7 +9,7 @@ import net.subroh0508.colormaster.repository.IdolColorsRepository
 import net.subroh0508.colormaster.utilities.LoadState
 import net.subroh0508.colormaster.utilities.ViewModel
 
-class IdolSearchViewModel(
+abstract class SearchViewModel(
     private val repository: IdolColorsRepository,
     coroutineScope: CoroutineScope? = null,
 ) : ViewModel(coroutineScope) {
@@ -106,5 +106,6 @@ class IdolSearchViewModel(
 
     private suspend fun search(params: SearchParams) = when (params) {
         is SearchParams.ByName -> repository.search(params.idolName, params.brands, params.types)
+        is SearchParams.ByLive -> params.liveName?.let { repository.search(it) } ?: listOf()
     }
 }

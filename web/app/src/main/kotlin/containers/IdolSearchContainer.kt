@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
-import net.subroh0508.colormaster.presentation.search.viewmodel.IdolSearchViewModel
+import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import pages.IdolSearchPage
@@ -33,7 +33,7 @@ private class IdolSearchContainerComponent :
     RComponent<IdolSearchProps, IdolSearchState>(), KoinComponent, CoroutineScope by MainScope() {
     override fun getKoin() = appDI.koin
 
-    private val viewModel: IdolSearchViewModel by inject()
+    private val viewModel: SearchByNameViewModel by inject()
 
     override fun IdolSearchState.init() {
         uiModel = ManualSearchUiModel.INITIALIZED

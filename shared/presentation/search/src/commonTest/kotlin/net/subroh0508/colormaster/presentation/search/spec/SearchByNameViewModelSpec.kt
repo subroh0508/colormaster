@@ -16,21 +16,21 @@ import net.subroh0508.colormaster.presentation.search.everySearch
 import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
 import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
-import net.subroh0508.colormaster.presentation.search.viewmodel.IdolSearchViewModel
+import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 import net.subroh0508.colormaster.test.TestScope
 import net.subroh0508.colormaster.test.ViewModelSpec
 
-class SearchViewModelSpec : ViewModelSpec() {
+class SearchByNameViewModelSpec : ViewModelSpec() {
     private val observedUiModels: MutableList<ManualSearchUiModel> = mutableListOf()
 
     private val repository = MockIdolColorsRepository()
 
-    lateinit var viewModel: IdolSearchViewModel
+    lateinit var viewModel: SearchByNameViewModel
 
     override fun beforeTest(testCase: TestCase) {
         super.beforeTest(testCase)
 
-        viewModel = IdolSearchViewModel(repository, TestScope()/* for JS Runtime */)
+        viewModel = SearchByNameViewModel(repository, TestScope()/* for JS Runtime */)
         observedUiModels.clear()
 
         viewModel.uiModel.onEach { observedUiModels.add(it) }
