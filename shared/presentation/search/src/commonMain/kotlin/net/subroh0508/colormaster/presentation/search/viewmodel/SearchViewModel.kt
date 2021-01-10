@@ -51,12 +51,7 @@ abstract class SearchViewModel<T: SearchParams>(
         job.start()
     }
 
-    fun search() {
-        if (searchParams.isEmpty()) {
-            loadRandom()
-            return
-        }
-
+    open fun search() {
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
             runCatching { search(searchParams) }
                 .onSuccess { _idolsLoadState.value = LoadState.Loaded(it) }
@@ -105,10 +100,5 @@ abstract class SearchViewModel<T: SearchParams>(
     private fun startLoading() {
         _idolsLoadState.value = LoadState.Loading
         _selected.value = listOf()
-    }
-
-    private suspend fun search(params: SearchParams) = when (params) {
-        is SearchParams.ByName -> idolColorsRepository.search(params.idolName, params.brands, params.types)
-        is SearchParams.ByLive -> params.liveName?.let { idolColorsRepository.search(it) } ?: listOf()
     }
 }

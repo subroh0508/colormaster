@@ -20,11 +20,15 @@ class SearchByLiveViewModel(
     @ExperimentalCoroutinesApi
     private val _liveLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<LiveName>>(listOf())) }
 
-    override suspend fun search(params: SearchParams.ByLive): List<IdolColor> {
-        fetchLiveNameSuggests()
+    override fun search() =
+        if (searchParams.liveName == null)
+            fetchLiveNameSuggests()
+        else
+            super.search()
 
-        return params.liveName?.let { idolColorsRepository.search(it) } ?: listOf()
-    }
+    override suspend fun search(params: SearchParams.ByLive) = params.liveName?.let {
+        idolColorsRepository.search(it)
+    } ?: listOf()
 
     private fun fetchLiveNameSuggests() {
         val (_, query, date) = searchParams
@@ -32,6 +36,7 @@ class SearchByLiveViewModel(
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
             runCatching {
                 when {
+                    // TODO return date range from today
                     date != null -> date.range()?.let { liveRepository.suggest(it) } ?: listOf()
                     query != null -> liveRepository.suggest(query)
                     else -> listOf()
