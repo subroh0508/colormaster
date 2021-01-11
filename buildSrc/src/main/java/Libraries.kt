@@ -148,6 +148,9 @@ object Libraries {
         const val textEncodingVersion = "0.7.0"
         const val textEncoding = "text-encoding"
 
+        const val reactAutoSuggestVersion = "10.0.2"
+        const val reactAutoSuggest = "react-autosuggest"
+
         object I18next {
             const val version = "^19.4.5"
             const val core = "i18next"
