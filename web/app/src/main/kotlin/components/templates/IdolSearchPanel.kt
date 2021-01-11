@@ -24,6 +24,7 @@ import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.*
 import react.dom.div
+import themes.APP_BAR_SM_UP
 import utilities.I18nextText
 import utilities.invoke
 import utilities.useTranslation

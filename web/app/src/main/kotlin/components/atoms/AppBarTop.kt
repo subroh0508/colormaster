@@ -36,10 +36,9 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+import themes.APP_BAR_SM_UP
 import utilities.invoke
 import utilities.useTranslation
-
-val APP_BAR_SM_UP = 408.px
 
 fun RBuilder.appBarTop(handler: RHandler<AppBarTopProps>) = child(AppBarTopComponent, handler = handler)
 

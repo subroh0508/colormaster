@@ -14,6 +14,7 @@ fun <T: Any> RBuilder.autoSuggest(handler: RHandler<AutoSuggestProps<T>>) = Auto
 
 external interface AutoSuggestProps<T: Any> : RProps {
     var suggestions: Array<T>
+    var alwaysRenderSuggestions: Boolean
     var onSuggestionsFetchRequested: (T?) -> Unit
     var onSuggestionsClearRequested: () -> Unit
     var getSuggestionValue: (T) -> String

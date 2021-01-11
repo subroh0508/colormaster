@@ -2,6 +2,7 @@ package components.organisms.searchbox
 
 import components.atoms.AutoCompleteTextFieldComponent
 import components.atoms.AutoCompleteTextFieldProps
+import materialui.components.list.enums.ListStyle
 import materialui.components.list.list
 import materialui.components.listitem.listItem
 import net.subroh0508.colormaster.model.LiveName
@@ -16,7 +17,7 @@ val SearchByLiveComponent = functionalComponent<SearchByLiveProps> { props ->
     fun onClearLiveName() = props.onChangeSearchParams(props.params.clear())
     fun onChangeLiveNameQuery(value: String?) = props.onChangeSearchParams(props.params.change(value))
 
-    list {
+    list(ListStyle.root to classes.root) {
         listItem {
             form(classes = classes.form) {
                 liveAutoComplete {
