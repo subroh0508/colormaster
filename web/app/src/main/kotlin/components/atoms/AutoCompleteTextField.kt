@@ -93,6 +93,7 @@ private external interface SuggestionContainerStyle {
 
 private val useSuggestionContainerStyle = makeStyles<SuggestionContainerStyle> {
     "root" {
+        zIndex = 1
         descendants("ul") {
             listStyleType = ListStyleType.none
             padding(left = 0.px)
