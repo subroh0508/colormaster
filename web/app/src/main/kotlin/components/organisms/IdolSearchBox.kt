@@ -69,7 +69,7 @@ private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { p
 }
 
 external interface IdolSearchBoxProps : RProps {
-    var params: SearchParams
+    var params: SearchParams.ByName
     var onChangeIdolName: (String) -> Unit
     var onSelectTitle: (Brands, Boolean) -> Unit
     var onSelectType: (Types, Boolean) -> Unit

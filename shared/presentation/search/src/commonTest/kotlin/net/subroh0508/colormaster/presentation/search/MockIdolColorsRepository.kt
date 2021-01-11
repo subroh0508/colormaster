@@ -1,17 +1,16 @@
 package net.subroh0508.colormaster.presentation.search
 
-import net.subroh0508.colormaster.model.Brands
-import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.IdolName
-import net.subroh0508.colormaster.model.Types
+import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 
 class MockIdolColorsRepository : IdolColorsRepository {
     var expectedIdolName: IdolName? = null
     var expectedBrands: Brands? = null
     var expectedTypes: Set<Types> = setOf()
+    var expectedLiveName: LiveName? = null
     var everyRand: (Int) -> List<IdolColor> = { listOf() }
-    var everySearch: (IdolName?, Brands?, Set<Types>) -> List<IdolColor> = { _, _, _ -> listOf() }
+    var everySearchByName: (IdolName?, Brands?, Set<Types>) -> List<IdolColor> = { _, _, _ -> listOf() }
+    var everySearchByLive: (LiveName) -> List<IdolColor> = { listOf() }
 
     override suspend fun favorite(id: String) = Unit
     override suspend fun unfavorite(id: String) = Unit
@@ -20,7 +19,15 @@ class MockIdolColorsRepository : IdolColorsRepository {
     override suspend fun search(ids: List<String>): List<IdolColor> = listOf()
     override suspend fun search(name: IdolName?, brands: Brands?, types: Set<Types>): List<IdolColor> {
         if (expectedIdolName == name && expectedBrands == brands && expectedTypes == types) {
-            return everySearch(name, brands, types)
+            return everySearchByName(name, brands, types)
+        }
+
+        return listOf()
+    }
+
+    override suspend fun search(liveName: LiveName): List<IdolColor> {
+        if (expectedLiveName == liveName) {
+            return everySearchByLive(liveName)
         }
 
         return listOf()
@@ -31,7 +38,7 @@ fun MockIdolColorsRepository.everyRand(block: (Int) -> List<IdolColor>) {
     everyRand = block
 }
 
-fun MockIdolColorsRepository.everySearch(
+fun MockIdolColorsRepository.everySearchByName(
     expectIdolName: IdolName? = null,
     expectBrands: Brands? = null,
     expectTypes: Set<Types> = setOf(),
@@ -40,5 +47,13 @@ fun MockIdolColorsRepository.everySearch(
     expectedIdolName = expectIdolName
     expectedBrands = expectBrands
     expectedTypes = expectTypes
-    everySearch = block
+    everySearchByName = block
+}
+
+fun MockIdolColorsRepository.everySearchByLive(
+    expectLiveName: LiveName,
+    block: (LiveName) -> List<IdolColor>,
+) {
+    expectedLiveName = expectLiveName
+    everySearchByLive = block
 }

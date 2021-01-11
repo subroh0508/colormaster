@@ -13,6 +13,7 @@ kotlinMpp {
                 implementation(project(":shared:infra:query"))
 
                 implementation(Libraries.Coroutines.core)
+                implementation(Libraries.Serialization.core)
 
                 implementation(Libraries.Koin.core)
             }

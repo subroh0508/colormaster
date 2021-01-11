@@ -11,7 +11,9 @@ inline class HexColor(val value: String) {
 }
 
 inline class IdolName(val value: String)
+inline class LiveName(val value: String)
 inline class UnitName(val value: String)
 inline class SongName(val value: String)
 
 fun String?.toIdolName() = this?.takeIf(String::isNotBlank)?.let(::IdolName)
+fun String?.toLiveName() = this?.takeIf(String::isNotBlank)?.let(::LiveName)

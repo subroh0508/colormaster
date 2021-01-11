@@ -1,6 +1,6 @@
 package net.subroh0508.colormaster.test
 
-fun resultJsonOfIdolColors(block: () -> String) = "{\"head\":{\"vars\":[\"id\",\"name\",\"color\"]},\"results\":{\"bindings\":[${block()}]}}"
+fun resultJson(block: () -> String) = "{\"head\":{\"vars\":[\"id\",\"name\",\"color\"]},\"results\":{\"bindings\":[${block()}]}}"
 
 fun jsonIdolColor(
     lang: String,

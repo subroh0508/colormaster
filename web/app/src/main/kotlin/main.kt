@@ -7,14 +7,14 @@ import utilities.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import net.subroh0508.colormaster.presentation.preview.viewmodel.PreviewViewModel
-import net.subroh0508.colormaster.presentation.search.viewmodel.IdolSearchViewModel
+import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 import org.koin.dsl.module
 import react.Suspense
 
 val mainScope = MainScope()
 val appDI = koinApplication {
     modules(AppModule + AppPreferenceModule + module {
-        single { IdolSearchViewModel(get()) }
+        single { SearchByNameViewModel(get()) }
         single { PreviewViewModel(get()) }
     })
 }

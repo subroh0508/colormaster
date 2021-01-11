@@ -12,25 +12,25 @@ import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.presentation.search.MockIdolColorsRepository
 import net.subroh0508.colormaster.presentation.search.everyRand
-import net.subroh0508.colormaster.presentation.search.everySearch
+import net.subroh0508.colormaster.presentation.search.everySearchByName
 import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
-import net.subroh0508.colormaster.presentation.search.model.ManualSearchUiModel
+import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
-import net.subroh0508.colormaster.presentation.search.viewmodel.IdolSearchViewModel
+import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 import net.subroh0508.colormaster.test.TestScope
 import net.subroh0508.colormaster.test.ViewModelSpec
 
-class SearchViewModelSpec : ViewModelSpec() {
-    private val observedUiModels: MutableList<ManualSearchUiModel> = mutableListOf()
+class SearchByNameViewModelSpec : ViewModelSpec() {
+    private val observedUiModels: MutableList<SearchUiModel> = mutableListOf()
 
     private val repository = MockIdolColorsRepository()
 
-    lateinit var viewModel: IdolSearchViewModel
+    lateinit var viewModel: SearchByNameViewModel
 
     override fun beforeTest(testCase: TestCase) {
         super.beforeTest(testCase)
 
-        viewModel = IdolSearchViewModel(repository, TestScope()/* for JS Runtime */)
+        viewModel = SearchByNameViewModel(repository, TestScope()/* for JS Runtime */)
         observedUiModels.clear()
 
         viewModel.uiModel.onEach { observedUiModels.add(it) }
@@ -71,13 +71,13 @@ class SearchViewModelSpec : ViewModelSpec() {
         IdolColor("Hagiwara_Yukiho", "萩原雪歩", HexColor("D3DDE9")),
     )
 
-    private fun subject(block: () -> Unit): List<ManualSearchUiModel> {
+    private fun subject(block: () -> Unit): List<SearchUiModel> {
         block()
         return observedUiModels
     }
 
     init {
-        test("#rand: when repository#rand returns idols colors it should post ManualSearchUiModel with filled list") {
+        test("#rand: when repository#rand returns idols colors it should post SearchUiModel with filled list") {
             repository.everyRand { randomIdols }
 
             subject(viewModel::loadRandom).also { models ->
@@ -100,7 +100,7 @@ class SearchViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#rand: when repository#rand raise Exception it should post ManualSearchUiModel with empty list") {
+        test("#rand: when repository#rand raise Exception it should post SearchUiModel with empty list") {
             val error = IllegalStateException()
 
             repository.everyRand { throw error }
@@ -125,7 +125,7 @@ class SearchViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#search: when search params is empty it should post ManualSearchUiModel with filled list") {
+        test("#search: when search params is empty it should post SearchUiModel with filled list") {
             repository.everyRand { randomIdols }
 
             subject(viewModel::search).also { models ->
@@ -134,12 +134,12 @@ class SearchViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#search: when change idol name it should post ManualSearchUiModel with filled list") {
-            val params = SearchParams.EMPTY.change(byName)
+        test("#search: when change idol name it should post SearchUiModel with filled list") {
+            val params = SearchParams.ByName.EMPTY.change(byName)
 
-            repository.everySearch(expectIdolName = byName) { _, _, _ -> byNameIdols }
+            repository.everySearchByName(expectIdolName = byName) { _, _, _ -> byNameIdols }
 
-            subject { viewModel.searchParams = params }.also { models ->
+            subject { viewModel.setSearchParams(params) }.also { models ->
                 models should haveSize(4)
                 models.last() should {
                     it.items should containExactlyInAnyOrder(byNameIdols.map(::IdolColorListItem))
@@ -148,12 +148,12 @@ class SearchViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#search: when change brand it should post ManualSearchUiModel with filled list") {
-            val params = SearchParams.EMPTY.change(byBrand)
+        test("#search: when change brand it should post SearchUiModel with filled list") {
+            val params = SearchParams.ByName.EMPTY.change(byBrand)
 
-            repository.everySearch(expectBrands = byBrand) { _, _, _ -> byBrandIdols }
+            repository.everySearchByName(expectBrands = byBrand) { _, _, _ -> byBrandIdols }
 
-            subject { viewModel.searchParams = params }.also { models ->
+            subject { viewModel.setSearchParams(params) }.also { models ->
                 models should haveSize(4)
                 models.last() should {
                     it.items should containExactlyInAnyOrder(byBrandIdols.map(::IdolColorListItem))
@@ -162,13 +162,13 @@ class SearchViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#search: when change brand and type it should post ManualSearchUiModel with filled list") {
+        test("#search: when change brand and type it should post SearchUiModel with filled list") {
             val (brand, type) = byBrandAndType
-            val params = SearchParams.EMPTY.change(brand).change(type, checked = true)
+            val params = SearchParams.ByName.EMPTY.change(brand).change(type, checked = true)
 
-            repository.everySearch(expectBrands = brand, expectTypes = setOf(type)) { _, _, _ -> byBrandAndTypeIdols }
+            repository.everySearchByName(expectBrands = brand, expectTypes = setOf(type)) { _, _, _ -> byBrandAndTypeIdols }
 
-            subject { viewModel.searchParams = params }.also { models ->
+            subject { viewModel.setSearchParams(params) }.also { models ->
                 models should haveSize(4)
                 models.last() should {
                     it.items should containExactlyInAnyOrder(byBrandAndTypeIdols.map(::IdolColorListItem))
@@ -177,7 +177,7 @@ class SearchViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#select: when change selected item it should post ManualSearchUiModel with select state") {
+        test("#select: when change selected item it should post SearchUiModel with select state") {
             repository.everyRand { randomIdols }
 
             subject {
@@ -197,7 +197,7 @@ class SearchViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#selectAll: when change selected item it should post ManualSearchUiModel with select state") {
+        test("#selectAll: when change selected item it should post SearchUiModel with select state") {
             repository.everyRand { randomIdols }
 
             subject {

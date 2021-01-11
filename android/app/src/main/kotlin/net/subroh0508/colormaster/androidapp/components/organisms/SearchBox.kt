@@ -18,8 +18,8 @@ import net.subroh0508.colormaster.androidapp.components.atoms.DebounceTextField
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 import net.subroh0508.colormaster.androidapp.themes.lightBackground
 import net.subroh0508.colormaster.model.Brands
-import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.model.Types
+import net.subroh0508.colormaster.model.toIdolName
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 
 @Composable
@@ -29,24 +29,26 @@ fun SearchBox(
     modifier: Modifier = Modifier,
     onParamsChange: (SearchParams) -> Unit = {},
 ) {
-    Column(Modifier.fillMaxWidth().then(modifier)) {
-        DebounceTextField(
-            text = params.idolName?.value,
-            labelRes = R.string.search_box_label_idol_name,
-            onTextChanged = { name -> onParamsChange(params.change(name?.let(::IdolName))) },
-            modifier = Modifier.fillMaxWidth(),
-        )
-        Spacer(Modifier.preferredHeight(16.dp))
-        BrandChips(
-            params.brands,
-            onChipSelected = { brand -> onParamsChange(params.change(brand)) },
-        )
-        Spacer(Modifier.preferredHeight(16.dp))
-        TypeChips(
-            params.brands,
-            params.types,
-            onTypeChecked = { type, checked -> onParamsChange(params.change(type, checked)) },
-        )
+    when (params)  {
+        is SearchParams.ByName -> Column(Modifier.fillMaxWidth().then(modifier)) {
+            DebounceTextField(
+                text = params.idolName?.value,
+                labelRes = R.string.search_box_label_idol_name,
+                onTextChanged = { name -> onParamsChange(params.change(name.toIdolName())) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.preferredHeight(16.dp))
+            BrandChips(
+                params.brands,
+                onChipSelected = { brand -> onParamsChange(params.change(brand)) },
+            )
+            Spacer(Modifier.preferredHeight(16.dp))
+            TypeChips(
+                params.brands,
+                params.types,
+                onTypeChecked = { type, checked -> onParamsChange(params.change(type, checked)) },
+            )
+        }
     }
 }
 
@@ -138,12 +140,12 @@ private fun Types.label(): String = when (this) {
 fun SearchBoxPreview_Light() {
     val (params, setParams) = remember {
         mutableStateOf(
-            SearchParams(
+            SearchParams.ByName(
                 null,
                 Brands._ML,
                 setOf(Types.MILLION_LIVE.PRINCESS, Types.MILLION_LIVE.FAIRY),
                 null,
-            )
+            ) as SearchParams
         )
     }
 
