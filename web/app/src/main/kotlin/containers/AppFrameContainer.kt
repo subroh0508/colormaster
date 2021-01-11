@@ -1,6 +1,6 @@
 package containers
 
-import appDI
+import koinApp
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
 import components.templates.appMenu
@@ -117,5 +117,5 @@ private object AppPreferenceController : KoinComponent {
 
     fun changeLanguage(lang: Languages) { browserPref.setLanguage(lang) }
 
-    override fun getKoin() = appDI.koin
+    override fun getKoin() = koinApp.koin
 }

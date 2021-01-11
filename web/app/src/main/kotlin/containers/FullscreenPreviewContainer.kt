@@ -1,6 +1,6 @@
 package containers
 
-import appDI
+import koinApp
 import components.organisms.FullscreenPenlightComponent
 import components.organisms.FullscreenPreviewComponent
 import components.templates.previewModal
@@ -41,7 +41,7 @@ private val FullscreenPreviewContainerComponentImpl = functionalComponent<RProps
 
 private class FullscreenPreviewContainer :
     RComponent<FullscreenPreviewProps, FullscreenPreviewState>(), KoinComponent, CoroutineScope by MainScope() {
-    override fun getKoin() = appDI.koin
+    override fun getKoin() = koinApp.koin
 
     val viewModel: PreviewViewModel by inject()
 

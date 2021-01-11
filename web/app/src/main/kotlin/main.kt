@@ -12,7 +12,7 @@ import org.koin.dsl.module
 import react.Suspense
 
 val mainScope = MainScope()
-val appDI = koinApplication {
+val koinApp = koinApplication {
     modules(AppModule + AppPreferenceModule + module {
         single { SearchByNameViewModel(get()) }
         single { PreviewViewModel(get()) }

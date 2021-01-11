@@ -1,6 +1,6 @@
 package containers
 
-import appDI
+import koinApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
@@ -31,7 +31,7 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
 
 private class IdolSearchContainerComponent :
     RComponent<IdolSearchProps, IdolSearchState>(), KoinComponent, CoroutineScope by MainScope() {
-    override fun getKoin() = appDI.koin
+    override fun getKoin() = koinApp.koin
 
     private val viewModel: SearchByNameViewModel by inject()
 
