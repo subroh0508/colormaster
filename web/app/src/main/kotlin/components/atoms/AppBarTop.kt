@@ -96,6 +96,8 @@ private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
                     }
                 }
             }
+
+            props.children()
         }
     }
 
@@ -201,7 +203,6 @@ private val useStyles = makeStyles<AppBarTopStyle, AppBarTopProps> {
         flexGrow = 1.0
     }
     "appBar" {
-        zIndex = theme.zIndex.drawer.toInt() + 1
         backgroundColor = theme.palette.background.default
         boxShadow = BoxShadows.none
 

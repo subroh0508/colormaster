@@ -20,7 +20,6 @@ import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
-import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.*
@@ -45,10 +44,6 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     div(classes.root) {
         div(classes.searchBox) {
             div(classes.searchBoxTop) {}
-            searchByTabs {
-                attrs.index = props.tabIndex
-                attrs.onChangeTab = props.onChangeTab
-            }
 
             when (params) {
                 is SearchParams.ByName -> idolSearchBox {
@@ -113,8 +108,6 @@ private operator fun I18nextText.invoke(key: String, count: Int) = invoke(
 external interface IdolSearchPanelProps : RProps {
     var model: SearchUiModel
     var isOpenedGrids: Boolean
-    var tabIndex: Int
-    var onChangeTab: (SearchByTab) -> Unit
     var onClickToggleGrids: () -> Unit
     var onChangeIdolName: (String) -> Unit
     var onSelectTitle: (Brands, Boolean) -> Unit
@@ -136,6 +129,10 @@ private external interface IdolSearchPanelStyle {
     val actionsHide: String
     val searchBoxTop: String
 }
+
+private val TOOLBAR_HEIGHT = 64.px
+private val TABS_HEIGHT = 48.px
+private val ACTION_BUTTONS_HEIGHT = 48.px
 
 private val useStyles = makeStyles<IdolSearchPanelStyle> {
     "root" {
@@ -180,7 +177,7 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
             (theme.breakpoints.up(Breakpoint.sm)) {
                 borderTop = "none"
                 width = APP_BAR_SM_UP
-                padding(8.px, 16.px)
+                padding(16.px, 16.px, 0.px)
                 backgroundColor = theme.palette.background.default
             }
         }
@@ -193,15 +190,15 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
 
         (theme.breakpoints.up(Breakpoint.sm)) {
             display = Display.block
-            minHeight = 64.px
+            minHeight = TOOLBAR_HEIGHT + TABS_HEIGHT
         }
     })
     "searchBoxTop"(theme.mixins.toolbar.apply {
-        marginBottom = 0.px
+        marginBottom = TABS_HEIGHT
 
         (theme.breakpoints.up(Breakpoint.sm)) {
-            minHeight = 64.px
-            marginBottom = 48.px
+            minHeight = TOOLBAR_HEIGHT
+            marginBottom = TABS_HEIGHT + ACTION_BUTTONS_HEIGHT
         }
     })
 }

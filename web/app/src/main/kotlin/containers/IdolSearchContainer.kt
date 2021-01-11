@@ -1,6 +1,7 @@
 package containers
 
 import KoinReactComponent
+import components.atoms.searchByTabs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.*
@@ -14,6 +15,7 @@ import org.koin.core.inject
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import pages.IdolSearchPage
+import pages.IdolSearchPageProps
 import react.*
 import react.router.dom.useHistory
 import toPenlight
@@ -32,14 +34,10 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
         SearchByTab.BY_NAME -> child(SearchByNameContainerComponent::class) {
             attrs.showPreview = { items -> history.toPreview(items.joinToString("&") { "id=${it.id}" }) }
             attrs.showPenlight = { items -> history.toPenlight(items.joinToString("&") { "id=${it.id}" }) }
-            attrs.tabIndex = tab.ordinal
-            attrs.onChangeTab = history::toSearchBy
         }
         SearchByTab.BY_LIVE -> child(SearchByLiveContainerComponent::class) {
             attrs.showPreview = { items -> history.toPreview(items.joinToString("&") { "id=${it.id}" }) }
             attrs.showPenlight = { items -> history.toPenlight(items.joinToString("&") { "id=${it.id}" }) }
-            attrs.tabIndex = tab.ordinal
-            attrs.onChangeTab = history::toSearchBy
         }
     }
 }
@@ -80,8 +78,6 @@ private abstract class IdolSearchContainerComponent<T: SearchParams, out VM: Sea
     override fun RBuilder.render() {
         IdolSearchPage {
             attrs.model = state.uiModel
-            attrs.tabIndex = props.tabIndex
-            attrs.onChangeTab = props.onChangeTab
             attrs.onChangeIdolName = { name -> viewModel.setSearchParams(change(params, name.toIdolName())) }
             attrs.onSelectTitle = { brands, checked -> viewModel.setSearchParams(change(params, brands, checked)) }
             attrs.onSelectType = { type, checked -> viewModel.setSearchParams(change(params, type, checked)) }
@@ -113,8 +109,6 @@ private abstract class IdolSearchContainerComponent<T: SearchParams, out VM: Sea
 private external interface IdolSearchProps: RProps {
     var showPreview: (items: List<IdolColor>) -> Unit
     var showPenlight: (items: List<IdolColor>) -> Unit
-    var tabIndex: Int
-    var onChangeTab: (SearchByTab) -> Unit
 }
 
 private external interface IdolSearchState : RState {
