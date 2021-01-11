@@ -43,8 +43,7 @@ sealed class SearchUiModel {
             favorites: List<String>,
         ) = ByLive(
             idolColorLoadState.getIdolColorListItems(selected, favorites),
-            liveLoadState.getValueOrNull() ?: listOf(),
-            params,
+            params.suggests(liveLoadState.getValueOrNull() ?: listOf()),
             idolColorLoadState.getErrorOrNull() ?: liveLoadState.getErrorOrNull(),
             idolColorLoadState.isLoading || liveLoadState.isLoading,
         )
@@ -70,13 +69,12 @@ sealed class SearchUiModel {
 
     data class ByLive(
         override val items: List<IdolColorListItem>,
-        val suggests: List<LiveName>,
         override val params: SearchParams,
         override val error: Throwable? = null,
         override val isLoading: Boolean = false,
     ) : SearchUiModel() {
         companion object {
-            val INITIALIZED = ByLive(listOf(), listOf(), SearchParams.ByLive.EMPTY)
+            val INITIALIZED = ByLive(listOf(), SearchParams.ByLive.EMPTY)
         }
     }
 }

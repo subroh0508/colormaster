@@ -87,19 +87,6 @@ private abstract class IdolSearchContainerComponent<T: SearchParams, out VM: Sea
         }
     }
 
-    private fun change(params: SearchParams, idolName: IdolName?) = when (params) {
-        is SearchParams.ByName -> params.change(idolName)
-        else -> params
-    }
-    private fun change(params: SearchParams, brands: Brands?, checked: Boolean) = when (params) {
-        is SearchParams.ByName -> params.change(if (checked) brands else null)
-        else -> params
-    }
-    private fun change(params: SearchParams, type: Types, checked: Boolean) = when (params) {
-        is SearchParams.ByName -> params.change(type, checked)
-        else -> params
-    }
-
     private val params: SearchParams get() = state.uiModel.params
     private val selectedItems: List<IdolColor> get() = state.uiModel.selectedItems
 }
