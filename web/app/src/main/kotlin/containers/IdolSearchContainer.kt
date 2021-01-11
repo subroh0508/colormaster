@@ -78,9 +78,7 @@ private abstract class IdolSearchContainerComponent<T: SearchParams, out VM: Sea
     override fun RBuilder.render() {
         IdolSearchPage {
             attrs.model = state.uiModel
-            attrs.onChangeIdolName = { name -> viewModel.setSearchParams(change(params, name.toIdolName())) }
-            attrs.onSelectTitle = { brands, checked -> viewModel.setSearchParams(change(params, brands, checked)) }
-            attrs.onSelectType = { type, checked -> viewModel.setSearchParams(change(params, type, checked)) }
+            attrs.onChangeSearchParams = viewModel::setSearchParams
             attrs.onClickIdolColor = viewModel::select
             attrs.onClickSelectAll = viewModel::selectAll
             attrs.onDoubleClickIdolColor = { item -> props.showPenlight(listOf(item)) }

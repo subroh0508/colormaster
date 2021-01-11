@@ -45,7 +45,8 @@
         "physical": "フィジカル",
         "intelligent": "インテリ",
         "mental": "メンタル"
-      }
+      },
+      "liveName": "公演名または公演日"
     }
   },
   "searchPanel": {

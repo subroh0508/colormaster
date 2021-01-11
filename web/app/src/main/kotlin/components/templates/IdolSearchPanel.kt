@@ -4,7 +4,7 @@ import components.atoms.*
 import components.organisms.IDOL_COLOR_GRID_ACTIONS_CLASS_NAME
 import components.organisms.idolColorGridsActions
 import components.organisms.idolColorGrids
-import components.organisms.idolSearchBox
+import components.organisms.searchbox.idolSearchBox
 import kotlinext.js.jsObject
 import kotlinx.css.*
 import kotlinx.css.properties.borderTop
@@ -39,19 +39,11 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     val drawerAnchor = if (isSmUp) DrawerAnchor.right else DrawerAnchor.bottom
     val actionsStyle = "${classes.actions} ${if (props.isOpenedGrids) "" else classes.actionsHide}"
 
-    val params = uiModel.params
-
     div(classes.root) {
         div(classes.searchBox) {
             div(classes.searchBoxTop) {}
-
-            when (params) {
-                is SearchParams.ByName -> idolSearchBox {
-                    attrs.params = params
-                    attrs.onChangeIdolName = props.onChangeIdolName
-                    attrs.onSelectTitle = props.onSelectTitle
-                    attrs.onSelectType = props.onSelectType
-                }
+            idolSearchBox(uiModel) {
+                attrs.onChangeSearchParams = props.onChangeSearchParams
             }
         }
 
@@ -109,9 +101,7 @@ external interface IdolSearchPanelProps : RProps {
     var model: SearchUiModel
     var isOpenedGrids: Boolean
     var onClickToggleGrids: () -> Unit
-    var onChangeIdolName: (String) -> Unit
-    var onSelectTitle: (Brands, Boolean) -> Unit
-    var onSelectType: (Types, Boolean) -> Unit
+    var onChangeSearchParams: (SearchParams) -> Unit
     var onClickIdolColor: (IdolColor, Boolean) -> Unit
     var onDoubleClickIdolColor: (IdolColor) -> Unit
     var onClickPreview: () -> Unit

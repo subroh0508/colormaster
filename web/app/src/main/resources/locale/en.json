@@ -45,7 +45,8 @@
         "physical": "Physical",
         "intelligent": "Intelligent",
         "mental": "Mental"
-      }
+      },
+      "liveName": "Live Name or Live Date"
     }
   },
   "searchPanel": {

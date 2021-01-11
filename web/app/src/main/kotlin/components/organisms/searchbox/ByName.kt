@@ -1,37 +1,37 @@
-package components.organisms
+package components.organisms.searchbox
 
 import components.molecules.titleChips
 import components.molecules.typesChips
-import kotlinx.css.pct
-import kotlinx.css.width
 import kotlinx.html.js.onChangeFunction
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.list.list
 import materialui.components.listitem.listItem
 import materialui.components.textfield.textField
-import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
+import net.subroh0508.colormaster.model.toIdolName
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
-import react.*
 import react.dom.form
+import react.functionalComponent
+import react.useEffect
+import react.useState
 import utilities.inputTarget
 import utilities.invoke
 import utilities.useDebounceEffect
 import utilities.useTranslation
 
-fun RBuilder.idolSearchBox(handler: RHandler<IdolSearchBoxProps>) = child(IdolSearchBoxComponent, handler = handler)
-
-private const val DEBOUNCE_TIMEOUT_MILLS = 500L
-
-private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { props ->
+val SearchByNameComponent = functionalComponent<SearchByNameProps> { props ->
     val classes = useStyle()
     val (t, _) = useTranslation()
 
     val (idolName, setIdolName) = useState("")
 
+    fun onChangeIdolName(value: String?) = props.onChangeSearchParams(props.params.change(value.toIdolName()))
+    fun onSelectTitle(brand: Brands, checked: Boolean) = props.onChangeSearchParams(props.params.change(if (checked) brand else null))
+    fun onSelectType(type: Types, checked: Boolean) = props.onChangeSearchParams(props.params.change(type, checked))
+
     useEffect(listOf(props.idolName)) { setIdolName(props.idolName ?: "") }
-    useDebounceEffect(idolName, DEBOUNCE_TIMEOUT_MILLS) { props.onChangeIdolName(it) }
+    useDebounceEffect(idolName, DEBOUNCE_TIMEOUT_MILLS, effect = ::onChangeIdolName)
 
     list {
         listItem {
@@ -52,7 +52,7 @@ private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { p
             titleChips {
                 attrs {
                     title = props.params.brands
-                    onSelect = props.onSelectTitle
+                    onSelect = ::onSelectTitle
                 }
             }
         }
@@ -61,32 +61,13 @@ private val IdolSearchBoxComponent = functionalComponent<IdolSearchBoxProps> { p
             typesChips(props.params.brands) {
                 attrs {
                     types = props.params.types
-                    onSelect = props.onSelectType
+                    onSelect = ::onSelectType
                 }
             }
         }
     }
 }
 
-external interface IdolSearchBoxProps : RProps {
-    var params: SearchParams.ByName
-    var onChangeIdolName: (String) -> Unit
-    var onSelectTitle: (Brands, Boolean) -> Unit
-    var onSelectType: (Types, Boolean) -> Unit
-}
+external interface SearchByNameProps : IdolSearchBoxProps<SearchParams.ByName>
 
-private val IdolSearchBoxProps.idolName: String? get() = params.idolName?.value
-
-private external interface IdolSearchBoxStyle {
-    val form: String
-    val textField: String
-}
-
-private val useStyle = makeStyles<IdolSearchBoxStyle> {
-    "form" {
-        width = 100.pct
-    }
-    "textField" {
-        width = 100.pct
-    }
-}
+private val SearchByNameProps.idolName get() = params.idolName?.value
