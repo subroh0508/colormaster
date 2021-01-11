@@ -8,9 +8,8 @@ import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.components.textfield.textField
 import materialui.styles.makeStyles
-import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLTextAreaElement
 import react.*
-import react.dom.div
 import react.dom.span
 import utilities.*
 
@@ -18,17 +17,13 @@ private const val AUTO_COMPLETE_TEXT_DEBOUNCE_TIMEOUT_MILLS = 500L
 
 @Suppress("FunctionName")
 fun <T: Any> AutoCompleteTextFieldComponent() = functionalComponent<AutoCompleteTextFieldProps<T>> { props ->
-    val classes = useStyle()
-    val (t, _) = useTranslation()
-
     val (suggestsQuery, setSuggestsQuery) = useState("")
 
-    useEffect(listOf()) { setSuggestsQuery(props.query ?: "") }
+    useEffect(listOf(props.query)) { setSuggestsQuery(props.query ?: "") }
     useDebounceEffect(suggestsQuery, AUTO_COMPLETE_TEXT_DEBOUNCE_TIMEOUT_MILLS) { props.onQueryChange(it) }
 
     autoSuggest<T> {
         attrs {
-            alwaysRenderSuggestions = true
             suggestions = props.suggestions.toTypedArray()
             getSuggestionValue = props.getSuggestionValue
             renderSuggestionsContainer = { option ->
@@ -51,7 +46,7 @@ fun <T: Any> AutoCompleteTextFieldComponent() = functionalComponent<AutoComplete
             inputProps {
                 value = suggestsQuery
                 onChange = { e, option ->
-                    if (e.target is HTMLInputElement) {
+                    if (e.target is HTMLTextAreaElement) {
                         setSuggestsQuery(option.newValue ?: "")
                     }
                 }
@@ -69,16 +64,6 @@ external interface AutoCompleteTextFieldProps<T: Any> : RProps {
     var getSuggestionValue: (T) -> String
     var onQueryChange: (String) -> Unit
     var onSuggestionSelected: (T) -> Unit
-}
-
-private external interface AutoCompleteTextFieldStyle {
-    val textField: String
-}
-
-private val useStyle = makeStyles<AutoCompleteTextFieldStyle> {
-    "textField" {
-        width = 100.pct
-    }
 }
 
 private fun renderSuggestionContainer(handler: RHandler<SuggestionContainerProps>) = buildElement {
@@ -160,6 +145,7 @@ private val AutoCompleteInputComponent = functionalComponent<AutoCompleteInputPr
         attrs {
             classes(classes.root)
             label { +t("searchBox.attributes.liveName") }
+            multiline = true
             variant = FormControlVariant.outlined
             InputProps = props.inputProps
         }

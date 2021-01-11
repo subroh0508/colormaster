@@ -1,8 +1,6 @@
 package components.organisms.searchbox
 
-import kotlinx.css.left
 import kotlinx.css.pct
-import kotlinx.css.px
 import kotlinx.css.width
 import materialui.styles.breakpoint.Breakpoint
 import materialui.styles.breakpoint.up
