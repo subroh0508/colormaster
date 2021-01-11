@@ -1,40 +1,69 @@
 package containers
 
 import KoinReactComponent
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.model.*
+import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
+import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByLiveViewModel
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
+import net.subroh0508.colormaster.presentation.search.viewmodel.SearchViewModel
 import org.koin.core.inject
+import org.koin.core.module.Module
 import org.koin.dsl.module
 import pages.IdolSearchPage
 import react.*
 import react.router.dom.useHistory
 import toPenlight
 import toPreview
+import toSearchBy
+import useQuery
 
 @Suppress("FunctionName")
-fun RBuilder.IdolSearchContainer() = child(memo(IdolSearchContainerImpl)) {}
+fun RBuilder.IdolSearchContainer() = child(IdolSearchContainerImpl)
 
 private val IdolSearchContainerImpl = functionalComponent<RProps> {
     val history = useHistory()
+    val tab = SearchByTab.findByQuery(useQuery().get("by"))
 
-    child(IdolSearchContainerComponent::class) {
-        attrs.showPreview = { items -> history.toPreview(items.joinToString("&") { "id=${it.id}" }) }
-        attrs.showPenlight = { items -> history.toPenlight(items.joinToString("&") { "id=${it.id}" }) }
+    when (tab) {
+        SearchByTab.BY_NAME -> child(SearchByNameContainerComponent::class) {
+            attrs.showPreview = { items -> history.toPreview(items.joinToString("&") { "id=${it.id}" }) }
+            attrs.showPenlight = { items -> history.toPenlight(items.joinToString("&") { "id=${it.id}" }) }
+            attrs.tabIndex = tab.ordinal
+            attrs.onChangeTab = history::toSearchBy
+        }
+        SearchByTab.BY_LIVE -> child(SearchByLiveContainerComponent::class) {
+            attrs.showPreview = { items -> history.toPreview(items.joinToString("&") { "id=${it.id}" }) }
+            attrs.showPenlight = { items -> history.toPenlight(items.joinToString("&") { "id=${it.id}" }) }
+            attrs.tabIndex = tab.ordinal
+            attrs.onChangeTab = history::toSearchBy
+        }
     }
 }
 
-private class IdolSearchContainerComponent : KoinReactComponent<IdolSearchProps, IdolSearchState>(
+private class SearchByNameContainerComponent : IdolSearchContainerComponent<SearchParams.ByName, SearchByNameViewModel>(
     module {
         single { SearchByNameViewModel(get()) }
     }
 ) {
-    private val viewModel: SearchByNameViewModel by inject()
+    override val viewModel: SearchByNameViewModel by inject()
+}
+
+private class SearchByLiveContainerComponent : IdolSearchContainerComponent<SearchParams.ByLive, SearchByLiveViewModel>(
+    module {
+        single { SearchByLiveViewModel(get(), get()) }
+    }
+) {
+    override val viewModel: SearchByLiveViewModel by inject()
+}
+
+private abstract class IdolSearchContainerComponent<T: SearchParams, out VM: SearchViewModel<T>>(
+    module: Module,
+) : KoinReactComponent<IdolSearchProps, IdolSearchState>(module) {
+    protected abstract val viewModel: VM
 
     override fun IdolSearchState.init() {
         uiModel = SearchUiModel.ByName.INITIALIZED
@@ -51,6 +80,8 @@ private class IdolSearchContainerComponent : KoinReactComponent<IdolSearchProps,
     override fun RBuilder.render() {
         IdolSearchPage {
             attrs.model = state.uiModel
+            attrs.tabIndex = props.tabIndex
+            attrs.onChangeTab = props.onChangeTab
             attrs.onChangeIdolName = { name -> viewModel.setSearchParams(change(params, name.toIdolName())) }
             attrs.onSelectTitle = { brands, checked -> viewModel.setSearchParams(change(params, brands, checked)) }
             attrs.onSelectType = { type, checked -> viewModel.setSearchParams(change(params, type, checked)) }
@@ -82,6 +113,8 @@ private class IdolSearchContainerComponent : KoinReactComponent<IdolSearchProps,
 private external interface IdolSearchProps: RProps {
     var showPreview: (items: List<IdolColor>) -> Unit
     var showPenlight: (items: List<IdolColor>) -> Unit
+    var tabIndex: Int
+    var onChangeTab: (SearchByTab) -> Unit
 }
 
 private external interface IdolSearchState : RState {

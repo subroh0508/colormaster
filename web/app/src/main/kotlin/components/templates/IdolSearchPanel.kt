@@ -20,6 +20,7 @@ import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
+import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.*
@@ -32,7 +33,6 @@ fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(Id
 
 private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps> { props ->
     val classes = useStyles()
-    val (tab, setTab) = useState(SearchByTabs.BY_NAME)
     val (t, _) = useTranslation()
     val isSmUp = useMediaQuery("@media (min-width: 600px)")
     val uiModel = props.model
@@ -46,8 +46,8 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
         div(classes.searchBox) {
             div(classes.searchBoxTop) {}
             searchByTabs {
-                attrs.index = tab.ordinal
-                attrs.onChangeTab = { setTab(it) }
+                attrs.index = props.tabIndex
+                attrs.onChangeTab = props.onChangeTab
             }
 
             when (params) {
@@ -113,6 +113,8 @@ private operator fun I18nextText.invoke(key: String, count: Int) = invoke(
 external interface IdolSearchPanelProps : RProps {
     var model: SearchUiModel
     var isOpenedGrids: Boolean
+    var tabIndex: Int
+    var onChangeTab: (SearchByTab) -> Unit
     var onClickToggleGrids: () -> Unit
     var onChangeIdolName: (String) -> Unit
     var onSelectTitle: (Brands, Boolean) -> Unit
@@ -141,6 +143,7 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
         height = 100.vh
     }
     "searchBox" {
+        width = 100.pct
         backgroundColor = theme.palette.background.default
     }
     "panel" {

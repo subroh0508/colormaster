@@ -1,16 +1,20 @@
 package components.atoms
 
+import kotlinx.css.pct
+import kotlinx.css.width
 import materialui.components.tab.tab
+import materialui.components.tabs.enums.TabsStyle
 import materialui.components.tabs.enums.TabsVariant
 import materialui.components.tabs.tabs
 import materialui.styles.makeStyles
+import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import react.*
 import utilities.invoke
 import utilities.useTranslation
 
-fun RBuilder.searchByTabs(handler: RHandler<TabsProps>) = child(TabsComponent, handler = handler)
+fun RBuilder.searchByTabs(handler: RHandler<SearchByTabsProps>) = child(TabsComponent, handler = handler)
 
-private val TabsComponent = functionalComponent<TabsProps> { props ->
+private val TabsComponent = functionalComponent<SearchByTabsProps> { props ->
     val (t, _) = useTranslation()
 
     tabs {
@@ -22,34 +26,25 @@ private val TabsComponent = functionalComponent<TabsProps> { props ->
             }
         }
 
-        SearchByTabs.values().forEach { tab ->
+        SearchByTab.values().forEach { tab ->
             tab {
-                attrs.label {
-                    +when (tab) {
-                        SearchByTabs.BY_NAME -> t("searchBox.tabs.name")
-                        SearchByTabs.BY_LIVE -> t("searchBox.tabs.live")
-                    }
-                }
+                attrs.label { +t(tab.labelKey) }
             }
         }
     }
 }
 
-enum class SearchByTabs {
-    BY_NAME, BY_LIVE
-}
+private fun indexOf(index: Int) = SearchByTab.values().find { it.ordinal == index }
 
-private fun indexOf(index: Int) = SearchByTabs.values().find { it.ordinal == index }
-
-external interface TabsProps : RProps {
+external interface SearchByTabsProps : RProps {
     var index: Int
-    var onChangeTab: (SearchByTabs) -> Unit
+    var onChangeTab: (SearchByTab) -> Unit
 }
 
-private external interface TabsStyle {
+private external interface SearchByTabsStyle {
     val root: String
 }
 
-private val useStyle = makeStyles<TabsStyle> {
+private val useStyles = makeStyles<SearchByTabsStyle> {
     "root" {}
 }
