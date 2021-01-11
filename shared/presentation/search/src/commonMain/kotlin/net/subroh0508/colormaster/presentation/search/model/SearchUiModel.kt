@@ -80,3 +80,7 @@ sealed class SearchUiModel {
         }
     }
 }
+
+expect enum class SearchByTab {
+    BY_NAME, BY_LIVE
+}
