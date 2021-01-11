@@ -27,6 +27,10 @@
     "clear": "選択解除"
   },
   "searchBox": {
+    "tabs": {
+      "name": "アイドル名",
+      "live": "公演名"
+    },
     "attributes": {
       "idolName": "アイドル名",
       "brands": "ブランド",

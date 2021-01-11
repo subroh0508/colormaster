@@ -32,6 +32,7 @@ fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(Id
 
 private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps> { props ->
     val classes = useStyles()
+    val (tab, setTab) = useState(SearchByTabs.BY_NAME)
     val (t, _) = useTranslation()
     val isSmUp = useMediaQuery("@media (min-width: 600px)")
     val uiModel = props.model
@@ -44,6 +45,11 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     div(classes.root) {
         div(classes.searchBox) {
             div(classes.searchBoxTop) {}
+            searchByTabs {
+                attrs.index = tab.ordinal
+                attrs.onChangeTab = { setTab(it) }
+            }
+
             when (params) {
                 is SearchParams.ByName -> idolSearchBox {
                     attrs.params = params

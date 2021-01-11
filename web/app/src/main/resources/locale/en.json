@@ -27,6 +27,10 @@
     "clear": "CLEAR"
   },
   "searchBox": {
+    "tabs": {
+      "name": "Name",
+      "live": "Live"
+    },
     "attributes": {
       "idolName": "Idol's Name",
       "brands": "Brands",
