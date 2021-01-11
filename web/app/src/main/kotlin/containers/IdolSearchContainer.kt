@@ -1,16 +1,16 @@
 package containers
 
-import koinApp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
+import KoinReactComponent
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
-import org.koin.core.KoinComponent
 import org.koin.core.inject
+import org.koin.dsl.module
 import pages.IdolSearchPage
 import react.*
 import react.router.dom.useHistory
@@ -18,7 +18,7 @@ import toPenlight
 import toPreview
 
 @Suppress("FunctionName")
-fun RBuilder.IdolSearchContainer() = child(IdolSearchContainerImpl) {}
+fun RBuilder.IdolSearchContainer() = child(memo(IdolSearchContainerImpl)) {}
 
 private val IdolSearchContainerImpl = functionalComponent<RProps> {
     val history = useHistory()
@@ -29,10 +29,11 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
     }
 }
 
-private class IdolSearchContainerComponent :
-    RComponent<IdolSearchProps, IdolSearchState>(), KoinComponent, CoroutineScope by MainScope() {
-    override fun getKoin() = koinApp.koin
-
+private class IdolSearchContainerComponent : KoinReactComponent<IdolSearchProps, IdolSearchState>(
+    module {
+        single { SearchByNameViewModel(get()) }
+    }
+) {
     private val viewModel: SearchByNameViewModel by inject()
 
     override fun IdolSearchState.init() {
@@ -40,11 +41,9 @@ private class IdolSearchContainerComponent :
     }
 
     override fun componentDidMount() {
-        launch {
-            viewModel.uiModel.collect {
-                setState { uiModel = it }
-            }
-        }
+        viewModel.uiModel.onEach {
+            setState { uiModel = it }
+        }.launchIn(this)
 
         viewModel.search()
     }

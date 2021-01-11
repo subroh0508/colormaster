@@ -6,25 +6,16 @@ import react.dom.render
 import utilities.*
 import kotlinx.browser.document
 import kotlinx.browser.window
-import net.subroh0508.colormaster.presentation.preview.viewmodel.PreviewViewModel
-import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
-import org.koin.dsl.module
+import org.koin.core.logger.PrintLogger
 import react.Suspense
 
 val mainScope = MainScope()
 val koinApp = koinApplication {
-    modules(AppModule + AppPreferenceModule + module {
-        single { SearchByNameViewModel(get()) }
-        single { PreviewViewModel(get()) }
-    })
+    modules(AppModule + AppPreferenceModule)
 }
 
 fun main() {
     window.onload = {
-        startKoin {
-            modules()
-        }
-
         render(document.getElementById("root")) {
             I18nextProvider {
                 attrs.i18n = i18nextInit()
