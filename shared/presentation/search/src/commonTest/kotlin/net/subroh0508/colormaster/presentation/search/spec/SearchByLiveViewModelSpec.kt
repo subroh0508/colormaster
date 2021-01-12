@@ -4,7 +4,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.be
 import io.kotest.matchers.collections.beEmpty
-import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
@@ -81,8 +80,7 @@ class SearchByLiveViewModelSpec : FunSpec() {
                 models should haveSize(4)
                 models.last() should {
                     it.items should beEmpty()
-                    it.params should be(params)
-                    (it as SearchUiModel.ByLive).suggests should containExactly(live2020)
+                    it.params should be(params.copy(suggests = live2020))
                 }
             }
         }
@@ -96,8 +94,7 @@ class SearchByLiveViewModelSpec : FunSpec() {
                 models should haveSize(4)
                 models.last() should {
                     it.items should beEmpty()
-                    it.params should be(params)
-                    (it as SearchUiModel.ByLive).suggests should containExactly(liveShinyColors)
+                    it.params should be(params.copy(suggests = liveShinyColors))
                 }
             }
         }
@@ -108,7 +105,6 @@ class SearchByLiveViewModelSpec : FunSpec() {
                 models.last() should {
                     it.items should beEmpty()
                     it.params should be(SearchParams.ByLive.EMPTY)
-                    (it as SearchUiModel.ByLive).suggests should beEmpty()
                 }
             }
         }
@@ -123,7 +119,6 @@ class SearchByLiveViewModelSpec : FunSpec() {
                 models.last() should {
                     it.items should containExactlyInAnyOrder(byLiveIdols.map(::IdolColorListItem))
                     it.params should be(params)
-                    (it as SearchUiModel.ByLive).suggests should beEmpty()
                 }
             }
         }
