@@ -1,9 +1,7 @@
 package components.atoms
 
-import kotlinx.css.pct
-import kotlinx.css.width
 import materialui.components.tab.tab
-import materialui.components.tabs.enums.TabsStyle
+import materialui.components.tabs.enums.TabsIndicatorColor
 import materialui.components.tabs.enums.TabsVariant
 import materialui.components.tabs.tabs
 import materialui.styles.makeStyles
@@ -20,6 +18,7 @@ private val TabsComponent = functionalComponent<SearchByTabsProps> { props ->
     tabs {
         attrs {
             variant = TabsVariant.fullWidth
+            indicatorColor = TabsIndicatorColor.primary
             value = props.index
             onChange = { _, index ->
                 indexOf(index)?.let { props.onChangeTab(it) }
