@@ -28,7 +28,7 @@ fun RBuilder.routing() = browserRouter {
 
 fun useQuery() = URLSearchParams(useLocation().search)
 
-fun isRoot(history: RouteResultHistory) = """(/[a-z]{2})?/""".toRegex().matches(history.location.pathname)
+fun isRoot(history: RouteResultHistory) = """(/[a-z]{2})?/?""".toRegex().matches(history.location.pathname)
 fun isExpandAppBar(history: RouteResultHistory) = """(/[a-z]{2})?/(howtouse|development|terms)""".toRegex().matches(history.location.pathname)
 
 fun language(history: RouteResultHistory) = Languages.valueOfCode(history.langCode()) ?: Languages.JAPANESE
