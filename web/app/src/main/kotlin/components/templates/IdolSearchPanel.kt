@@ -185,11 +185,11 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
         }
     })
     "searchBoxTop"(theme.mixins.toolbar.apply {
-        marginBottom = TABS_HEIGHT
+        marginBottom = TABS_HEIGHT + 16.px
 
         (theme.breakpoints.up(Breakpoint.sm)) {
             minHeight = TOOLBAR_HEIGHT
-            marginBottom = TABS_HEIGHT + ACTION_BUTTONS_HEIGHT
+            marginBottom = TABS_HEIGHT + ACTION_BUTTONS_HEIGHT + 16.px
         }
     })
 }
