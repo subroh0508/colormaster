@@ -5,7 +5,7 @@ import components.organisms.IDOL_COLOR_GRID_ACTIONS_CLASS_NAME
 import components.organisms.idolColorGridsActions
 import components.organisms.idolColorGrids
 import components.organisms.searchbox.idolSearchBox
-import kotlinext.js.jsObject
+import components.organisms.searchbox.message
 import kotlinx.css.*
 import kotlinx.css.properties.borderTop
 import materialui.components.drawer.enums.DrawerAnchor
@@ -18,15 +18,11 @@ import materialui.styles.palette.divider
 import materialui.styles.palette.paper
 import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.Brands
-import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.*
 import react.dom.div
 import themes.APP_BAR_SM_UP
-import utilities.I18nextText
-import utilities.invoke
 import utilities.useTranslation
 
 fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(IdolSearchPanelComponent, handler = handler)
@@ -54,7 +50,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             attrs.onClose = props.onCloseGrids
             attrs.onClickExpandIcon = props.onClickToggleGrids
             attrs.HeaderComponent {
-                alert(props.isOpenedGrids, uiModel, t)
+                message(props.isOpenedGrids, uiModel)
             }
 
             div(classes.panel) {
@@ -77,26 +73,6 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
         }
     }
 }
-
-private fun RBuilder.alert(opened: Boolean, uiModel: SearchUiModel, t: I18nextText) = when {
-    uiModel.isLoading -> warningAlert {
-        attrs.message = t("searchPanel.alerts.searching")
-    }
-    uiModel.params.isEmpty() -> infoAlert {
-        attrs.message = t("searchPanel.alerts.default")
-    }
-    uiModel.error != null -> errorAlert {
-        attrs.title = t("searchPanel.alerts.error")
-        attrs.message = if (opened) uiModel.error?.message ?: "" else ""
-    }
-    else -> successAlert {
-        attrs.message = t("searchPanel.alerts.success", count = uiModel.items.size)
-    }
-}
-
-private operator fun I18nextText.invoke(key: String, count: Int) = invoke(
-    key, jsObject { this.asDynamic()["count"] = count }
-)
 
 external interface IdolSearchPanelProps : RProps {
     var model: SearchUiModel

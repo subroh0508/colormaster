@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.LiveName
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
