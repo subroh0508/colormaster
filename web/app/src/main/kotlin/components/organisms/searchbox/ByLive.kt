@@ -15,7 +15,6 @@ val SearchByLiveComponent = functionalComponent<SearchByLiveProps> { props ->
 
     fun onSelectLiveName(value: LiveName) = props.onChangeSearchParams(props.params.select(value))
     fun onClearLiveName() = props.onChangeSearchParams(props.params.clear())
-    fun onChangeLiveNameQuery(value: String?) = props.onChangeSearchParams(props.params.change(value))
 
     list(ListStyle.root to classes.root) {
         listItem {
@@ -25,7 +24,7 @@ val SearchByLiveComponent = functionalComponent<SearchByLiveProps> { props ->
                         suggestions = props.params.suggests
                         query = props.query
                         getSuggestionValue = LiveName::value
-                        onQueryChange = ::onChangeLiveNameQuery
+                        onQueryChange = props.onChangeSearchQuery
                         onSuggestionSelected = ::onSelectLiveName
                     }
                 }

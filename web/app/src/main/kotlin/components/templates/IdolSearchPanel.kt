@@ -41,6 +41,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             div(classes.searchBoxTop) {}
             idolSearchBox(uiModel) {
                 attrs.onChangeSearchParams = props.onChangeSearchParams
+                attrs.onChangeSearchQuery = props.onChangeSearchQuery
             }
         }
 
@@ -79,6 +80,7 @@ external interface IdolSearchPanelProps : RProps {
     var isOpenedGrids: Boolean
     var onClickToggleGrids: () -> Unit
     var onChangeSearchParams: (SearchParams) -> Unit
+    var onChangeSearchQuery: (String?) -> Unit
     var onClickIdolColor: (IdolColor, Boolean) -> Unit
     var onDoubleClickIdolColor: (IdolColor) -> Unit
     var onClickPreview: () -> Unit

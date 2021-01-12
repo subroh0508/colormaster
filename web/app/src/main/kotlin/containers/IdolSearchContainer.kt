@@ -1,7 +1,6 @@
 package containers
 
 import KoinReactComponent
-import components.atoms.searchByTabs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.*
@@ -15,12 +14,10 @@ import org.koin.core.inject
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import pages.IdolSearchPage
-import pages.IdolSearchPageProps
 import react.*
 import react.router.dom.useHistory
 import toPenlight
 import toPreview
-import toSearchBy
 import useQuery
 
 @Suppress("FunctionName")
@@ -48,6 +45,7 @@ private class SearchByNameContainerComponent : IdolSearchContainerComponent<Sear
     }
 ) {
     override val viewModel: SearchByNameViewModel by inject()
+    override fun onChangeQuery(query: String?) = viewModel.changeIdolNameSearchQuery(query)
 }
 
 private class SearchByLiveContainerComponent : IdolSearchContainerComponent<SearchParams.ByLive, SearchByLiveViewModel>(
@@ -56,12 +54,14 @@ private class SearchByLiveContainerComponent : IdolSearchContainerComponent<Sear
     }
 ) {
     override val viewModel: SearchByLiveViewModel by inject()
+    override fun onChangeQuery(query: String?) = viewModel.changeLiveNameSuggestQuery(query)
 }
 
 private abstract class IdolSearchContainerComponent<T: SearchParams, out VM: SearchViewModel<T>>(
     module: Module,
 ) : KoinReactComponent<IdolSearchProps, IdolSearchState>(module) {
     protected abstract val viewModel: VM
+    protected abstract fun onChangeQuery(query: String?)
 
     override fun IdolSearchState.init() {
         uiModel = SearchUiModel.ByName.INITIALIZED
@@ -79,6 +79,7 @@ private abstract class IdolSearchContainerComponent<T: SearchParams, out VM: Sea
         IdolSearchPage {
             attrs.model = state.uiModel
             attrs.onChangeSearchParams = viewModel::setSearchParams
+            attrs.onChangeSearchQuery = this@IdolSearchContainerComponent::onChangeQuery
             attrs.onClickIdolColor = viewModel::select
             attrs.onClickSelectAll = viewModel::selectAll
             attrs.onDoubleClickIdolColor = { item -> props.showPenlight(listOf(item)) }

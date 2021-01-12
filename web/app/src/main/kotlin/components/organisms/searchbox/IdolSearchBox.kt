@@ -22,6 +22,7 @@ const val DEBOUNCE_TIMEOUT_MILLS = 500L
 external interface IdolSearchBoxProps<T: SearchParams> : RProps {
     var params: T
     var onChangeSearchParams: (SearchParams) -> Unit
+    var onChangeSearchQuery: (String?) -> Unit
 }
 
 external interface IdolSearchBoxStyle {

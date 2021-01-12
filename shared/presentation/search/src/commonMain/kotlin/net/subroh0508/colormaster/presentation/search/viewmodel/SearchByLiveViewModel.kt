@@ -33,10 +33,15 @@ class SearchByLiveViewModel(
             SearchUiModel(params, idolsLoadState, liveLoadState, selected, favorites)
         }.distinctUntilChanged().apply { launchIn(viewModelScope) }
 
+    fun changeLiveNameSuggestQuery(rawQuery: String?) = setSearchParams(searchParams.value.change(rawQuery))
+
     override fun search() = when {
         searchParams.value.isEmpty() -> Unit
         searchParams.value.liveName == null -> fetchLiveNameSuggests()
-        else -> super.search()
+        else -> {
+            clearLiveLoadState()
+            super.search()
+        }
     }
 
     override suspend fun search(params: SearchParams.ByLive) = params.liveName?.let {
@@ -59,7 +64,11 @@ class SearchByLiveViewModel(
                 .onFailure { liveLoadState.value = LoadState.Error(it) }
         }
 
+        clearIdolLoadState()
         liveLoadState.value = LoadState.Loading
         job.start()
     }
+
+    private fun clearIdolLoadState() { idolsLoadState.value = LoadState.Loaded(listOf<IdolColor>()) }
+    private fun clearLiveLoadState() { liveLoadState.value = LoadState.Loaded(listOf<LiveName>()) }
 }

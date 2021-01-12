@@ -9,7 +9,6 @@ import materialui.components.listitem.listItem
 import materialui.components.textfield.textField
 import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
-import net.subroh0508.colormaster.model.toIdolName
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.dom.form
 import react.functionalComponent
@@ -26,12 +25,11 @@ val SearchByNameComponent = functionalComponent<SearchByNameProps> { props ->
 
     val (idolName, setIdolName) = useState("")
 
-    fun onChangeIdolName(value: String?) = props.onChangeSearchParams(props.params.change(value.toIdolName()))
     fun onSelectTitle(brand: Brands, checked: Boolean) = props.onChangeSearchParams(props.params.change(if (checked) brand else null))
     fun onSelectType(type: Types, checked: Boolean) = props.onChangeSearchParams(props.params.change(type, checked))
 
     useEffect(listOf(props.idolName)) { setIdolName(props.idolName ?: "") }
-    useDebounceEffect(idolName, DEBOUNCE_TIMEOUT_MILLS, effect = ::onChangeIdolName)
+    useDebounceEffect(idolName, DEBOUNCE_TIMEOUT_MILLS) { props.onChangeSearchQuery(it) }
 
     list {
         listItem {

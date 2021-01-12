@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import net.subroh0508.colormaster.model.toIdolName
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.repository.IdolColorsRepository
@@ -23,6 +24,8 @@ class SearchByNameViewModel(
         ) { params, loadState, selected, favorites ->
             SearchUiModel(params, loadState, selected, favorites)
         }.distinctUntilChanged().apply { launchIn(viewModelScope) }
+
+    fun changeIdolNameSearchQuery(query: String?) = setSearchParams(searchParams.value.change(query.toIdolName()))
 
     override fun search() =
         if (searchParams.value.isEmpty())

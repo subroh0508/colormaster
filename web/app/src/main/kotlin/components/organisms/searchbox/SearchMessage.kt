@@ -44,10 +44,9 @@ private val MessageByLiveComponent = functionalComponent<MessageProps<SearchUiMo
     val (t, _) = useTranslation()
 
     val liveName = (props.model.params as? SearchParams.ByLive)?.liveName
-    val showDefault = props.model.items.isEmpty() && (props.model.params.isEmpty() || liveName == null)
 
     when {
-        showDefault -> infoAlert {
+        liveName == null -> infoAlert {
             attrs.message = t("searchPanel.messages.default_by_live")
         }
         props.model.isLoading -> warningAlert {
