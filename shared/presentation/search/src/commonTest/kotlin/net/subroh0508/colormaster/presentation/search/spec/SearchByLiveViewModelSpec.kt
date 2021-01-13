@@ -12,10 +12,7 @@ import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.HexColor
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.LiveName
-import net.subroh0508.colormaster.presentation.search.MockIdolColorsRepository
-import net.subroh0508.colormaster.presentation.search.MockLiveRepository
-import net.subroh0508.colormaster.presentation.search.everySearchByLive
-import net.subroh0508.colormaster.presentation.search.everySuggest
+import net.subroh0508.colormaster.presentation.search.*
 import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
@@ -155,6 +152,48 @@ class SearchByLiveViewModelSpec : FunSpec() {
                 models.last() should {
                     it.items should containExactlyInAnyOrder(byLiveIdols.map(::IdolColorListItem))
                     it.params should be(emptyParams.copy(liveName = byLive))
+                }
+            }
+        }
+
+        test("#select: when change selected item it should post SearchUiModel with select state") {
+            liveRepository.everySuggest(byLive.value) { listOf(byLive) }
+            idolColorsRepository.everySearchByLive(byLive) { byLiveIdols }
+
+            subject {
+                viewModel.changeLiveNameSuggestQuery(byLive.value)
+                viewModel.select(byLiveIdols[0], true)
+                viewModel.select(byLiveIdols[0], false)
+            }.also { models ->
+                models should haveSize(7)
+                models[models.lastIndex - 1] should {
+                    it.items should haveSize(byLiveIdols.size)
+                    it.selectedItems should be(listOf(byLiveIdols[0]))
+                }
+                models.last() should {
+                    it.items should haveSize(byLiveIdols.size)
+                    it.selectedItems should beEmpty()
+                }
+            }
+        }
+
+        test("#selectAll: when change selected item it should post SearchUiModel with select state") {
+            liveRepository.everySuggest(byLive.value) { listOf(byLive) }
+            idolColorsRepository.everySearchByLive(byLive) { byLiveIdols }
+
+            subject {
+                viewModel.changeLiveNameSuggestQuery(byLive.value)
+                viewModel.selectAll(true)
+                viewModel.selectAll(false)
+            }.also { models ->
+                models should haveSize(7)
+                models[models.lastIndex - 1] should {
+                    it.items should haveSize(byLiveIdols.size)
+                    it.selectedItems should containExactlyInAnyOrder(byLiveIdols)
+                }
+                models.last() should {
+                    it.items should haveSize(byLiveIdols.size)
+                    it.selectedItems should beEmpty()
                 }
             }
         }

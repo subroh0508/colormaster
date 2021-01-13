@@ -29,20 +29,6 @@ abstract class SearchViewModel<T: SearchParams>(
     @ExperimentalCoroutinesApi
     abstract val uiModel: Flow<SearchUiModel>
 
-    fun loadRandom() {
-        val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-            runCatching { idolColorsRepository.rand(10) }
-                .onSuccess { idolsLoadState.value = LoadState.Loaded(it) }
-                .onFailure {
-                    it.printStackTrace()
-                    idolsLoadState.value = LoadState.Error(it)
-                }
-        }
-
-        startLoading()
-        job.start()
-    }
-
     open fun search() {
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
             runCatching { search(searchParams.value) }
@@ -88,7 +74,7 @@ abstract class SearchViewModel<T: SearchParams>(
         }
     }
 
-    private fun startLoading() {
+    protected fun startLoading() {
         idolsLoadState.value = LoadState.Loading
         selected.value = listOf()
     }
