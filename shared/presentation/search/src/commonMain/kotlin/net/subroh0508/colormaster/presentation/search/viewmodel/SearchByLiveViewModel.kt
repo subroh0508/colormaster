@@ -36,8 +36,14 @@ class SearchByLiveViewModel(
     fun changeLiveNameSuggestQuery(rawQuery: String?) = setSearchParams(searchParams.value.change(rawQuery))
 
     override fun search() = when {
-        searchParams.value.isEmpty() -> Unit
-        searchParams.value.liveName == null -> fetchLiveNameSuggests()
+        searchParams.value.isEmpty() -> {
+            clearLiveLoadState()
+            clearIdolLoadState()
+        }
+        searchParams.value.liveName == null -> {
+            clearIdolLoadState()
+            fetchLiveNameSuggests()
+        }
         else -> {
             clearLiveLoadState()
             super.search()
@@ -60,15 +66,25 @@ class SearchByLiveViewModel(
                     else -> listOf()
                 }
             }
-                .onSuccess { liveLoadState.value = LoadState.Loaded(it) }
+                .onSuccess {
+                    if (isQueryExactlyLiveName(query, it)) {
+                        clearLiveLoadState()
+                        setSearchParams(searchParams.value.select(it[0]))
+                        return@onSuccess
+                    }
+
+                    liveLoadState.value = LoadState.Loaded(it)
+                }
                 .onFailure { liveLoadState.value = LoadState.Error(it) }
         }
 
-        clearIdolLoadState()
         liveLoadState.value = LoadState.Loading
         job.start()
     }
 
     private fun clearIdolLoadState() { idolsLoadState.value = LoadState.Loaded(listOf<IdolColor>()) }
     private fun clearLiveLoadState() { liveLoadState.value = LoadState.Loaded(listOf<LiveName>()) }
+
+    private fun isQueryExactlyLiveName(query: String?, suggestions: List<LiveName>) =
+        query != null && query == suggestions.firstOrNull()?.value && suggestions.size == 1
 }
