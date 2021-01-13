@@ -137,7 +137,7 @@ private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { pro
     val (languageMenu, setLanguageMenu) = useState<HTMLButtonElement?>(null)
     val (t, _) = useTranslation()
 
-    val path = props.pathname.replace(props.lang.basename, "")
+    val path = props.pathname.replace(props.lang.basename, "").takeIf(String::isNotBlank) ?: "/"
 
     fun handleLanguageIconClick(event: Event) = setLanguageMenu(event.currentTarget as? HTMLButtonElement)
     fun handleLanguageMenuClose(event: Event) = setLanguageMenu(null)
