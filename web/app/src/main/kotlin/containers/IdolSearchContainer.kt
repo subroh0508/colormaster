@@ -1,50 +1,76 @@
 package containers
 
-import appDI
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import KoinReactComponent
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.*
+import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
+import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByLiveViewModel
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
-import org.koin.core.KoinComponent
+import net.subroh0508.colormaster.presentation.search.viewmodel.SearchViewModel
 import org.koin.core.inject
+import org.koin.core.module.Module
+import org.koin.dsl.module
 import pages.IdolSearchPage
 import react.*
 import react.router.dom.useHistory
 import toPenlight
 import toPreview
+import useQuery
 
 @Suppress("FunctionName")
-fun RBuilder.IdolSearchContainer() = child(IdolSearchContainerImpl) {}
+fun RBuilder.IdolSearchContainer() = child(IdolSearchContainerImpl)
 
 private val IdolSearchContainerImpl = functionalComponent<RProps> {
     val history = useHistory()
+    val tab = SearchByTab.findByQuery(useQuery().get("by"))
 
-    child(IdolSearchContainerComponent::class) {
-        attrs.showPreview = { items -> history.toPreview(items.joinToString("&") { "id=${it.id}" }) }
-        attrs.showPenlight = { items -> history.toPenlight(items.joinToString("&") { "id=${it.id}" }) }
+    when (tab) {
+        SearchByTab.BY_NAME -> child(SearchByNameContainerComponent::class) {
+            attrs.showPreview = { items -> history.toPreview(items.joinToString("&") { "id=${it.id}" }) }
+            attrs.showPenlight = { items -> history.toPenlight(items.joinToString("&") { "id=${it.id}" }) }
+        }
+        SearchByTab.BY_LIVE -> child(SearchByLiveContainerComponent::class) {
+            attrs.showPreview = { items -> history.toPreview(items.joinToString("&") { "id=${it.id}" }) }
+            attrs.showPenlight = { items -> history.toPenlight(items.joinToString("&") { "id=${it.id}" }) }
+        }
     }
 }
 
-private class IdolSearchContainerComponent :
-    RComponent<IdolSearchProps, IdolSearchState>(), KoinComponent, CoroutineScope by MainScope() {
-    override fun getKoin() = appDI.koin
+private class SearchByNameContainerComponent : IdolSearchContainerComponent<SearchParams.ByName, SearchByNameViewModel>(
+    module {
+        single { SearchByNameViewModel(get()) }
+    }
+) {
+    override val viewModel: SearchByNameViewModel by inject()
+    override fun onChangeQuery(query: String?) = viewModel.changeIdolNameSearchQuery(query)
+}
 
-    private val viewModel: SearchByNameViewModel by inject()
+private class SearchByLiveContainerComponent : IdolSearchContainerComponent<SearchParams.ByLive, SearchByLiveViewModel>(
+    module {
+        single { SearchByLiveViewModel(get(), get()) }
+    }
+) {
+    override val viewModel: SearchByLiveViewModel by inject()
+    override fun onChangeQuery(query: String?) = viewModel.changeLiveNameSuggestQuery(query)
+}
+
+private abstract class IdolSearchContainerComponent<T: SearchParams, out VM: SearchViewModel<T>>(
+    module: Module,
+) : KoinReactComponent<IdolSearchProps, IdolSearchState>(module) {
+    protected abstract val viewModel: VM
+    protected abstract fun onChangeQuery(query: String?)
 
     override fun IdolSearchState.init() {
         uiModel = SearchUiModel.ByName.INITIALIZED
     }
 
     override fun componentDidMount() {
-        launch {
-            viewModel.uiModel.collect {
-                setState { uiModel = it }
-            }
-        }
+        viewModel.uiModel.onEach {
+            setState { uiModel = it }
+        }.launchIn(this)
 
         viewModel.search()
     }
@@ -52,28 +78,14 @@ private class IdolSearchContainerComponent :
     override fun RBuilder.render() {
         IdolSearchPage {
             attrs.model = state.uiModel
-            attrs.onChangeIdolName = { name -> viewModel.setSearchParams(change(params, name.toIdolName())) }
-            attrs.onSelectTitle = { brands, checked -> viewModel.setSearchParams(change(params, brands, checked)) }
-            attrs.onSelectType = { type, checked -> viewModel.setSearchParams(change(params, type, checked)) }
+            attrs.onChangeSearchParams = viewModel::setSearchParams
+            attrs.onChangeSearchQuery = this@IdolSearchContainerComponent::onChangeQuery
             attrs.onClickIdolColor = viewModel::select
             attrs.onClickSelectAll = viewModel::selectAll
             attrs.onDoubleClickIdolColor = { item -> props.showPenlight(listOf(item)) }
             attrs.onClickPreview = { props.showPreview(selectedItems) }
             attrs.onClickPenlight = { props.showPenlight(selectedItems) }
         }
-    }
-
-    private fun change(params: SearchParams, idolName: IdolName?) = when (params) {
-        is SearchParams.ByName -> params.change(idolName)
-        else -> params
-    }
-    private fun change(params: SearchParams, brands: Brands?, checked: Boolean) = when (params) {
-        is SearchParams.ByName -> params.change(if (checked) brands else null)
-        else -> params
-    }
-    private fun change(params: SearchParams, type: Types, checked: Boolean) = when (params) {
-        is SearchParams.ByName -> params.change(type, checked)
-        else -> params
     }
 
     private val params: SearchParams get() = state.uiModel.params

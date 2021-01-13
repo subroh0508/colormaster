@@ -4,7 +4,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.be
 import io.kotest.matchers.collections.beEmpty
-import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
@@ -13,15 +12,13 @@ import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.HexColor
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.LiveName
-import net.subroh0508.colormaster.presentation.search.MockIdolColorsRepository
-import net.subroh0508.colormaster.presentation.search.MockLiveRepository
-import net.subroh0508.colormaster.presentation.search.everySearchByLive
-import net.subroh0508.colormaster.presentation.search.everySuggest
+import net.subroh0508.colormaster.presentation.search.*
 import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByLiveViewModel
 import net.subroh0508.colormaster.test.TestScope
+import net.subroh0508.colormaster.utilities.DateNum
 
 class SearchByLiveViewModelSpec : FunSpec() {
     private val observedUiModels: MutableList<SearchUiModel> = mutableListOf()
@@ -71,59 +68,132 @@ class SearchByLiveViewModelSpec : FunSpec() {
         return observedUiModels
     }
 
-    init {
-        test("#suggest: when input date it should post SearchUiModel with filled suggestions") {
-            val params = SearchParams.ByLive.EMPTY.change("2020")
+    private val emptyParams = SearchParams.ByLive.EMPTY
 
+    init {
+        test("#changeLiveNameSuggestQuery: when input date it should post SearchUiModel with filled suggestions") {
             liveRepository.everySuggest("2020-01-01" to "2020-12-31") { live2020 }
 
-            subject { viewModel.setSearchParams(params) }.also { models ->
+            subject { viewModel.changeLiveNameSuggestQuery("2020") }.also { models ->
                 models should haveSize(4)
                 models.last() should {
                     it.items should beEmpty()
-                    it.params should be(params)
-                    (it as SearchUiModel.ByLive).suggests should containExactly(live2020)
+                    it.params should be(emptyParams.copy(date = DateNum(2020), suggests = live2020))
                 }
             }
         }
 
-        test("#suggest: when input name it should post SearchUiModel with filled suggestions") {
-            val params = SearchParams.ByLive.EMPTY.change("SHINY COLORS")
+        test("#changeLiveNameSuggestQuery: when input name it should post SearchUiModel with filled suggestions") {
+            liveRepository.everySuggest("SHINY COLORS") { liveShinyColors }
+
+            subject { viewModel.changeLiveNameSuggestQuery("SHINY COLORS") }.also { models ->
+                models should haveSize(4)
+                models.last() should {
+                    it.items should beEmpty()
+                    it.params should be(emptyParams.copy(query = "SHINY COLORS", suggests = liveShinyColors))
+                }
+            }
+        }
+
+        test("#changeLiveNameSuggestQuery: when input exactly live name it should post SearchUiModel with filled items") {
+            liveRepository.everySuggest(byLive.value) { listOf(byLive) }
+            idolColorsRepository.everySearchByLive(byLive) { byLiveIdols }
+
+            subject { viewModel.changeLiveNameSuggestQuery(byLive.value) }.also { models ->
+                models should haveSize(5)
+                models.last() should {
+                    it.items should containExactlyInAnyOrder(byLiveIdols.map(::IdolColorListItem))
+                    it.params should be(emptyParams.copy(liveName = byLive))
+                }
+            }
+        }
+
+        test("#changeLiveNameSuggestQuery: when change name it should post SearchUiModel with filled list") {
+            liveRepository.everySuggest(byLive.value) { listOf(byLive) }
+            idolColorsRepository.everySearchByLive(byLive) { byLiveIdols }
+
+            viewModel.changeLiveNameSuggestQuery(byLive.value)
 
             liveRepository.everySuggest("SHINY COLORS") { liveShinyColors }
 
-            subject { viewModel.setSearchParams(params) }.also { models ->
-                models should haveSize(4)
+            subject { viewModel.changeLiveNameSuggestQuery("SHINY COLORS") }.also { models ->
+                models should haveSize(9)
                 models.last() should {
                     it.items should beEmpty()
-                    it.params should be(params)
-                    (it as SearchUiModel.ByLive).suggests should containExactly(liveShinyColors)
+                    it.params should be(emptyParams.copy(query = "SHINY COLORS", suggests = liveShinyColors))
                 }
             }
         }
 
-        test("#search: when search params is empty it should not post SearchUiModel") {
-            subject { viewModel.setSearchParams(SearchParams.ByLive.EMPTY) }.also { models ->
-                models should haveSize(1)
+        test("#setSearchParams: when search params is empty it should not post SearchUiModel") {
+            liveRepository.everySuggest("SHINY COLORS") { liveShinyColors }
+
+            subject {
+                viewModel.changeLiveNameSuggestQuery("SHINY COLORS")
+                viewModel.setSearchParams(SearchParams.ByLive.EMPTY)
+            }.also { models ->
+                models should haveSize(6)
                 models.last() should {
                     it.items should beEmpty()
                     it.params should be(SearchParams.ByLive.EMPTY)
-                    (it as SearchUiModel.ByLive).suggests should beEmpty()
                 }
             }
         }
 
-        test("#search: when select live name it should post SearchUiModel with filled list") {
-            val params = SearchParams.ByLive.EMPTY.select(byLive)
-
+        test("#setSearchParams: when select live name it should post SearchUiModel with filled list") {
+            liveRepository.everySuggest("SHINY COLORS") { liveShinyColors }
             idolColorsRepository.everySearchByLive(byLive) { byLiveIdols }
 
-            subject { viewModel.setSearchParams(params) }.also { models ->
-                models should haveSize(4)
+            subject {
+                viewModel.changeLiveNameSuggestQuery("SHINY COLORS")
+                viewModel.setSearchParams(emptyParams.select(byLive))
+            }.also { models ->
+                models should haveSize(8)
                 models.last() should {
                     it.items should containExactlyInAnyOrder(byLiveIdols.map(::IdolColorListItem))
-                    it.params should be(params)
-                    (it as SearchUiModel.ByLive).suggests should beEmpty()
+                    it.params should be(emptyParams.copy(liveName = byLive))
+                }
+            }
+        }
+
+        test("#select: when change selected item it should post SearchUiModel with select state") {
+            liveRepository.everySuggest(byLive.value) { listOf(byLive) }
+            idolColorsRepository.everySearchByLive(byLive) { byLiveIdols }
+
+            subject {
+                viewModel.changeLiveNameSuggestQuery(byLive.value)
+                viewModel.select(byLiveIdols[0], true)
+                viewModel.select(byLiveIdols[0], false)
+            }.also { models ->
+                models should haveSize(7)
+                models[models.lastIndex - 1] should {
+                    it.items should haveSize(byLiveIdols.size)
+                    it.selectedItems should be(listOf(byLiveIdols[0]))
+                }
+                models.last() should {
+                    it.items should haveSize(byLiveIdols.size)
+                    it.selectedItems should beEmpty()
+                }
+            }
+        }
+
+        test("#selectAll: when change selected item it should post SearchUiModel with select state") {
+            liveRepository.everySuggest(byLive.value) { listOf(byLive) }
+            idolColorsRepository.everySearchByLive(byLive) { byLiveIdols }
+
+            subject {
+                viewModel.changeLiveNameSuggestQuery(byLive.value)
+                viewModel.selectAll(true)
+                viewModel.selectAll(false)
+            }.also { models ->
+                models should haveSize(7)
+                models[models.lastIndex - 1] should {
+                    it.items should haveSize(byLiveIdols.size)
+                    it.selectedItems should containExactlyInAnyOrder(byLiveIdols)
+                }
+                models.last() should {
+                    it.items should haveSize(byLiveIdols.size)
+                    it.selectedItems should beEmpty()
                 }
             }
         }

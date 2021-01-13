@@ -76,11 +76,13 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
         return observedUiModels
     }
 
+    private val emptyParams = SearchParams.ByName.EMPTY
+
     init {
-        test("#rand: when repository#rand returns idols colors it should post SearchUiModel with filled list") {
+        test("#search: when repository#rand returns idols colors it should post SearchUiModel with filled list") {
             repository.everyRand { randomIdols }
 
-            subject(viewModel::loadRandom).also { models ->
+            subject(viewModel::search).also { models ->
                 models should haveSize(3)
                 models[0] should {
                     it.items should beEmpty()
@@ -100,12 +102,12 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#rand: when repository#rand raise Exception it should post SearchUiModel with empty list") {
+        test("#search: when repository#rand raise Exception it should post SearchUiModel with empty list") {
             val error = IllegalStateException()
 
             repository.everyRand { throw error }
 
-            subject(viewModel::loadRandom).also { models ->
+            subject(viewModel::search).also { models ->
                 models should haveSize(3)
                 models[0] should {
                     it.items should beEmpty()
@@ -125,54 +127,40 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
             }
         }
 
-        test("#search: when search params is empty it should post SearchUiModel with filled list") {
-            repository.everyRand { randomIdols }
-
-            subject(viewModel::search).also { models ->
-                models should haveSize(3)
-                models.last().items should containExactlyInAnyOrder(randomIdols.map(::IdolColorListItem))
-            }
-        }
-
-        test("#search: when change idol name it should post SearchUiModel with filled list") {
-            val params = SearchParams.ByName.EMPTY.change(byName)
-
+        test("#changeIdolNameSuggestQuery: when input name it should post SearchUiModel with filled list") {
             repository.everySearchByName(expectIdolName = byName) { _, _, _ -> byNameIdols }
 
-            subject { viewModel.setSearchParams(params) }.also { models ->
+            subject { viewModel.changeIdolNameSearchQuery(byName.value) }.also { models ->
                 models should haveSize(4)
                 models.last() should {
                     it.items should containExactlyInAnyOrder(byNameIdols.map(::IdolColorListItem))
-                    it.params should be(params)
+                    it.params should be(emptyParams.copy(idolName = byName))
                 }
             }
         }
 
-        test("#search: when change brand it should post SearchUiModel with filled list") {
-            val params = SearchParams.ByName.EMPTY.change(byBrand)
-
+        test("#setSearchParams: when change brand it should post SearchUiModel with filled list") {
             repository.everySearchByName(expectBrands = byBrand) { _, _, _ -> byBrandIdols }
 
-            subject { viewModel.setSearchParams(params) }.also { models ->
+            subject { viewModel.setSearchParams(emptyParams.change(byBrand)) }.also { models ->
                 models should haveSize(4)
                 models.last() should {
                     it.items should containExactlyInAnyOrder(byBrandIdols.map(::IdolColorListItem))
-                    it.params should be(params)
+                    it.params should be(emptyParams.copy(brands = byBrand))
                 }
             }
         }
 
-        test("#search: when change brand and type it should post SearchUiModel with filled list") {
+        test("#setSearchParams: when change brand and type it should post SearchUiModel with filled list") {
             val (brand, type) = byBrandAndType
-            val params = SearchParams.ByName.EMPTY.change(brand).change(type, checked = true)
 
             repository.everySearchByName(expectBrands = brand, expectTypes = setOf(type)) { _, _, _ -> byBrandAndTypeIdols }
 
-            subject { viewModel.setSearchParams(params) }.also { models ->
+            subject { viewModel.setSearchParams(emptyParams.change(brand).change(type, checked = true)) }.also { models ->
                 models should haveSize(4)
                 models.last() should {
                     it.items should containExactlyInAnyOrder(byBrandAndTypeIdols.map(::IdolColorListItem))
-                    it.params should be(params)
+                    it.params should be(emptyParams.copy(brands = brand, types = setOf(type)))
                 }
             }
         }
@@ -181,7 +169,7 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
             repository.everyRand { randomIdols }
 
             subject {
-                viewModel.loadRandom()
+                viewModel.search()
                 viewModel.select(randomIdols[0], true)
                 viewModel.select(randomIdols[0], false)
             }.also { models ->
@@ -201,7 +189,7 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
             repository.everyRand { randomIdols }
 
             subject {
-                viewModel.loadRandom()
+                viewModel.search()
                 viewModel.selectAll(true)
                 viewModel.selectAll(false)
             }.also { models ->

@@ -1,10 +1,12 @@
 package containers
 
-import appDI
+import koinApp
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
+import components.atoms.searchByTabs
 import components.templates.appMenu
 import isExpandAppBar
+import isRoot
 import kotlinext.js.jsObject
 import language
 import materialui.styles.palette.PaletteType
@@ -21,6 +23,9 @@ import themes.ThemeProvider
 import utilities.Actions
 import utilities.useTranslation
 import kotlinx.browser.localStorage
+import net.subroh0508.colormaster.presentation.search.model.SearchByTab
+import toSearchBy
+import useQuery
 
 @Suppress("FunctionName")
 fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppFrameContainerComponent, handler = handler)
@@ -29,6 +34,7 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
     val preferredType = if (useMediaQuery("(prefers-color-scheme: dark)")) PaletteType.dark else PaletteType.light
     val history = useHistory()
     val lang = language(history)
+    val tab = SearchByTab.findByQuery(useQuery().get("by"))
     val (_, i18n) = useTranslation()
 
     val (appState, dispatch) = useReducer(
@@ -73,6 +79,13 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
             attrs.onClickChangeTheme = { toggleTheme() }
             attrs.onClickMenuIcon = { toggleMenu() }
             attrs.onCloseMenu = { closeMenu() }
+
+            if (isRoot(history)) {
+                searchByTabs {
+                    attrs.index = tab.ordinal
+                    attrs.onChangeTab = history::toSearchBy
+                }
+            }
         }
 
         props.children()
@@ -117,5 +130,5 @@ private object AppPreferenceController : KoinComponent {
 
     fun changeLanguage(lang: Languages) { browserPref.setLanguage(lang) }
 
-    override fun getKoin() = appDI.koin
+    override fun getKoin() = koinApp.koin
 }

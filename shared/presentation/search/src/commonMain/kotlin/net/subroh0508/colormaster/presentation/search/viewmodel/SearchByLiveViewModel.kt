@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.LiveName
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
@@ -32,10 +33,21 @@ class SearchByLiveViewModel(
             SearchUiModel(params, idolsLoadState, liveLoadState, selected, favorites)
         }.distinctUntilChanged().apply { launchIn(viewModelScope) }
 
+    fun changeLiveNameSuggestQuery(rawQuery: String?) = setSearchParams(searchParams.value.change(rawQuery))
+
     override fun search() = when {
-        searchParams.value.isEmpty() -> Unit
-        searchParams.value.liveName == null -> fetchLiveNameSuggests()
-        else -> super.search()
+        searchParams.value.isEmpty() -> {
+            clearLiveLoadState()
+            clearIdolLoadState()
+        }
+        searchParams.value.liveName == null -> {
+            clearIdolLoadState()
+            fetchLiveNameSuggests()
+        }
+        else -> {
+            clearLiveLoadState()
+            super.search()
+        }
     }
 
     override suspend fun search(params: SearchParams.ByLive) = params.liveName?.let {
@@ -54,11 +66,25 @@ class SearchByLiveViewModel(
                     else -> listOf()
                 }
             }
-                .onSuccess { liveLoadState.value = LoadState.Loaded(it) }
+                .onSuccess {
+                    if (isQueryExactlyLiveName(query, it)) {
+                        clearLiveLoadState()
+                        setSearchParams(searchParams.value.select(it[0]))
+                        return@onSuccess
+                    }
+
+                    liveLoadState.value = LoadState.Loaded(it)
+                }
                 .onFailure { liveLoadState.value = LoadState.Error(it) }
         }
 
         liveLoadState.value = LoadState.Loading
         job.start()
     }
+
+    private fun clearIdolLoadState() { idolsLoadState.value = LoadState.Loaded(listOf<IdolColor>()) }
+    private fun clearLiveLoadState() { liveLoadState.value = LoadState.Loaded(listOf<LiveName>()) }
+
+    private fun isQueryExactlyLiveName(query: String?, suggestions: List<LiveName>) =
+        query != null && query == suggestions.firstOrNull()?.value && suggestions.size == 1
 }

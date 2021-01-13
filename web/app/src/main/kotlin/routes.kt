@@ -3,6 +3,7 @@ import containers.IdolSearchContainer
 import containers.PenlightContainer
 import containers.PreviewContainer
 import net.subroh0508.colormaster.model.Languages
+import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import org.w3c.dom.url.URLSearchParams
 import pages.DevelopmentPage
 import pages.HowToUsePage
@@ -27,11 +28,13 @@ fun RBuilder.routing() = browserRouter {
 
 fun useQuery() = URLSearchParams(useLocation().search)
 
+fun isRoot(history: RouteResultHistory) = """(/[a-z]{2})?/?""".toRegex().matches(history.location.pathname)
 fun isExpandAppBar(history: RouteResultHistory) = """(/[a-z]{2})?/(howtouse|development|terms)""".toRegex().matches(history.location.pathname)
 
 fun language(history: RouteResultHistory) = Languages.valueOfCode(history.langCode()) ?: Languages.JAPANESE
 
 fun RouteResultHistory.toRoot() = to("/")
+fun RouteResultHistory.toSearchBy(tab: SearchByTab) = to(if (tab == SearchByTab.BY_NAME) "/" else "?by=${tab.query}")
 fun RouteResultHistory.toHowToUse() = to("/howtouse")
 fun RouteResultHistory.toDevelopment() = to("/development")
 fun RouteResultHistory.toTerms() = to("/terms")

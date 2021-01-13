@@ -1,6 +1,7 @@
 package themes
 
 import kotlinx.css.Color
+import kotlinx.css.px
 import materialui.components.cssbaseline.cssBaseline
 import materialui.styles.createMuiTheme
 import materialui.styles.muitheme.options.palette
@@ -8,6 +9,8 @@ import materialui.styles.palette.PaletteType
 import materialui.styles.palette.options.*
 import materialui.styles.themeprovider.themeProvider
 import react.*
+
+val APP_BAR_SM_UP = 408.px
 
 @Suppress("FunctionName")
 fun RBuilder.ThemeProvider(handler: RHandler<ThemeProviderProps>) = child(ThemeProviderComponent, handler = handler)

@@ -48,12 +48,19 @@ sealed class SearchParams {
         override fun isEmpty() = this == EMPTY
 
         fun change(rawQuery: String?) = when {
-            rawQuery == null -> copy(liveName = null, query = null, date = null)
-            isNumber(rawQuery) -> copy(date = DateNum(rawQuery.toInt()), query = null)
-            else -> copy(query = rawQuery.takeIf(String::isNotBlank), date = null)
+            rawQuery == liveName?.value -> copy(query = null, date = null, suggests = listOf())
+            rawQuery.isNullOrBlank() -> copy(liveName = null, query = null, date = null)
+            isNumber(rawQuery) -> copy(date = DateNum(rawQuery.toInt()), query = null, liveName = null)
+            else -> copy(query = rawQuery.takeIf(String::isNotBlank), date = null, liveName = null)
         }
 
-        fun suggests(suggests: List<LiveName>) = copy(suggests = suggests)
+        fun suggests(suggests: List<LiveName>) =
+            if (liveName == suggests.firstOrNull() && suggests.size == 1)
+                copy(suggests = listOf())
+            else if (query == suggests.firstOrNull()?.value && suggests.size == 1)
+                query.toLiveName()?.let(this@ByLive::select) ?: copy(suggests = suggests)
+            else
+                copy(suggests = suggests)
 
         fun select(liveName: LiveName) = EMPTY.copy(liveName = liveName)
         fun clear() = EMPTY

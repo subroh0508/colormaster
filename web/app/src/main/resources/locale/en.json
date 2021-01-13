@@ -27,6 +27,10 @@
     "clear": "CLEAR"
   },
   "searchBox": {
+    "tabs": {
+      "name": "Name",
+      "live": "Live"
+    },
     "attributes": {
       "idolName": "Idol's Name",
       "brands": "Brands",
@@ -41,12 +45,14 @@
         "physical": "Physical",
         "intelligent": "Intelligent",
         "mental": "Mental"
-      }
+      },
+      "liveName": "Live Name or Live Date"
     }
   },
   "searchPanel": {
-    "alerts": {
-      "default": "10 idols at random",
+    "messages": {
+      "default_by_name": "10 idols at random",
+      "default_by_live": "Please input Live Name",
       "searching": "Searching...",
       "error": "Error",
       "success": "Result: {{count}} idol",

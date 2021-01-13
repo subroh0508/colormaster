@@ -1,17 +1,17 @@
 package containers
 
-import appDI
+import KoinReactComponent
 import components.organisms.FullscreenPenlightComponent
 import components.organisms.FullscreenPreviewComponent
 import components.templates.previewModal
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.presentation.preview.model.FullscreenPreviewUiModel
 import net.subroh0508.colormaster.presentation.preview.viewmodel.PreviewViewModel
-import org.koin.core.KoinComponent
 import org.koin.core.inject
+import org.koin.dsl.module
 import react.*
 import useQuery
 
@@ -39,10 +39,11 @@ private val FullscreenPreviewContainerComponentImpl = functionalComponent<RProps
     }) { model: FullscreenPreviewUiModel -> props.children(model) }
 }
 
-private class FullscreenPreviewContainer :
-    RComponent<FullscreenPreviewProps, FullscreenPreviewState>(), KoinComponent, CoroutineScope by MainScope() {
-    override fun getKoin() = appDI.koin
-
+private class FullscreenPreviewContainer : KoinReactComponent<FullscreenPreviewProps, FullscreenPreviewState>(
+    module {
+        single { PreviewViewModel(get()) }
+    }
+) {
     val viewModel: PreviewViewModel by inject()
 
     override fun FullscreenPreviewState.init() {
@@ -50,11 +51,9 @@ private class FullscreenPreviewContainer :
     }
 
     override fun componentDidMount() {
-        launch {
-            viewModel.uiModel.collect {
-                setState { uiModel = it }
-            }
-        }
+        viewModel.uiModel.onEach {
+            setState { uiModel = it }
+        }.launchIn(this)
 
         viewModel.fetch(props.ids.toList())
     }

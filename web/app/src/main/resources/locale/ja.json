@@ -27,6 +27,10 @@
     "clear": "選択解除"
   },
   "searchBox": {
+    "tabs": {
+      "name": "アイドル名",
+      "live": "公演名"
+    },
     "attributes": {
       "idolName": "アイドル名",
       "brands": "ブランド",
@@ -41,12 +45,14 @@
         "physical": "フィジカル",
         "intelligent": "インテリ",
         "mental": "メンタル"
-      }
+      },
+      "liveName": "公演名または公演日"
     }
   },
   "searchPanel": {
-    "alerts": {
-      "default": "ランダムに10人表示中",
+    "messages": {
+      "default_by_name": "ランダムに10人表示中",
+      "default_by_live": "公演名を指定してください",
       "searching": "検索中...",
       "error": "エラー",
       "success": "検索結果: {{count}}人",

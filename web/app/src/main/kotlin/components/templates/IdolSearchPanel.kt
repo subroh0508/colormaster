@@ -4,8 +4,8 @@ import components.atoms.*
 import components.organisms.IDOL_COLOR_GRID_ACTIONS_CLASS_NAME
 import components.organisms.idolColorGridsActions
 import components.organisms.idolColorGrids
-import components.organisms.idolSearchBox
-import kotlinext.js.jsObject
+import components.organisms.searchbox.idolSearchBox
+import components.organisms.searchbox.message
 import kotlinx.css.*
 import kotlinx.css.properties.borderTop
 import materialui.components.drawer.enums.DrawerAnchor
@@ -18,14 +18,11 @@ import materialui.styles.palette.divider
 import materialui.styles.palette.paper
 import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.Brands
-import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.*
 import react.dom.div
-import utilities.I18nextText
-import utilities.invoke
+import themes.APP_BAR_SM_UP
 import utilities.useTranslation
 
 fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(IdolSearchPanelComponent, handler = handler)
@@ -39,18 +36,12 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     val drawerAnchor = if (isSmUp) DrawerAnchor.right else DrawerAnchor.bottom
     val actionsStyle = "${classes.actions} ${if (props.isOpenedGrids) "" else classes.actionsHide}"
 
-    val params = uiModel.params
-
     div(classes.root) {
         div(classes.searchBox) {
             div(classes.searchBoxTop) {}
-            when (params) {
-                is SearchParams.ByName -> idolSearchBox {
-                    attrs.params = params
-                    attrs.onChangeIdolName = props.onChangeIdolName
-                    attrs.onSelectTitle = props.onSelectTitle
-                    attrs.onSelectType = props.onSelectType
-                }
+            idolSearchBox(uiModel) {
+                attrs.onChangeSearchParams = props.onChangeSearchParams
+                attrs.onChangeSearchQuery = props.onChangeSearchQuery
             }
         }
 
@@ -60,7 +51,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             attrs.onClose = props.onCloseGrids
             attrs.onClickExpandIcon = props.onClickToggleGrids
             attrs.HeaderComponent {
-                alert(props.isOpenedGrids, uiModel, t)
+                message(props.isOpenedGrids, uiModel)
             }
 
             div(classes.panel) {
@@ -84,33 +75,12 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     }
 }
 
-private fun RBuilder.alert(opened: Boolean, uiModel: SearchUiModel, t: I18nextText) = when {
-    uiModel.isLoading -> warningAlert {
-        attrs.message = t("searchPanel.alerts.searching")
-    }
-    uiModel.params.isEmpty() -> infoAlert {
-        attrs.message = t("searchPanel.alerts.default")
-    }
-    uiModel.error != null -> errorAlert {
-        attrs.title = t("searchPanel.alerts.error")
-        attrs.message = if (opened) uiModel.error?.message ?: "" else ""
-    }
-    else -> successAlert {
-        attrs.message = t("searchPanel.alerts.success", count = uiModel.items.size)
-    }
-}
-
-private operator fun I18nextText.invoke(key: String, count: Int) = invoke(
-    key, jsObject { this.asDynamic()["count"] = count }
-)
-
 external interface IdolSearchPanelProps : RProps {
     var model: SearchUiModel
     var isOpenedGrids: Boolean
     var onClickToggleGrids: () -> Unit
-    var onChangeIdolName: (String) -> Unit
-    var onSelectTitle: (Brands, Boolean) -> Unit
-    var onSelectType: (Types, Boolean) -> Unit
+    var onChangeSearchParams: (SearchParams) -> Unit
+    var onChangeSearchQuery: (String?) -> Unit
     var onClickIdolColor: (IdolColor, Boolean) -> Unit
     var onDoubleClickIdolColor: (IdolColor) -> Unit
     var onClickPreview: () -> Unit
@@ -129,12 +99,17 @@ private external interface IdolSearchPanelStyle {
     val searchBoxTop: String
 }
 
+private val TOOLBAR_HEIGHT = 64.px
+private val TABS_HEIGHT = 48.px
+private val ACTION_BUTTONS_HEIGHT = 48.px
+
 private val useStyles = makeStyles<IdolSearchPanelStyle> {
     "root" {
         display = Display.flex
         height = 100.vh
     }
     "searchBox" {
+        width = 100.pct
         backgroundColor = theme.palette.background.default
     }
     "panel" {
@@ -171,7 +146,7 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
             (theme.breakpoints.up(Breakpoint.sm)) {
                 borderTop = "none"
                 width = APP_BAR_SM_UP
-                padding(8.px, 16.px)
+                padding(16.px, 16.px, 0.px)
                 backgroundColor = theme.palette.background.default
             }
         }
@@ -184,15 +159,15 @@ private val useStyles = makeStyles<IdolSearchPanelStyle> {
 
         (theme.breakpoints.up(Breakpoint.sm)) {
             display = Display.block
-            minHeight = 64.px
+            minHeight = TOOLBAR_HEIGHT + TABS_HEIGHT
         }
     })
     "searchBoxTop"(theme.mixins.toolbar.apply {
-        marginBottom = 0.px
+        marginBottom = TABS_HEIGHT + 16.px
 
         (theme.breakpoints.up(Breakpoint.sm)) {
-            minHeight = 64.px
-            marginBottom = 48.px
+            minHeight = TOOLBAR_HEIGHT
+            marginBottom = TABS_HEIGHT + ACTION_BUTTONS_HEIGHT + 16.px
         }
     })
 }

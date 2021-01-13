@@ -52,7 +52,6 @@ inline class DateNum(private val value: Int) {
             }
         }
 
-        println("month: $month")
         return if (month in 1..12) month else INVALID
     }
 

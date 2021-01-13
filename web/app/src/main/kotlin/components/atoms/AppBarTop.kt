@@ -36,10 +36,9 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+import themes.APP_BAR_SM_UP
 import utilities.invoke
 import utilities.useTranslation
-
-val APP_BAR_SM_UP = 408.px
 
 fun RBuilder.appBarTop(handler: RHandler<AppBarTopProps>) = child(AppBarTopComponent, handler = handler)
 
@@ -96,6 +95,8 @@ private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
                     }
                 }
             }
+
+            props.children()
         }
     }
 
@@ -136,7 +137,7 @@ private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { pro
     val (languageMenu, setLanguageMenu) = useState<HTMLButtonElement?>(null)
     val (t, _) = useTranslation()
 
-    val path = props.pathname.replace(props.lang.basename, "")
+    val path = props.pathname.replace(props.lang.basename, "").takeIf(String::isNotBlank) ?: "/"
 
     fun handleLanguageIconClick(event: Event) = setLanguageMenu(event.currentTarget as? HTMLButtonElement)
     fun handleLanguageMenuClose(event: Event) = setLanguageMenu(null)
@@ -201,7 +202,6 @@ private val useStyles = makeStyles<AppBarTopStyle, AppBarTopProps> {
         flexGrow = 1.0
     }
     "appBar" {
-        zIndex = theme.zIndex.drawer.toInt() + 1
         backgroundColor = theme.palette.background.default
         boxShadow = BoxShadows.none
 
