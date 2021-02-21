@@ -41,6 +41,7 @@ fun OutlinedButton(
     if (asset != null) {
         Icon(
             asset,
+            contentDescription = null,
             modifier = Modifier.padding(end = 8.dp)
                 .align(Alignment.CenterVertically),
         )

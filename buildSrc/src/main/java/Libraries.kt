@@ -7,7 +7,7 @@ object Libraries {
     }
 
     object Kotlin {
-        const val version = "1.4.21"
+        const val version = "1.4.30"
 
         const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$version"
         const val test = "org.jetbrains.kotlin:kotlin-test:$version"
@@ -80,7 +80,7 @@ object Libraries {
         const val material = "com.google.android.material:material:$materialVersion"
 
         object Compose {
-            const val version = "1.0.0-alpha09"
+            const val version = "1.0.0-alpha12"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val material = "androidx.compose.material:material:$version"

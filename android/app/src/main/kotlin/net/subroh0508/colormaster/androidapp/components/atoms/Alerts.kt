@@ -71,6 +71,7 @@ fun Alert(
         Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
             Icon(
                 imageVector = asset,
+                contentDescription = null,
                 tint = color,
                 modifier = Modifier.padding(end = 12.dp)
                     .align(Alignment.CenterVertically),
@@ -85,6 +86,7 @@ fun Alert(
             if (endAsset != null) {
                 Icon(
                     imageVector = endAsset,
+                    contentDescription = null,
                     tint = MaterialTheme.colors.onSurface,
                     modifier = Modifier.padding(start = 12.dp)
                         .align(Alignment.CenterVertically)

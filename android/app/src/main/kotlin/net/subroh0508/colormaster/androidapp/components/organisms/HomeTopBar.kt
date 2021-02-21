@@ -27,6 +27,7 @@ fun HomeTopBar(titles: Array<String>, drawerState: DrawerState) {
     ) {
         Image(
             imageVector = vectorResource(R.drawable.ic_menu),
+            contentDescription = null,
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
             modifier = Modifier.align(Alignment.CenterVertically)
                 .clickable(onClick = { drawerState.open() }),

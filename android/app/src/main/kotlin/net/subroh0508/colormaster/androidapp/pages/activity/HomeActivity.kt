@@ -2,6 +2,7 @@ package net.subroh0508.colormaster.androidapp.pages.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.material.*
 import androidx.compose.ui.platform.setContent
@@ -14,6 +15,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class HomeActivity : AppCompatActivity() {
     private val viewModel: SearchByNameViewModel by viewModel()
 
+    @ExperimentalFoundationApi
     @ExperimentalMaterialApi
     @ExperimentalLayout
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -30,8 +30,8 @@ fun DebounceTextField(
     var textFieldState by remember { mutableStateOf(TextFieldValue()) }
     val debounceFlowState by remember { mutableStateOf(MutableStateFlow("")) }
 
-    onCommit(text) {
-        if (text == textFieldState.text) return@onCommit
+    LaunchedEffect(text) {
+        if (text == textFieldState.text) return@LaunchedEffect
 
         textFieldState = TextFieldValue(text = text ?: "")
     }

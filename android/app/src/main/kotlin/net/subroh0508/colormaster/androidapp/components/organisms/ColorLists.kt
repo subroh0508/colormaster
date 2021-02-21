@@ -1,5 +1,6 @@
 package net.subroh0508.colormaster.androidapp.components.organisms
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,6 +23,7 @@ private enum class UiState {
     Preview, Select
 }
 
+@ExperimentalFoundationApi
 @Composable
 fun ColorLists(
     items: List<IdolColorListItem>,
@@ -35,7 +37,7 @@ fun ColorLists(
     var uiState by remember { mutableStateOf(UiState.Preview) }
     val selectedIds = items.filter(IdolColorListItem::selected).map(IdolColorListItem::id)
 
-    onCommit(items.map(IdolColorListItem::id)) {
+    LaunchedEffect(items.map(IdolColorListItem::id)) {
         uiState = UiState.Preview
     }
 
@@ -68,7 +70,8 @@ fun ColorLists(
             ),
             contentPadding = PaddingValues(top = 4.dp, bottom = 4.dp)
         ) {
-            items(items) { (id, name, hexColor, selected) ->
+            items(items.size, { items[it].id }) { index ->
+                val (id, name, hexColor, selected) = items[index]
                 val idolColor = IdolColor(id, name.value, hexColor)
 
                 SelectableColorListItem(
@@ -108,10 +111,10 @@ private fun BottomButtons(
             onClick = onPreviewClick,
             enabled = !isEmpty,
             shape = RoundedCornerShape(
-                topLeft = 4.dp,
-                topRight = 0.dp,
-                bottomLeft = 4.dp,
-                bottomRight = 0.dp,
+                topStart = 4.dp,
+                topEnd = 0.dp,
+                bottomStart = 4.dp,
+                bottomEnd = 0.dp,
             ),
             modifier = Modifier.weight(1.0F, true),
         )
@@ -136,10 +139,10 @@ private fun BottomButtons(
             asset = vectorResource(toggleAssetRes),
             onClick = { onAllClick(isEmpty) },
             shape = RoundedCornerShape(
-                topLeft = 0.dp,
-                topRight = 4.dp,
-                bottomLeft = 0.dp,
-                bottomRight = 4.dp,
+                topStart = 0.dp,
+                topEnd = 4.dp,
+                bottomStart = 0.dp,
+                bottomEnd = 4.dp,
             ),
             modifier = Modifier.weight(1.0F, true),
         )

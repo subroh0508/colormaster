@@ -1,5 +1,6 @@
 package net.subroh0508.colormaster.androidapp.pages
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -31,9 +32,10 @@ import net.subroh0508.colormaster.presentation.search.model.SearchState
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 
-@Composable
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalLayout
+@Composable
 fun Home(
     viewModel: SearchByNameViewModel,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
@@ -97,6 +99,7 @@ private fun BackLayerContent(
     )
 }
 
+@ExperimentalFoundationApi
 @Composable
 @ExperimentalMaterialApi
 private fun FrontLayerContent(

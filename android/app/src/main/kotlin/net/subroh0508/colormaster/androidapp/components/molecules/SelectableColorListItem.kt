@@ -1,8 +1,10 @@
 package net.subroh0508.colormaster.androidapp.components.molecules
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.Icon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
@@ -23,6 +25,7 @@ import net.subroh0508.colormaster.androidapp.themes.hexToColor
 import net.subroh0508.colormaster.androidapp.themes.lightBackground
 import net.subroh0508.colormaster.model.HexColor
 
+@ExperimentalFoundationApi
 @Composable
 fun SelectableColorListItem(
     label: String,
@@ -35,7 +38,7 @@ fun SelectableColorListItem(
     Card(
         elevation = 4.dp,
         backgroundColor = color.hexToColor(),
-        modifier = modifier.clickable(
+        modifier = modifier.combinedClickable(
             onClick = onClick,
             onLongClick = onLongClick,
         ),
@@ -44,6 +47,7 @@ fun SelectableColorListItem(
             if (selected) {
                 Icon(
                     Icons.Outlined.CheckCircle,
+                    contentDescription = null,
                     tint = if (color.isBrighter) Color.Black else Color.White,
                     modifier = Modifier.align(Alignment.CenterStart),
                 )
@@ -58,6 +62,7 @@ fun SelectableColorListItem(
     }
 }
 
+@ExperimentalFoundationApi
 @Preview
 @Composable
 fun PreviewColorListItem() {
