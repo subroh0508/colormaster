@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,7 +23,7 @@ import net.subroh0508.colormaster.androidapp.themes.lightBackground
 fun OutlinedButton(
     label: String,
     modifier: Modifier = Modifier,
-    asset: ImageVector? = null,
+    painter: Painter? = null,
     enabled: Boolean = true,
     onClick: () -> Unit = {},
     shape: Shape = MaterialTheme.shapes.small,
@@ -33,14 +35,14 @@ fun OutlinedButton(
     ),
     shape = shape,
     contentPadding = PaddingValues(
-        start = (if (asset == null) 16 else 12).dp,
+        start = (if (painter == null) 16 else 12).dp,
         end = 16.dp,
     ),
     modifier = Modifier.preferredHeight(36.dp).then(modifier),
 ) {
-    if (asset != null) {
+    if (painter != null) {
         Icon(
-            asset,
+            painter,
             contentDescription = null,
             modifier = Modifier.padding(end = 8.dp)
                 .align(Alignment.CenterVertically),
@@ -65,7 +67,7 @@ fun PreviewOutlinedButton_Light() {
             )
             OutlinedButton(
                 "Sample Text",
-                asset = vectorResource(R.drawable.ic_highlight_24dp),
+                painter = painterResource(R.drawable.ic_highlight_24dp),
                 onClick = {},
             )
             OutlinedButton(
@@ -75,7 +77,7 @@ fun PreviewOutlinedButton_Light() {
             )
             OutlinedButton(
                 "Sample Text",
-                asset = vectorResource(R.drawable.ic_highlight_24dp),
+                painter = painterResource(R.drawable.ic_highlight_24dp),
                 enabled = false,
                 onClick = {},
             )
@@ -94,7 +96,7 @@ fun PreviewOutlinedButton_Dark() {
             )
             OutlinedButton(
                 "Sample Text",
-                asset = vectorResource(R.drawable.ic_highlight_24dp),
+                painter = painterResource(R.drawable.ic_highlight_24dp),
                 onClick = {},
             )
             OutlinedButton(
@@ -104,7 +106,7 @@ fun PreviewOutlinedButton_Dark() {
             )
             OutlinedButton(
                 "Sample Text",
-                asset = vectorResource(R.drawable.ic_highlight_24dp),
+                painter = painterResource(R.drawable.ic_highlight_24dp),
                 enabled = false,
                 onClick = {},
             )

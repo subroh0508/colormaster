@@ -10,6 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -107,7 +108,7 @@ private fun BottomButtons(
     Row(Modifier.padding(8.dp)) {
         OutlinedButton(
             stringResource(R.string.search_box_bottom_preview),
-            asset = vectorResource(R.drawable.ic_palette_24dp),
+            painter = painterResource(R.drawable.ic_palette_24dp),
             onClick = onPreviewClick,
             enabled = !isEmpty,
             shape = RoundedCornerShape(
@@ -121,7 +122,7 @@ private fun BottomButtons(
 
         OutlinedButton(
             stringResource(R.string.search_box_bottom_penlight),
-            asset = vectorResource(R.drawable.ic_highlight_24dp),
+            painter = painterResource(R.drawable.ic_highlight_24dp),
             onClick = onPenlightClick,
             enabled = !isEmpty,
             shape = RoundedCornerShape(0.dp),
@@ -136,7 +137,7 @@ private fun BottomButtons(
 
         OutlinedButton(
             stringResource(toggleLabelRes),
-            asset = vectorResource(toggleAssetRes),
+            painter = painterResource(toggleAssetRes),
             onClick = { onAllClick(isEmpty) },
             shape = RoundedCornerShape(
                 topStart = 0.dp,
