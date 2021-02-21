@@ -51,4 +51,15 @@ androidLibExt {
         kotlinCompilerExtensionVersion = Libraries.Jetpack.Compose.version
         kotlinCompilerVersion = kotlinVersion
     }
+
+    configurations {
+        // Workaround
+        // @see https://youtrack.jetbrains.com/issue/KT-43944
+        create("androidTestApi")
+        create("androidTestDebugApi")
+        create("androidTestReleaseApi")
+        create("testApi")
+        create("testDebugApi")
+        create("testReleaseApi")
+    }
 }
