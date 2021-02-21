@@ -31,7 +31,8 @@ dependencies {
     implementation(Libraries.Coroutines.android)
 
     implementation(Libraries.Jetpack.core)
-    implementation(Libraries.Jetpack.appCompat)
+    implementation(Libraries.Jetpack.activity)
+    implementation(Libraries.Jetpack.activityCompose)
     implementation(Libraries.Jetpack.material)
     implementation(Libraries.Jetpack.Compose.ui)
     implementation(Libraries.Jetpack.Compose.material)

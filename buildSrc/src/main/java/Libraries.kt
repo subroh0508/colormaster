@@ -73,8 +73,9 @@ object Libraries {
         private const val appCompatVersion = "1.2.0"
         const val appCompat = "androidx.appcompat:appcompat:$appCompatVersion"
 
-        private const val activityVersion = "1.2.0-alpha08"
+        private const val activityVersion = "1.3.0-alpha02"
         const val activity = "androidx.activity:activity-ktx:$activityVersion"
+        const val activityCompose = "androidx.activity:activity-compose:$activityVersion"
 
         private const val materialVersion = "1.2.0-alpha05"
         const val material = "com.google.android.material:material:$materialVersion"

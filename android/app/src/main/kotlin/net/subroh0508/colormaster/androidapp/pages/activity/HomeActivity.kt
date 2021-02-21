@@ -1,11 +1,11 @@
 package net.subroh0508.colormaster.androidapp.pages.activity
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.material.*
-import androidx.compose.ui.platform.setContent
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.intentToPreview
 import net.subroh0508.colormaster.androidapp.pages.Home
