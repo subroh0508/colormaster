@@ -108,7 +108,7 @@ object Libraries {
     }
 
     object JsWrappers {
-        const val version = "pre.132-kotlin-${Kotlin.version}"
+        const val version = "pre.148-kotlin-${Kotlin.version}"
 
         private const val reactVersion = "${Npm.reactVersion}-$version"
         const val react = "org.jetbrains:kotlin-react:$reactVersion"
@@ -124,20 +124,20 @@ object Libraries {
         const val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.5.4"
+            const val version = "0.5.5"
             const val core = "net.subroh0508.kotlinmaterialui:core:$version"
         }
     }
 
     object Npm {
-        const val reactVersion = "17.0.0"
+        const val reactVersion = "17.0.1"
         const val react = "react"
         const val reactDom = "react-dom"
 
         const val reactRouterDomVersion = "5.2.0"
         const val reactRouterDom = "react-router-dom"
 
-        const val styledComponentVersion = "5.2.0"
+        const val styledComponentVersion = "5.2.1"
         const val styledComponent = "styled-components"
 
         const val inlineStylePrefixerVersion = "^6.0.0"

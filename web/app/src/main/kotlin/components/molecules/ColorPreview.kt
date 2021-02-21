@@ -46,7 +46,7 @@ private external interface ColorPreviewStyle {
 }
 
 private val useStyle = makeStyles<ColorPreviewStyle, ColorPreviewProps> {
-    "root" { props ->
+    dynamic("root") { props ->
         height = 100.pct
 
         descendants(".$COLOR_PREVIEW_ITEM_CLASS_NAME") {

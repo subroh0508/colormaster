@@ -35,7 +35,7 @@ private external interface ColorPreviewItemStyle {
 }
 
 private val useStyles = makeStyles<ColorPreviewItemStyle, ColorPreviewItemProps> {
-    "root" { props ->
+    dynamic("root") { props ->
         display = Display.flex
         width = 100.pct
         height = 100.pct

@@ -61,7 +61,7 @@ private val useStyles = makeStyles<IdolColorGridsStyle, GridsWidth> {
     "root" {
         margin(8.px, 4.px)
     }
-    "container" { props ->
+    dynamic("container") { props ->
         flexGrow = 1.0
         display = Display.flex
         flexDirection = FlexDirection.row

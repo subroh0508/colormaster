@@ -107,7 +107,7 @@ private enum class Mouse {
 }
 
 private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
-    "root" { props ->
+    dynamic("root") { props ->
         width = 100.pct
         color = if (props.item.isBrighter) Color.black else Color.white
         margin(4.px)
