@@ -3,21 +3,6 @@ plugins {
     kotlin("android")
 }
 
-android {
-    defaultConfig {
-        applicationId = Android.applicationId
-        versionCode = Android.versionCode
-        versionName = Android.versionName
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
-    }
-
-    packagingOptions {
-        resources {
-            excludes.add("META-INF/*")
-        }
-    }
-}
-
 dependencies {
     implementation(project(":shared:utilities"))
     implementation(project(":shared:model"))

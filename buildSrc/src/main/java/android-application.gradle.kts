@@ -1,45 +1,19 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("com.android.application")
 }
 
-androidAppExt {
-    compileSdkVersion(Android.Versions.compileSdk)
-
+androidBaseExt()
+android {
     defaultConfig {
-        minSdkVersion(Android.Versions.minSdk)
-        targetSdkVersion(Android.Versions.targetSdk)
+        applicationId = Android.applicationId
+        versionCode = Android.versionCode
+        versionName = Android.versionName
+        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+    packagingOptions {
+        resources {
+            excludes.add("META-INF/*")
         }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = "1.8"
-        kotlinOptions.useIR = true
-    }
-
-    sourceSets.forEach {
-        it.java.setSrcDirs(files("src/${it.name}/kotlin"))
-    }
-
-    buildFeatures {
-        dataBinding = true
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Libraries.Jetpack.Compose.version
-        kotlinCompilerVersion = kotlinVersion
     }
 }
