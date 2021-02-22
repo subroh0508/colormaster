@@ -1,9 +1,17 @@
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.getting
 import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+
+fun NamedDomainObjectContainer<KotlinSourceSet>.enableInlineClass() {
+    all {
+        languageSettings.enableLanguageFeature("InlineClasses")
+    }
+}
 
 fun Project.kotlinMpp(configure: KotlinMultiplatformExtension.() -> Unit) =
     (this as ExtensionAware).extensions.configure<KotlinMultiplatformExtension>("kotlin") {

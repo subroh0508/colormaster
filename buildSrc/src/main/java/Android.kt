@@ -26,10 +26,11 @@ object Android {
 
 val Project.androidGradlePlugin get() = "com.android.tools.build:gradle:${version("android-gradle-plugin")}"
 
+internal fun Project.androidExt(configure: BaseExtension.() -> Unit) = (this as ExtensionAware).extensions.configure("android", configure)
 internal fun Project.androidAppExt(configure: BaseAppModuleExtension.() -> Unit) = (this as ExtensionAware).extensions.configure("android", configure)
 internal fun Project.androidLibExt(configure: LibraryExtension.() -> Unit) = (this as ExtensionAware).extensions.configure("android", configure)
 
-internal fun Project.androidBaseExt() = (this as ExtensionAware).extensions.configure<BaseExtension>("android") {
+internal fun Project.androidBaseExt() = androidExt {
     compileSdkVersion(Android.Versions.compileSdk)
 
     defaultConfig {
