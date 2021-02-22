@@ -5,4 +5,5 @@ plugins {
 androidBaseExt()
 android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    sourceSets["main"].res.srcDirs("src/androidMain/res")
 }

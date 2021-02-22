@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    `android-library`
+    `android-multiplatform`
 }
 
 kotlinMpp {
