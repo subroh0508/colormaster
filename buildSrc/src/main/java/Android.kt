@@ -1,8 +1,6 @@
 @file:Suppress("HardcodedStringLiteral")
 
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
@@ -61,13 +59,6 @@ internal fun Project.androidBaseExt() = androidExt {
 
     sourceSets.forEach {
         it.java.setSrcDirs(files("src/${it.name}/kotlin"))
-    }
-
-    buildFeatures.compose = true
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Libraries.Jetpack.Compose.version
-        kotlinCompilerVersion = kotlinVersion
     }
 
     configurations {
