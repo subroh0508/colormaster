@@ -18,7 +18,7 @@ import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByLiveViewModel
 import net.subroh0508.colormaster.test.TestScope
-import net.subroh0508.colormaster.utilities.DateNum
+import net.subroh0508.colormaster.presentation.common.DateNum
 
 class SearchByLiveViewModelSpec : FunSpec() {
     private val observedUiModels: MutableList<SearchUiModel> = mutableListOf()

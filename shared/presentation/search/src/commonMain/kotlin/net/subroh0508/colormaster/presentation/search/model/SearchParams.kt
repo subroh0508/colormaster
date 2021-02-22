@@ -1,7 +1,7 @@
 package net.subroh0508.colormaster.presentation.search.model
 
 import net.subroh0508.colormaster.model.*
-import net.subroh0508.colormaster.utilities.DateNum
+import net.subroh0508.colormaster.presentation.common.DateNum
 
 sealed class SearchParams {
     abstract fun isEmpty(): Boolean

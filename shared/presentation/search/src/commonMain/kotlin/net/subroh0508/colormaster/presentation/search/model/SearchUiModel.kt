@@ -2,7 +2,7 @@ package net.subroh0508.colormaster.presentation.search.model
 
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.LiveName
-import net.subroh0508.colormaster.utilities.LoadState
+import net.subroh0508.colormaster.presentation.common.LoadState
 
 sealed class SearchUiModel {
     open val items: List<IdolColorListItem> = listOf()

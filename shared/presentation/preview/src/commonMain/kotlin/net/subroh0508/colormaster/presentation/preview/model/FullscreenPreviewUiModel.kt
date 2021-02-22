@@ -1,7 +1,7 @@
 package net.subroh0508.colormaster.presentation.preview.model
 
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.utilities.LoadState
+import net.subroh0508.colormaster.presentation.common.LoadState
 
 data class FullscreenPreviewUiModel(
     val items: List<IdolColor>,

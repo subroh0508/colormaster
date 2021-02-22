@@ -70,6 +70,9 @@ object Libraries {
         private const val coreVersion = "1.3.1"
         const val core = "androidx.core:core-ktx:$coreVersion"
 
+        private const val annotationVersion = "1.1.0"
+        const val annotation = "androidx.annotation:annotation:$annotationVersion"
+
         private const val appCompatVersion = "1.2.0"
         const val appCompat = "androidx.appcompat:appcompat:$appCompatVersion"
 

@@ -15,6 +15,7 @@ kotlinMpp {
         }
         val androidMain by getting {
             dependencies {
+                implementation(Libraries.Jetpack.annotation)
                 implementation(Libraries.Coroutines.test)
             }
         }

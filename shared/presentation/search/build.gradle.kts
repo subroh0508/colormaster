@@ -10,7 +10,7 @@ kotlinMpp {
             dependencies {
                 implementation(project(":shared:model"))
                 implementation(project(":shared:infra:repository"))
-                implementation(project(":shared:utilities"))
+                implementation(project(":shared:presentation:common"))
 
                 implementation(Libraries.Coroutines.core)
             }

@@ -16,7 +16,7 @@ import materialui.components.icon.icon
 import materialui.components.paper.paper
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.utilities.throttleFirst
+import net.subroh0508.colormaster.presentation.common.throttleFirst
 import react.*
 import styled.ReactModule
 import styled.animation

@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.preview.model.FullscreenPreviewUiModel
 import net.subroh0508.colormaster.repository.IdolColorsRepository
-import net.subroh0508.colormaster.utilities.LoadState
-import net.subroh0508.colormaster.utilities.ViewModel
+import net.subroh0508.colormaster.presentation.common.LoadState
+import net.subroh0508.colormaster.presentation.common.ViewModel
 
 class PreviewViewModel(
     private val repository: IdolColorsRepository,

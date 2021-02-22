@@ -6,8 +6,8 @@ import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.repository.IdolColorsRepository
-import net.subroh0508.colormaster.utilities.LoadState
-import net.subroh0508.colormaster.utilities.ViewModel
+import net.subroh0508.colormaster.presentation.common.LoadState
+import net.subroh0508.colormaster.presentation.common.ViewModel
 
 abstract class SearchViewModel<T: SearchParams>(
     protected val idolColorsRepository: IdolColorsRepository,

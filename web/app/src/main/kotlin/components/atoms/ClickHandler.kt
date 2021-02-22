@@ -1,7 +1,7 @@
 package components.atoms
 
 import kotlinx.html.js.onClickFunction
-import net.subroh0508.colormaster.utilities.currentTimeMillis
+import net.subroh0508.colormaster.presentation.common.currentTimeMillis
 import react.*
 import react.dom.div
 import kotlinx.browser.window
