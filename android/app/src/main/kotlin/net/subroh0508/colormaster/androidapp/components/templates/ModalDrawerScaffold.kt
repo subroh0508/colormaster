@@ -15,7 +15,7 @@ import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 @Composable
 @ExperimentalMaterialApi
 fun ModalDrawerScaffold(
-    drawerContent: @Composable ColumnScope.() -> Unit,
+    drawerContent: @Composable ColumnScope.(DrawerState) -> Unit,
     bodyContent: @Composable (DrawerState, SnackbarHostState) -> Unit,
     bottomBarHeight: Dp = 0.dp
 ) {
@@ -25,7 +25,7 @@ fun ModalDrawerScaffold(
     ModalDrawerFrame {
         ModalDrawerLayout(
             drawerState = modalDrawerState,
-            drawerContent = drawerContent,
+            drawerContent = {  drawerContent(modalDrawerState) },
             bodyContent = {
                 // Workarount
                 Box {

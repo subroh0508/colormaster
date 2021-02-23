@@ -43,7 +43,11 @@ fun Home(
     val page = remember { mutableStateOf(Page.SEARCH) }
 
     ModalDrawerScaffold(
-        drawerContent = { HomeDrawerContent { page.value = it } },
+        drawerContent = { drawerState ->
+            HomeDrawerContent {
+                drawerState.close { page.value = it }
+            }
+        },
         bodyContent = { drawerState, snackbarHostState ->
             when (page.value) {
                 Page.SEARCH -> Search(
