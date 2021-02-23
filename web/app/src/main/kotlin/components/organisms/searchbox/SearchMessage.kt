@@ -18,6 +18,7 @@ import utilities.useTranslation
 fun RBuilder.message(opened: Boolean, uiModel: SearchUiModel) = when (uiModel) {
     is SearchUiModel.ByName -> child(MessageByNameComponent) { attrs.opened = opened; attrs.model = uiModel }
     is SearchUiModel.ByLive -> child(MessageByLiveComponent) { attrs.opened = opened; attrs.model = uiModel }
+    is SearchUiModel.Favorites -> Unit
 }
 
 private val MessageByNameComponent = functionalComponent<MessageProps<SearchUiModel.ByName>> { props ->

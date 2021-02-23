@@ -1,6 +1,6 @@
-package net.subroh0508.colormaster.query
+package net.subroh0508.colormaster.api.imasparql.query
 
-import net.subroh0508.colormaster.query.internal.ESCAPED_ENDPOINT_RDFS_DETAIL
+import net.subroh0508.colormaster.api.imasparql.internal.ESCAPED_ENDPOINT_RDFS_DETAIL
 
 class SearchByIdQuery(
     lang: String,

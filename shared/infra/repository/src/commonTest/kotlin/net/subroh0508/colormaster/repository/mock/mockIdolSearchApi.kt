@@ -3,11 +3,11 @@ package net.subroh0508.colormaster.repository.mock
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import io.ktor.util.*
+import net.subroh0508.colormaster.api.imasparql.query.RandomQuery
+import net.subroh0508.colormaster.api.imasparql.query.SearchByIdQuery
+import net.subroh0508.colormaster.api.imasparql.query.SearchByLiveQuery
+import net.subroh0508.colormaster.api.imasparql.query.SearchByNameQuery
 import net.subroh0508.colormaster.model.*
-import net.subroh0508.colormaster.query.RandomQuery
-import net.subroh0508.colormaster.query.SearchByIdQuery
-import net.subroh0508.colormaster.query.SearchByLiveQuery
-import net.subroh0508.colormaster.query.SearchByNameQuery
 import net.subroh0508.colormaster.test.jsonIdolColor
 import net.subroh0508.colormaster.test.resultJson
 import net.subroh0508.colormaster.test.mockApi
@@ -24,7 +24,7 @@ fun mockSearchByName(
     lang: Languages, name: IdolName? = null, brands: Brands? = null, types: Set<Types> = setOf(),
     vararg res: IdolColor,
 ) = mockApi { req ->
-    if (req.url.parameters["query"] == SearchByNameQuery(lang.code, name, brands, types).plainQuery) {
+    if (req.url.parameters["query"] == SearchByNameQuery(lang.code, name?.value, brands?.queryStr, types.map(Types::queryStr)).plainQuery) {
         return@mockApi respond(toJson(lang.code, res.toList()), headers = headers)
     }
 
@@ -35,7 +35,7 @@ fun mockSearchByLive(
     lang: Languages, liveName: LiveName?,
     vararg res: IdolColor,
 ) = mockApi { req ->
-    if (req.url.parameters["query"] == SearchByLiveQuery(lang.code, liveName).plainQuery) {
+    if (req.url.parameters["query"] == SearchByLiveQuery(lang.code, liveName?.value).plainQuery) {
         return@mockApi respond(toJson(lang.code, res.toList()), headers = headers)
     }
 

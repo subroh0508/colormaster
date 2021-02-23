@@ -5,7 +5,6 @@ include(
     ":shared:components:core",
     ":shared:api:imasparql",
     ":shared:infra:repository",
-    ":shared:infra:query",
     ":shared:infra:db",
     ":shared:presentation:common",
     ":shared:presentation:search",

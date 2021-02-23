@@ -8,8 +8,6 @@ kotlinMpp {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":shared:infra:query"))
-
                 implementation(Libraries.Coroutines.core)
 
                 implementation(Libraries.Serialization.core)

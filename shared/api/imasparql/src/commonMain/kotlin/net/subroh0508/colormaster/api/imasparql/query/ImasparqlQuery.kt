@@ -1,6 +1,6 @@
-package net.subroh0508.colormaster.query
+package net.subroh0508.colormaster.api.imasparql.query
 
-import net.subroh0508.colormaster.query.internal.URLEncoder
+import net.subroh0508.colormaster.api.imasparql.internal.URLEncoder
 
 abstract class ImasparqlQuery {
     companion object {

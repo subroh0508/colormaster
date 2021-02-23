@@ -1,18 +1,17 @@
-package net.subroh0508.colormaster.query
+package net.subroh0508.colormaster.api.imasparql.query
 
-import net.subroh0508.colormaster.model.LiveName
-import net.subroh0508.colormaster.query.internal.ESCAPED_ENDPOINT_RDFS_DETAIL
+import net.subroh0508.colormaster.api.imasparql.internal.ESCAPED_ENDPOINT_RDFS_DETAIL
 
 class SearchByLiveQuery(
     lang: String,
-    name: LiveName?,
+    liveName: String?,
 ) : ImasparqlQuery() {
     override val rawQuery = """
         SELECT ?id ?name ?color WHERE {
           ?live rdf:type imas:Live;
             schema:name ?liveName;
             schema:actor ?actor.
-          ${name?.value?.let { "FILTER (str(?liveName) = '$it')." } ?: ""}
+          ${liveName?.let { "FILTER (str(?liveName) = '$it')." } ?: ""}
           ?s imas:Color ?color;
             imas:Title ?title;
             imas:cv ?actor.

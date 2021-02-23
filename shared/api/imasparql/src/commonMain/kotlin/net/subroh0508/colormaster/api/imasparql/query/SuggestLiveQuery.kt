@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.query
+package net.subroh0508.colormaster.api.imasparql.query
 
 class SuggestLiveQuery(
     dateRange: Pair<String, String>? = null,

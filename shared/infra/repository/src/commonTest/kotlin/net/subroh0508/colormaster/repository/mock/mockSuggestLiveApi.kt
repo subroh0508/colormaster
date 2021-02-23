@@ -1,8 +1,8 @@
 package net.subroh0508.colormaster.repository.mock
 
 import io.ktor.client.engine.mock.*
+import net.subroh0508.colormaster.api.imasparql.query.SuggestLiveQuery
 import net.subroh0508.colormaster.model.LiveName
-import net.subroh0508.colormaster.query.SuggestLiveQuery
 import net.subroh0508.colormaster.test.mockApi
 import net.subroh0508.colormaster.test.resultJson
 

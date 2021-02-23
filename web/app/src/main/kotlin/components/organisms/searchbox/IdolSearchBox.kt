@@ -14,6 +14,7 @@ fun RBuilder.idolSearchBox(uiModel: SearchUiModel, handler: RHandler<IdolSearchB
     when (params) {
         is SearchParams.ByName -> child(SearchByNameComponent) { attrs.params = params; handler() }
         is SearchParams.ByLive -> child(SearchByLiveComponent) { attrs.params = params; handler() }
+        is SearchParams.None -> Unit
     }
 }
 

@@ -9,9 +9,9 @@ import io.ktor.client.request.accept
 import io.ktor.http.URLProtocol
 import io.ktor.http.userAgent
 import net.subroh0508.colormaster.api.imasparql.BuildConfig
+import net.subroh0508.colormaster.api.imasparql.HOSTNAME
 import net.subroh0508.colormaster.api.imasparql.internal.ContentType
 import net.subroh0508.colormaster.api.imasparql.internal.UserAgent
-import net.subroh0508.colormaster.query.HOSTNAME
 import okhttp3.logging.HttpLoggingInterceptor
 
 internal actual val httpClient get() = HttpClient(OkHttp) {

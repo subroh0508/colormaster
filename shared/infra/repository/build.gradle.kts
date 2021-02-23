@@ -9,7 +9,6 @@ kotlinMpp {
             dependencies {
                 implementation(project(":shared:api:imasparql"))
                 implementation(project(":shared:infra:db"))
-                implementation(project(":shared:infra:query"))
                 implementation(project(":shared:model"))
 
                 implementation(Libraries.Coroutines.core)
