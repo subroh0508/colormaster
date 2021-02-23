@@ -12,8 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.components.molecules.ScrollableTabs
@@ -35,9 +33,8 @@ fun HomeTopBar(drawerState: DrawerState, titles: Array<String> = arrayOf()) {
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .clickable(onClick = drawerState::open)
-                .padding(end = 8.dp),
+                .padding(top = 16.dp, end = 16.dp, bottom = 16.dp),
         )
-        Spacer(Modifier.preferredWidth(Dp(16F)))
 
         Title(titles)
     }
@@ -48,12 +45,14 @@ private fun RowScope.Title(titles: Array<String>) = when (titles.size) {
     1 -> Text(
         titles.first(),
         style = MaterialTheme.typography.h6,
-        modifier = Modifier.align(Alignment.CenterVertically),
+        modifier = Modifier.align(Alignment.CenterVertically)
+            .padding(start = 16.dp),
     )
     else -> ScrollableTabs(
         titles,
         modifier = Modifier
             .weight(1F)
-            .align(Alignment.CenterVertically),
+            .align(Alignment.CenterVertically)
+            .padding(start = 16.dp),
     )
 }
