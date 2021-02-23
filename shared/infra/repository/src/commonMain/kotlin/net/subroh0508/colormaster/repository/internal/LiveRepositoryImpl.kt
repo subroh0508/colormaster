@@ -1,7 +1,7 @@
 package net.subroh0508.colormaster.repository.internal
 
-import net.subroh0508.colormaster.api.ImasparqlClient
-import net.subroh0508.colormaster.api.json.LiveNameJson
+import net.subroh0508.colormaster.api.imasparql.ImasparqlClient
+import net.subroh0508.colormaster.api.imasparql.json.LiveNameJson
 import net.subroh0508.colormaster.model.LiveName
 import net.subroh0508.colormaster.query.SuggestLiveQuery
 import net.subroh0508.colormaster.repository.LiveRepository

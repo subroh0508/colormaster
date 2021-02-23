@@ -7,10 +7,10 @@ kotlinMpp {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":shared:model"))
-                implementation(project(":shared:infra:api"))
+                implementation(project(":shared:api:imasparql"))
                 implementation(project(":shared:infra:db"))
                 implementation(project(":shared:infra:query"))
+                implementation(project(":shared:model"))
 
                 implementation(Libraries.Coroutines.core)
                 implementation(Libraries.Serialization.core)

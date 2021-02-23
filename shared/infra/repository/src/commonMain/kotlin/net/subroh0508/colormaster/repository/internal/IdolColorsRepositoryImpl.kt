@@ -1,8 +1,8 @@
 package net.subroh0508.colormaster.repository.internal
 
-import net.subroh0508.colormaster.api.ImasparqlClient
-import net.subroh0508.colormaster.api.json.IdolColorJson
-import net.subroh0508.colormaster.api.serializer.Response
+import net.subroh0508.colormaster.api.imasparql.ImasparqlClient
+import net.subroh0508.colormaster.api.imasparql.json.IdolColorJson
+import net.subroh0508.colormaster.api.imasparql.serializer.Response
 import net.subroh0508.colormaster.db.IdolColorsDatabase
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
