@@ -51,6 +51,26 @@ abstract class SearchViewModel<T: SearchParams>(
         search()
     }
 
+    fun fetchAllFavoriteIdols() {
+        val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
+            runCatching {
+                val ids = idolColorsRepository.getFavoriteIdolIds()
+                ids to idolColorsRepository.search(ids)
+            }
+                .onSuccess { (favoriteIds, idols) ->
+                    favorites.value = favoriteIds
+                    idolsLoadState.value = LoadState.Loaded(idols)
+                }
+                .onFailure {
+                    favorites.value = listOf()
+                    idolsLoadState.value = LoadState.Error(it)
+                }
+        }
+
+        idolsLoadState.value = LoadState.Loading
+        job.start()
+    }
+
     protected abstract suspend fun search(params: T): List<IdolColor>
 
     fun select(item: IdolColor, selected: Boolean) { this.selected.value = if (selected) this.selected.value + listOf(item.id) else this.selected.value - listOf(item.id) }
