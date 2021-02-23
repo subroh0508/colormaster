@@ -52,24 +52,24 @@ private fun Content(
 ) {
     val uiModel by viewModel.uiModel.collectAsState(initial = SearchUiModel.Favorites.INITIALIZED)
 
-    fun showSnackbar(message: String) {
-        lifecycleScope.launch { snackbarHostState.showSnackbar(message) }
-    }
-
     val (messageFavorite, messageUnfavorite) =
         stringResource(R.string.search_success_favorite) to stringResource(R.string.search_success_unfavorite)
+
+    fun showSnackbar(favorite: Boolean) {
+        val message = if (favorite) messageFavorite else messageUnfavorite
+
+        lifecycleScope.launch {
+            snackbarHostState.showSnackbar(message)
+        }
+    }
 
     ColorLists(
         uiModel.items,
         onSelect = viewModel::select,
         onClickFavorite = { (id), favorite ->
             viewModel.favorite(id, favorite)
-            showSnackbar(
-                if (favorite)
-                    messageFavorite
-                else
-                    messageUnfavorite
-            )
+            viewModel.search()
+            showSnackbar(favorite)
         },
         onClick = { launchPreviewScreen(ScreenType.Penlight, listOf(it.id)) },
         onPreviewClick = {
