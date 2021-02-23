@@ -7,9 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringArrayResource
@@ -46,6 +44,11 @@ fun Search(
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
     val backdropScaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
+
+    SideEffect {
+        viewModel.search()
+        viewModel.loadFavorites()
+    }
 
     BackdropScaffold(
         headerHeight = HEADER_HEIGHT,

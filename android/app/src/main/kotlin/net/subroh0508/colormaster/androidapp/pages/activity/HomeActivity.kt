@@ -25,13 +25,6 @@ class HomeActivity : AppCompatActivity() {
         setContent { Home(viewModel, lifecycleScope, ::launchPreviewActivity) }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        viewModel.search()
-        viewModel.loadFavorites()
-    }
-
     private fun launchPreviewActivity(
         type: ScreenType,
         ids: List<String>,
