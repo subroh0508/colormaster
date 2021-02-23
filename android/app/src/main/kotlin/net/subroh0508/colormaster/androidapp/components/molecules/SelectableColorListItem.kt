@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,8 +34,10 @@ fun SelectableColorListItem(
     color: HexColor,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
+    favorited: Boolean = false,
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
+    onClickFavorite: () -> Unit = {},
 ) {
     Card(
         elevation = 4.dp,
@@ -49,7 +53,8 @@ fun SelectableColorListItem(
                     Icons.Outlined.CheckCircle,
                     contentDescription = null,
                     tint = if (color.isBrighter) Color.Black else Color.White,
-                    modifier = Modifier.align(Alignment.CenterStart),
+                    modifier = Modifier.size(36.dp)
+                        .align(Alignment.CenterStart),
                 )
             }
 
@@ -57,6 +62,15 @@ fun SelectableColorListItem(
                 label, color,
                 modifier = Modifier.fillMaxWidth()
                     .align(Alignment.Center),
+            )
+
+            Icon(
+                if (favorited) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,
+                contentDescription = null,
+                tint = if (color.isBrighter) Color.Black else Color.White,
+                modifier = Modifier.padding(4.dp)
+                    .align(Alignment.BottomEnd)
+                    .clickable { onClickFavorite() },
             )
         }
     }
@@ -74,12 +88,20 @@ fun PreviewColorListItem() {
     )
 
     var selected by remember { mutableStateOf(listOf("樋口円香", "有栖川夏葉")) }
+    var favorited by remember { mutableStateOf(listOf("三峰結華", "八宮めぐる")) }
 
     fun onClick(label: String): () -> Unit = {
         selected = if (selected.contains(label))
                        selected - listOf(label)
                    else
                        selected + listOf(label)
+    }
+
+    fun onClickFavorite(label: String): () -> Unit = {
+        favorited = if (favorited.contains(label))
+                        favorited - listOf(label)
+                    else
+                        favorited + listOf(label)
     }
 
     Column {
@@ -89,7 +111,9 @@ fun PreviewColorListItem() {
                     label,
                     color,
                     selected = selected.contains(label),
+                    favorited = favorited.contains(label),
                     onClick = onClick(label),
+                    onClickFavorite = onClickFavorite(label),
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                 )
             }
@@ -101,7 +125,9 @@ fun PreviewColorListItem() {
                     label,
                     color,
                     selected = selected.contains(label),
+                    favorited = favorited.contains(label),
                     onClick = onClick(label),
+                    onClickFavorite = onClickFavorite(label),
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                 )
             }
