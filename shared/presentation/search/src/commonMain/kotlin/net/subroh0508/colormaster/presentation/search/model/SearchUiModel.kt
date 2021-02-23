@@ -1,7 +1,6 @@
 package net.subroh0508.colormaster.presentation.search.model
 
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.LiveName
 import net.subroh0508.colormaster.presentation.common.LoadState
 
 sealed class SearchUiModel {
@@ -23,6 +22,16 @@ sealed class SearchUiModel {
             .map { (id, name, hexColor) -> IdolColor(id, name.value, hexColor) }
 
     companion object {
+        operator fun invoke(
+            loadState: LoadState,
+            selected: List<String>,
+            favorites: List<String>,
+        ) = Favorites(
+            loadState.getIdolColorListItems(selected, favorites),
+            loadState.getErrorOrNull(),
+            loadState.isLoading,
+        )
+
         operator fun invoke(
             params: SearchParams.ByName,
             loadState: LoadState,
@@ -54,6 +63,18 @@ sealed class SearchUiModel {
         ) = getValueOrNull<List<IdolColor>>()
             ?.map { IdolColorListItem(it, selected.contains(it.id), favorites.contains(it.id)) }
             ?: listOf()
+    }
+
+    data class Favorites(
+        override val items: List<IdolColorListItem>,
+        override val error: Throwable? = null,
+        override val isLoading: Boolean = false,
+    ) : SearchUiModel() {
+        override val params = SearchParams.None
+
+        companion object {
+            val INITIALIZED = Favorites(listOf())
+        }
     }
 
     data class ByName(

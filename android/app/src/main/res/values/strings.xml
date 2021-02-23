@@ -8,6 +8,7 @@
 
     <string name="app_menu_search_label">検索</string>
     <string name="app_menu_search_attributes">名前・属性検索</string>
+    <string name="app_menu_favorites">お気に入り一覧</string>
     <string name="app_menu_about_label">このアプリについて</string>
     <string name="app_menu_about_how_to_use">使い方</string>
     <string name="app_menu_about_development">仕組み</string>
@@ -30,6 +31,9 @@
     <string name="search_state_label_waiting">検索中&#8230;</string>
     <string name="search_state_label_error">エラー: %s</string>
     <string name="search_state_label_searched">検索結果: %d人</string>
+
+    <string name="search_success_favorite">お気に入りに登録しました</string>
+    <string name="search_success_unfavorite">お気に入りへの登録を解除しました</string>
 
     <string name="type_cinderella_cu">Cute</string>
     <string name="type_cinderella_co">Cool</string>

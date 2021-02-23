@@ -11,20 +11,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import net.subroh0508.colormaster.androidapp.components.atoms.DrawerButton
 
+interface MenuListLabel  {
+    val resId: Int
+}
+
 @Composable
-fun DrawerMenuList(
+fun <T: MenuListLabel> DrawerMenuList(
     label: String? = null,
-    items: Array<Pair<ImageVector, String>>,
-    onClick: (String) -> Unit,
+    items: Array<Pair<ImageVector, T>>,
+    onClick: (T) -> Unit,
 ) {
     label?.let {
         Text(
             text = it,
             style = MaterialTheme.typography.caption,
-            modifier = Modifier.preferredHeight(28.dp)
+            modifier = Modifier
+                .preferredHeight(28.dp)
                 .padding(start = 16.dp)
                 .wrapContentHeight(Alignment.Bottom),
         )
@@ -34,7 +40,7 @@ fun DrawerMenuList(
         Spacer(Modifier.preferredHeight(8.dp))
         DrawerButton(
             asset = asset,
-            label = item,
+            label = stringResource(item.resId),
             onClick = { onClick(item) },
         )
     }
