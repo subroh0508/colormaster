@@ -34,7 +34,8 @@ fun HomeTopBar(drawerState: DrawerState, titles: Array<String> = arrayOf()) {
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .clickable(onClick = { drawerState.open() }),
+                .clickable(onClick = drawerState::open)
+                .padding(end = 8.dp),
         )
         Spacer(Modifier.preferredWidth(Dp(16F)))
 
