@@ -129,6 +129,7 @@ private fun FrontLayerContent(
         ColorLists(
             uiModel.items,
             onSelect = viewModel::select,
+            onClickFavorite = { (id), favorite -> viewModel.favorite(id, favorite) },
             onClick = { launchPreviewScreen(ScreenType.Penlight, listOf(it.id)) },
             onPreviewClick = { launchPreviewScreen(ScreenType.Preview, uiModel.selectedItems.map(IdolColor::id)) },
             onPenlightClick = { launchPreviewScreen(ScreenType.Penlight, uiModel.selectedItems.map(IdolColor::id)) },

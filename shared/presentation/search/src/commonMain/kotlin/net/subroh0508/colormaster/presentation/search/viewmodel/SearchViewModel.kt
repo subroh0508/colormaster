@@ -60,16 +60,12 @@ abstract class SearchViewModel<T: SearchParams>(
         viewModelScope.launch { favorites.value = idolColorsRepository.getFavoriteIdolIds() }
     }
 
-    fun favorite(id: String) {
+    fun favorite(id: String, favorite: Boolean) {
         viewModelScope.launch {
-            idolColorsRepository.favorite(id)
-            favorites.value = idolColorsRepository.getFavoriteIdolIds()
-        }
-    }
-
-    fun unfavorite(id: String) {
-        viewModelScope.launch {
-            idolColorsRepository.unfavorite(id)
+            if (favorite)
+                idolColorsRepository.favorite(id)
+            else
+                idolColorsRepository.unfavorite(id)
             favorites.value = idolColorsRepository.getFavoriteIdolIds()
         }
     }

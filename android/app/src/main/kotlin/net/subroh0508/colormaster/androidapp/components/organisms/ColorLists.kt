@@ -31,6 +31,7 @@ fun ColorLists(
     modifier: Modifier = Modifier,
     onSelect: (IdolColor, Boolean) -> Unit = { _, _ -> },
     onClick: (IdolColor) -> Unit = {},
+    onClickFavorite: (IdolColor, Boolean) -> Unit = { _, _ -> },
     onPreviewClick: () -> Unit = {},
     onPenlightClick: () -> Unit = {},
     onAllClick: (Boolean) -> Unit = {},
@@ -72,13 +73,15 @@ fun ColorLists(
             contentPadding = PaddingValues(top = 4.dp, bottom = 4.dp)
         ) {
             items(items.size, { items[it].id }) { index ->
-                val (id, name, hexColor, selected) = items[index]
+                val (id, name, hexColor, selected, favorited) = items[index]
                 val idolColor = IdolColor(id, name.value, hexColor)
 
                 SelectableColorListItem(
                     name.value, hexColor,
                     selected = selected,
+                    favorited = favorited,
                     onClick = { handleOnClick(idolColor) },
+                    onClickFavorite = { onClickFavorite(idolColor, !favorited) },
                     onLongClick = { handleOnLongClick(idolColor) },
                     modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
                 )

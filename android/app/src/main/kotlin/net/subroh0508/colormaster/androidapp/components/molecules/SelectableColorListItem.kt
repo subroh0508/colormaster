@@ -68,9 +68,9 @@ fun SelectableColorListItem(
                 if (favorited) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,
                 contentDescription = null,
                 tint = if (color.isBrighter) Color.Black else Color.White,
-                modifier = Modifier.padding(4.dp)
-                    .align(Alignment.BottomEnd)
-                    .clickable { onClickFavorite() },
+                modifier = Modifier.align(Alignment.BottomEnd)
+                    .clickable { onClickFavorite() }
+                    .padding(4.dp),
             )
         }
     }
