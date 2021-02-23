@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.material.*
+import androidx.lifecycle.lifecycleScope
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.intentToPreview
 import net.subroh0508.colormaster.androidapp.pages.Home
@@ -21,7 +22,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent { Home(viewModel, ::launchPreviewActivity) }
+        setContent { Home(viewModel, lifecycleScope, ::launchPreviewActivity) }
     }
 
     override fun onResume() {

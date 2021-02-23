@@ -11,12 +11,17 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.LifecycleCoroutineScope
+import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.components.atoms.*
@@ -38,6 +43,7 @@ import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameView
 @Composable
 fun Home(
     viewModel: SearchByNameViewModel,
+    lifecycleScope: LifecycleCoroutineScope,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
     ModalDrawerBackdrop(
@@ -48,10 +54,22 @@ fun Home(
             )
         },
         drawerContent = { HomeDrawerContent() },
-        backLayerContent = { BackLayerContent(viewModel, viewModel::setSearchParams) },
-        frontLayerContent = { backdropScaffoldState ->
-            FrontLayerContent(viewModel, backdropScaffoldState, launchPreviewScreen)
+        backLayerContent = { _, _ ->
+            BackLayerContent(
+                viewModel,
+                viewModel::setSearchParams,
+            )
         },
+        frontLayerContent = { backdropScaffoldState, snackbarHostState ->
+            FrontLayerContent(
+                viewModel,
+                lifecycleScope,
+                backdropScaffoldState,
+                snackbarHostState,
+                launchPreviewScreen,
+            )
+        },
+        bottomBarHeight = 52.dp,
     )
 }
 
@@ -93,7 +111,8 @@ private fun BackLayerContent(
     SearchBox(
         uiModel.params,
         onParamsChange = onParamsChange,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .background(MaterialTheme.colors.background),
     )
@@ -104,10 +123,16 @@ private fun BackLayerContent(
 @ExperimentalMaterialApi
 private fun FrontLayerContent(
     viewModel: SearchByNameViewModel,
+    lifecycleScope: LifecycleCoroutineScope,
     backdropScaffoldState: BackdropScaffoldState,
+    snackbarHostState: SnackbarHostState,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
     val uiModel by viewModel.uiModel.collectAsState(initial = SearchUiModel.ByName.INITIALIZED)
+
+    fun showSnackbar(message: String) {
+        lifecycleScope.launch { snackbarHostState.showSnackbar(message) }
+    }
 
     Column {
         SearchStateLabel(
@@ -122,14 +147,23 @@ private fun FrontLayerContent(
                 else
                     backdropScaffoldState.conceal()
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .preferredHeight(HEADER_HEIGHT)
                 .padding(8.dp),
         )
         ColorLists(
             uiModel.items,
             onSelect = viewModel::select,
-            onClickFavorite = { (id), favorite -> viewModel.favorite(id, favorite) },
+            onClickFavorite = { (id), favorite ->
+                viewModel.favorite(id, favorite)
+                showSnackbar(
+                    if (favorite)
+                        "お気に入りに登録しました"
+                    else
+                        "お気に入りへの登録を解除しました"
+                )
+            },
             onClick = { launchPreviewScreen(ScreenType.Penlight, listOf(it.id)) },
             onPreviewClick = { launchPreviewScreen(ScreenType.Preview, uiModel.selectedItems.map(IdolColor::id)) },
             onPenlightClick = { launchPreviewScreen(ScreenType.Penlight, uiModel.selectedItems.map(IdolColor::id)) },
