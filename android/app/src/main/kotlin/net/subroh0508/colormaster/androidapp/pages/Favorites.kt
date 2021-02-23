@@ -37,7 +37,7 @@ fun Favorites(
     SideEffect(viewModel::search)
 
     Column {
-        HomeTopBar(drawerState)
+        HomeTopBar(drawerState, stringResource(R.string.app_menu_favorites))
         Content(viewModel, lifecycleScope, snackbarHostState, launchPreviewScreen)
     }
 }
