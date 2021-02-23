@@ -6,6 +6,8 @@ import net.subroh0508.colormaster.presentation.common.DateNum
 sealed class SearchParams {
     abstract fun isEmpty(): Boolean
 
+    object None : SearchParams() { override fun isEmpty() = true }
+
     data class ByName(
         val idolName: IdolName?,
         val brands: Brands?,

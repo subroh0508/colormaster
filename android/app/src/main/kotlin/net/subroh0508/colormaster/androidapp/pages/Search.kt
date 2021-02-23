@@ -55,8 +55,8 @@ fun Search(
         scaffoldState = backdropScaffoldState,
         appBar = {
             HomeTopBar(
-                titles = stringArrayResource(R.array.main_tabs),
                 drawerState = drawerState,
+                titles = stringArrayResource(R.array.main_tabs),
             )
         },
         backLayerContent = {

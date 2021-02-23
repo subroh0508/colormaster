@@ -19,6 +19,7 @@ import net.subroh0508.colormaster.androidapp.components.atoms.*
 import net.subroh0508.colormaster.androidapp.components.molecules.DrawerMenuList
 import net.subroh0508.colormaster.androidapp.components.molecules.MenuListLabel
 import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawerScaffold
+import net.subroh0508.colormaster.presentation.search.viewmodel.FavoritesViewModel
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 
 private enum class Page(@StringRes override val resId: Int) : MenuListLabel {
@@ -34,7 +35,8 @@ private enum class Page(@StringRes override val resId: Int) : MenuListLabel {
 @ExperimentalLayout
 @Composable
 fun Home(
-    viewModel: SearchByNameViewModel,
+    searchByNameViewModel: SearchByNameViewModel,
+    favoritesViewModel: FavoritesViewModel,
     lifecycleScope: LifecycleCoroutineScope,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
@@ -45,13 +47,19 @@ fun Home(
         bodyContent = { drawerState, snackbarHostState ->
             when (page.value) {
                 Page.SEARCH -> Search(
-                    viewModel,
+                    searchByNameViewModel,
                     lifecycleScope,
                     drawerState,
                     snackbarHostState,
                     launchPreviewScreen,
                 )
-                Page.FAVORITES -> Favorites()
+                Page.FAVORITES -> Favorites(
+                    favoritesViewModel,
+                    lifecycleScope,
+                    drawerState,
+                    snackbarHostState,
+                    launchPreviewScreen,
+                )
             }
         },
         bottomBarHeight = 52.dp,

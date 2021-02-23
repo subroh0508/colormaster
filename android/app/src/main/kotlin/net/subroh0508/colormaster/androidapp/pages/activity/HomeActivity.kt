@@ -10,11 +10,13 @@ import androidx.lifecycle.lifecycleScope
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.intentToPreview
 import net.subroh0508.colormaster.androidapp.pages.Home
+import net.subroh0508.colormaster.presentation.search.viewmodel.FavoritesViewModel
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeActivity : AppCompatActivity() {
-    private val viewModel: SearchByNameViewModel by viewModel()
+    private val searchByNameViewModel: SearchByNameViewModel by viewModel()
+    private val favoritesViewModel: FavoritesViewModel by viewModel()
 
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
@@ -22,7 +24,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent { Home(viewModel, lifecycleScope, ::launchPreviewActivity) }
+        setContent { Home(searchByNameViewModel, favoritesViewModel, lifecycleScope, ::launchPreviewActivity) }
     }
 
     private fun launchPreviewActivity(

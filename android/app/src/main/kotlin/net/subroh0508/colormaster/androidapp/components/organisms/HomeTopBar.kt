@@ -21,7 +21,7 @@ import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.components.molecules.ScrollableTabs
 
 @Composable
-fun HomeTopBar(titles: Array<String>, drawerState: DrawerState) {
+fun HomeTopBar(drawerState: DrawerState, titles: Array<String> = arrayOf()) {
     Row(
         Modifier
             .preferredHeight(56.dp)
