@@ -12,19 +12,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 
-val HEADER_HEIGHT = 56.dp
-
 @Composable
 @ExperimentalMaterialApi
-fun ModalDrawerBackdrop(
-    appBar: @Composable (DrawerState) -> Unit,
+fun ModalDrawerScaffold(
     drawerContent: @Composable ColumnScope.() -> Unit,
-    backLayerContent: @Composable (BackdropScaffoldState, SnackbarHostState) -> Unit,
-    frontLayerContent: @Composable (BackdropScaffoldState, SnackbarHostState) -> Unit,
+    bodyContent: @Composable (DrawerState, SnackbarHostState) -> Unit,
     bottomBarHeight: Dp = 0.dp
 ) {
     val modalDrawerState = rememberDrawerState(DrawerValue.Closed)
-    val backdropScaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
     val snackbarHostState = remember(::SnackbarHostState)
 
     ModalDrawerFrame {
@@ -34,14 +29,7 @@ fun ModalDrawerBackdrop(
             bodyContent = {
                 // Workarount
                 Box {
-                    BackdropScaffold(
-                        headerHeight = HEADER_HEIGHT,
-                        scaffoldState = backdropScaffoldState,
-                        appBar = { appBar(modalDrawerState) },
-                        backLayerContent = { backLayerContent(backdropScaffoldState, snackbarHostState) },
-                        frontLayerContent = { frontLayerContent(backdropScaffoldState, snackbarHostState) },
-                        backLayerBackgroundColor = MaterialTheme.colors.background,
-                    )
+                    bodyContent(modalDrawerState, snackbarHostState)
                     SnackbarHost(
                         hostState = snackbarHostState,
                         modifier = Modifier.align(Alignment.BottomCenter)
