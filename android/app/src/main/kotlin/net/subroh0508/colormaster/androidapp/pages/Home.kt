@@ -48,7 +48,6 @@ fun Home(
             HomeDrawerContent {
                drawerScope.launch {
                    drawerState.close()
-                   delay(300)
                    page.value = it
                }
             }
