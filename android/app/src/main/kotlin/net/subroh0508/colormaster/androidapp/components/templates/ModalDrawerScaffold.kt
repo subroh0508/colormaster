@@ -23,24 +23,23 @@ fun ModalDrawerScaffold(
     val snackbarHostState = remember(::SnackbarHostState)
 
     ModalDrawerFrame {
-        ModalDrawerLayout(
+        ModalDrawer(
             drawerState = modalDrawerState,
-            drawerContent = {  drawerContent(modalDrawerState) },
-            bodyContent = {
-                // Workarount
-                Box {
-                    bodyContent(modalDrawerState, snackbarHostState)
-                    SnackbarHost(
-                        hostState = snackbarHostState,
-                        modifier = Modifier.align(Alignment.BottomCenter)
-                            .padding(start = 8.dp, end = 8.dp, bottom = bottomBarHeight + 8.dp),
-                        snackbar = {
-                            Snackbar { Text(it.message) }
-                        },
-                    )
-                }
-            },
-        )
+            drawerContent = { drawerContent(modalDrawerState) },
+        ) {
+            // Workarount
+            Box {
+                bodyContent(modalDrawerState, snackbarHostState)
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                        .padding(start = 8.dp, end = 8.dp, bottom = bottomBarHeight + 8.dp),
+                    snackbar = {
+                        Snackbar { Text(it.message) }
+                    },
+                )
+            }
+        }
     }
 }
 

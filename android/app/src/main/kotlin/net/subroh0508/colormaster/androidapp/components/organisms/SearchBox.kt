@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.components.atoms.Checkbox
 import net.subroh0508.colormaster.androidapp.components.atoms.Chip
+import net.subroh0508.colormaster.androidapp.components.atoms.FlexRow
 import net.subroh0508.colormaster.androidapp.components.atoms.DebounceTextField
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 import net.subroh0508.colormaster.androidapp.themes.lightBackground
@@ -23,7 +24,7 @@ import net.subroh0508.colormaster.model.toIdolName
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 
 @Composable
-@ExperimentalLayout
+@ExperimentalLayoutApi
 fun SearchBox(
     params: SearchParams,
     modifier: Modifier = Modifier,
@@ -37,12 +38,12 @@ fun SearchBox(
                 onTextChanged = { name -> onParamsChange(params.change(name.toIdolName())) },
                 modifier = Modifier.fillMaxWidth(),
             )
-            Spacer(Modifier.preferredHeight(16.dp))
+            Spacer(Modifier.height(16.dp))
             BrandChips(
                 params.brands,
                 onChipSelected = { brand -> onParamsChange(params.change(brand)) },
             )
-            Spacer(Modifier.preferredHeight(16.dp))
+            Spacer(Modifier.height(16.dp))
             TypeChips(
                 params.brands,
                 params.types,
@@ -53,7 +54,7 @@ fun SearchBox(
 }
 
 @Composable
-@ExperimentalLayout
+@ExperimentalLayoutApi
 private fun BrandChips(
         selectedBrand: Brands?,
         onChipSelected: (Brands?) -> Unit,
@@ -62,11 +63,9 @@ private fun BrandChips(
         stringResource(R.string.search_box_label_brands),
         style = MaterialTheme.typography.subtitle1,
     )
-    Spacer(Modifier.preferredHeight(16.dp))
-    FlowRow(
-        mainAxisSize = SizeMode.Expand,
-        mainAxisSpacing = 8.dp,
-        crossAxisSpacing = 8.dp,
+    Spacer(Modifier.height(16.dp))
+    FlexRow(
+        spacing = 8.dp,
     ) {
         Brands.values().forEach { brand ->
             val selected = selectedBrand == brand
@@ -81,7 +80,7 @@ private fun BrandChips(
 }
 
 @Composable
-@ExperimentalLayout
+@ExperimentalLayoutApi
 private fun TypeChips(
     selectedBrand: Brands?,
     selectedTypes: Set<Types>,
@@ -102,10 +101,8 @@ private fun TypeChips(
         stringResource(R.string.search_box_label_type),
         style = MaterialTheme.typography.subtitle1,
     )
-    Spacer(Modifier.preferredHeight(16.dp))
-    FlowRow(
-        mainAxisSize = SizeMode.Expand,
-    ) {
+    Spacer(Modifier.height(16.dp))
+    FlexRow {
         types.forEachIndexed { i, type ->
             Checkbox(
                 label = type.label(),
@@ -136,7 +133,7 @@ private fun Types.label(): String = when (this) {
 
 @Preview
 @Composable
-@ExperimentalLayout
+@ExperimentalLayoutApi
 fun SearchBoxPreview_Light() {
     val (params, setParams) = remember {
         mutableStateOf(

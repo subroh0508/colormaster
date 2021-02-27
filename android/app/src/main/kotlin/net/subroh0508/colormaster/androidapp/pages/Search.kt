@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleCoroutineScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.ScreenType
@@ -32,18 +32,19 @@ import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameView
 
 private val HEADER_HEIGHT = 56.dp
 
-@ExperimentalLayout
+@ExperimentalLayoutApi
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun Search(
     viewModel: SearchByNameViewModel,
-    lifecycleScope: LifecycleCoroutineScope,
     drawerState: DrawerState,
+    drawerScope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
     val backdropScaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
+    val pageScope = rememberCoroutineScope()
 
     SideEffect {
         viewModel.search()
@@ -53,12 +54,7 @@ fun Search(
     BackdropScaffold(
         headerHeight = HEADER_HEIGHT,
         scaffoldState = backdropScaffoldState,
-        appBar = {
-            HomeTopBar(
-                drawerState = drawerState,
-                titles = stringArrayResource(R.array.main_tabs),
-            )
-        },
+        appBar = { HomeTopBar(drawerState, drawerScope, stringArrayResource(R.array.main_tabs)) },
         backLayerContent = {
             BackLayerContent(
                 viewModel,
@@ -68,7 +64,7 @@ fun Search(
         frontLayerContent = {
             FrontLayerContent(
                 viewModel,
-                lifecycleScope,
+                pageScope,
                 backdropScaffoldState,
                 snackbarHostState,
                 launchPreviewScreen,
@@ -80,7 +76,7 @@ fun Search(
 
 @Composable
 @ExperimentalMaterialApi
-@ExperimentalLayout
+@ExperimentalLayoutApi
 private fun BackLayerContent(
     viewModel: SearchByNameViewModel,
     onParamsChange: (SearchParams) -> Unit,
@@ -102,7 +98,7 @@ private fun BackLayerContent(
 @ExperimentalMaterialApi
 private fun FrontLayerContent(
     viewModel: SearchByNameViewModel,
-    lifecycleScope: LifecycleCoroutineScope,
+    coroutineScope: CoroutineScope,
     backdropScaffoldState: BackdropScaffoldState,
     snackbarHostState: SnackbarHostState,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
@@ -110,7 +106,7 @@ private fun FrontLayerContent(
     val uiModel by viewModel.uiModel.collectAsState(initial = SearchUiModel.ByName.INITIALIZED)
 
     fun showSnackbar(message: String) {
-        lifecycleScope.launch { snackbarHostState.showSnackbar(message) }
+        coroutineScope.launch { snackbarHostState.showSnackbar(message) }
     }
 
     Column {
@@ -121,14 +117,16 @@ private fun FrontLayerContent(
             else
                 Icons.Default.KeyboardArrowUp,
             onClick = {
-                if (backdropScaffoldState.isConcealed)
-                    backdropScaffoldState.reveal()
-                else
-                    backdropScaffoldState.conceal()
+                coroutineScope.launch {
+                    if (backdropScaffoldState.isConcealed)
+                        backdropScaffoldState.reveal()
+                    else
+                        backdropScaffoldState.conceal()
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .preferredHeight(HEADER_HEIGHT)
+                .height(HEADER_HEIGHT)
                 .padding(8.dp),
         )
 

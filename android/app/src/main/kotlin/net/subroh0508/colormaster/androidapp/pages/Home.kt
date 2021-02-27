@@ -12,7 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.LifecycleCoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.components.atoms.*
@@ -32,35 +33,39 @@ private enum class Page(@StringRes override val resId: Int) : MenuListLabel {
 
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
-@ExperimentalLayout
+@ExperimentalLayoutApi
 @Composable
 fun Home(
     searchByNameViewModel: SearchByNameViewModel,
     favoritesViewModel: FavoritesViewModel,
-    lifecycleScope: LifecycleCoroutineScope,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
     val page = remember { mutableStateOf(Page.SEARCH) }
+    val drawerScope = rememberCoroutineScope()
 
     ModalDrawerScaffold(
         drawerContent = { drawerState ->
             HomeDrawerContent {
-                drawerState.close { page.value = it }
+               drawerScope.launch {
+                   drawerState.close()
+                   delay(300)
+                   page.value = it
+               }
             }
         },
         bodyContent = { drawerState, snackbarHostState ->
             when (page.value) {
                 Page.SEARCH -> Search(
                     searchByNameViewModel,
-                    lifecycleScope,
                     drawerState,
+                    drawerScope,
                     snackbarHostState,
                     launchPreviewScreen,
                 )
                 Page.FAVORITES -> Favorites(
                     favoritesViewModel,
-                    lifecycleScope,
                     drawerState,
+                    drawerScope,
                     snackbarHostState,
                     launchPreviewScreen,
                 )
@@ -102,7 +107,7 @@ private fun HomeDrawerContent(
 @Preview
 @Composable
 @ExperimentalMaterialApi
-@ExperimentalLayout
+@ExperimentalLayoutApi
 fun PreviewHome() {
     //Home(uiModel)
 }

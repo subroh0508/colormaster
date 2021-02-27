@@ -3,7 +3,7 @@ package net.subroh0508.colormaster.androidapp.components.molecules
 import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -30,14 +30,14 @@ fun <T: MenuListLabel> DrawerMenuList(
             text = it,
             style = MaterialTheme.typography.caption,
             modifier = Modifier
-                .preferredHeight(28.dp)
+                .height(28.dp)
                 .padding(start = 16.dp)
                 .wrapContentHeight(Alignment.Bottom),
         )
     }
 
     items.forEach { (asset, item) ->
-        Spacer(Modifier.preferredHeight(8.dp))
+        Spacer(Modifier.height(8.dp))
         DrawerButton(
             asset = asset,
             label = stringResource(item.resId),
@@ -45,6 +45,6 @@ fun <T: MenuListLabel> DrawerMenuList(
         )
     }
 
-    Spacer(Modifier.preferredHeight(8.dp))
+    Spacer(Modifier.height(8.dp))
     Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .12F))
 }

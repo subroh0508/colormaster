@@ -4,17 +4,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.DrawerState
 import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleCoroutineScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.ScreenType
@@ -23,22 +16,23 @@ import net.subroh0508.colormaster.androidapp.components.organisms.HomeTopBar
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.viewmodel.FavoritesViewModel
-import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 
 @ExperimentalFoundationApi
 @Composable
 fun Favorites(
     viewModel: FavoritesViewModel,
-    lifecycleScope: LifecycleCoroutineScope,
     drawerState: DrawerState,
+    drawerScope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
+    val pageScope = rememberCoroutineScope()
+
     SideEffect(viewModel::search)
 
     Column {
-        HomeTopBar(drawerState, stringResource(R.string.app_menu_favorites))
-        Content(viewModel, lifecycleScope, snackbarHostState, launchPreviewScreen)
+        HomeTopBar(drawerState, drawerScope, stringResource(R.string.app_menu_favorites))
+        Content(viewModel, pageScope, snackbarHostState, launchPreviewScreen)
     }
 }
 
@@ -46,7 +40,7 @@ fun Favorites(
 @Composable
 private fun Content(
     viewModel: FavoritesViewModel,
-    lifecycleScope: LifecycleCoroutineScope,
+    coroutineScope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
@@ -58,7 +52,7 @@ private fun Content(
     fun showSnackbar(favorite: Boolean) {
         val message = if (favorite) messageFavorite else messageUnfavorite
 
-        lifecycleScope.launch {
+        coroutineScope.launch {
             snackbarHostState.showSnackbar(message)
         }
     }

@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun DrawerHeader(title: String, subtext: String) {
-    Spacer(Modifier.preferredHeight(24.dp))
+    Spacer(Modifier.height(24.dp))
     Column(
         modifier = Modifier.fillMaxWidth()
             .padding(start = 16.dp, bottom = 18.dp),
@@ -19,13 +19,13 @@ fun DrawerHeader(title: String, subtext: String) {
         Text(
             text = title,
             style = MaterialTheme.typography.h6,
-            modifier = Modifier.preferredHeight(36.dp)
+            modifier = Modifier.height(36.dp)
                 .wrapContentHeight(Alignment.Bottom),
         )
         Text(
             text = subtext,
             style = MaterialTheme.typography.caption,
-            modifier = Modifier.preferredHeight(20.dp)
+            modifier = Modifier.height(20.dp)
                 .wrapContentHeight(Alignment.Bottom),
         )
     }

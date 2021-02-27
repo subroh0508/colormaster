@@ -33,7 +33,7 @@ fun Chip(
 }
 
 @Composable
-private fun ChipModifier(selected: Boolean) = Modifier.preferredHeight(32.dp)
+private fun ChipModifier(selected: Boolean) = Modifier.height(32.dp)
         .background(
             color = if (selected) MaterialTheme.colors.primary else Color.Transparent,
             shape = CircleShape,

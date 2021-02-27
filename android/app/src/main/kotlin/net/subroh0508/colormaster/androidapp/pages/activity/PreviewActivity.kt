@@ -2,10 +2,10 @@ package net.subroh0508.colormaster.androidapp.pages.activity
 
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.ExperimentalLayout
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.ui.platform.setContent
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -20,7 +20,7 @@ class PreviewActivity : AppCompatActivity() {
     private val viewModel: PreviewViewModel by viewModel()
 
     @ExperimentalMaterialApi
-    @ExperimentalLayout
+    @ExperimentalLayoutApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

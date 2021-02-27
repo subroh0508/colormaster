@@ -4,9 +4,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.ExperimentalLayout
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.material.*
-import androidx.lifecycle.lifecycleScope
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.intentToPreview
 import net.subroh0508.colormaster.androidapp.pages.Home
@@ -20,11 +19,11 @@ class HomeActivity : AppCompatActivity() {
 
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
-    @ExperimentalLayout
+    @ExperimentalLayoutApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent { Home(searchByNameViewModel, favoritesViewModel, lifecycleScope, ::launchPreviewActivity) }
+        setContent { Home(searchByNameViewModel, favoritesViewModel, ::launchPreviewActivity) }
     }
 
     private fun launchPreviewActivity(

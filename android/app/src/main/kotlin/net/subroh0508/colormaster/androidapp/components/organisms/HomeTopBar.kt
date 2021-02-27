@@ -13,17 +13,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.components.molecules.ScrollableTabs
 
 @Composable
-fun HomeTopBar(drawerState: DrawerState, title: String) = HomeTopBar(drawerState, arrayOf(title))
+fun HomeTopBar(
+    drawerState: DrawerState,
+    drawerScope: CoroutineScope,
+    title: String,
+) = HomeTopBar(drawerState, drawerScope, arrayOf(title))
 
 @Composable
-fun HomeTopBar(drawerState: DrawerState, titles: Array<String> = arrayOf()) {
+fun HomeTopBar(
+    drawerState: DrawerState,
+    drawerScope: CoroutineScope,
+    titles: Array<String> = arrayOf(),
+) {
     Row(
         Modifier
-            .preferredHeight(56.dp)
+            .height(56.dp)
             .background(MaterialTheme.colors.background),
     ) {
         Image(
@@ -32,7 +42,9 @@ fun HomeTopBar(drawerState: DrawerState, titles: Array<String> = arrayOf()) {
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .clickable(onClick = drawerState::open)
+                .clickable(onClick = {
+                   drawerScope.launch { drawerState.open() }
+                })
                 .padding(top = 16.dp, end = 16.dp, bottom = 16.dp),
         )
 

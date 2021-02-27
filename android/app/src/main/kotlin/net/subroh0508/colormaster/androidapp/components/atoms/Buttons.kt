@@ -38,7 +38,7 @@ fun OutlinedButton(
         start = (if (painter == null) 16 else 12).dp,
         end = 16.dp,
     ),
-    modifier = Modifier.preferredHeight(36.dp).then(modifier),
+    modifier = Modifier.height(36.dp).then(modifier),
 ) {
     if (painter != null) {
         Icon(

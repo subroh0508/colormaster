@@ -16,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,7 +53,24 @@ fun ErrorAlert(
     modifier: Modifier = Modifier,
     endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
-) = Alert(vectorResource(R.drawable.ic_error_outline_24dp), message, red500, modifier, endAsset, onClickEndIcon)
+) = Alert(painterResource(R.drawable.ic_error_outline_24dp), message, red500, modifier, endAsset, onClickEndIcon)
+
+@Composable
+fun Alert(
+    painter: Painter,
+    message: String,
+    color: Color,
+    modifier: Modifier = Modifier,
+    endAsset: ImageVector? = null,
+    onClickEndIcon: () -> Unit = {},
+) = Alert(
+    painter = painter,
+    message = message,
+    color = color,
+    modifier = modifier,
+    endPainter = endAsset?.let { rememberVectorPainter(it) },
+    onClickEndIcon = onClickEndIcon,
+)
 
 @Composable
 fun Alert(
@@ -60,6 +79,23 @@ fun Alert(
     color: Color,
     modifier: Modifier = Modifier,
     endAsset: ImageVector? = null,
+    onClickEndIcon: () -> Unit = {},
+) = Alert(
+    painter = rememberVectorPainter(asset),
+    message = message,
+    color = color,
+    modifier = modifier,
+    endPainter = endAsset?.let { rememberVectorPainter(it) },
+    onClickEndIcon = onClickEndIcon,
+)
+
+@Composable
+fun Alert(
+    painter: Painter,
+    message: String,
+    color: Color,
+    modifier: Modifier = Modifier,
+    endPainter: Painter? = null,
     onClickEndIcon: () -> Unit = {},
 ) {
     Card(
@@ -70,25 +106,28 @@ fun Alert(
     ) {
         Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
             Icon(
-                imageVector = asset,
+                painter = painter,
                 contentDescription = null,
                 tint = color,
-                modifier = Modifier.padding(end = 12.dp)
+                modifier = Modifier
+                    .padding(end = 12.dp)
                     .align(Alignment.CenterVertically),
             )
             Text(
                 message,
                 textAlign = TextAlign.Justify,
-                modifier = Modifier.weight(1.0F, true)
+                modifier = Modifier
+                    .weight(1.0F, true)
                     .align(Alignment.CenterVertically),
             )
 
-            if (endAsset != null) {
+            if (endPainter != null) {
                 Icon(
-                    imageVector = endAsset,
+                    painter = endPainter,
                     contentDescription = null,
                     tint = MaterialTheme.colors.onSurface,
-                    modifier = Modifier.padding(start = 12.dp)
+                    modifier = Modifier
+                        .padding(start = 12.dp)
                         .align(Alignment.CenterVertically)
                         .clickable(onClick = onClickEndIcon),
                 )
@@ -129,7 +168,10 @@ private fun Color.darken(percent: Float) = Color(
 @Composable
 fun PreviewAlerts_Light() {
     ColorMasterTheme(darkTheme = false) {
-        val modifier = Modifier.width(360.dp).height(56.dp).padding(8.dp)
+        val modifier = Modifier
+            .width(360.dp)
+            .height(56.dp)
+            .padding(8.dp)
 
         Column(Modifier.background(lightBackground)) {
             InfoAlert("Sample Text", endAsset = Icons.Default.KeyboardArrowDown, modifier = modifier)
@@ -144,7 +186,10 @@ fun PreviewAlerts_Light() {
 @Composable
 fun PreviewAlerts_Dark() {
     ColorMasterTheme(darkTheme = true) {
-        val modifier = Modifier.width(360.dp).height(56.dp).padding(8.dp)
+        val modifier = Modifier
+            .width(360.dp)
+            .height(56.dp)
+            .padding(8.dp)
 
         Column(Modifier.background(darkBackground)) {
             InfoAlert("Sample Text", endAsset = Icons.Default.KeyboardArrowDown, modifier = modifier)

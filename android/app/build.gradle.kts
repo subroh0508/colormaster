@@ -22,6 +22,7 @@ dependencies {
     implementation(Libraries.Jetpack.Compose.ui)
     implementation(Libraries.Jetpack.Compose.material)
     implementation(Libraries.Jetpack.Compose.uiTooling)
+    implementation(Libraries.Jetpack.Compose.util)
     implementation(Libraries.Jetpack.Lifecycle.viewModel)
 
     implementation(Libraries.Koin.android)
