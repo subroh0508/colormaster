@@ -8,6 +8,7 @@ kotlinMpp {
         val commonMain by getting {
             dependencies {
                 implementation(project(":shared:api:imasparql"))
+                implementation(project(":shared:api:authentication"))
                 implementation(project(":shared:infra:db"))
                 implementation(project(":shared:model"))
 
@@ -26,4 +27,8 @@ kotlinMpp {
         val androidMain by getting
         val jsMain by getting
     }
+}
+
+firebaseDependencies {
+    implementation(Libraries.Firebase.auth)
 }

@@ -8,5 +8,5 @@ kotlin {
 
 dependencies {
     implementation(Libraries.Coroutines.core)
-    implementation(npm(Libraries.Npm.firebase, Libraries.Npm.firebaseVersion))
+    api(npm(Libraries.Npm.firebase, Libraries.Npm.firebaseVersion))
 }
