@@ -1,6 +1,7 @@
 plugins {
     `android-application`
     kotlin("android")
+    id("com.google.gms.google-services") apply false
 }
 
 dependencies {
@@ -27,3 +28,5 @@ dependencies {
     // implementation(Libraries.Koin.androidXScope)
     // implementation(Libraries.Koin.androidXViewModel)
 }
+
+apply(plugin = "com.google.gms.google-services")

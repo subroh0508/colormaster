@@ -3,9 +3,13 @@
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.kotlin.dsl.DependencyHandlerScope
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -23,6 +27,12 @@ object Android {
 }
 
 val Project.androidGradlePlugin get() = "com.android.tools.build:gradle:${version("android-gradle-plugin")}"
+val Project.googleServicesPlugin get() = "com.google.gms:google-services:${version("google-services")}"
+
+fun Project.firebaseDependencies(configuration: DependencyHandlerScope.() -> Unit) = dependencies {
+    implementation(platform(Libraries.Firebase.bom))
+    configuration()
+}
 
 internal fun Project.androidExt(configure: BaseExtension.() -> Unit) = (this as ExtensionAware).extensions.configure("android", configure)
 
@@ -72,3 +82,5 @@ internal fun Project.androidBaseExt() = androidExt {
         create("testReleaseApi")
     }
 }
+
+private fun DependencyHandler.implementation(dependencyNotation: Any): Dependency? = add("implementation", dependencyNotation)
