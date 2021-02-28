@@ -13,6 +13,7 @@ object Libraries {
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val js = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
+        const val playServices = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$version"
 
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
     }
