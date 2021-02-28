@@ -9,7 +9,6 @@ buildscript {
         classpath(kotlinGradlePlugin)
         classpath(androidGradlePlugin)
         classpath(Libraries.GradlePlugin.kotlinSerialization)
-        classpath(Libraries.GradlePlugin.koin)
     }
 }
 

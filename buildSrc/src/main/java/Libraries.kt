@@ -3,7 +3,6 @@
 object Libraries {
     object GradlePlugin {
         const val kotlinSerialization = "org.jetbrains.kotlin:kotlin-serialization:${Kotlin.version}"
-        const val koin = "org.koin:koin-gradle-plugin:${Koin.version}"
     }
 
     object Kotlin {
@@ -50,13 +49,12 @@ object Libraries {
     }
 
     object Koin {
-        const val version = "3.0.0-alpha-4"
+        const val version = "3.0.1-alpha-3"
 
         const val core = "org.koin:koin-core:$version"
         const val android = "org.koin:koin-android:$version"
         const val androidXScope = "org.koin:koin-androidx-scope:$version"
         const val androidXViewModel = "org.koin:koin-androidx-viewmodel:$version"
-        const val js = "org.koin:koin-core-js:$version"
     }
 
     object Okhttp3 {
@@ -67,14 +65,11 @@ object Libraries {
     }
 
     object Jetpack {
-        private const val coreVersion = "1.3.1"
+        private const val coreVersion = "1.3.2"
         const val core = "androidx.core:core-ktx:$coreVersion"
 
         private const val annotationVersion = "1.1.0"
         const val annotation = "androidx.annotation:annotation:$annotationVersion"
-
-        private const val appCompatVersion = "1.2.0"
-        const val appCompat = "androidx.appcompat:appcompat:$appCompatVersion"
 
         private const val activityVersion = "1.3.0-alpha02"
         const val activity = "androidx.activity:activity-ktx:$activityVersion"

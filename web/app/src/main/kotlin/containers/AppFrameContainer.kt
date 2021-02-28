@@ -13,8 +13,8 @@ import materialui.styles.palette.PaletteType
 import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.w3c.dom.get
 import org.w3c.dom.set
 import react.*

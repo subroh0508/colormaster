@@ -10,7 +10,7 @@ import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByLiveViewModel
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 import net.subroh0508.colormaster.presentation.search.viewmodel.SearchViewModel
-import org.koin.core.inject
+import org.koin.core.component.inject
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import pages.IdolSearchPage

@@ -26,6 +26,6 @@ dependencies {
     implementation(Libraries.Jetpack.Lifecycle.viewModel)
 
     implementation(Libraries.Koin.android)
-    implementation(Libraries.Koin.androidXScope)
-    implementation(Libraries.Koin.androidXViewModel)
+    // implementation(Libraries.Koin.androidXScope)
+    // implementation(Libraries.Koin.androidXViewModel)
 }

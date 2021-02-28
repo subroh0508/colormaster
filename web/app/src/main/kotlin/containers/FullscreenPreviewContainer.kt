@@ -4,13 +4,11 @@ import KoinReactComponent
 import components.organisms.FullscreenPenlightComponent
 import components.organisms.FullscreenPreviewComponent
 import components.templates.previewModal
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.presentation.preview.model.FullscreenPreviewUiModel
 import net.subroh0508.colormaster.presentation.preview.viewmodel.PreviewViewModel
-import org.koin.core.inject
+import org.koin.core.component.inject
 import org.koin.dsl.module
 import react.*
 import useQuery
