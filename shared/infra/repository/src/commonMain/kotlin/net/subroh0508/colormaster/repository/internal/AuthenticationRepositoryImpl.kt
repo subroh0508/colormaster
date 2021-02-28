@@ -10,7 +10,7 @@ import net.subroh0508.colormaster.repository.AuthenticationRepository
 internal class AuthenticationRepositoryImpl(
     private val client: AuthenticationClient,
 ) : AuthenticationRepository {
-    override suspend fun fetchCurrentUser() = (client.currentUser ?: client.signInAnonymously()).toEntity()
+    override suspend fun fetchCurrentUser() = client.currentUser?.toEntity()
 
     override suspend fun signInWithGoogle(idToken: String) = client.signInWithGoogle(idToken).toEntity()
     override suspend fun linkWithGoogle(idToken: String) = client.linkWithGoogle(idToken).toEntity()
