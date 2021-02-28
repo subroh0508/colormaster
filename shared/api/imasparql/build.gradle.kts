@@ -21,8 +21,6 @@ kotlinMpp {
         }
         val androidMain by getting {
             dependencies {
-                implementation(Libraries.Kotlin.reflect)
-
                 implementation(Libraries.Ktor.clientOkHttp)
                 implementation(Libraries.Okhttp3.client)
                 implementation(Libraries.Okhttp3.loggingIntercerptor)

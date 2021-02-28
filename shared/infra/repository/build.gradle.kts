@@ -23,11 +23,7 @@ kotlinMpp {
                 implementation(Libraries.Ktor.clientMock)
             }
         }
-        val androidMain by getting {
-            dependencies {
-                implementation(Libraries.Kotlin.reflect)
-            }
-        }
+        val androidMain by getting
         val jsMain by getting
     }
 }

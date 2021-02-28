@@ -1,17 +1,6 @@
 @Suppress("HardcodedStringLiteral", "unused")
 
 object Libraries {
-    object GradlePlugin {
-        const val kotlinSerialization = "org.jetbrains.kotlin:kotlin-serialization:${Kotlin.version}"
-    }
-
-    object Kotlin {
-        const val version = "1.4.30"
-
-        const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$version"
-        const val test = "org.jetbrains.kotlin:kotlin-test:$version"
-    }
-
     object Serialization {
         const val version = "1.0.1"
 
@@ -100,27 +89,27 @@ object Libraries {
         const val js = "org.jetbrains.kotlinx:kotlinx-html-js:$version"
     }
 
-    object Css {
-        const val version = "1.0.0-${JsWrappers.version}"
+    class Css(kotlinVersion: String) {
+        val version = "1.0.0-${JsWrappers(kotlinVersion).version}"
 
-        const val js = "org.jetbrains:kotlin-css-js:$version"
+        val js = "org.jetbrains:kotlin-css-js:$version"
     }
 
-    object JsWrappers {
-        const val version = "pre.148-kotlin-${Kotlin.version}"
+    class JsWrappers(kotlinVersion: String) {
+        val version = "pre.148-kotlin-$kotlinVersion"
 
-        private const val reactVersion = "${Npm.reactVersion}-$version"
-        const val react = "org.jetbrains:kotlin-react:$reactVersion"
-        const val reactDom = "org.jetbrains:kotlin-react-dom:$reactVersion"
+        private val reactVersion = "${Npm.reactVersion}-$version"
+        val react = "org.jetbrains:kotlin-react:$reactVersion"
+        val reactDom = "org.jetbrains:kotlin-react-dom:$reactVersion"
 
-        private const val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-$version"
-        const val reactRouterDom = "org.jetbrains:kotlin-react-router-dom:$reactRouterDomVersion"
+        private val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-$version"
+        val reactRouterDom = "org.jetbrains:kotlin-react-router-dom:$reactRouterDomVersion"
 
-        private const val styledVersion = "${Npm.styledComponentVersion}-$version"
-        const val styled = "org.jetbrains:kotlin-styled:$styledVersion"
+        private val styledVersion = "${Npm.styledComponentVersion}-$version"
+        val styled = "org.jetbrains:kotlin-styled:$styledVersion"
 
-        private const val extensionsVersion = "1.0.1-$version"
-        const val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
+        private val extensionsVersion = "1.0.1-$version"
+        val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
             const val version = "0.5.5"

@@ -17,8 +17,6 @@ kotlinMpp {
         }
         val androidMain by getting {
             dependencies {
-                implementation(Libraries.Kotlin.reflect)
-
                 implementation(Libraries.Jetpack.core)
             }
         }
