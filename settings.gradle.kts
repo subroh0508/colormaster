@@ -6,6 +6,7 @@ include(
     ":shared:components:core",
     ":shared:api:imasparql",
     ":shared:api:authentication",
+    ":shared:api:jsfirebaseapp",
     ":shared:infra:repository",
     ":shared:infra:db",
     ":shared:presentation:common",
