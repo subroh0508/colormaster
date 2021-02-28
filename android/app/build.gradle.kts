@@ -1,6 +1,7 @@
 plugins {
     `android-application`
     kotlin("android")
+    id("com.google.gms.google-services") apply false
 }
 
 dependencies {
@@ -28,3 +29,5 @@ dependencies {
     // Workaround
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.4")
 }
+
+apply(plugin = "com.google.gms.google-services")

@@ -8,6 +8,7 @@ buildscript {
         classpath(kotlinGradlePlugin)
         classpath(androidGradlePlugin)
         classpath(kotlinxSerializationGradlePlugin)
+        classpath(googleServicesPlugin)
     }
 }
 

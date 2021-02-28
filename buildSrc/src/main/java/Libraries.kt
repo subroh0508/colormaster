@@ -81,6 +81,19 @@ object Libraries {
         }
     }
 
+    object Firebase {
+        private const val bomVersion = "26.4.0"
+
+        const val bom = "com.google.firebase:firebase-bom:$bomVersion"
+        const val auth = "com.google.firebase:firebase-auth-ktx"
+    }
+
+    object GoogleServices {
+        private const val authVersion = "19.0.0"
+
+        const val auth = "com.google.android.gms:play-services-auth:$authVersion"
+    }
+
     object Html {
         const val version = "0.7.3"
 
@@ -132,6 +145,11 @@ object Libraries {
 
             const val reactVersion = "^11.8.0"
             const val react = "react-i18next"
+        }
+
+        object Firebase {
+            const val authVersion = "0.16.4"
+            const val auth = "@firebase/auth"
         }
     }
 
