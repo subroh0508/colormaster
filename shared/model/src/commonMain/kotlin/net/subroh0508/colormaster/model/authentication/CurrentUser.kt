@@ -5,4 +5,8 @@ data class CurrentUser(
     val credentialProviders: List<CredentialProvider>,
 ) {
     val isAnonymous = credentialProviders.isEmpty() || credentialProviders.find { it is CredentialProvider.Anonymous } != null
+
+    val providerByGoogle = credentialProviders
+        .filterIsInstance<CredentialProvider.Google>()
+        .firstOrNull()
 }

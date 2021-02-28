@@ -1,6 +1,7 @@
 package net.subroh0508.colormaster.presentation.common
 
 sealed class LoadState {
+    object Initialize : LoadState()
     object Loading : LoadState()
     data class Loaded<out T>(val value: T) : LoadState()
     data class Error(val error: Throwable) : LoadState()
