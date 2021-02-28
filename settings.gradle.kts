@@ -10,6 +10,7 @@ include(
     ":shared:infra:repository",
     ":shared:infra:db",
     ":shared:presentation:common",
+    ":shared:presentation:home",
     ":shared:presentation:search",
     ":shared:presentation:preview",
     ":shared:test"
