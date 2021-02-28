@@ -2,7 +2,7 @@
 
 object Libraries {
     object Serialization {
-        const val version = "1.0.1"
+        const val version = "1.1.0"
 
         const val core = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version"
     }
@@ -18,7 +18,7 @@ object Libraries {
     }
 
     object Ktor {
-        const val version = "1.5.0"
+        const val version = "1.5.2"
 
         const val client = "io.ktor:ktor-client-core:$version"
         const val clientOkHttp= "io.ktor:ktor-client-okhttp:$version"
