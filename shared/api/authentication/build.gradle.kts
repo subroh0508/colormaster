@@ -20,7 +20,9 @@ kotlinMpp {
         }
         val jsMain by getting {
             dependencies {
-                implementation(npm(Libraries.Npm.Firebase.auth, Libraries.Npm.Firebase.authVersion))
+                implementation(project(":shared:api:jsfirebaseapp"))
+
+                implementation(npm(Libraries.Npm.firebase, Libraries.Npm.firebaseVersion))
             }
         }
     }
