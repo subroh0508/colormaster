@@ -41,7 +41,9 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
 
 private class SearchByNameContainerComponent : IdolSearchContainerComponent<SearchParams.ByName, SearchByNameViewModel>(
     module {
-        single { SearchByNameViewModel(get()) }
+        scope<SearchByNameContainerComponent> {
+            scoped { SearchByNameViewModel(get()) }
+        }
     }
 ) {
     override val viewModel: SearchByNameViewModel by inject()
@@ -50,7 +52,9 @@ private class SearchByNameContainerComponent : IdolSearchContainerComponent<Sear
 
 private class SearchByLiveContainerComponent : IdolSearchContainerComponent<SearchParams.ByLive, SearchByLiveViewModel>(
     module {
-        single { SearchByLiveViewModel(get(), get()) }
+        scope<SearchByLiveContainerComponent> {
+            scoped { SearchByLiveViewModel(get(), get()) }
+        }
     }
 ) {
     override val viewModel: SearchByLiveViewModel by inject()

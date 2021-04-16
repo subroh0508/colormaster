@@ -38,12 +38,10 @@ object Libraries {
     }
 
     object Koin {
-        const val version = "3.0.1-alpha-3"
+        const val version = "3.0.1"
 
-        const val core = "org.koin:koin-core:$version"
-        const val android = "org.koin:koin-android:$version"
-        const val androidXScope = "org.koin:koin-androidx-scope:$version"
-        const val androidXViewModel = "org.koin:koin-androidx-viewmodel:$version"
+        const val core = "io.insert-koin:koin-core:$version"
+        const val android = "io.insert-koin:koin-android:$version"
     }
 
     object Okhttp3 {
@@ -167,3 +165,4 @@ object Libraries {
         const val assertion = "io.kotest:kotest-assertions-core:$version"
     }
 }
+

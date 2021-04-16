@@ -17,7 +17,6 @@ allprojects {
         mavenCentral()
         maven(url = "https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven")
         maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
-        maven("https://dl.bintray.com/ekito/koin")
     }
 }
 

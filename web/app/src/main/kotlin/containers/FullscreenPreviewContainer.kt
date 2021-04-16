@@ -39,7 +39,9 @@ private val FullscreenPreviewContainerComponentImpl = functionalComponent<RProps
 
 private class FullscreenPreviewContainer : KoinReactComponent<FullscreenPreviewProps, FullscreenPreviewState>(
     module {
-        single { PreviewViewModel(get()) }
+        scope<FullscreenPreviewContainer> {
+            scoped { PreviewViewModel(get()) }
+        }
     }
 ) {
     val viewModel: PreviewViewModel by inject()
