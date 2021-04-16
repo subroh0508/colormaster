@@ -84,7 +84,7 @@ object Libraries {
     }
 
     object Html {
-        const val version = "0.7.2"
+        const val version = "0.7.3"
 
         const val js = "org.jetbrains.kotlinx:kotlinx-html-js:$version"
     }
@@ -96,7 +96,7 @@ object Libraries {
     }
 
     class JsWrappers(kotlinVersion: String) {
-        val version = "pre.148-kotlin-$kotlinVersion"
+        val version = "pre.153-kotlin-$kotlinVersion"
 
         private val reactVersion = "${Npm.reactVersion}-$version"
         val react = "org.jetbrains:kotlin-react:$reactVersion"
@@ -112,20 +112,20 @@ object Libraries {
         val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.5.5"
+            const val version = "0.5.6"
             const val core = "net.subroh0508.kotlinmaterialui:core:$version"
         }
     }
 
     object Npm {
-        const val reactVersion = "17.0.1"
+        const val reactVersion = "17.0.2"
         const val react = "react"
         const val reactDom = "react-dom"
 
         const val reactRouterDomVersion = "5.2.0"
         const val reactRouterDom = "react-router-dom"
 
-        const val styledComponentVersion = "5.2.1"
+        const val styledComponentVersion = "5.2.3"
         const val styledComponent = "styled-components"
 
         const val inlineStylePrefixerVersion = "^6.0.0"

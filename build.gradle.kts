@@ -1,8 +1,7 @@
 buildscript {
     repositories {
         google()
-        jcenter()
-        maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
+        mavenCentral()
     }
 
     dependencies {
@@ -15,11 +14,9 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
-        maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
-        maven(url = "http://dl.bintray.com/kotlin/kotlin-js-wrappers")
-        maven(url = "https://dl.bintray.com/kodein-framework/kodein-dev")
-        maven(url = "https://dl.bintray.com/subroh0508/maven")
+        mavenCentral()
+        maven(url = "https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven")
+        maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
         maven("https://dl.bintray.com/ekito/koin")
     }
 }
