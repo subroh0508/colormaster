@@ -11,5 +11,3 @@ include(
     ":shared:presentation:preview",
     ":shared:test"
 )
-
-enableFeaturePreview("GRADLE_METADATA")
