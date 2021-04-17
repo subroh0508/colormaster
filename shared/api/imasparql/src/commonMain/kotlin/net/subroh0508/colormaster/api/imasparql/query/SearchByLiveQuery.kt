@@ -10,7 +10,9 @@ class SearchByLiveQuery(
         SELECT ?id ?name ?color WHERE {
           ?live rdf:type imas:Live;
             schema:name ?liveName;
-            schema:actor ?actor.
+            schema:actor ?actor;
+            schema:eventStatus ?eventStatus.
+          FILTER(?eventStatus != schema:EventCancelled)
           ${liveName?.let { "FILTER (str(?liveName) = '$it')." } ?: ""}
           ?s imas:Color ?color;
             imas:Title ?title;
