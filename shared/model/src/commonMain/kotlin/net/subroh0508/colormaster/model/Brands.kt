@@ -6,10 +6,10 @@ enum class Brands(
     val queryStr: String
 ) {
     _765("765PRO ALLSTARS","765AS"),
-    _ML("MILLIONSTARS", "MillionStars"),
+    _ML("MILLIONSTARS", "MillionLive"),
     _CG("CINDERELLA GIRLS", "CinderellaGirls"),
-    _SC("SHINY COLORS", "283Pro"),
-    _315("315 STARS", "315ProIdols"),
+    _SC("SHINY COLORS", "ShinyColors"),
+    _315("315 STARS", "SideM"),
     _876("876PRO", "DearlyStars");
 
     operator fun component1() = displayName
