@@ -34,7 +34,7 @@ private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { p
     val channel = throttleFirstMouseEventChannel(100) { setMouseEvent(it) }
 
     fun offerMouseEvent(previous: Mouse, next: Mouse) {
-        if (previous == Mouse.CLICK || next == Mouse.CLICK) channel.offer(next) else setMouseEvent(next)
+        if (previous == Mouse.CLICK || next == Mouse.CLICK) channel?.trySend(next) else setMouseEvent(next)
     }
 
     paper {
@@ -75,11 +75,11 @@ private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { p
 private inline fun throttleFirstMouseEventChannel(
     durationMillis: Long,
     crossinline action: suspend (Mouse) -> Unit
-): Channel<Mouse> {
+): Channel<Mouse>? {
     val scope = useRef(CoroutineScope(Job()))
 
     return useRef(Channel<Mouse>().apply {
-        scope.current.launch {
+        scope.current?.launch {
             consumeAsFlow()
                 .throttleFirst(durationMillis)
                 .collect { action.invoke(it) }

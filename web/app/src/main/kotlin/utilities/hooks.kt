@@ -20,7 +20,7 @@ fun <T> useAsyncEffect(
 ) {
     val scope = useRef(coroutineScope)
 
-    useEffect(listOf(value)) { scope.current.launch { effect() } }
+    useEffect(listOf(value)) { scope.current?.launch { effect() } }
 }
 
 fun <T> useDebounceEffect(
@@ -31,12 +31,12 @@ fun <T> useDebounceEffect(
 ) {
     val scope = useRef(coroutineScope)
     val channelRef = useRef(Channel<T>().apply {
-        scope.current.launch {
+        scope.current?.launch {
             consumeAsFlow()
                 .debounce(timeoutMillis)
                 .collect { effect(it) }
         }
     })
 
-    useEffect(listOf(value)) { channelRef.current.offer(value) }
+    useEffect(listOf(value)) { channelRef.current?.trySend(value) }
 }
