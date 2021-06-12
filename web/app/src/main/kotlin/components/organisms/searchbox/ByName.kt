@@ -29,7 +29,7 @@ val SearchByNameComponent = functionalComponent<SearchByNameProps> { props ->
     fun onSelectTitle(brand: Brands, checked: Boolean) = props.onChangeSearchParams(props.params.change(if (checked) brand else null))
     fun onSelectType(type: Types, checked: Boolean) = props.onChangeSearchParams(props.params.change(type, checked))
 
-    useEffect(listOf(props.idolName)) { setIdolName(props.idolName ?: "") }
+    useEffect(props.idolName) { setIdolName(props.idolName ?: "") }
     useDebounceEffect(idolName, DEBOUNCE_TIMEOUT_MILLS) { props.onChangeSearchQuery(it) }
 
     list {

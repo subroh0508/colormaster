@@ -20,7 +20,7 @@ private const val AUTO_COMPLETE_TEXT_DEBOUNCE_TIMEOUT_MILLS = 500L
 fun <T: Any> AutoCompleteTextFieldComponent() = functionalComponent<AutoCompleteTextFieldProps<T>> { props ->
     val (suggestsQuery, setSuggestsQuery) = useState("")
 
-    useEffect(listOf(props.query)) { setSuggestsQuery(props.query ?: "") }
+    useEffect(props.query) { setSuggestsQuery(props.query ?: "") }
     useDebounceEffect(suggestsQuery, AUTO_COMPLETE_TEXT_DEBOUNCE_TIMEOUT_MILLS) { props.onQueryChange(it) }
 
     autoSuggest<T> {

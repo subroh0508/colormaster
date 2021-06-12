@@ -17,7 +17,7 @@ fun <T> useAsyncEffect(
 ) {
     val scope = useRef(coroutineScope)
 
-    useEffect(listOf(value)) { scope.current?.launch { effect() } }
+    useEffect(value) { scope.current?.launch { effect() } }
 }
 
 fun <T> useDebounceEffect(
@@ -35,5 +35,5 @@ fun <T> useDebounceEffect(
         }
     })
 
-    useEffect(listOf(value)) { channelRef.current?.trySend(value) }
+    useEffect(value) { channelRef.current?.trySend(value) }
 }
