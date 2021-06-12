@@ -11,17 +11,19 @@ kotlin {
         binaries.executable()
 
         browser {
+            commonWebpackConfig {
+                cssSupport.enabled = true
+                outputFileName = "bundle.js"
+            }
             runTask {
                 sourceMaps = true
                 devServer = KotlinWebpackConfig.DevServer(
                     port = 8088,
                     contentBase = mutableListOf("${projectDir.path}/src/main/resources")
                 )
-                outputFileName = "bundle.js"
             }
             webpackTask {
                 sourceMaps = false
-                outputFileName = "bundle.js"
             }
         }
     }
