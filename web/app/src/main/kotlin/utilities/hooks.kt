@@ -1,7 +1,5 @@
 package utilities
 
-import kotlinext.js.Object
-import kotlinext.js.jsObject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
@@ -9,9 +7,8 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.debounce
 import mainScope
 import react.*
-import react.router.dom.RouteResultMatch
 
-fun useEffectDidMount(effect: () -> Unit) = useEffect(listOf(), effect)
+fun useEffectDidMount(effect: EffectBuilder.() -> Unit) = useEffect(effect)
 
 fun <T> useAsyncEffect(
     value: T,

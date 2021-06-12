@@ -8,6 +8,7 @@ import materialui.styles.makeStyles
 import materialui.styles.palette.primary
 import net.subroh0508.colormaster.model.Brands
 import react.*
+import react.dom.attrs
 import react.dom.div
 import utilities.invoke
 import utilities.useTranslation

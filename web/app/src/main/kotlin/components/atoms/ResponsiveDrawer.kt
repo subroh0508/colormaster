@@ -19,6 +19,7 @@ import materialui.styles.palette.paper
 import materialui.styles.transitions.create
 import materialui.styles.transitions.easeOut
 import react.*
+import react.dom.attrs
 import react.dom.div
 
 val DRAWER_HEADER_HEIGHT_XM_UP = 64.px

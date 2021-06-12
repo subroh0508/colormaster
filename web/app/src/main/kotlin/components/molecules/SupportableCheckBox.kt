@@ -8,6 +8,7 @@ import materialui.components.iconbutton.iconButton
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
+import react.dom.attrs
 
 fun RBuilder.supportableCheckBox(handler: RHandler<SupportableCheckBoxProps>) = child(
     SupportableCheckBoxComponent, handler = handler)

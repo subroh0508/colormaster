@@ -5,6 +5,7 @@ import net.subroh0508.colormaster.presentation.common.currentTimeMillis
 import react.*
 import react.dom.div
 import kotlinx.browser.window
+import react.dom.attrs
 
 fun RBuilder.clickHandler(handler: RHandler<ClickHandlerProps>) = child(ClickHandlerComponent, handler = handler)
 

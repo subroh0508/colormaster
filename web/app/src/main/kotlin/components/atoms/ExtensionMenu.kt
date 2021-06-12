@@ -13,6 +13,7 @@ import materialui.components.popover.vertical
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
+import react.dom.attrs
 
 fun RBuilder.extensionMenu(handler: RHandler<ExtensionMenuProps>) = child(ExtensionMenuComponent, handler = handler)
 

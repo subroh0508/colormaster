@@ -10,6 +10,7 @@ import materialui.components.textfield.textField
 import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
+import react.dom.attrs
 import react.dom.form
 import react.functionalComponent
 import react.useEffect
