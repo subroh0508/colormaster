@@ -15,7 +15,7 @@ kotlin {
                 sourceMaps = true
                 devServer = KotlinWebpackConfig.DevServer(
                     port = 8088,
-                    contentBase = listOf("${projectDir.path}/src/main/resources")
+                    contentBase = mutableListOf("${projectDir.path}/src/main/resources")
                 )
                 outputFileName = "bundle.js"
             }

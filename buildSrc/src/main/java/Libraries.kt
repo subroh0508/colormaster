@@ -18,7 +18,7 @@ object Libraries {
     }
 
     object Ktor {
-        const val version = "1.5.4"
+        const val version = "1.6.0"
 
         const val client = "io.ktor:ktor-client-core:$version"
         const val clientOkHttp= "io.ktor:ktor-client-okhttp:$version"
@@ -90,27 +90,27 @@ object Libraries {
     class Css(kotlinVersion: String) {
         val version = "1.0.0-${JsWrappers(kotlinVersion).version}"
 
-        val js = "org.jetbrains:kotlin-css-js:$version"
+        val js = "org.jetbrains.kotlin-wrappers:kotlin-css-js:$version"
     }
 
     class JsWrappers(kotlinVersion: String) {
-        val version = "pre.156-kotlin-$kotlinVersion"
+        val version = "pre.209-kotlin-$kotlinVersion"
 
         private val reactVersion = "${Npm.reactVersion}-$version"
-        val react = "org.jetbrains:kotlin-react:$reactVersion"
-        val reactDom = "org.jetbrains:kotlin-react-dom:$reactVersion"
+        val react = "org.jetbrains.kotlin-wrappers:kotlin-react:$reactVersion"
+        val reactDom = "org.jetbrains.kotlin-wrappers:kotlin-react-dom:$reactVersion"
 
         private val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-$version"
-        val reactRouterDom = "org.jetbrains:kotlin-react-router-dom:$reactRouterDomVersion"
+        val reactRouterDom = "org.jetbrains.kotlin-wrappers:kotlin-react-router-dom:$reactRouterDomVersion"
 
         private val styledVersion = "${Npm.styledComponentVersion}-$version"
-        val styled = "org.jetbrains:kotlin-styled:$styledVersion"
+        val styled = "org.jetbrains.kotlin-wrappers:kotlin-styled:$styledVersion"
 
         private val extensionsVersion = "1.0.1-$version"
-        val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
+        val extensions = "org.jetbrains.kotlin-wrappers:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.5.7"
+            const val version = "0.5.8"
             const val core = "net.subroh0508.kotlinmaterialui:core:$version"
         }
     }
