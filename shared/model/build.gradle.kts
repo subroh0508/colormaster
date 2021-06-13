@@ -6,8 +6,10 @@ plugins {
 
 kotlinMpp {
     sourceSets {
-        all {
-            languageSettings.enableLanguageFeature("InlineClasses")
+        val commonMain by getting {
+            dependencies {
+                implementation(project(":shared:base"))
+            }
         }
     }
 }
