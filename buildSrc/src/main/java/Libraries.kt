@@ -116,24 +116,9 @@ object Libraries {
     }
 
     object Npm {
-        const val reactVersion = "17.0.2"
-        const val react = "react"
-        const val reactDom = "react-dom"
-
-        const val reactRouterDomVersion = "5.2.0"
-        const val reactRouterDom = "react-router-dom"
-
-        const val styledComponentVersion = "5.3.0"
-        const val styledComponent = "styled-components"
-
-        const val inlineStylePrefixerVersion = "^6.0.0"
-        const val inlineStylePrefixer = "inline-style-prefixer"
-
-        const val abortControllerVersion = "3.0.0"
-        const val abortController = "abort-controller"
-
-        const val textEncodingVersion = "0.7.0"
-        const val textEncoding = "text-encoding"
+        internal const val reactVersion = "17.0.2"
+        internal const val reactRouterDomVersion = "5.2.0"
+        internal const val styledComponentVersion = "5.3.0"
 
         const val reactAutoSuggestVersion = "10.0.2"
         const val reactAutoSuggest = "react-autosuggest"

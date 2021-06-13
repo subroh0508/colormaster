@@ -6,7 +6,7 @@ plugins {
 }
 
 kotlin {
-    js(IR) {
+    js(LEGACY) {
         useCommonJs()
         binaries.executable()
 
@@ -59,13 +59,6 @@ kotlin {
 
                 implementation(Libraries.Koin.core)
 
-                implementation(npm(Libraries.Npm.react, Libraries.Npm.reactVersion))
-                implementation(npm(Libraries.Npm.reactDom, Libraries.Npm.reactVersion))
-                implementation(npm(Libraries.Npm.reactRouterDom, "^5.2.0"))
-                implementation(npm(Libraries.Npm.styledComponent, Libraries.Npm.styledComponentVersion))
-                implementation(npm(Libraries.Npm.inlineStylePrefixer, Libraries.Npm.inlineStylePrefixerVersion))
-                implementation(npm(Libraries.Npm.abortController, Libraries.Npm.abortControllerVersion))
-                implementation(npm(Libraries.Npm.textEncoding, Libraries.Npm.textEncodingVersion))
                 implementation(npm(Libraries.Npm.reactAutoSuggest, Libraries.Npm.reactAutoSuggestVersion))
                 implementation(npm(Libraries.Npm.I18next.core, Libraries.Npm.I18next.version))
                 implementation(npm(Libraries.Npm.I18next.httpBackend, Libraries.Npm.I18next.httpBackendVersion))
