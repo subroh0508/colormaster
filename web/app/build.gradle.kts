@@ -11,17 +11,20 @@ kotlin {
         binaries.executable()
 
         browser {
+            commonWebpackConfig {
+                cssSupport.enabled = true
+                outputFileName = "bundle.js"
+                bundleAnalyzerReportDir = rootProject.buildDir.resolve("analyze")
+            }
             runTask {
                 sourceMaps = true
                 devServer = KotlinWebpackConfig.DevServer(
                     port = 8088,
-                    contentBase = listOf("${projectDir.path}/src/main/resources")
+                    contentBase = mutableListOf("${projectDir.path}/src/main/resources")
                 )
-                outputFileName = "bundle.js"
             }
             webpackTask {
                 sourceMaps = false
-                outputFileName = "bundle.js"
             }
         }
     }
@@ -56,20 +59,13 @@ kotlin {
 
                 implementation(Libraries.Koin.core)
 
-                implementation(npm(Libraries.Npm.react, Libraries.Npm.reactVersion))
-                implementation(npm(Libraries.Npm.reactDom, Libraries.Npm.reactVersion))
-                implementation(npm(Libraries.Npm.reactRouterDom, "^5.2.0"))
-                implementation(npm(Libraries.Npm.styledComponent, Libraries.Npm.styledComponentVersion))
-                implementation(npm(Libraries.Npm.inlineStylePrefixer, Libraries.Npm.inlineStylePrefixerVersion))
-                implementation(npm(Libraries.Npm.abortController, Libraries.Npm.abortControllerVersion))
-                implementation(npm(Libraries.Npm.textEncoding, Libraries.Npm.textEncodingVersion))
                 implementation(npm(Libraries.Npm.reactAutoSuggest, Libraries.Npm.reactAutoSuggestVersion))
                 implementation(npm(Libraries.Npm.I18next.core, Libraries.Npm.I18next.version))
                 implementation(npm(Libraries.Npm.I18next.httpBackend, Libraries.Npm.I18next.httpBackendVersion))
                 implementation(npm(Libraries.Npm.I18next.react, Libraries.Npm.I18next.reactVersion))
 
-                implementation(devNpm("html-webpack-plugin", "^3.2.0"))
-                implementation(devNpm("webpack-cdn-plugin", "^3.2.2"))
+                implementation(devNpm("html-webpack-plugin", "^5.3.1"))
+                implementation(devNpm("webpack-cdn-plugin", "^3.3.1"))
             }
         }
     }

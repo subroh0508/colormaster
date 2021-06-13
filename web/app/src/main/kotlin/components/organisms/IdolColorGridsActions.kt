@@ -11,6 +11,7 @@ import materialui.styles.makeStyles
 import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
 import react.*
+import react.dom.attrs
 import utilities.invoke
 import utilities.useTranslation
 

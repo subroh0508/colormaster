@@ -1,6 +1,7 @@
 include(
     ":android:app",
     ":web:app",
+    ":shared:base",
     ":shared:model",
     ":shared:components:core",
     ":shared:api:imasparql",

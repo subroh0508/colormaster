@@ -1,8 +1,10 @@
 package net.subroh0508.colormaster.presentation.common
 
+import net.subroh0508.colormaster.base.JvmInline
 import kotlin.math.log10
 
-inline class DateNum(private val value: Int) {
+@JvmInline
+value class DateNum(private val value: Int) {
     fun validate(): Boolean {
         val year = year().takeIf { it != INVALID } ?: return false
         val month = month(year).takeIf { it != INVALID } ?: return false

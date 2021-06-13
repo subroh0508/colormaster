@@ -5,6 +5,7 @@ import net.subroh0508.colormaster.presentation.common.currentTimeMillis
 import react.*
 import react.dom.div
 import kotlinx.browser.window
+import react.dom.attrs
 
 fun RBuilder.clickHandler(handler: RHandler<ClickHandlerProps>) = child(ClickHandlerComponent, handler = handler)
 
@@ -36,8 +37,9 @@ private fun handleOnClick(
     onDoubleClick: () -> Unit
 ) {
     val currentTime = currentTimeMillis()
+    val lastTime = lastTimeRef.current ?: 0L
 
-    if (lastTimeRef.current != 0L && currentTime - lastTimeRef.current < durationMillis) {
+    if (lastTime != 0L && currentTime - lastTime < durationMillis) {
         onDoubleClick()
         lastTimeRef.current = 0L
 

@@ -7,6 +7,7 @@ import materialui.components.tabs.tabs
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import react.*
+import react.dom.attrs
 import utilities.invoke
 import utilities.useTranslation
 

@@ -2,13 +2,13 @@
 
 object Libraries {
     object Serialization {
-        const val version = "1.1.0"
+        const val version = "1.2.1"
 
         const val core = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version"
     }
 
     object Coroutines {
-        const val version = "1.4.2"
+        const val version = "1.5.0"
 
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
@@ -18,7 +18,7 @@ object Libraries {
     }
 
     object Ktor {
-        const val version = "1.5.2"
+        const val version = "1.6.0"
 
         const val client = "io.ktor:ktor-client-core:$version"
         const val clientOkHttp= "io.ktor:ktor-client-okhttp:$version"
@@ -38,7 +38,7 @@ object Libraries {
     }
 
     object Koin {
-        const val version = "3.0.1"
+        const val version = "3.0.2"
 
         const val core = "io.insert-koin:koin-core:$version"
         const val android = "io.insert-koin:koin-android:$version"
@@ -66,7 +66,7 @@ object Libraries {
         const val material = "com.google.android.material:material:$materialVersion"
 
         object Compose {
-            const val version = "1.0.0-beta04"
+            const val version = "1.0.0-beta08"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val material = "androidx.compose.material:material:$version"
@@ -90,50 +90,35 @@ object Libraries {
     class Css(kotlinVersion: String) {
         val version = "1.0.0-${JsWrappers(kotlinVersion).version}"
 
-        val js = "org.jetbrains:kotlin-css-js:$version"
+        val js = "org.jetbrains.kotlin-wrappers:kotlin-css-js:$version"
     }
 
     class JsWrappers(kotlinVersion: String) {
-        val version = "pre.153-kotlin-$kotlinVersion"
+        val version = "pre.209-kotlin-$kotlinVersion"
 
         private val reactVersion = "${Npm.reactVersion}-$version"
-        val react = "org.jetbrains:kotlin-react:$reactVersion"
-        val reactDom = "org.jetbrains:kotlin-react-dom:$reactVersion"
+        val react = "org.jetbrains.kotlin-wrappers:kotlin-react:$reactVersion"
+        val reactDom = "org.jetbrains.kotlin-wrappers:kotlin-react-dom:$reactVersion"
 
         private val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-$version"
-        val reactRouterDom = "org.jetbrains:kotlin-react-router-dom:$reactRouterDomVersion"
+        val reactRouterDom = "org.jetbrains.kotlin-wrappers:kotlin-react-router-dom:$reactRouterDomVersion"
 
         private val styledVersion = "${Npm.styledComponentVersion}-$version"
-        val styled = "org.jetbrains:kotlin-styled:$styledVersion"
+        val styled = "org.jetbrains.kotlin-wrappers:kotlin-styled:$styledVersion"
 
         private val extensionsVersion = "1.0.1-$version"
-        val extensions = "org.jetbrains:kotlin-extensions:$extensionsVersion"
+        val extensions = "org.jetbrains.kotlin-wrappers:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.5.6"
+            const val version = "0.5.8"
             const val core = "net.subroh0508.kotlinmaterialui:core:$version"
         }
     }
 
     object Npm {
-        const val reactVersion = "17.0.2"
-        const val react = "react"
-        const val reactDom = "react-dom"
-
-        const val reactRouterDomVersion = "5.2.0"
-        const val reactRouterDom = "react-router-dom"
-
-        const val styledComponentVersion = "5.2.3"
-        const val styledComponent = "styled-components"
-
-        const val inlineStylePrefixerVersion = "^6.0.0"
-        const val inlineStylePrefixer = "inline-style-prefixer"
-
-        const val abortControllerVersion = "3.0.0"
-        const val abortController = "abort-controller"
-
-        const val textEncodingVersion = "0.7.0"
-        const val textEncoding = "text-encoding"
+        internal const val reactVersion = "17.0.2"
+        internal const val reactRouterDomVersion = "5.2.0"
+        internal const val styledComponentVersion = "5.3.0"
 
         const val reactAutoSuggestVersion = "10.0.2"
         const val reactAutoSuggest = "react-autosuggest"
@@ -151,14 +136,14 @@ object Libraries {
     }
 
     object MockK {
-        private const val version = "1.10.3"
+        private const val version = "1.11.0"
 
         const val core = "io.mockk:mockk-common:$version"
         const val android = "io.mockk:mockk:$version"
     }
 
     object Kotest {
-        private const val version = "4.3.2"
+        private const val version = "4.6.0"
 
         const val engine = "io.kotest:kotest-framework-engine:$version"
         const val runnerJunit5 = "io.kotest:kotest-runner-junit5:$version"

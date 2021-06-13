@@ -8,6 +8,7 @@ import materialui.components.chip.enums.ChipVariant
 import materialui.styles.makeStyles
 import org.w3c.dom.events.Event
 import react.*
+import react.dom.attrs
 
 fun RBuilder.chip(handler: RHandler<ChipProps>) = child(chipComponent, handler = handler)
 

@@ -42,23 +42,23 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
         AppState()
     )
 
-    useEffect(listOf()) {
+    useEffectOnce {
         dispatch(actions(ActionType.CHANGE) {
             themeType = localStorage["paletteType"]?.let { PaletteType.valueOf(it) }
         })
     }
-    useEffect(listOf(preferredType)) {
+    useEffect(preferredType) {
         if (localStorage["paletteType"] != null) return@useEffect
 
         dispatch(actions(ActionType.CHANGE) {
             themeType = preferredType
         })
     }
-    useEffect(listOf(lang.code == i18n.language)) {
+    useEffect(lang.code == i18n.language) {
         AppPreferenceController.changeLanguage(lang)
         i18n.changeLanguage(lang.code)
     }
-    useEffect(listOf(appState)) { localStorage["paletteType"] = appState.themeType.name }
+    useEffect(appState) { localStorage["paletteType"] = appState.themeType.name }
 
     fun closeMenu() = dispatch(actions(ActionType.CHANGE) { openDrawer = false })
     fun toggleMenu() = dispatch(actions(ActionType.CHANGE) { openDrawer = !appState.openDrawer })

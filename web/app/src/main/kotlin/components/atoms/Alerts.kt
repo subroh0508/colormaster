@@ -18,6 +18,7 @@ import materialui.styles.palette.type
 import materialui.styles.typography.fontWeightMedium
 import materialui.styles.typography.typography
 import react.*
+import react.dom.attrs
 import react.dom.div
 
 fun RBuilder.successAlert(handler: RHandler<AlertsProps>) = child(alertComponent) { handler(); attrs.type = AlertsType.success }
