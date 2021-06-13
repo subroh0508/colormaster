@@ -23,7 +23,7 @@ val FullscreenPreviewComponent = functionalComponent<FullscreenModalProps> { pro
     }
 }
 
-interface FullscreenModalProps : RProps {
+external interface FullscreenModalProps : RProps {
     var items: List<IdolColor>
 }
 
