@@ -72,6 +72,7 @@ kotlin {
                 implementation(npm(Libraries.Npm.I18next.react, Libraries.Npm.I18next.reactVersion))
 
                 implementation(devNpm("html-webpack-plugin", "^5.3.1"))
+                implementation(devNpm("webpack-cdn-plugin", "^3.3.1"))
             }
         }
     }
