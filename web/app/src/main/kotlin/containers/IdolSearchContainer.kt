@@ -39,7 +39,8 @@ private val IdolSearchContainerImpl = functionalComponent<RProps> {
     }
 }
 
-private class SearchByNameContainerComponent : IdolSearchContainerComponent<SearchParams.ByName, SearchByNameViewModel>(
+@JsExport
+class SearchByNameContainerComponent : IdolSearchContainerComponent<SearchParams.ByName, SearchByNameViewModel>(
     module {
         scope<SearchByNameContainerComponent> {
             scoped { SearchByNameViewModel(get()) }
@@ -50,7 +51,8 @@ private class SearchByNameContainerComponent : IdolSearchContainerComponent<Sear
     override fun onChangeQuery(query: String?) = viewModel.changeIdolNameSearchQuery(query)
 }
 
-private class SearchByLiveContainerComponent : IdolSearchContainerComponent<SearchParams.ByLive, SearchByLiveViewModel>(
+@JsExport
+class SearchByLiveContainerComponent : IdolSearchContainerComponent<SearchParams.ByLive, SearchByLiveViewModel>(
     module {
         scope<SearchByLiveContainerComponent> {
             scoped { SearchByLiveViewModel(get(), get()) }
@@ -61,7 +63,8 @@ private class SearchByLiveContainerComponent : IdolSearchContainerComponent<Sear
     override fun onChangeQuery(query: String?) = viewModel.changeLiveNameSuggestQuery(query)
 }
 
-private abstract class IdolSearchContainerComponent<T: SearchParams, out VM: SearchViewModel<T>>(
+@JsExport
+abstract class IdolSearchContainerComponent<T: SearchParams, out VM: SearchViewModel<T>>(
     module: Module,
 ) : KoinReactComponent<IdolSearchProps, IdolSearchState>(module) {
     protected abstract val viewModel: VM
@@ -96,11 +99,11 @@ private abstract class IdolSearchContainerComponent<T: SearchParams, out VM: Sea
     private val selectedItems: List<IdolColor> get() = state.uiModel.selectedItems
 }
 
-private external interface IdolSearchProps: RProps {
+external interface IdolSearchProps: RProps {
     var showPreview: (items: List<IdolColor>) -> Unit
     var showPenlight: (items: List<IdolColor>) -> Unit
 }
 
-private external interface IdolSearchState : RState {
+external interface IdolSearchState : RState {
     var uiModel: SearchUiModel
 }

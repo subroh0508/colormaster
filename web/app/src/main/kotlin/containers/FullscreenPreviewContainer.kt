@@ -37,7 +37,8 @@ private val FullscreenPreviewContainerComponentImpl = functionalComponent<RProps
     }) { model: FullscreenPreviewUiModel -> props.children(model) }
 }
 
-private class FullscreenPreviewContainer : KoinReactComponent<FullscreenPreviewProps, FullscreenPreviewState>(
+@JsExport
+class FullscreenPreviewContainer : KoinReactComponent<FullscreenPreviewProps, FullscreenPreviewState>(
     module {
         scope<FullscreenPreviewContainer> {
             scoped { PreviewViewModel(get()) }
@@ -63,10 +64,10 @@ private class FullscreenPreviewContainer : KoinReactComponent<FullscreenPreviewP
     }
 }
 
-private external interface FullscreenPreviewProps : RProps {
+external interface FullscreenPreviewProps : RProps {
     var ids: Array<String>
 }
 
-private external interface FullscreenPreviewState : RState {
+external interface FullscreenPreviewState : RState {
     var uiModel: FullscreenPreviewUiModel
 }
