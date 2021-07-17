@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 fun Project.kotlinMpp(configure: KotlinMultiplatformExtension.() -> Unit) =
     (this as ExtensionAware).extensions.configure<KotlinMultiplatformExtension>("kotlin") {
         android()
-        js(LEGACY) { nodejs {} }
+        js(IR) { nodejs {} }
 
         sourceSets {
             val commonMain by getting

@@ -6,7 +6,7 @@ plugins {
 }
 
 kotlin {
-    js(LEGACY) {
+    js(IR) {
         useCommonJs()
         binaries.executable()
 
