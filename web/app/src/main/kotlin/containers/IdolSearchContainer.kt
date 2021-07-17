@@ -63,7 +63,6 @@ class SearchByLiveContainerComponent : IdolSearchContainerComponent<SearchParams
     override fun onChangeQuery(query: String?) = viewModel.changeLiveNameSuggestQuery(query)
 }
 
-@JsExport
 abstract class IdolSearchContainerComponent<T: SearchParams, out VM: SearchViewModel<T>>(
     module: Module,
 ) : KoinReactComponent<IdolSearchProps, IdolSearchState>(module) {
@@ -95,7 +94,6 @@ abstract class IdolSearchContainerComponent<T: SearchParams, out VM: SearchViewM
         }
     }
 
-    private val params: SearchParams get() = state.uiModel.params
     private val selectedItems: List<IdolColor> get() = state.uiModel.selectedItems
 }
 

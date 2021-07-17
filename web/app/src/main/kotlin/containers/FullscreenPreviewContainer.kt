@@ -45,7 +45,7 @@ class FullscreenPreviewContainer : KoinReactComponent<FullscreenPreviewProps, Fu
         }
     }
 ) {
-    val viewModel: PreviewViewModel by inject()
+    private val viewModel: PreviewViewModel by inject()
 
     override fun FullscreenPreviewState.init() {
         uiModel = FullscreenPreviewUiModel.INITIALIZED
