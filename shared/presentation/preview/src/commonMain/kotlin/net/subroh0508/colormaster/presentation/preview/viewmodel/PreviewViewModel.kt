@@ -2,7 +2,6 @@ package net.subroh0508.colormaster.presentation.preview.viewmodel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -18,10 +17,8 @@ class PreviewViewModel(
     private val repository: IdolColorsRepository,
     coroutineScope: CoroutineScope? = null,
 ) : ViewModel(coroutineScope) {
-    @ExperimentalCoroutinesApi
     private val _idolsLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<IdolColor>>(listOf())) }
 
-    @ExperimentalCoroutinesApi
     val uiModel: Flow<FullscreenPreviewUiModel>
         get() = _idolsLoadState.map { FullscreenPreviewUiModel(it) }
             .apply { launchIn(viewModelScope) }

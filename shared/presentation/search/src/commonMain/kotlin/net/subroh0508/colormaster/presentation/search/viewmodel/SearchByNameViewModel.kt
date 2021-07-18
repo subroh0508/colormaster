@@ -4,7 +4,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
 import net.subroh0508.colormaster.model.toIdolName
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
@@ -15,7 +14,6 @@ class SearchByNameViewModel(
     repository: IdolColorsRepository,
     coroutineScope: CoroutineScope? = null,
 ) : SearchViewModel<SearchParams.ByName>(repository, SearchParams.ByName.EMPTY, coroutineScope) {
-    @ExperimentalCoroutinesApi
     override val uiModel: Flow<SearchUiModel>
         get() = combine(
             searchParams,

@@ -2,7 +2,6 @@ package net.subroh0508.colormaster.presentation.search.viewmodel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.model.IdolColor
@@ -18,10 +17,8 @@ class SearchByLiveViewModel(
     idolColorsRepository: IdolColorsRepository,
     coroutineScope: CoroutineScope? = null,
 ) : SearchViewModel<SearchParams.ByLive>(idolColorsRepository, SearchParams.ByLive.EMPTY, coroutineScope) {
-    @ExperimentalCoroutinesApi
     private val liveLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<LiveName>>(listOf())) }
 
-    @ExperimentalCoroutinesApi
     override val uiModel: Flow<SearchUiModel>
         get() = combine(
             searchParams,
