@@ -16,9 +16,9 @@ object Android {
     const val versionName = "0.0.1"
 
     object Versions {
-        const val compileSdk = 28
+        const val compileSdk = 30
         const val minSdk = 21
-        const val targetSdk = 28
+        const val targetSdk = 30
     }
 }
 
@@ -30,8 +30,8 @@ internal fun Project.androidBaseExt() = androidExt {
     compileSdkVersion(Android.Versions.compileSdk)
 
     defaultConfig {
-        minSdkVersion(Android.Versions.minSdk)
-        targetSdkVersion(Android.Versions.targetSdk)
+        minSdk = Android.Versions.minSdk
+        targetSdk = Android.Versions.targetSdk
     }
 
     buildTypes {
