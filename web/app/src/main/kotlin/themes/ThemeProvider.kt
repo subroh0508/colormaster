@@ -16,7 +16,7 @@ val APP_BAR_SM_UP = 408.px
 fun RBuilder.ThemeProvider(handler: RHandler<ThemeProviderProps>) = child(ThemeProviderComponent, handler = handler)
 
 private val ThemeProviderComponent = functionComponent<ThemeProviderProps> { props ->
-    val theme = useMemo({ createTheme(props.paletteType) }, arrayOf(props.paletteType))
+    val theme = useMemo(props.paletteType) { createTheme(props.paletteType) }
 
     themeProvider(theme) {
         cssBaseline { }
