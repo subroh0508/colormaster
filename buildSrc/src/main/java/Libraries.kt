@@ -83,7 +83,7 @@ object Libraries {
     }
 
     object Firebase {
-        private const val bomVersion = "26.4.0"
+        private const val bomVersion = "28.2.1"
 
         const val bom = "com.google.firebase:firebase-bom:$bomVersion"
         const val auth = "com.google.firebase:firebase-auth-ktx"
@@ -137,7 +137,7 @@ object Libraries {
         const val reactAutoSuggestVersion = "10.0.2"
         const val reactAutoSuggest = "react-autosuggest"
 
-        const val firebaseVersion = "8.2.9"
+        const val firebaseVersion = "8.7.1"
         const val firebase = "firebase"
 
         object I18next {
@@ -152,7 +152,7 @@ object Libraries {
         }
 
         object Firebase {
-            const val authVersion = "0.16.4"
+            const val authVersion = "0.16.8"
             const val auth = "@firebase/auth"
         }
     }

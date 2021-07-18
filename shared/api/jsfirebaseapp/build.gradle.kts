@@ -3,7 +3,7 @@ plugins {
 }
 
 kotlin {
-    js(LEGACY) { nodejs {} }
+    js(IR) { nodejs {} }
 }
 
 dependencies {
