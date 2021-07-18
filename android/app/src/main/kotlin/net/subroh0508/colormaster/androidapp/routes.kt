@@ -25,4 +25,4 @@ fun Context.intentToPreview(type: ScreenType, ids: List<String>) = intentTo(Prev
 }
 
 val Intent.screenType get() = getSerializableExtra(ScreenType.KEY) as ScreenType
-val Intent.previewIdolIds get() = getStringArrayExtra(PREVIEW_IDOL_IDS).toList()
+val Intent.previewIdolIds get() = getStringArrayExtra(PREVIEW_IDOL_IDS)?.toList() ?: listOf()

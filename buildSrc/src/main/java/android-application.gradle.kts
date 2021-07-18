@@ -21,6 +21,6 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion = Libraries.Jetpack.Compose.version
-        //kotlinCompilerVersion = kotlinVersion
+        //kotlinCompilerVersion = "1.5.10"
     }
 }
