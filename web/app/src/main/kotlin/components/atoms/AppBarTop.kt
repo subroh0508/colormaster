@@ -44,7 +44,7 @@ import utilities.useTranslation
 
 fun RBuilder.appBarTop(handler: RHandler<AppBarTopProps>) = child(AppBarTopComponent, handler = handler)
 
-private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
+private val AppBarTopComponent = functionComponent<AppBarTopProps> { props ->
     val classes = useStyles(props)
     val appBarStyle = "${classes.appBar} ${if (props.expand) classes.appBarExpand else ""}"
     val (t, _) = useTranslation()
@@ -135,7 +135,7 @@ fun AppBarTopProps.MenuComponent(block: RBuilder.() -> Unit) {
     MenuComponent = buildElement(block)
 }
 
-private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { props ->
+private val LanguageMenuComponent = functionComponent<LanguageMenuProps> { props ->
     val (languageMenu, setLanguageMenu) = useState<HTMLButtonElement?>(null)
     val (t, _) = useTranslation()
 

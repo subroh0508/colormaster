@@ -27,7 +27,7 @@ import utilities.useTranslation
 
 fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(IdolSearchPanelComponent, handler = handler)
 
-private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps> { props ->
+private val IdolSearchPanelComponent = functionComponent<IdolSearchPanelProps> { props ->
     val classes = useStyles()
     val (t, _) = useTranslation()
     val isSmUp = useMediaQuery("@media (min-width: 600px)")

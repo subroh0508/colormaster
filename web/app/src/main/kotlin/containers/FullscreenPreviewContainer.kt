@@ -29,7 +29,7 @@ fun RBuilder.PreviewContainer() = childFunction(FullscreenPreviewContainerCompon
     }
 }
 
-private val FullscreenPreviewContainerComponentImpl = functionalComponent<RProps> { props ->
+private val FullscreenPreviewContainerComponentImpl = functionComponent<RProps> { props ->
     val ids = useQuery().getAll("id")
 
     childFunction(FullscreenPreviewContainer::class, {

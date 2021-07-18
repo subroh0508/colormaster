@@ -13,7 +13,7 @@ import utilities.useTranslation
 
 fun RBuilder.searchByTabs(handler: RHandler<SearchByTabsProps>) = child(TabsComponent, handler = handler)
 
-private val TabsComponent = functionalComponent<SearchByTabsProps> { props ->
+private val TabsComponent = functionComponent<SearchByTabsProps> { props ->
     val (t, _) = useTranslation()
 
     tabs {

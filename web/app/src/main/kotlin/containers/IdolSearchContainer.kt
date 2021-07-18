@@ -23,7 +23,7 @@ import useQuery
 @Suppress("FunctionName")
 fun RBuilder.IdolSearchContainer() = child(IdolSearchContainerImpl)
 
-private val IdolSearchContainerImpl = functionalComponent<RProps> {
+private val IdolSearchContainerImpl = functionComponent<RProps> {
     val history = useHistory()
     val tab = SearchByTab.findByQuery(useQuery().get("by"))
 

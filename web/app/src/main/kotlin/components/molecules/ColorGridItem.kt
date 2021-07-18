@@ -25,7 +25,7 @@ import utilities.isMobile
 
 fun RBuilder.colorGridItem(handler: RHandler<ColorGridItem>) = child(ColorGridItemComponent, handler = handler)
 
-private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { props ->
+private val ColorGridItemComponent = memo(functionComponent<ColorGridItem> { props ->
     val classes = useStyles(props)
     val (mouse, setMouseEvent) = useState(Mouse.NONE)
 

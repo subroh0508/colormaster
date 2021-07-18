@@ -10,7 +10,7 @@ import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.*
 import react.dom.form
 
-val SearchByLiveComponent = functionalComponent<SearchByLiveProps> { props ->
+val SearchByLiveComponent = functionComponent<SearchByLiveProps> { props ->
     val classes = useStyle()
 
     fun onSelectLiveName(value: LiveName) = props.onChangeSearchParams(props.params.select(value))

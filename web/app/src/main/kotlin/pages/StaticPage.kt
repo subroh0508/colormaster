@@ -12,7 +12,7 @@ import react.dom.div
 @Suppress("FunctionName")
 fun RBuilder.StaticPage(handler: RHandler<RProps>) = child(StaticPageComponent, handler = handler)
 
-private val StaticPageComponent = functionalComponent<RProps> { props ->
+private val StaticPageComponent = functionComponent<RProps> { props ->
     val classes = useStyles()
 
     div(classes.root) {

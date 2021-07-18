@@ -14,7 +14,7 @@ import react.dom.div
 
 fun RBuilder.idolColorGrids(handler: RHandler<IdolColorGridsProps>) = child(IdolColorGridsComponent, handler = handler)
 
-private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> { props ->
+private val IdolColorGridsComponent = functionComponent<IdolColorGridsProps> { props ->
     val containerRef = useRef<HTMLDivElement>(null)
     val classes = useStyles(jsObject {
         val width = containerRef.current?.clientWidth ?: 200

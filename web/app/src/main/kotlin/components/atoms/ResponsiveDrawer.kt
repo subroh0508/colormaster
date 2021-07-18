@@ -31,7 +31,7 @@ fun RBuilder.responsiveDrawer(handler: RHandler<ResponsiveDrawerProps>) {
     child(HiddenXsDown, handler = handler)
 }
 
-private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
+private val HiddenSmUp = functionComponent<ResponsiveDrawerProps> { props ->
     val classes = useStyles()
     val rootStyle = "${classes.root} ${if (props.opened) classes.open else classes.close}"
     val headerStyle = "${classes.header} ${if (props.opened) classes.headerOpen else classes.headerClose}"
@@ -73,7 +73,7 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
     }
 }
 
-private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
+private val HiddenXsDown = functionComponent<ResponsiveDrawerProps> { props ->
     val classes = useStyles()
     val rootStyle = "${classes.root} ${classes.open}"
     val headerStyle = "${classes.header} ${if (props.opened) classes.headerOpen else classes.headerClose}"

@@ -10,14 +10,14 @@ import net.subroh0508.colormaster.model.IdolColor
 import react.*
 import react.dom.setProp
 
-val FullscreenPenlightComponent = functionalComponent<FullscreenModalProps> { props ->
+val FullscreenPenlightComponent = functionComponent<FullscreenModalProps> { props ->
     child(FullscreenPreviewDialogComponent) {
         attrs.items = props.items
         attrs.isColorOnly = true
     }
 }
 
-val FullscreenPreviewComponent = functionalComponent<FullscreenModalProps> { props ->
+val FullscreenPreviewComponent = functionComponent<FullscreenModalProps> { props ->
     child(FullscreenPreviewDialogComponent) {
         attrs.items = props.items
         attrs.isColorOnly = false
@@ -28,7 +28,7 @@ external interface FullscreenModalProps : RProps {
     var items: List<IdolColor>
 }
 
-private val FullscreenPreviewDialogComponent = functionalComponent<ColorPreviewProps> { props ->
+private val FullscreenPreviewDialogComponent = functionComponent<ColorPreviewProps> { props ->
     dialog {
         attrs.fullScreen = true
         attrs.open = true

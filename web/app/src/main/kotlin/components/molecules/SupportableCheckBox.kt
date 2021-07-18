@@ -13,7 +13,7 @@ import react.dom.attrs
 fun RBuilder.supportableCheckBox(handler: RHandler<SupportableCheckBoxProps>) = child(
     SupportableCheckBoxComponent, handler = handler)
 
-private val SupportableCheckBoxComponent = functionalComponent<SupportableCheckBoxProps> { props ->
+private val SupportableCheckBoxComponent = functionComponent<SupportableCheckBoxProps> { props ->
     fun handleOnClick(event: Event) = if (props.clearedAll) props.onClickClearedAll(event) else props.onClickCheckedAll(event)
 
     iconButton {

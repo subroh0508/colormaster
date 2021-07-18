@@ -30,7 +30,7 @@ import useQuery
 @Suppress("FunctionName")
 fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppFrameContainerComponent, handler = handler)
 
-private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
+private val AppFrameContainerComponent = functionComponent<RProps> { props ->
     val preferredType = if (useMediaQuery("(prefers-color-scheme: dark)")) PaletteType.dark else PaletteType.light
     val history = useHistory()
     val lang = language(history)

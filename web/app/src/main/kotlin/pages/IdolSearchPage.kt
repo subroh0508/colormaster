@@ -9,7 +9,7 @@ import utilities.isMobile
 @Suppress("FunctionName")
 fun RBuilder.IdolSearchPage(handler: RHandler<IdolSearchPageProps>) = child(IdolSearchPageComponent, handler = handler)
 
-private val IdolSearchPageComponent = functionalComponent<IdolSearchPageProps> { props ->
+private val IdolSearchPageComponent = functionComponent<IdolSearchPageProps> { props ->
     // TODO Use useMediaQuery
     val (openedGrids, setOpenedGrids) = useState(!isMobile)
 

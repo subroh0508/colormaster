@@ -9,7 +9,7 @@ import react.dom.attrs
 
 fun RBuilder.clickHandler(handler: RHandler<ClickHandlerProps>) = child(ClickHandlerComponent, handler = handler)
 
-private val ClickHandlerComponent = functionalComponent<ClickHandlerProps> { props ->
+private val ClickHandlerComponent = functionComponent<ClickHandlerProps> { props ->
     val lastTimeRef = useRef(0L)
 
     div {
