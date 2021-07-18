@@ -8,6 +8,7 @@ import materialui.components.slide.enums.SlideDirection
 import materialui.components.slide.slide
 import net.subroh0508.colormaster.model.IdolColor
 import react.*
+import react.dom.setProp
 
 val FullscreenPenlightComponent = functionalComponent<FullscreenModalProps> { props ->
     child(FullscreenPreviewDialogComponent) {
