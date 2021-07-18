@@ -1,6 +1,6 @@
 include(
     ":android:app",
-    //":web:app",
+    ":web:app",
     ":shared:base",
     ":shared:model",
     ":shared:components:core",
