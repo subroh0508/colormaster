@@ -2,13 +2,13 @@
 
 object Libraries {
     object Serialization {
-        const val version = "1.2.1"
+        const val version = "1.2.2"
 
         const val core = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version"
     }
 
     object Coroutines {
-        const val version = "1.5.0"
+        const val version = "1.5.1"
 
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
@@ -18,7 +18,7 @@ object Libraries {
     }
 
     object Ktor {
-        const val version = "1.6.0"
+        const val version = "1.6.1"
 
         const val client = "io.ktor:ktor-client-core:$version"
         const val clientOkHttp= "io.ktor:ktor-client-okhttp:$version"
@@ -38,7 +38,7 @@ object Libraries {
     }
 
     object Koin {
-        const val version = "3.0.2"
+        const val version = "3.1.2"
 
         const val core = "io.insert-koin:koin-core:$version"
         const val android = "io.insert-koin:koin-android:$version"
@@ -94,7 +94,7 @@ object Libraries {
     }
 
     class JsWrappers(kotlinVersion: String) {
-        val version = "pre.209-kotlin-$kotlinVersion"
+        val version = "pre.218-kotlin-$kotlinVersion"
 
         private val reactVersion = "${Npm.reactVersion}-$version"
         val react = "org.jetbrains.kotlin-wrappers:kotlin-react:$reactVersion"
@@ -110,7 +110,7 @@ object Libraries {
         val extensions = "org.jetbrains.kotlin-wrappers:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.5.8"
+            const val version = "0.6.0"
             const val core = "net.subroh0508.kotlinmaterialui:core:$version"
         }
     }
@@ -136,14 +136,14 @@ object Libraries {
     }
 
     object MockK {
-        private const val version = "1.11.0"
+        private const val version = "1.12.0"
 
         const val core = "io.mockk:mockk-common:$version"
         const val android = "io.mockk:mockk:$version"
     }
 
     object Kotest {
-        private const val version = "4.6.0"
+        private const val version = "4.6.1"
 
         const val engine = "io.kotest:kotest-framework-engine:$version"
         const val runnerJunit5 = "io.kotest:kotest-runner-junit5:$version"
