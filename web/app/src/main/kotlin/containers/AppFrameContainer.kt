@@ -38,6 +38,7 @@ private val AuthenticationContext = createContext<AuthenticationViewModel>()
 
 private val AppContextProviderContainer = functionalComponent<RProps> { props ->
     val koinApp = useContext(KoinAppContext)
+
     val (appPreference, setAppPreference) = useState<AppPreference>()
     val (viewModel, setViewModel) = useState<AuthenticationViewModel>()
 
@@ -80,32 +81,25 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
 
     val appPreference = useContext(AppPreferenceContext)
 
-    val (appState, dispatch) = useReducer(
-        reducer,
-        AppState()
-    )
+    val (appState, setAppState) = useState(AppState())
 
     useEffectOnce {
-        dispatch(actions(ActionType.CHANGE) {
-            themeType = localStorage["paletteType"]?.let { PaletteType.valueOf(it) }
-        })
+        appPreference.themeType?.let { setAppState(appState.copy(themeType = it)) }
     }
     useEffect(preferredType) {
-        if (localStorage["paletteType"] != null) return@useEffect
+        if (appPreference.themeType != null) return@useEffect
 
-        dispatch(actions(ActionType.CHANGE) {
-            themeType = preferredType
-        })
+        setAppState(appState.copy(themeType = preferredType))
     }
     useEffect(lang.code == i18n.language) {
         appPreference.setLanguage(lang)
         i18n.changeLanguage(lang.code)
     }
-    useEffect(appState) { localStorage["paletteType"] = appState.themeType.name }
+    useEffect(appState) { appPreference.setThemeType(appState.themeType) }
 
-    fun closeMenu() = dispatch(actions(ActionType.CHANGE) { openDrawer = false })
-    fun toggleMenu() = dispatch(actions(ActionType.CHANGE) { openDrawer = !appState.openDrawer })
-    fun toggleTheme() = dispatch(actions(ActionType.CHANGE) { themeType = if (appState.themeType == PaletteType.light) PaletteType.dark else PaletteType.light })
+    fun closeMenu() { setAppState(appState.copy(openDrawer = false)) }
+    fun toggleMenu() { setAppState(appState.copy(openDrawer = !appState.openDrawer)) }
+    fun toggleTheme() { setAppState(appState.copy(themeType = if (appState.themeType == PaletteType.light) PaletteType.dark else PaletteType.light)) }
 
     ThemeProvider {
         attrs.paletteType = appState.themeType
@@ -139,31 +133,3 @@ private data class AppState(
     val themeType: PaletteType = PaletteType.light,
     val openDrawer: Boolean = false
 )
-
-private enum class ActionType {
-    CHANGE
-}
-
-private external interface Payload {
-    var themeType: PaletteType?
-    var openDrawer: Boolean?
-}
-
-private fun actions(
-    type: ActionType,
-    payload: Payload.() -> Unit
-) = utilities.actions<ActionType, Payload> {
-    this.type = type
-    this.payload = jsObject(payload)
-}
-
-private val reducer = { state: AppState, action: Actions<ActionType, Payload> ->
-    val payload = action.payload
-
-    when (action.type) {
-        ActionType.CHANGE -> AppState(
-            themeType = payload.themeType ?: state.themeType,
-            openDrawer = payload.openDrawer ?: state.openDrawer
-        )
-    }
-}

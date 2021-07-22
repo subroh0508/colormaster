@@ -11,5 +11,11 @@ kotlinMpp {
                 implementation(project(":shared:base"))
             }
         }
+
+        val jsMain by getting {
+            dependencies {
+                implementation(Libraries.JsWrappers.MaterialUi.core)
+            }
+        }
     }
 }
