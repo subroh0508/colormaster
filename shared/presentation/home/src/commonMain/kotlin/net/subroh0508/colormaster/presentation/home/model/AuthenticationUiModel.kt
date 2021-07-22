@@ -4,9 +4,9 @@ import net.subroh0508.colormaster.model.authentication.CurrentUser
 import net.subroh0508.colormaster.presentation.common.LoadState
 
 data class AuthenticationUiModel(
-    override val currentUser: CurrentUser? = null,
+    val currentUser: CurrentUser? = null,
     val message: AuthenticationMessage = AuthenticationMessage.Consumed,
-) : HomeUiModel {
+) {
     companion object {
         operator fun invoke(
             currentUserLoadState: LoadState,
@@ -16,5 +16,7 @@ data class AuthenticationUiModel(
             message,
         )
     }
+
+    val isSignedIn = currentUser != null
 }
 
