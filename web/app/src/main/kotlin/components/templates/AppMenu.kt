@@ -3,6 +3,7 @@ package components.templates
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import components.atoms.link
+import containers.AuthenticationContext
 import materialui.components.button.button
 import materialui.components.divider.divider
 import materialui.components.icon.icon
@@ -15,12 +16,15 @@ import materialui.components.typography.typography
 import materialui.components.typography.typographyH6
 import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
+import net.subroh0508.colormaster.model.authentication.CurrentUser
+import net.subroh0508.colormaster.presentation.home.viewmodel.AuthenticationViewModel
 import react.*
 import react.router.dom.useHistory
 import toDevelopment
 import toHowToUse
 import toRoot
 import toTerms
+import utilities.I18nextText
 import utilities.invoke
 import utilities.useTranslation
 
@@ -30,6 +34,8 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
     val classes = useStyles()
     val history = useHistory()
     val (t, _) = useTranslation()
+
+    val viewModel = useContext(AuthenticationContext)
 
     list {
         listItem {
@@ -65,6 +71,14 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
             classes,
             id = "about-terms", label = t("appMenu.about.terms")
         ) { history.toTerms() }
+        divider {}
+        parent(classes, t("appMenu.account.label"))
+        signInWithGoogle(
+            classes,
+            t = t,
+            currentUser = props.currentUser,
+            viewModel = viewModel,
+        )
         divider {}
         anchorItem(
             classes,
@@ -105,6 +119,30 @@ private fun RBuilder.nestedListItem(
     }
 }
 
+private fun RBuilder.signInWithGoogle(
+    classes: AppMenuStyle,
+    t: I18nextText,
+    currentUser: CurrentUser?,
+    viewModel: AuthenticationViewModel,
+) = list {
+    key = "sign-in-with-google"
+    attrs.classes(classes.item)
+
+    if (currentUser?.isAnonymous != false) {
+        button {
+            attrs.classes(classes.googleButton)
+            attrs.onClickFunction = { viewModel.linkWithGoogle("aaa") }
+        }
+        return@list
+    }
+
+    button {
+        attrs.classes(classes.itemButton)
+        attrs.onClickFunction = { viewModel.unlinkWithGoogle() }
+        +t("appMenu.account.sign_out")
+    }
+}
+
 private fun RBuilder.anchorItem(
     classes: AppMenuStyle,
     id: String,
@@ -132,6 +170,7 @@ private fun RBuilder.anchorItem(
 }
 
 external interface AppMenuProps : RProps {
+    var currentUser: CurrentUser?
     var onCloseMenu: () -> Unit
 }
 
@@ -141,6 +180,7 @@ private external interface AppMenuStyle {
     val parentLabel: String
     val item: String
     val itemButton: String
+    val googleButton: String
     val itemIcon: String
 }
 
@@ -165,6 +205,14 @@ private val useStyles = makeStyles<AppMenuStyle> {
         paddingLeft = theme.spacing(4)
         justifyContent = JustifyContent.flexStart
         textTransform = TextTransform.none
+    }
+    "googleButton" {
+        height = 52.px
+        width = 100.pct
+        padding(0.px, theme.spacing(2))
+        margin(theme.spacing(1), theme.spacing(4), theme.spacing(2))
+        background = "url(/sign_in_with_google.png)"
+        backgroundSize = "contain"
     }
     "itemIcon" {
         minWidth = 36.px

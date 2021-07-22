@@ -21,6 +21,9 @@ import utilities.Actions
 import utilities.useTranslation
 import kotlinx.browser.localStorage
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import net.subroh0508.colormaster.model.authentication.CurrentUser
 import net.subroh0508.colormaster.presentation.home.viewmodel.AuthenticationViewModel
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import org.koin.core.qualifier.named
@@ -34,10 +37,10 @@ fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppContextProv
 private const val APP_FRAME_SCOPE_ID = "APP_FRAME_SCOPE"
 
 private val AppPreferenceContext = createContext<AppPreference>()
-private val AuthenticationContext = createContext<AuthenticationViewModel>()
+val AuthenticationContext = createContext<AuthenticationViewModel>()
 
 private val AppContextProviderContainer = functionalComponent<RProps> { props ->
-    val koinApp = useContext(KoinAppContext)
+    val (koinApp, appScope) = useContext(KoinAppContext)
 
     val (appPreference, setAppPreference) = useState<AppPreference>()
     val (viewModel, setViewModel) = useState<AuthenticationViewModel>()
@@ -45,7 +48,7 @@ private val AppContextProviderContainer = functionalComponent<RProps> { props ->
     useEffectOnce {
         val module = module {
             scope(named(APP_FRAME_SCOPE_ID)) {
-                scoped { AuthenticationViewModel(get(), MainScope()) }
+                scoped { AuthenticationViewModel(get(), appScope) }
             }
         }
 
@@ -79,12 +82,21 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
     val tab = SearchByTab.findByQuery(useQuery().get("by"))
     val (_, i18n) = useTranslation()
 
+    val (_, appScope) = useContext(KoinAppContext)
     val appPreference = useContext(AppPreferenceContext)
+    val viewModel = useContext(AuthenticationContext)
 
     val (appState, setAppState) = useState(AppState())
 
     useEffectOnce {
         appPreference.themeType?.let { setAppState(appState.copy(themeType = it)) }
+    }
+    useEffectOnce {
+        viewModel.uiModel.onEach {
+            setAppState(appState.copy(currentUser = it.currentUser))
+        }.launchIn(appScope)
+
+        viewModel.fetchCurrentUser()
     }
     useEffect(preferredType) {
         if (appPreference.themeType != null) return@useEffect
@@ -111,7 +123,10 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
             attrs.openDrawer = appState.openDrawer
             attrs.expand = isExpandAppBar(history)
             attrs.MenuComponent {
-                appMenu { attrs.onCloseMenu = { closeMenu() } }
+                appMenu {
+                    attrs.currentUser = appState.currentUser
+                    attrs.onCloseMenu = { closeMenu() }
+                }
             }
             attrs.onClickChangeTheme = { toggleTheme() }
             attrs.onClickMenuIcon = { toggleMenu() }
@@ -131,5 +146,6 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
 
 private data class AppState(
     val themeType: PaletteType = PaletteType.light,
-    val openDrawer: Boolean = false
+    val openDrawer: Boolean = false,
+    val currentUser: CurrentUser? = null,
 )

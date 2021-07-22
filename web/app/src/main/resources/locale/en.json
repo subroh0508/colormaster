@@ -15,6 +15,11 @@
       "development": "How it works",
       "terms": "Terms"
     },
+    "account": {
+      "label": "Account",
+      "sign_in_with_google": "Sign in with Google",
+      "sign_out": "Sign out"
+    },
     "links": {
       "github": "GitHub",
       "twitter": "Developer's Twitter"

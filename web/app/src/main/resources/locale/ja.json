@@ -15,6 +15,11 @@
       "development": "仕組み",
       "terms": "利用規約"
     },
+    "account": {
+      "label": "連携アカウント",
+      "sign_in_with_google": "Googleでログイン",
+      "sign_out": "ログアウト"
+    },
     "links": {
       "github": "GitHub",
       "twitter": "開発者Twitter"

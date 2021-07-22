@@ -5,6 +5,7 @@ import react.dom.render
 import utilities.*
 import kotlinx.browser.document
 import kotlinx.browser.window
+import kotlinx.coroutines.CoroutineScope
 import net.subroh0508.colormaster.components.core.initializeApp
 import org.koin.core.KoinApplication
 import react.Suspense
@@ -15,7 +16,7 @@ val koinApp = koinApplication {
     modules(AppModule + AppPreferenceModule)
 }
 
-val KoinAppContext = createContext<KoinApplication>()
+val KoinAppContext = createContext<Pair<KoinApplication, CoroutineScope>>()
 
 fun main() {
     initializeApp()
@@ -29,7 +30,7 @@ fun main() {
                     attrs.asDynamic()["fallback"] = "Loading..."
 
                     KoinAppContext.Provider {
-                        attrs.value = koinApp
+                        attrs.value = koinApp to MainScope()
 
                         routing()
                     }
