@@ -18,6 +18,8 @@ val koinApp = koinApplication {
 val KoinAppContext = createContext<KoinApplication>()
 
 fun main() {
+    initializeApp()
+
     window.onload = {
         render(document.getElementById("root")) {
             I18nextProvider {
