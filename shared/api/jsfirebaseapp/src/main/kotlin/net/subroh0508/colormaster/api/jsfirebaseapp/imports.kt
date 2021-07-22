@@ -8,7 +8,7 @@ import kotlin.js.Promise
 @Suppress("ClassName")
 @JsName("default")
 external object firebase {
-    fun auth(app: App? = definedExternally): auth.Auth
+    fun initializeApp(options: Any, name: String? = definedExternally) : App
 
     open class App {
         val name: String
@@ -16,12 +16,16 @@ external object firebase {
     }
 
     interface Options {
-        val applicationId: String
-        val apiKey: String
-        val databaseUrl: String?
-        val gaTrackingId: String?
-        val storageBucket: String?
-        val projectId: String?
+        var applicationId: String
+        var apiKey: String
+        var databaseURL: String?
+        var gaTrackingId: String?
+        var storageBucket: String?
+        var projectId: String?
+        var messagingSenderId: String?
+        var authDomain: String?
+        var appId: String?
+        var measurementId: String?
     }
 
     interface FirebaseError {
@@ -29,6 +33,8 @@ external object firebase {
         var message: String
         var name: String
     }
+
+    fun auth(app: App? = definedExternally): auth.Auth
 
     object auth {
         open class Auth {

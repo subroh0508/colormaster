@@ -1,6 +1,6 @@
 package containers
 
-import koinApp
+import KoinAppContext
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
 import components.atoms.searchByTabs
@@ -11,10 +11,7 @@ import kotlinext.js.jsObject
 import language
 import materialui.styles.palette.PaletteType
 import materialui.useMediaQuery
-import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.w3c.dom.get
 import org.w3c.dom.set
 import react.*
@@ -23,12 +20,56 @@ import themes.ThemeProvider
 import utilities.Actions
 import utilities.useTranslation
 import kotlinx.browser.localStorage
+import kotlinx.coroutines.MainScope
+import net.subroh0508.colormaster.presentation.home.viewmodel.AuthenticationViewModel
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 import toSearchBy
 import useQuery
 
 @Suppress("FunctionName")
-fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppFrameContainerComponent, handler = handler)
+fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppContextProviderContainer, handler = handler)
+
+private const val APP_FRAME_SCOPE_ID = "APP_FRAME_SCOPE"
+
+private val AppPreferenceContext = createContext<AppPreference>()
+private val AuthenticationContext = createContext<AuthenticationViewModel>()
+
+private val AppContextProviderContainer = functionalComponent<RProps> { props ->
+    val koinApp = useContext(KoinAppContext)
+    val (appPreference, setAppPreference) = useState<AppPreference>()
+    val (viewModel, setViewModel) = useState<AuthenticationViewModel>()
+
+    useEffectOnce {
+        val module = module {
+            scope(named(APP_FRAME_SCOPE_ID)) {
+                scoped { AuthenticationViewModel(get(), MainScope()) }
+            }
+        }
+
+        koinApp.modules(module)
+        koinApp.koin.createScope(APP_FRAME_SCOPE_ID, named(APP_FRAME_SCOPE_ID))
+
+        setAppPreference(value = koinApp.koin.get())
+        setViewModel(value = koinApp.koin.getScope(APP_FRAME_SCOPE_ID).get())
+    }
+
+    appPreference ?: return@functionalComponent
+    viewModel ?: return@functionalComponent
+
+    AppPreferenceContext.Provider {
+        attrs.value = appPreference
+
+        AuthenticationContext.Provider {
+            attrs.value = viewModel
+
+            child(AppFrameContainerComponent) {
+                props.children()
+            }
+        }
+    }
+}
 
 private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
     val preferredType = if (useMediaQuery("(prefers-color-scheme: dark)")) PaletteType.dark else PaletteType.light
@@ -36,6 +77,8 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
     val lang = language(history)
     val tab = SearchByTab.findByQuery(useQuery().get("by"))
     val (_, i18n) = useTranslation()
+
+    val appPreference = useContext(AppPreferenceContext)
 
     val (appState, dispatch) = useReducer(
         reducer,
@@ -55,7 +98,7 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
         })
     }
     useEffect(lang.code == i18n.language) {
-        AppPreferenceController.changeLanguage(lang)
+        appPreference.setLanguage(lang)
         i18n.changeLanguage(lang.code)
     }
     useEffect(appState) { localStorage["paletteType"] = appState.themeType.name }
@@ -123,12 +166,4 @@ private val reducer = { state: AppState, action: Actions<ActionType, Payload> ->
             openDrawer = payload.openDrawer ?: state.openDrawer
         )
     }
-}
-
-private object AppPreferenceController : KoinComponent {
-    private val browserPref: AppPreference by inject()
-
-    fun changeLanguage(lang: Languages) { browserPref.setLanguage(lang) }
-
-    override fun getKoin() = koinApp.koin
 }

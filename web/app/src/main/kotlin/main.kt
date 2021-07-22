@@ -1,18 +1,21 @@
 import kotlinx.coroutines.MainScope
 import net.subroh0508.colormaster.components.core.AppModule
-import org.koin.core.context.startKoin
 import org.koin.dsl.koinApplication
 import react.dom.render
 import utilities.*
 import kotlinx.browser.document
 import kotlinx.browser.window
-import org.koin.core.logger.PrintLogger
+import net.subroh0508.colormaster.components.core.initializeApp
+import org.koin.core.KoinApplication
 import react.Suspense
+import react.createContext
 
 val mainScope = MainScope()
 val koinApp = koinApplication {
     modules(AppModule + AppPreferenceModule)
 }
+
+val KoinAppContext = createContext<KoinApplication>()
 
 fun main() {
     window.onload = {
@@ -23,7 +26,11 @@ fun main() {
                 Suspense {
                     attrs.asDynamic()["fallback"] = "Loading..."
 
-                    routing()
+                    KoinAppContext.Provider {
+                        attrs.value = koinApp
+
+                        routing()
+                    }
                 }
             }
         }
