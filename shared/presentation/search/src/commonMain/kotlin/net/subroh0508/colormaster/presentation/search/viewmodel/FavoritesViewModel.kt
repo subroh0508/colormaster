@@ -17,7 +17,6 @@ class FavoritesViewModel(
     repository: IdolColorsRepository,
     coroutineScope: CoroutineScope? = null,
 ) : SearchViewModel<SearchParams.None>(repository, SearchParams.None, coroutineScope) {
-    @ExperimentalCoroutinesApi
     override val uiModel: Flow<SearchUiModel>
         get() = combine(
             idolsLoadState,

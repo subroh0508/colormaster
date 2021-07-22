@@ -15,7 +15,6 @@ class SearchByNameViewModel(
     repository: IdolColorsRepository,
     coroutineScope: CoroutineScope? = null,
 ) : SearchViewModel<SearchParams.ByName>(repository, SearchParams.ByName.EMPTY, coroutineScope) {
-    @ExperimentalCoroutinesApi
     override val uiModel: Flow<SearchUiModel>
         get() = combine(
             searchParams,

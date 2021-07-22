@@ -14,19 +14,13 @@ abstract class SearchViewModel<T: SearchParams>(
     emptyParams: T,
     coroutineScope: CoroutineScope? = null,
 ) : ViewModel(coroutineScope) {
-    @ExperimentalCoroutinesApi
     protected val searchParams: MutableStateFlow<T> by lazy { MutableStateFlow(emptyParams) }
-    @ExperimentalCoroutinesApi
     protected val idolsLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<IdolColor>>(listOf())) }
-    @ExperimentalCoroutinesApi
     protected val selected: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
-    @ExperimentalCoroutinesApi
     protected val favorites: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
 
     private val items: List<IdolColor> get() = idolsLoadState.value.getValueOrNull() ?: listOf()
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     abstract val uiModel: Flow<SearchUiModel>
 
     open fun search() {
