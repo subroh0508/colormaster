@@ -3,6 +3,7 @@ package net.subroh0508.colormaster.api.authentication
 import kotlinx.coroutines.await
 import net.subroh0508.colormaster.api.authentication.model.FirebaseUser
 import net.subroh0508.colormaster.api.authentication.model.Provider
+import net.subroh0508.colormaster.api.jsfirebaseapp.firebase
 
 actual class AuthenticationClient(
     private val auth: firebase.auth.Auth,

@@ -20,7 +20,7 @@ kotlinMpp {
         }
         val jsMain by getting {
             dependencies {
-                api(project(":shared:api:jsfirebaseapp"))
+                implementation(project(":shared:api:jsfirebaseapp"))
             }
         }
     }
