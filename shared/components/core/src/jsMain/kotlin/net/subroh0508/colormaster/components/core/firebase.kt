@@ -1,7 +1,7 @@
 package net.subroh0508.colormaster.components.core
 
 import kotlinext.js.jsObject
-import net.subroh0508.colormaster.api.jsfirebaseauth.firebase
+import net.subroh0508.colormaster.api.jsfirebaseapp.firebase
 
 fun initializeApp() {
     val config: firebase.Options = jsObject {

@@ -25,7 +25,7 @@ kotlinMpp {
         val androidMain by getting
         val jsMain by getting {
             dependencies {
-                implementation(project(":shared:api:jsfirebaseauth"))
+                implementation(project(":shared:api:jsfirebaseapp"))
 
                 implementation(Libraries.JsWrappers(kotlinVersion).extensions)
             }

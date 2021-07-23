@@ -1,6 +1,6 @@
 @file:JsModule("firebase/app")
 
-package net.subroh0508.colormaster.api.jsfirebaseauth
+package net.subroh0508.colormaster.api.jsfirebaseapp
 
 import kotlin.js.Json
 import kotlin.js.Promise

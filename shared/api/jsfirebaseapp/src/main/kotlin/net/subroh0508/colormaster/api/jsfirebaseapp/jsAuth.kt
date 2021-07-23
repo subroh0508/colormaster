@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.api.jsfirebaseauth
+package net.subroh0508.colormaster.api.jsfirebaseapp
 
 @Suppress("ClassName")
 @JsModule("firebase/auth")
