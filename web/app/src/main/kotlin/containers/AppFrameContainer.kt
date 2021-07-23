@@ -7,24 +7,18 @@ import components.atoms.searchByTabs
 import components.templates.appMenu
 import isExpandAppBar
 import isRoot
-import kotlinext.js.jsObject
 import language
 import materialui.styles.palette.PaletteType
 import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
-import org.w3c.dom.get
-import org.w3c.dom.set
 import react.*
 import react.router.dom.useHistory
 import themes.ThemeProvider
-import utilities.Actions
 import utilities.useTranslation
-import kotlinx.browser.localStorage
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.authentication.CurrentUser
-import net.subroh0508.colormaster.presentation.home.viewmodel.AuthenticationViewModel
+import net.subroh0508.colormaster.presentation.home.viewmodel.JsAuthenticationViewModel
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -37,18 +31,18 @@ fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppContextProv
 private const val APP_FRAME_SCOPE_ID = "APP_FRAME_SCOPE"
 
 private val AppPreferenceContext = createContext<AppPreference>()
-val AuthenticationContext = createContext<AuthenticationViewModel>()
+val AuthenticationContext = createContext<JsAuthenticationViewModel>()
 
 private val AppContextProviderContainer = functionalComponent<RProps> { props ->
     val (koinApp, appScope) = useContext(KoinAppContext)
 
     val (appPreference, setAppPreference) = useState<AppPreference>()
-    val (viewModel, setViewModel) = useState<AuthenticationViewModel>()
+    val (viewModel, setViewModel) = useState<JsAuthenticationViewModel>()
 
     useEffectOnce {
         val module = module {
             scope(named(APP_FRAME_SCOPE_ID)) {
-                scoped { AuthenticationViewModel(get(), appScope) }
+                scoped { JsAuthenticationViewModel(get(), appScope) }
             }
         }
 

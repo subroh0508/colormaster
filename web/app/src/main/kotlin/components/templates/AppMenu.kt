@@ -18,6 +18,7 @@ import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
 import net.subroh0508.colormaster.model.authentication.CurrentUser
 import net.subroh0508.colormaster.presentation.home.viewmodel.AuthenticationViewModel
+import net.subroh0508.colormaster.presentation.home.viewmodel.JsAuthenticationViewModel
 import react.*
 import react.router.dom.useHistory
 import toDevelopment
@@ -123,7 +124,7 @@ private fun RBuilder.signInWithGoogle(
     classes: AppMenuStyle,
     t: I18nextText,
     currentUser: CurrentUser?,
-    viewModel: AuthenticationViewModel,
+    viewModel: JsAuthenticationViewModel,
 ) = list {
     key = "sign-in-with-google"
     attrs.classes(classes.item)
@@ -131,14 +132,14 @@ private fun RBuilder.signInWithGoogle(
     if (currentUser?.isAnonymous != false) {
         button {
             attrs.classes(classes.googleButton)
-            attrs.onClickFunction = { viewModel.linkWithGoogle("aaa") }
+            attrs.onClickFunction = { viewModel.signInGoogle() }
         }
         return@list
     }
 
     button {
         attrs.classes(classes.itemButton)
-        attrs.onClickFunction = { viewModel.unlinkWithGoogle() }
+        attrs.onClickFunction = { viewModel.signOut() }
         +t("appMenu.account.sign_out")
     }
 }
