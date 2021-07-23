@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1084041594481",
+    "firebase_url": "https://imas-colormaster.firebaseio.com",
+    "project_id": "imas-colormaster",
+    "storage_bucket": "imas-colormaster.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084041594481:android:1626c3a293d503dba1bdd0",
+        "android_client_info": {
+          "package_name": "net.subroh0508.colormaster"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084041594481-r82aj4pegif8o5hon2dodenpq7jqpurf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAU6clPkJtbLpQKlj83yFMnzLiHTSDzwJs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1084041594481-r82aj4pegif8o5hon2dodenpq7jqpurf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
