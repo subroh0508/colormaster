@@ -87,6 +87,7 @@ object Libraries {
 
         const val bom = "com.google.firebase:firebase-bom:$bomVersion"
         const val auth = "com.google.firebase:firebase-auth-ktx"
+        const val firestore = "com.google.firebase:firebase-firestore-ktx"
     }
 
     object GoogleServices {
