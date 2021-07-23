@@ -6,7 +6,5 @@ expect class AuthenticationClient {
     val currentUser: FirebaseUser?
 
     suspend fun signInAnonymously(): FirebaseUser
-    suspend fun signInWithGoogle(idToken: String): FirebaseUser
-    suspend fun linkWithGoogle(idToken: String): FirebaseUser
-    suspend fun unlinkWithGoogle(): FirebaseUser
+    suspend fun signOut()
 }

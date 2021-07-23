@@ -15,24 +15,13 @@ actual class AuthenticationClient(
 
     actual suspend fun signInAnonymously() = auth.signInAnonymously().await().user?.toDataClass() ?: throw IllegalStateException()
 
-    actual suspend fun signInWithGoogle(idToken: String): FirebaseUser {
+    actual suspend fun signOut() = auth.signOut()
+
+    suspend fun signInWithGoogle(idToken: String): FirebaseUser {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
 
         return auth.signInWithCredential(credential).await().user?.toDataClass() ?: throw IllegalStateException()
     }
-
-    actual suspend fun linkWithGoogle(idToken: String): FirebaseUser {
-        val rawUser = auth.currentUser ?: throw IllegalStateException()
-        if (rawUser.providerData.map(UserInfo::getProviderId).contains(Provider.PROVIDER_GOOGLE)) {
-            return rawUser.toDataClass()
-        }
-
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        return rawUser.linkWithCredential(credential).await().user?.toDataClass() ?: throw IllegalStateException()
-    }
-
-    actual suspend fun unlinkWithGoogle() =
-        auth.currentUser?.unlink(Provider.PROVIDER_GOOGLE)?.await()?.user?.toDataClass() ?: throw IllegalStateException()
 
     private fun getProviderData(): List<Provider> {
         val rawUser = auth.currentUser ?: return listOf()
