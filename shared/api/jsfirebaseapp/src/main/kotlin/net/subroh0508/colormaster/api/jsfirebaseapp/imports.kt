@@ -115,63 +115,9 @@ external object firebase {
 
         interface AuthProvider
 
-        class EmailAuthProvider : AuthProvider {
-            companion object {
-                fun credential(email: String, password: String): AuthCredential
-            }
-        }
-
-        class FacebookAuthProvider : AuthProvider {
-            companion object {
-                fun credential(token: String): AuthCredential
-            }
-        }
-
-        class GithubAuthProvider : AuthProvider {
-            companion object {
-                fun credential(token: String): AuthCredential
-            }
-        }
-
         class GoogleAuthProvider : AuthProvider {
             companion object {
                 fun credential(idToken: String?, accessToken: String?): AuthCredential
-            }
-        }
-
-        open class OAuthProvider(providerId: String) : AuthProvider {
-            val providerId: String
-            fun credential(optionsOrIdToken: Any?, accessToken: String?): AuthCredential
-
-            fun addScope(scope: String)
-            fun setCustomParameters(customOAuthParameters: Map<String, String>)
-        }
-
-        interface OAuthCredentialOptions {
-            val accessToken: String?
-            val idToken: String?
-            val rawNonce: String?
-        }
-
-        class PhoneAuthProvider(auth: Auth?) : AuthProvider {
-            companion object {
-                fun credential(verificationId: String, verificationCode: String): AuthCredential
-            }
-
-            fun verifyPhoneNumber(
-                phoneInfoOptions: String,
-                applicationVerifier: ApplicationVerifier
-            ): Promise<String>
-        }
-
-        abstract class ApplicationVerifier {
-            val type: String
-            fun verify(): Promise<String>
-        }
-
-        class TwitterAuthProvider : AuthProvider {
-            companion object {
-                fun credential(token: String, secret: String): AuthCredential
             }
         }
     }
@@ -223,6 +169,128 @@ external object firebase {
         interface ProfileUpdateRequest {
             val displayName: String?
             val photoURL: String?
+        }
+    }
+
+    fun firestore(): firestore.Firestore
+
+    object firestore {
+        fun setLogLevel(level: String)
+
+        open class PersistenceSettings {
+            var experimentalTabSynchronization: Boolean
+        }
+
+        open class Firestore {
+            fun <T> runTransaction(func: (transaction: Transaction) -> Promise<T>): Promise<T>
+            fun batch(): WriteBatch
+            fun collection(collectionPath: String): CollectionReference
+            fun collectionGroup(collectionId: String): Query
+            fun doc(documentPath: String): DocumentReference
+            fun settings(settings: Json)
+            fun enablePersistence(): Promise<Unit>
+            fun clearPersistence(): Promise<Unit>
+            fun useEmulator(host: String, port: Int)
+            fun disableNetwork(): Promise<Unit>
+            fun enableNetwork(): Promise<Unit>
+        }
+
+        open class Timestamp {
+            val seconds: Double
+            val nanoseconds: Double
+            fun toMillis(): Double
+        }
+
+        open class Query {
+            fun get(options: Any? = definedExternally): Promise<QuerySnapshot>
+            fun where(field: String, opStr: String, value: Any?): Query
+            fun where(field: FieldPath, opStr: String, value: Any?): Query
+            fun onSnapshot(next: (snapshot: QuerySnapshot) -> Unit, error: (error: Error) -> Unit): () -> Unit
+            fun limit(limit: Double): Query
+            fun orderBy(field: String, direction: Any): Query
+            fun orderBy(field: FieldPath, direction: Any): Query
+        }
+
+        open class CollectionReference : Query {
+            val path: String
+            fun doc(path: String = definedExternally): DocumentReference
+            fun add(data: Any): Promise<DocumentReference>
+        }
+
+        open class QuerySnapshot {
+            val docs: Array<DocumentSnapshot>
+            fun docChanges(): Array<DocumentChange>
+            val empty: Boolean
+            val metadata: SnapshotMetadata
+        }
+
+        open class DocumentChange {
+            val doc: DocumentSnapshot
+            val newIndex: Int
+            val oldIndex: Int
+            val type: String
+        }
+
+        open class DocumentSnapshot {
+            val id: String
+            val ref: DocumentReference
+            val exists: Boolean
+            val metadata: SnapshotMetadata
+            fun data(options: Any? = definedExternally): Any?
+            fun get(fieldPath: String, options: Any? = definedExternally): Any?
+            fun get(fieldPath: FieldPath, options: Any? = definedExternally): Any?
+        }
+
+        open class SnapshotMetadata {
+            val hasPendingWrites: Boolean
+            val fromCache: Boolean
+        }
+
+        open class DocumentReference {
+            val id: String
+            val path: String
+
+            fun collection(path: String): CollectionReference
+            fun get(options: Any? = definedExternally): Promise<DocumentSnapshot>
+            fun set(data: Any, options: Any? = definedExternally): Promise<Unit>
+            fun update(data: Any): Promise<Unit>
+            fun update(field: String, value: Any?, vararg moreFieldsAndValues: Any?): Promise<Unit>
+            fun update(field: FieldPath, value: Any?, vararg moreFieldsAndValues: Any?): Promise<Unit>
+            fun delete(): Promise<Unit>
+            fun onSnapshot(next: (snapshot: DocumentSnapshot) -> Unit, error: (error: Error) -> Unit): ()->Unit
+        }
+
+        open class WriteBatch {
+            fun commit(): Promise<Unit>
+            fun delete(documentReference: DocumentReference): WriteBatch
+            fun set(documentReference: DocumentReference, data: Any, options: Any? = definedExternally): WriteBatch
+            fun update(documentReference: DocumentReference, data: Any): WriteBatch
+            fun update(documentReference: DocumentReference, field: String, value: Any?, vararg moreFieldsAndValues: Any?): WriteBatch
+            fun update(documentReference: DocumentReference, field: FieldPath, value: Any?, vararg moreFieldsAndValues: Any?): WriteBatch
+        }
+
+        open class Transaction {
+            fun get(documentReference: DocumentReference): Promise<DocumentSnapshot>
+            fun set(documentReference: DocumentReference, data: Any, options: Any? = definedExternally): Transaction
+            fun update(documentReference: DocumentReference, data: Any): Transaction
+            fun update(documentReference: DocumentReference, field: String, value: Any?, vararg moreFieldsAndValues: Any?): Transaction
+            fun update(documentReference: DocumentReference, field: FieldPath, value: Any?, vararg moreFieldsAndValues: Any?): Transaction
+            fun delete(documentReference: DocumentReference): Transaction
+        }
+
+        open class FieldPath(vararg fieldNames: String) {
+            companion object {
+                val documentId: FieldPath
+            }
+        }
+
+        abstract class FieldValue {
+            companion object {
+                fun serverTimestamp(): FieldValue
+                fun delete(): FieldValue
+                fun arrayRemove(vararg elements: Any): FieldValue
+                fun arrayUnion(vararg elements: Any): FieldValue
+            }
         }
     }
 }
