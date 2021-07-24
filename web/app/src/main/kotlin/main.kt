@@ -12,16 +12,16 @@ import react.Suspense
 import react.createContext
 
 val mainScope = MainScope()
-val koinApp = koinApplication {
-    modules(AppModule + AppPreferenceModule)
-}
-
 val KoinAppContext = createContext<Pair<KoinApplication, CoroutineScope>>()
 
 fun main() {
     initializeApp()
 
     window.onload = {
+        val koinApp = koinApplication {
+            modules(AppModule + AppPreferenceModule)
+        }
+
         render(document.getElementById("root")) {
             I18nextProvider {
                 attrs.i18n = i18nextInit()
