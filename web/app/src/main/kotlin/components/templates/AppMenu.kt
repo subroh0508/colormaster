@@ -3,7 +3,7 @@ package components.templates
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import components.atoms.link
-import containers.AuthenticationContext
+import containers.AuthenticationDispatcherContext
 import materialui.components.button.button
 import materialui.components.divider.divider
 import materialui.components.icon.icon
@@ -17,7 +17,6 @@ import materialui.components.typography.typographyH6
 import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
 import net.subroh0508.colormaster.model.authentication.CurrentUser
-import net.subroh0508.colormaster.presentation.home.viewmodel.AuthenticationViewModel
 import net.subroh0508.colormaster.presentation.home.viewmodel.JsAuthenticationViewModel
 import react.*
 import react.router.dom.useHistory
@@ -36,7 +35,7 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
     val history = useHistory()
     val (t, _) = useTranslation()
 
-    val viewModel = useContext(AuthenticationContext)
+    val viewModel = useContext(AuthenticationDispatcherContext)
 
     list {
         listItem {

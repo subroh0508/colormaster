@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.authentication.CurrentUser
 import net.subroh0508.colormaster.model.ui.commons.ThemeType
+import net.subroh0508.colormaster.presentation.home.model.AuthenticationUiModel
 import net.subroh0508.colormaster.presentation.home.viewmodel.JsAuthenticationViewModel
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import org.koin.core.qualifier.named
@@ -32,7 +33,8 @@ fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppContextProv
 private const val APP_FRAME_SCOPE_ID = "APP_FRAME_SCOPE"
 
 private val AppPreferenceContext = createContext<AppPreference>()
-val AuthenticationContext = createContext<JsAuthenticationViewModel>()
+val AuthenticationProviderContext = createContext<CurrentUser?>()
+val AuthenticationDispatcherContext = createContext<JsAuthenticationViewModel>()
 
 private val AppContextProviderContainer = functionalComponent<RProps> { props ->
     val (koinApp, appScope) = useContext(KoinAppContext)
@@ -65,7 +67,7 @@ private val AppContextProviderContainer = functionalComponent<RProps> { props ->
     AppPreferenceContext.Provider {
         attrs.value = appPreference
 
-        AuthenticationContext.Provider {
+        AuthenticationDispatcherContext.Provider {
             attrs.value = viewModel
 
             child(AppFrameContainerComponent) {
@@ -84,7 +86,7 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
 
     val (_, appScope) = useContext(KoinAppContext)
     val appPreference = useContext(AppPreferenceContext)
-    val viewModel = useContext(AuthenticationContext)
+    val viewModel = useContext(AuthenticationDispatcherContext)
 
     val (appState, setAppState) = useState(AppState(themeType = appPreference.themeType ?: ThemeType.light))
 
@@ -116,31 +118,35 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
     ThemeProvider {
         attrs.paletteType = appState.themeType
 
-        appBarTop {
-            attrs.themeType = appState.themeType
-            attrs.lang = lang
-            attrs.pathname = history.location.pathname
-            attrs.openDrawer = appState.openDrawer
-            attrs.expand = isExpandAppBar(history)
-            attrs.MenuComponent {
-                appMenu {
-                    attrs.currentUser = appState.currentUser
-                    attrs.onCloseMenu = { closeMenu() }
-                }
-            }
-            attrs.onClickChangeTheme = { toggleTheme() }
-            attrs.onClickMenuIcon = { toggleMenu() }
-            attrs.onCloseMenu = { closeMenu() }
+        AuthenticationProviderContext.Provider {
+            attrs.value = appState.currentUser
 
-            if (isRoot(history)) {
-                searchByTabs {
-                    attrs.index = tab.ordinal
-                    attrs.onChangeTab = history::toSearchBy
+            appBarTop {
+                attrs.themeType = appState.themeType
+                attrs.lang = lang
+                attrs.pathname = history.location.pathname
+                attrs.openDrawer = appState.openDrawer
+                attrs.expand = isExpandAppBar(history)
+                attrs.MenuComponent {
+                    appMenu {
+                        attrs.currentUser = appState.currentUser
+                        attrs.onCloseMenu = { closeMenu() }
+                    }
+                }
+                attrs.onClickChangeTheme = { toggleTheme() }
+                attrs.onClickMenuIcon = { toggleMenu() }
+                attrs.onCloseMenu = { closeMenu() }
+
+                if (isRoot(history)) {
+                    searchByTabs {
+                        attrs.index = tab.ordinal
+                        attrs.onChangeTab = history::toSearchBy
+                    }
                 }
             }
+
+            props.children()
         }
-
-        props.children()
     }
 }
 

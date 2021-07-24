@@ -6,6 +6,7 @@ import components.organisms.idolColorGridsActions
 import components.organisms.idolColorGrids
 import components.organisms.searchbox.idolSearchBox
 import components.organisms.searchbox.message
+import containers.AuthenticationProviderContext
 import kotlinx.css.*
 import kotlinx.css.properties.borderTop
 import materialui.components.drawer.enums.DrawerAnchor
@@ -18,6 +19,7 @@ import materialui.styles.palette.divider
 import materialui.styles.palette.paper
 import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
+import net.subroh0508.colormaster.model.authentication.CurrentUser
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.*
@@ -32,6 +34,8 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
     val (t, _) = useTranslation()
     val isSmUp = useMediaQuery("@media (min-width: 600px)")
     val uiModel = props.model
+
+    val currentUser = useContext(AuthenticationProviderContext)
 
     val drawerAnchor = if (isSmUp) DrawerAnchor.right else DrawerAnchor.bottom
     val actionsStyle = "${classes.actions} ${if (props.isOpenedGrids) "" else classes.actionsHide}"
@@ -57,6 +61,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             div(classes.panel) {
                 idolColorGrids {
                     attrs.items = uiModel.items
+                    attrs.isSignedIn = currentUser != null
                     attrs.onClick = props.onClickIdolColor
                     attrs.onDoubleClick = props.onDoubleClickIdolColor
                     attrs.onFavoriteClick = props.onFavoriteClickIdolColor
@@ -78,6 +83,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
 
 external interface IdolSearchPanelProps : RProps {
     var model: SearchUiModel
+    var currentUser: CurrentUser?
     var isOpenedGrids: Boolean
     var onClickToggleGrids: () -> Unit
     var onChangeSearchParams: (SearchParams) -> Unit
