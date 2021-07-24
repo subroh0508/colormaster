@@ -2,7 +2,6 @@ package containers
 
 import AuthenticationDispatcherContext
 import AuthenticationProviderContext
-import KoinAppContext
 import KoinContext
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
@@ -17,17 +16,13 @@ import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import react.*
 import react.router.dom.useHistory
 import themes.ThemeProvider
-import utilities.useTranslation
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.authentication.CurrentUser
-import net.subroh0508.colormaster.model.ui.commons.ThemeType
 import net.subroh0508.colormaster.presentation.home.viewmodel.JsAuthenticationViewModel
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.w3c.dom.events.Event
 import toSearchBy
 import useQuery
 import utilities.BrowserAppPreference

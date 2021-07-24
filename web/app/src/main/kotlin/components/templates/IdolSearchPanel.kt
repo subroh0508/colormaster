@@ -19,19 +19,16 @@ import materialui.styles.palette.divider
 import materialui.styles.palette.paper
 import materialui.useMediaQuery
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.model.authentication.CurrentUser
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.*
 import react.dom.div
 import themes.APP_BAR_SM_UP
-import utilities.useTranslation
 
 fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(IdolSearchPanelComponent, handler = handler)
 
 private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps> { props ->
     val classes = useStyles()
-    val (t, _) = useTranslation()
     val isSmUp = useMediaQuery("@media (min-width: 600px)")
     val uiModel = props.model
 
@@ -83,7 +80,6 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
 
 external interface IdolSearchPanelProps : RProps {
     var model: SearchUiModel
-    var currentUser: CurrentUser?
     var isOpenedGrids: Boolean
     var onClickToggleGrids: () -> Unit
     var onChangeSearchParams: (SearchParams) -> Unit
