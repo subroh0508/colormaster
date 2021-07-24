@@ -6,6 +6,6 @@ import org.koin.dsl.module
 
 actual object Firestore {
     actual val Module get() = module {
-        FirestoreClient(FirebaseFirestore.getInstance())
+        single { FirestoreClient(FirebaseFirestore.getInstance()) }
     }
 }

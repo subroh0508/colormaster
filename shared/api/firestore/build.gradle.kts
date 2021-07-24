@@ -6,6 +6,15 @@ plugins {
 
 kotlinMpp {
     sourceSets {
+        all {
+            languageSettings.apply {
+                useExperimentalAnnotation("kotlin.Experimental")
+                useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                useExperimentalAnnotation("kotlinx.serialization.ExperimentalSerializationApi")
+                useExperimentalAnnotation("kotlinx.serialization.InternalSerializationApi")
+            }
+        }
+
         val commonMain by getting {
             dependencies {
                 implementation(Libraries.Coroutines.core)
