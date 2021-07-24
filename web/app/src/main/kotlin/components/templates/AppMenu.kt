@@ -26,6 +26,7 @@ import toRoot
 import toTerms
 import utilities.I18nextText
 import utilities.invoke
+import utilities.isMobile
 import utilities.useTranslation
 
 fun RBuilder.appMenu(handler: RHandler<AppMenuProps>) = child(AppMenuComponent, handler = handler)
@@ -131,7 +132,7 @@ private fun RBuilder.signInWithGoogle(
     if (currentUser?.isAnonymous != false) {
         button {
             attrs.classes(classes.googleButton)
-            attrs.onClickFunction = { viewModel.signInGoogle() }
+            attrs.onClickFunction = { viewModel.signInGoogle(isMobile) }
         }
         return@list
     }

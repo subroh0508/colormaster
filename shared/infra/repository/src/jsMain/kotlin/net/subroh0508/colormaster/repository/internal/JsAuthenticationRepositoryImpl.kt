@@ -9,5 +9,6 @@ internal actual class AuthenticationRepositoryImpl actual constructor(
 ) : AuthenticationRepository {
     override fun subscribe() = client.subscribeAuthState().map { it?.toEntity() }
     override suspend fun signInWithGoogle() = client.signInWithGoogle().toEntity()
+    override suspend fun signInWithGoogleForMobile() = client.signInWithGoogleForMobile()
     override suspend fun signOut() = client.signOut()
 }

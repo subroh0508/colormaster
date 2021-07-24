@@ -19,7 +19,15 @@ class JsAuthenticationViewModel(
         }.launchIn(viewModelScope)
     }
 
-    fun signInGoogle() {
+    fun signInGoogle(isMobile: Boolean) {
+        if (isMobile) {
+            viewModelScope.launch {
+                runCatching { repository.signInWithGoogleForMobile() }
+            }
+
+            return
+        }
+
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
             runCatching { repository.signInWithGoogle() }
                 .onSuccess {

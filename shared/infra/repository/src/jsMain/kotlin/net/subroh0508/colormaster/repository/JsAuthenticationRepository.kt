@@ -7,4 +7,5 @@ actual interface AuthenticationRepository {
     actual suspend fun signOut()
     fun subscribe(): Flow<CurrentUser?>
     suspend fun signInWithGoogle(): CurrentUser
+    suspend fun signInWithGoogleForMobile()
 }

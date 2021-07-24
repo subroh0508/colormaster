@@ -24,6 +24,7 @@ actual class AuthenticationClient(
     }
 
     suspend fun signInWithGoogle() = auth.signInWithPopup(firebase.auth.GoogleAuthProvider()).await().user?.toDataClass() ?: throw IllegalStateException()
+    suspend fun signInWithGoogleForMobile() = auth.signInWithRedirect(firebase.auth.GoogleAuthProvider()).await()
 
     private fun getProviderData(): List<Provider> {
         val rawUser = auth.currentUser ?: return listOf()
