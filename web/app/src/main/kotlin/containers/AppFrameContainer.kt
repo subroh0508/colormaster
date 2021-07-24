@@ -18,6 +18,7 @@ import utilities.useTranslation
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.authentication.CurrentUser
+import net.subroh0508.colormaster.model.ui.commons.ThemeType
 import net.subroh0508.colormaster.presentation.home.viewmodel.JsAuthenticationViewModel
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import org.koin.core.qualifier.named
@@ -51,6 +52,11 @@ private val AppContextProviderContainer = functionalComponent<RProps> { props ->
 
         setAppPreference(value = koinApp.koin.get())
         setViewModel(value = koinApp.koin.getScope(APP_FRAME_SCOPE_ID).get())
+
+        cleanup {
+            koinApp.unloadModules(module)
+            koinApp.koin.deleteScope(APP_FRAME_SCOPE_ID)
+        }
     }
 
     appPreference ?: return@functionalComponent
@@ -80,7 +86,7 @@ private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
     val appPreference = useContext(AppPreferenceContext)
     val viewModel = useContext(AuthenticationContext)
 
-    val (appState, setAppState) = useState(AppState())
+    val (appState, setAppState) = useState(AppState(themeType = appPreference.themeType ?: ThemeType.light))
 
     useEffectOnce {
         appPreference.themeType?.let { setAppState(appState.copy(themeType = it)) }
