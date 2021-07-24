@@ -1,12 +1,12 @@
 package components.templates
 
+import AuthenticationProviderContext
 import components.atoms.*
 import components.organisms.IDOL_COLOR_GRID_ACTIONS_CLASS_NAME
 import components.organisms.idolColorGridsActions
 import components.organisms.idolColorGrids
 import components.organisms.searchbox.idolSearchBox
 import components.organisms.searchbox.message
-import containers.AuthenticationProviderContext
 import kotlinx.css.*
 import kotlinx.css.properties.borderTop
 import materialui.components.drawer.enums.DrawerAnchor

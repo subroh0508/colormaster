@@ -1,6 +1,6 @@
 package containers
 
-import KoinAppContext
+import KoinContext
 import components.organisms.FullscreenPenlightComponent
 import components.organisms.FullscreenPreviewComponent
 import components.templates.previewModal
@@ -36,7 +36,7 @@ private val FullscreenPreviewContext = createContext<PreviewViewModel>()
 private val FullscreenPreviewContextProviderContainer = functionalComponent<RProps> { props ->
     val ids = useQuery().getAll("id")
 
-    val (koinApp, appScope) = useContext(KoinAppContext)
+    val (koinApp, appScope) = useContext(KoinContext)
     val (viewModel, setViewModel) = useState<PreviewViewModel>()
 
     useEffectOnce {
@@ -69,7 +69,7 @@ private val FullscreenPreviewContextProviderContainer = functionalComponent<RPro
 }
 
 private val FullscreenPreviewContainerComponent = functionalComponent<FullscreenPreviewProps> { props ->
-    val (_, appScope) = useContext(KoinAppContext)
+    val (_, appScope) = useContext(KoinContext)
     val viewModel = useContext(FullscreenPreviewContext)
 
     val (uiModel, setUiModel) = useState(FullscreenPreviewUiModel.INITIALIZED)

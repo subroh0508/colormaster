@@ -1,9 +1,9 @@
 package components.templates
 
+import AuthenticationDispatcherContext
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import components.atoms.link
-import containers.AuthenticationDispatcherContext
 import materialui.components.button.button
 import materialui.components.divider.divider
 import materialui.components.icon.icon

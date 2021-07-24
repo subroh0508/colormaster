@@ -12,15 +12,26 @@ import kotlin.reflect.KProperty
 
 internal class BrowserAppPreference(
     localStorage: Storage,
+    i18next: I18next,
 ) : AppPreference {
-    override val lang get() = _lang
+    override val lang get() = language ?: Languages.JAPANESE
     override val themeType get() = paletteType
 
-    override fun setLanguage(lang: Languages) { _lang = lang }
+    override fun setLanguage(lang: Languages) { language = lang }
     override fun setThemeType(type: ThemeType) { paletteType = type }
 
-    private var _lang: Languages = Languages.JAPANESE
+    private var language by i18next
     private var paletteType by localStorage
+
+    data class State(
+        val lang: Languages,
+        val themeType: ThemeType,
+    ) {
+        constructor(preference: AppPreference) : this(
+            lang = preference.lang ?: Languages.JAPANESE,
+            themeType = preference.themeType ?: ThemeType.light,
+        )
+    }
 }
 
 private operator fun Storage.getValue(
@@ -34,6 +45,18 @@ private operator fun Storage.setValue(
     value: ThemeType?,
 ) { if (value == null) removeItem(property.name) else set(property.name, value.name) }
 
-internal val AppPreferenceModule get() = module {
-    single<AppPreference> { BrowserAppPreference(localStorage) }
+private operator fun I18next.getValue(
+    thisRef: BrowserAppPreference,
+    property: KProperty<*>,
+) = Languages.valueOfCode(language)
+
+private operator fun I18next.setValue(
+    thisRef: BrowserAppPreference,
+    property: KProperty<*>,
+    value: Languages?,
+) { value?.code?.let(this::changeLanguage) }
+
+@Suppress("FunctionName")
+internal fun AppPreferenceModule(i18next: I18next) = module {
+    single<AppPreference> { BrowserAppPreference(localStorage, i18next) }
 }

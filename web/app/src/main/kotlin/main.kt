@@ -12,16 +12,11 @@ import react.Suspense
 import react.createContext
 
 val mainScope = MainScope()
-val KoinAppContext = createContext<Pair<KoinApplication, CoroutineScope>>()
 
 fun main() {
     initializeApp()
 
     window.onload = {
-        val koinApp = koinApplication {
-            modules(AppModule + AppPreferenceModule)
-        }
-
         render(document.getElementById("root")) {
             I18nextProvider {
                 attrs.i18n = i18nextInit()
@@ -29,11 +24,7 @@ fun main() {
                 Suspense {
                     attrs.asDynamic()["fallback"] = "Loading..."
 
-                    KoinAppContext.Provider {
-                        attrs.value = koinApp to MainScope()
-
-                        routing()
-                    }
+                    KoinAppProvider { routing() }
                 }
             }
         }

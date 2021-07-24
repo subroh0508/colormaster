@@ -2,7 +2,7 @@
 
 package containers
 
-import KoinAppContext
+import KoinContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -75,7 +75,7 @@ private inline fun <T: SearchParams, reified VM: SearchViewModel<T>> IdolSearchC
     noinline onChangeQuery: VM.(String?) -> Unit,
     crossinline module: (CoroutineScope) -> Module,
 ) = functionalComponent<RProps> { props ->
-    val (koinApp, appScope) = useContext(KoinAppContext)
+    val (koinApp, appScope) = useContext(KoinContext)
     val (viewModel, setViewModel) = useState<VM>()
 
     useEffectOnce {
@@ -109,7 +109,7 @@ private fun <T: SearchParams, VM: SearchViewModel<T>> IdolSearchComponent(
 ) = functionalComponent<RProps> {
     val history = useHistory()
 
-    val (_, appScope) = useContext(KoinAppContext)
+    val (_, appScope) = useContext(KoinContext)
     val viewModel = useContext(context)
 
     val (uiModel, setUiModel) = useState(init)
