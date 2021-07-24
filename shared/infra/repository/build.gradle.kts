@@ -9,7 +9,7 @@ kotlinMpp {
             dependencies {
                 implementation(project(":shared:api:imasparql"))
                 implementation(project(":shared:api:authentication"))
-                implementation(project(":shared:infra:db"))
+                implementation(project(":shared:api:firestore"))
                 implementation(project(":shared:model"))
 
                 implementation(Libraries.Coroutines.core)
