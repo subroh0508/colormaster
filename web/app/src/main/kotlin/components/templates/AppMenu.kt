@@ -11,11 +11,13 @@ import materialui.components.list.list
 import materialui.components.listitem.listItem
 import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
+import materialui.components.tooltip.tooltip
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.components.typography.typographyH6
 import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
+import materialui.styles.typography.fontSize
 import net.subroh0508.colormaster.model.authentication.CurrentUser
 import net.subroh0508.colormaster.presentation.home.viewmodel.JsAuthenticationViewModel
 import react.*
@@ -73,7 +75,13 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
             id = "about-terms", label = t("appMenu.about.terms")
         ) { history.toTerms() }
         divider {}
-        parent(classes, t("appMenu.account.label"))
+        parent(classes, t("appMenu.account.label")) {
+            tooltip {
+                attrs { title { +t("appMenu.account.description") } }
+
+                icon { attrs.classes(classes.helpIcon); +"help_outline_icon" }
+            }
+        }
         signInWithGoogle(
             classes,
             t = t,
@@ -94,7 +102,8 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
 
 private fun RBuilder.parent(
     classes: AppMenuStyle,
-    label: String
+    label: String,
+    block: RBuilder.() -> Unit = {},
 ) = list {
     attrs.classes(classes.parent)
 
@@ -103,6 +112,8 @@ private fun RBuilder.parent(
         attrs.variant = TypographyVariant.subtitle1
         +label
     }
+
+    block()
 }
 
 private fun RBuilder.nestedListItem(
@@ -179,6 +190,7 @@ private external interface AppMenuStyle {
     val title: String
     val parent: String
     val parentLabel: String
+    val helpIcon: String
     val item: String
     val itemButton: String
     val googleButton: String
@@ -195,6 +207,10 @@ private val useStyles = makeStyles<AppMenuStyle> {
     }
     "parentLabel" {
         fontWeight = FontWeight.w700
+    }
+    "helpIcon" {
+        margin(LinearDimension.auto, 4.px)
+        fontSize = theme.typography.subtitle1.fontSize
     }
     "item" {
         display = Display.flex

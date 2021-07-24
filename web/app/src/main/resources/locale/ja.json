@@ -17,6 +17,7 @@
     },
     "account": {
       "label": "連携アカウント",
+      "description": "外部アカウントと連携することで、推しアイドルの登録・閲覧ができるようになります",
       "sign_in_with_google": "Googleでログイン",
       "sign_out": "ログアウト"
     },
