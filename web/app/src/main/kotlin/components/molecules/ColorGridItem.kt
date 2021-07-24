@@ -19,7 +19,6 @@ import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.common.throttleFirst
 import react.*
 import react.dom.attrs
-import styled.ReactModule
 import styled.animation
 import utilities.isMobile
 
@@ -31,6 +30,7 @@ private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { p
 
     val handleOnClick = useCallback(props.onClick, arrayOf(props.item.id))
     val handleOnDoubleClick = useCallback(props.onDoubleClick, arrayOf(props.item.id))
+    val handleOnFavoriteClick = useCallback(props.onFavoriteClick, arrayOf(props.item.id))
 
     val channel = throttleFirstMouseEventChannel(100) { setMouseEvent(it) }
 
@@ -52,6 +52,12 @@ private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { p
                 attrs.classes(classes.checkIcon)
                 +"check_circle_outline_icon"
             }
+        }
+
+        icon {
+            attrs.classes(classes.favoriteIcon)
+            attrs.onClickFunction = { handleOnFavoriteClick(props.item, !props.favorite) }
+            +"favorite${if (props.favorite) "" else "_border"}_icon"
         }
 
         clickHandler {
@@ -91,8 +97,10 @@ private inline fun throttleFirstMouseEventChannel(
 external interface ColorGridItem : RProps {
     var item: IdolColor
     var isSelected: Boolean
+    var favorite: Boolean
     var onClick: (IdolColor, Boolean) -> Unit
     var onDoubleClick: (IdolColor) -> Unit
+    var onFavoriteClick: (IdolColor, Boolean) -> Unit
 }
 
 private external interface ColorGridStyle {
@@ -101,6 +109,7 @@ private external interface ColorGridStyle {
     val mouseOver: String
     val mouseOut: String
     val checkIcon: String
+    val favoriteIcon: String
 }
 
 private enum class Mouse {
@@ -109,6 +118,7 @@ private enum class Mouse {
 
 private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
     dynamic("root") { props ->
+        position = Position.relative
         width = 100.pct
         color = if (props.item.isBrighter) Color.black else Color.white
         margin(4.px)
@@ -142,6 +152,14 @@ private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
         position = Position.absolute
         top = 0.px
         left = 0.px
+        bottom = 0.px
+        margin(LinearDimension.auto, 4.px)
+    }
+
+    "favoriteIcon" {
+        position = Position.absolute
+        top = 0.px
+        right = 0.px
         bottom = 0.px
         margin(LinearDimension.auto, 4.px)
     }

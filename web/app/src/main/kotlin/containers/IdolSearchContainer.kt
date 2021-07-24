@@ -131,6 +131,7 @@ private fun <T: SearchParams, VM: SearchViewModel<T>> IdolSearchComponent(
         attrs.onClickIdolColor = viewModel::select
         attrs.onClickSelectAll = viewModel::selectAll
         attrs.onDoubleClickIdolColor = { item -> history.toPenlight(query(listOf(item))) }
+        attrs.onFavoriteClickIdolColor = { (id), favorite -> viewModel.favorite(id, favorite) }
         attrs.onClickPreview = { history.toPreview(query(uiModel.selectedItems)) }
         attrs.onClickPenlight = { history.toPenlight(query(uiModel.selectedItems)) }
     }

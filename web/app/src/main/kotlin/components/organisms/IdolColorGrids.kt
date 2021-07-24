@@ -32,8 +32,10 @@ private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> {
                     attrs {
                         this.item = IdolColor(item.id, item.name.value, item.hexColor)
                         isSelected = item.selected
+                        favorite = item.favorite
                         onClick = props.onClick
                         onDoubleClick = props.onDoubleClick
+                        onFavoriteClick = props.onFavoriteClick
                     }
                 }
             }
@@ -45,6 +47,7 @@ external interface IdolColorGridsProps : RProps {
     var items: List<IdolColorListItem>
     var onClick: (item: IdolColor, isSelected: Boolean) -> Unit
     var onDoubleClick: (item: IdolColor) -> Unit
+    var onFavoriteClick: (item: IdolColor, favorite: Boolean) -> Unit
 }
 
 private external interface GridsWidth : RProps {

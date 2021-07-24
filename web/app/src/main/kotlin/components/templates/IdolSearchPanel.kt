@@ -59,6 +59,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
                     attrs.items = uiModel.items
                     attrs.onClick = props.onClickIdolColor
                     attrs.onDoubleClick = props.onDoubleClickIdolColor
+                    attrs.onFavoriteClick = props.onFavoriteClickIdolColor
                 }
             }
 
@@ -83,6 +84,7 @@ external interface IdolSearchPanelProps : RProps {
     var onChangeSearchQuery: (String?) -> Unit
     var onClickIdolColor: (IdolColor, Boolean) -> Unit
     var onDoubleClickIdolColor: (IdolColor) -> Unit
+    var onFavoriteClickIdolColor: (IdolColor, Boolean) -> Unit
     var onClickPreview: () -> Unit
     var onClickPenlight: () -> Unit
     var onClickSelectAll: (Boolean) -> Unit
