@@ -121,7 +121,7 @@ private val AppFrameContainer = functionalComponent<RProps> { props ->
             setCurrentUser(it.currentUser)
         }.launchIn(appScope)
 
-        viewModel.fetchCurrentUser()
+        viewModel.subscribe()
     }
 
     fun closeMenu() { setOpenDrawer(false) }

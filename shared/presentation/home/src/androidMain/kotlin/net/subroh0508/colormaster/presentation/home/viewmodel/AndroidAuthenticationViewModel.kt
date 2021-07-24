@@ -11,6 +11,17 @@ class AndroidAuthenticationViewModel(
     repository: AuthenticationRepository,
     coroutineScope: CoroutineScope? = null,
 ) : AuthenticationViewModel(repository, coroutineScope) {
+    fun fetchCurrentUser() {
+        val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
+            runCatching { repository.fetchCurrentUser() }
+                .onSuccess { currentUserLoadState.value = LoadState.Loaded(it) }
+                .onFailure { currentUserLoadState.value = LoadState.Error(it) }
+        }
+
+        currentUserLoadState.value = LoadState.Loading
+        job.start()
+    }
+
     fun signInWithGoogle(idToken: String) {
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
             runCatching {

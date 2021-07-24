@@ -2,6 +2,7 @@
 
 package containers
 
+import AuthenticationProviderContext
 import KoinComponent
 import KoinContext
 import kotlinx.coroutines.CoroutineScope
@@ -86,6 +87,7 @@ private fun <T: SearchParams, VM: SearchViewModel<T>> IdolSearchContainer(
     val history = useHistory()
 
     val (_, appScope) = useContext(KoinContext)
+    val currentUser = useContext(AuthenticationProviderContext)
     val viewModel = useContext(context)
 
     val (uiModel, setUiModel) = useState(init)
@@ -96,6 +98,12 @@ private fun <T: SearchParams, VM: SearchViewModel<T>> IdolSearchContainer(
         }.launchIn(appScope)
 
         viewModel.search()
+    }
+
+    useEffect(currentUser) {
+        if (currentUser == null) return@useEffect
+
+        viewModel.loadFavorites()
     }
 
     fun query(items: List<IdolColor>) = items.joinToString("&") { "id=${it.id}" }

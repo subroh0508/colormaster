@@ -1,12 +1,13 @@
 package net.subroh0508.colormaster.repository.internal
 
+import kotlinx.coroutines.flow.map
 import net.subroh0508.colormaster.api.authentication.AuthenticationClient
 import net.subroh0508.colormaster.repository.AuthenticationRepository
 
 internal actual class AuthenticationRepositoryImpl actual constructor(
     private val client: AuthenticationClient,
 ) : AuthenticationRepository {
-    override suspend fun fetchCurrentUser() = client.currentUser?.toEntity()
+    override fun subscribe() = client.subscribeAuthState().map { it?.toEntity() }
     override suspend fun signInWithGoogle() = client.signInWithGoogle().toEntity()
     override suspend fun signOut() = client.signOut()
 }

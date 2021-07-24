@@ -25,17 +25,6 @@ abstract class AuthenticationViewModel(
         }.distinctUntilChanged().stateIn(viewModelScope, SharingStarted.Eagerly, AuthenticationUiModel())
     }
 
-    fun fetchCurrentUser() {
-        val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-            runCatching { repository.fetchCurrentUser() }
-                .onSuccess { currentUserLoadState.value = LoadState.Loaded(it) }
-                .onFailure { currentUserLoadState.value = LoadState.Error(it) }
-        }
-
-        currentUserLoadState.value = LoadState.Loading
-        job.start()
-    }
-
     fun signOut() {
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
             runCatching { repository.signOut() }

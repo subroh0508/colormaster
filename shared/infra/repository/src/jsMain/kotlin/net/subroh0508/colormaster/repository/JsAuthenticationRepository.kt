@@ -1,9 +1,10 @@
 package net.subroh0508.colormaster.repository
 
+import kotlinx.coroutines.flow.Flow
 import net.subroh0508.colormaster.model.authentication.CurrentUser
 
 actual interface AuthenticationRepository {
-    actual suspend fun fetchCurrentUser(): CurrentUser?
     actual suspend fun signOut()
+    fun subscribe(): Flow<CurrentUser?>
     suspend fun signInWithGoogle(): CurrentUser
 }
