@@ -9,6 +9,10 @@
       "label": "Search",
       "attributes": "Name/Attributes"
     },
+    "myPage": {
+      "label": "My Page",
+      "myIdols": "Managed/Favorites/Groups"
+    },
     "about": {
       "label": "About",
       "howToUse": "How to use",
@@ -63,6 +67,13 @@
       "error": "Error",
       "success": "Result: {{count}} idol",
       "success_plural": "Result: {{count}} idols"
+    }
+  },
+  "myPage": {
+    "myIdols": {
+      "managed": "Managed Idols",
+      "favorites": "Favorites Idols",
+      "groups": "My Groups"
     }
   },
   "about": {

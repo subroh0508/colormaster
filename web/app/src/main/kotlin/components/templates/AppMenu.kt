@@ -24,6 +24,7 @@ import react.*
 import react.router.dom.useHistory
 import toDevelopment
 import toHowToUse
+import toMyIdols
 import toRoot
 import toTerms
 import utilities.*
@@ -51,6 +52,12 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
             classes,
             id = "search-idol", label = t("appMenu.search.attributes")
         ) { history.toRoot() }
+        divider {}
+        parent(classes, t("appMenu.myPage.label"))
+        nestedListItem(
+            classes,
+            id = "mypage-myidols", label = t("appMenu.myPage.myIdols")
+        ) { history.toMyIdols() }
         divider {}
         parent(classes, t("appMenu.about.label"))
         nestedListItem(

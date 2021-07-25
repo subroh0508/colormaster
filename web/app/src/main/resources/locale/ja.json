@@ -9,6 +9,10 @@
       "label": "検索",
       "attributes": "名前・属性検索"
     },
+    "myPage": {
+      "label": "マイページ",
+      "myIdols": "担当・推し・グループ"
+    },
     "about": {
       "label": "このアプリについて",
       "howToUse": "使い方",
@@ -63,6 +67,13 @@
       "error": "エラー",
       "success": "検索結果: {{count}}人",
       "success_plural": "検索結果: {{count}}人"
+    }
+  },
+  "myPage": {
+    "myIdols": {
+      "managed": "担当アイドル一覧",
+      "favorites": "推しアイドル一覧",
+      "groups": "マイグループ"
     }
   },
   "about": {
