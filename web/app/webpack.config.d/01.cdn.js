@@ -62,6 +62,3 @@ if (config.mode === 'production') {
     }),
   );
 }
-
-// TODO Move to another file on Kotlin 1.4
-config.resolve.modules.unshift(path.resolve(webAppPath, 'build/processedResources/js/main'));
