@@ -1,20 +1,25 @@
 import kotlinx.coroutines.MainScope
-import net.subroh0508.colormaster.components.core.AppModule
-import org.koin.dsl.koinApplication
 import react.dom.render
 import utilities.*
 import kotlinx.browser.document
 import kotlinx.browser.window
-import kotlinx.coroutines.CoroutineScope
+import net.subroh0508.colormaster.components.core.FirebaseOptions
 import net.subroh0508.colormaster.components.core.initializeApp
-import org.koin.core.KoinApplication
 import react.Suspense
-import react.createContext
 
 val mainScope = MainScope()
 
 fun main() {
-    initializeApp()
+    initializeApp(FirebaseOptions(
+        API_KEY,
+        AUTH_DOMAIN,
+        DATABASE_URL,
+        PROJECT_ID,
+        STORAGE_BUCKET,
+        MESSAGING_SENDER_ID,
+        APP_ID,
+        MEASUREMENT_ID,
+    ))
 
     window.onload = {
         render(document.getElementById("root")) {
