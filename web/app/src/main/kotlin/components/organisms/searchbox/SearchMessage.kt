@@ -29,7 +29,7 @@ private val MessageByNameComponent = functionalComponent<MessageProps<SearchUiMo
             attrs.message = t("searchPanel.messages.searching")
         }
         props.model.params.isEmpty() -> infoAlert {
-            attrs.message = t("searchPanel.messages.default_by_name")
+            attrs.message = t("searchPanel.messages.defaultByName")
         }
         props.model.error != null -> errorAlert {
             attrs.title = t("searchPanel.messages.error")
@@ -48,7 +48,7 @@ private val MessageByLiveComponent = functionalComponent<MessageProps<SearchUiMo
 
     when {
         liveName == null -> infoAlert {
-            attrs.message = t("searchPanel.messages.default_by_live")
+            attrs.message = t("searchPanel.messages.defaultByLive")
         }
         props.model.isLoading -> warningAlert {
             attrs.message = t("searchPanel.messages.searching")

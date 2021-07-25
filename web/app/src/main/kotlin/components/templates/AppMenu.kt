@@ -149,7 +149,7 @@ private fun RBuilder.signInWithGoogle(
     button {
         attrs.classes(classes.itemButton)
         attrs.onClickFunction = { viewModel.signOut() }
-        +t("appMenu.account.sign_out")
+        +t("appMenu.account.signOut")
     }
 }
 
