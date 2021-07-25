@@ -14,5 +14,6 @@ include(
     ":shared:presentation:home",
     ":shared:presentation:search",
     ":shared:presentation:preview",
+    ":shared:presentation:myidols",
     ":shared:test"
 )
