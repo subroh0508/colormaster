@@ -26,10 +26,7 @@ import toDevelopment
 import toHowToUse
 import toRoot
 import toTerms
-import utilities.I18nextText
-import utilities.invoke
-import utilities.isMobile
-import utilities.useTranslation
+import utilities.*
 
 fun RBuilder.appMenu(handler: RHandler<AppMenuProps>) = child(AppMenuComponent, handler = handler)
 
@@ -44,14 +41,8 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
         listItem {
             attrs.classes(classes.title)
             listItemText {
-                attrs.primary {
-                    typographyH6 {
-                        +"COLOR M@STER"
-                    }
-                }
-                attrs.secondary {
-                    +"v2021.07.18"
-                }
+                attrs.primary { typographyH6 { +APP_NAME } }
+                attrs.secondary { +APP_VERSION }
             }
         }
         divider {}
