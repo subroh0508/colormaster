@@ -1,7 +1,4 @@
-import containers.AppFrameContainer
-import containers.IdolSearchContainer
-import containers.PenlightContainer
-import containers.PreviewContainer
+import containers.*
 import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import org.w3c.dom.url.URLSearchParams
@@ -16,6 +13,7 @@ fun RBuilder.routing() = browserRouter {
         switch {
             Languages.values().forEach { lang ->
                 route("${lang.basename}/", exact = true) { IdolSearchContainer() }
+                route("${lang.basename}/myidols", exact = true) { MyIdolsContainer() }
                 route("${lang.basename}/preview", exact = true) { PreviewContainer() }
                 route("${lang.basename}/penlight", exact = true) { PenlightContainer() }
                 route("${lang.basename}/howtouse", exact = true) { HowToUsePage() }
@@ -29,12 +27,13 @@ fun RBuilder.routing() = browserRouter {
 fun useQuery() = URLSearchParams(useLocation().search)
 
 fun isRoot(history: RouteResultHistory) = """(/[a-z]{2})?/?""".toRegex().matches(history.location.pathname)
-fun isExpandAppBar(history: RouteResultHistory) = """(/[a-z]{2})?/(howtouse|development|terms)""".toRegex().matches(history.location.pathname)
+fun isExpandAppBar(history: RouteResultHistory) = """(/[a-z]{2})?/(myidols|howtouse|development|terms)""".toRegex().matches(history.location.pathname)
 
 fun language(history: RouteResultHistory) = Languages.valueOfCode(history.langCode()) ?: Languages.JAPANESE
 
 fun RouteResultHistory.toRoot() = to("/")
 fun RouteResultHistory.toSearchBy(tab: SearchByTab) = to(if (tab == SearchByTab.BY_NAME) "/" else "?by=${tab.query}")
+fun RouteResultHistory.toMyIdols() = to("/myidols")
 fun RouteResultHistory.toHowToUse() = to("/howtouse")
 fun RouteResultHistory.toDevelopment() = to("/development")
 fun RouteResultHistory.toTerms() = to("/terms")
