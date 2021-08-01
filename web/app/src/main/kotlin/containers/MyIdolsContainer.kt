@@ -1,5 +1,6 @@
 package containers
 
+import AuthenticationProviderContext
 import KoinComponent
 import KoinContext
 import components.templates.myIdolsCards
@@ -23,7 +24,7 @@ val MyIdolsProviderContext = createContext<MyIdolsUiModel>()
 
 private fun module(appScope: CoroutineScope) = module {
     scope(named(MY_IDOLS_SCOPE_ID)) {
-        scoped { MyIdolsViewModel(appScope) }
+        scoped { MyIdolsViewModel(get(), appScope) }
     }
 }
 
@@ -31,6 +32,7 @@ private val MyIdolsContextProvider = KoinComponent(MyIdolsDispatcherContext, MY_
 
 private val MyIdolsContainer = functionalComponent<RProps> {
     val (_, appScope) = useContext(KoinContext)
+    val currentUser = useContext(AuthenticationProviderContext)
     val viewModel = useContext(MyIdolsDispatcherContext)
 
     val (uiModel, setUiModel) = useState(MyIdolsUiModel())
@@ -39,6 +41,12 @@ private val MyIdolsContainer = functionalComponent<RProps> {
         viewModel.uiModel.onEach {
             setUiModel(it)
         }.launchIn(appScope)
+    }
+
+    useEffect(currentUser) {
+        if (currentUser == null) return@useEffect
+
+        viewModel.loadFavorites()
     }
 
     MyIdolsProviderContext.Provider {

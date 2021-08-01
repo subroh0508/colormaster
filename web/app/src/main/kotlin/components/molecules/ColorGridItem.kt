@@ -54,7 +54,7 @@ private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { p
             }
         }
 
-        if (props.isSignedIn) {
+        if (props.isFavoriteEnable) {
             icon {
                 attrs.classes(classes.favoriteIcon)
                 attrs.onClickFunction = { handleOnFavoriteClick(props.item, !props.favorite) }
@@ -98,7 +98,7 @@ private inline fun throttleFirstMouseEventChannel(
 
 external interface ColorGridItem : RProps {
     var item: IdolColor
-    var isSignedIn: Boolean
+    var isFavoriteEnable: Boolean
     var isSelected: Boolean
     var favorite: Boolean
     var onClick: (IdolColor, Boolean) -> Unit

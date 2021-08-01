@@ -58,7 +58,7 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             div(classes.panel) {
                 idolColorGrids {
                     attrs.items = uiModel.items
-                    attrs.isSignedIn = currentUser != null
+                    attrs.isFavoriteEnable = currentUser != null
                     attrs.onClick = props.onClickIdolColor
                     attrs.onDoubleClick = props.onDoubleClickIdolColor
                     attrs.onFavoriteClick = props.onFavoriteClickIdolColor

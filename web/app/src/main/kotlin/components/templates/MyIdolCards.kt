@@ -1,5 +1,6 @@
 package components.templates
 
+import components.organisms.idolColorGrids
 import kotlinx.css.flexGrow
 import kotlinx.css.marginBottom
 import kotlinx.css.paddingTop
@@ -14,25 +15,38 @@ import materialui.styles.breakpoint.up
 import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
 import net.subroh0508.colormaster.model.IdolColor
+import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
 import react.*
 import react.dom.div
 import utilities.invoke
 import utilities.useTranslation
 
-fun RBuilder.myIdolsCards() = child(MyIdolCardsComponent)
+fun RBuilder.myIdolsCards(handler: RHandler<MyIdolCardsProps>) = child(MyIdolCardsComponent, handler = handler)
 
 external interface MyIdolCardsProps : RProps {
     var managed: List<IdolColor>
     var favorites: List<IdolColor>
 }
 
-private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> {
+private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props ->
     val classes = useStyles()
 
     container {
         div(classes.root) {
-            managedIdolsCard {  }
-            myFavoriteIdolsCard { }
+            managedIdolsCard {
+                idolColorGrids {
+                    attrs {
+                        items = props.managed.map { IdolColorListItem(it, selected = false, favorite = false) }
+                    }
+                }
+            }
+            myFavoriteIdolsCard {
+                idolColorGrids {
+                    attrs {
+                        items = props.favorites.map { IdolColorListItem(it, selected = false, favorite = false) }
+                    }
+                }
+            }
         }
     }
 }
