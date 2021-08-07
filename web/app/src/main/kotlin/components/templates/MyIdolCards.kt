@@ -24,8 +24,10 @@ import utilities.useTranslation
 fun RBuilder.myIdolsCards(handler: RHandler<MyIdolCardsProps>) = child(MyIdolCardsComponent, handler = handler)
 
 external interface MyIdolCardsProps : RProps {
-    var managed: List<IdolColor>
-    var favorites: List<IdolColor>
+    var managed: List<IdolColorListItem>
+    var favorites: List<IdolColorListItem>
+    var onSelectManaged: (item: IdolColor, isSelected: Boolean) -> Unit
+    var onSelectFavorite: (item: IdolColor, isSelected: Boolean) -> Unit
 }
 
 private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props ->
@@ -36,14 +38,16 @@ private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props
             managedIdolsCard {
                 idolColorGrids {
                     attrs {
-                        items = props.managed.map { IdolColorListItem(it, selected = false, favorite = false) }
+                        items = props.managed
+                        onClick = props.onSelectManaged
                     }
                 }
             }
             myFavoriteIdolsCard {
                 idolColorGrids {
                     attrs {
-                        items = props.favorites.map { IdolColorListItem(it, selected = false, favorite = false) }
+                        items = props.favorites
+                        onClick = props.onSelectFavorite
                     }
                 }
             }
