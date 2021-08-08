@@ -1,134 +1,167 @@
 package containers
 
-import koinApp
+import AuthenticationDispatcherContext
+import AuthenticationProviderContext
+import KoinContext
 import components.atoms.MenuComponent
 import components.atoms.appBarTop
 import components.atoms.searchByTabs
 import components.templates.appMenu
 import isExpandAppBar
 import isRoot
-import kotlinext.js.jsObject
 import language
 import materialui.styles.palette.PaletteType
 import materialui.useMediaQuery
-import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.w3c.dom.get
-import org.w3c.dom.set
 import react.*
 import react.router.dom.useHistory
 import themes.ThemeProvider
-import utilities.Actions
-import utilities.useTranslation
-import kotlinx.browser.localStorage
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import net.subroh0508.colormaster.model.authentication.CurrentUser
+import net.subroh0508.colormaster.presentation.home.viewmodel.JsAuthenticationViewModel
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 import toSearchBy
 import useQuery
+import utilities.BrowserAppPreference
 
 @Suppress("FunctionName")
-fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppFrameContainerComponent, handler = handler)
+fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppContextProvider, handler = handler)
 
-private val AppFrameContainerComponent = functionalComponent<RProps> { props ->
-    val preferredType = if (useMediaQuery("(prefers-color-scheme: dark)")) PaletteType.dark else PaletteType.light
-    val history = useHistory()
-    val lang = language(history)
-    val tab = SearchByTab.findByQuery(useQuery().get("by"))
-    val (_, i18n) = useTranslation()
+private const val APP_FRAME_SCOPE_ID = "APP_FRAME_SCOPE"
 
-    val (appState, dispatch) = useReducer(
-        reducer,
-        AppState()
-    )
+private val AppPreferenceDispatcherContext = createContext<AppPreference>()
+
+private val AppContextProvider = functionalComponent<RProps> { props ->
+    val (koinApp, appScope) = useContext(KoinContext)
+
+    val (appPreference, setAppPreference) = useState<AppPreference>()
+    val (viewModel, setViewModel) = useState<JsAuthenticationViewModel>()
 
     useEffectOnce {
-        dispatch(actions(ActionType.CHANGE) {
-            themeType = localStorage["paletteType"]?.let { PaletteType.valueOf(it) }
-        })
-    }
-    useEffect(preferredType) {
-        if (localStorage["paletteType"] != null) return@useEffect
-
-        dispatch(actions(ActionType.CHANGE) {
-            themeType = preferredType
-        })
-    }
-    useEffect(lang.code == i18n.language) {
-        AppPreferenceController.changeLanguage(lang)
-        i18n.changeLanguage(lang.code)
-    }
-    useEffect(appState) { localStorage["paletteType"] = appState.themeType.name }
-
-    fun closeMenu() = dispatch(actions(ActionType.CHANGE) { openDrawer = false })
-    fun toggleMenu() = dispatch(actions(ActionType.CHANGE) { openDrawer = !appState.openDrawer })
-    fun toggleTheme() = dispatch(actions(ActionType.CHANGE) { themeType = if (appState.themeType == PaletteType.light) PaletteType.dark else PaletteType.light })
-
-    ThemeProvider {
-        attrs.paletteType = appState.themeType
-
-        appBarTop {
-            attrs.themeType = appState.themeType
-            attrs.lang = lang
-            attrs.pathname = history.location.pathname
-            attrs.openDrawer = appState.openDrawer
-            attrs.expand = isExpandAppBar(history)
-            attrs.MenuComponent {
-                appMenu { attrs.onCloseMenu = { closeMenu() } }
-            }
-            attrs.onClickChangeTheme = { toggleTheme() }
-            attrs.onClickMenuIcon = { toggleMenu() }
-            attrs.onCloseMenu = { closeMenu() }
-
-            if (isRoot(history)) {
-                searchByTabs {
-                    attrs.index = tab.ordinal
-                    attrs.onChangeTab = history::toSearchBy
-                }
+        val module = module {
+            scope(named(APP_FRAME_SCOPE_ID)) {
+                scoped { JsAuthenticationViewModel(get(), appScope) }
             }
         }
 
-        props.children()
+        koinApp.modules(module)
+        koinApp.koin.createScope(APP_FRAME_SCOPE_ID, named(APP_FRAME_SCOPE_ID))
+
+        setAppPreference(value = koinApp.koin.get())
+        setViewModel(value = koinApp.koin.getScope(APP_FRAME_SCOPE_ID).get())
+
+        cleanup {
+            koinApp.unloadModules(module)
+            koinApp.koin.deleteScope(APP_FRAME_SCOPE_ID)
+        }
+    }
+
+    appPreference ?: return@functionalComponent
+    viewModel ?: return@functionalComponent
+
+    AppPreferenceDispatcherContext.Provider {
+        attrs.value = appPreference
+
+        AuthenticationDispatcherContext.Provider {
+            attrs.value = viewModel
+
+            child(AppFrameContainer) {
+                props.children()
+            }
+        }
     }
 }
 
-private data class AppState(
-    val themeType: PaletteType = PaletteType.light,
-    val openDrawer: Boolean = false
-)
+private val AppFrameContainer = functionalComponent<RProps> { props ->
+    val preferredType = if (useMediaQuery("(prefers-color-scheme: dark)")) PaletteType.dark else PaletteType.light
+    val history = useHistory()
+    val lang = language(history)
 
-private enum class ActionType {
-    CHANGE
-}
+    val appPreference = useContext(AppPreferenceDispatcherContext)
 
-private external interface Payload {
-    var themeType: PaletteType?
-    var openDrawer: Boolean?
-}
+    val (appPreferenceState, setAppPreferenceState) = useState(BrowserAppPreference.State(appPreference))
 
-private fun actions(
-    type: ActionType,
-    payload: Payload.() -> Unit
-) = utilities.actions<ActionType, Payload> {
-    this.type = type
-    this.payload = jsObject(payload)
-}
+    useEffectOnce {
+        val themeType = appPreference.themeType ?: return@useEffectOnce
 
-private val reducer = { state: AppState, action: Actions<ActionType, Payload> ->
-    val payload = action.payload
-
-    when (action.type) {
-        ActionType.CHANGE -> AppState(
-            themeType = payload.themeType ?: state.themeType,
-            openDrawer = payload.openDrawer ?: state.openDrawer
-        )
+        setAppPreferenceState(appPreferenceState.copy(themeType = themeType))
     }
-}
 
-private object AppPreferenceController : KoinComponent {
-    private val browserPref: AppPreference by inject()
+    useEffect(preferredType) {
+        if (appPreference.themeType != null) return@useEffect
 
-    fun changeLanguage(lang: Languages) { browserPref.setLanguage(lang) }
+        setAppPreferenceState(appPreferenceState.copy(themeType = preferredType))
+    }
+    useEffect(lang.code != appPreference.lang.code) {
+        appPreference.setLanguage(lang)
 
-    override fun getKoin() = koinApp.koin
+        setAppPreferenceState(appPreferenceState.copy(lang = lang))
+    }
+
+    useEffect(appPreferenceState) { appPreference.setThemeType(appPreferenceState.themeType) }
+
+    fun toggleTheme() {
+        setAppPreferenceState(appPreferenceState.copy(
+            themeType = if (appPreferenceState.themeType == PaletteType.light)
+                PaletteType.dark
+            else
+                PaletteType.light
+        ))
+    }
+
+    val tab = SearchByTab.findByQuery(useQuery().get("by"))
+
+    val (_, appScope) = useContext(KoinContext)
+    val viewModel = useContext(AuthenticationDispatcherContext)
+
+    val (openDrawer, setOpenDrawer) = useState(false)
+    val (currentUser, setCurrentUser) = useState<CurrentUser?>(null)
+
+    useEffectOnce {
+        viewModel.uiModel.onEach {
+            setCurrentUser(it.currentUser)
+        }.launchIn(appScope)
+
+        viewModel.subscribe()
+    }
+
+    fun closeMenu() { setOpenDrawer(false) }
+    fun toggleMenu() { setOpenDrawer(!openDrawer) }
+
+    ThemeProvider {
+        attrs.paletteType = appPreferenceState.themeType
+
+        AuthenticationProviderContext.Provider {
+            attrs.value = currentUser
+
+            appBarTop {
+                attrs.themeType = appPreferenceState.themeType
+                attrs.lang = appPreferenceState.lang
+                attrs.pathname = history.location.pathname
+                attrs.openDrawer = openDrawer
+                attrs.expand = isExpandAppBar(history)
+                attrs.MenuComponent {
+                    appMenu {
+                        attrs.currentUser = currentUser
+                        attrs.onCloseMenu = ::closeMenu
+                    }
+                }
+                attrs.onClickChangeTheme = { toggleTheme() }
+                attrs.onClickMenuIcon = { toggleMenu() }
+                attrs.onCloseMenu = ::closeMenu
+
+                if (isRoot(history)) {
+                    searchByTabs {
+                        attrs.index = tab.ordinal
+                        attrs.onChangeTab = history::toSearchBy
+                    }
+                }
+            }
+
+            props.children()
+        }
+    }
 }

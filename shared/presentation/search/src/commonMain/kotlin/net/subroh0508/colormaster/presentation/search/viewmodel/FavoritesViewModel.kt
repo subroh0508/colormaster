@@ -2,7 +2,6 @@ package net.subroh0508.colormaster.presentation.search.viewmodel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -17,14 +16,14 @@ class FavoritesViewModel(
     repository: IdolColorsRepository,
     coroutineScope: CoroutineScope? = null,
 ) : SearchViewModel<SearchParams.None>(repository, SearchParams.None, coroutineScope) {
-    @ExperimentalCoroutinesApi
     override val uiModel: Flow<SearchUiModel>
         get() = combine(
             idolsLoadState,
             selected,
+            inCharges,
             favorites,
-        ) { loadState, selected, favorites ->
-            SearchUiModel(loadState, selected, favorites)
+        ) { loadState, selected, inCharges, favorites ->
+            SearchUiModel(loadState, selected, inCharges, favorites)
         }.distinctUntilChanged()
 
     override fun search() {

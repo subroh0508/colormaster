@@ -48,6 +48,7 @@ fun Search(
 
     SideEffect {
         viewModel.search()
+        viewModel.loadInCharges()
         viewModel.loadFavorites()
     }
 

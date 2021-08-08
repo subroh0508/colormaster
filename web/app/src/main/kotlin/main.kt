@@ -1,20 +1,26 @@
 import kotlinx.coroutines.MainScope
-import net.subroh0508.colormaster.components.core.AppModule
-import org.koin.core.context.startKoin
-import org.koin.dsl.koinApplication
 import react.dom.render
 import utilities.*
 import kotlinx.browser.document
 import kotlinx.browser.window
-import org.koin.core.logger.PrintLogger
+import net.subroh0508.colormaster.components.core.FirebaseOptions
+import net.subroh0508.colormaster.components.core.initializeApp
 import react.Suspense
 
 val mainScope = MainScope()
-val koinApp = koinApplication {
-    modules(AppModule + AppPreferenceModule)
-}
 
 fun main() {
+    initializeApp(FirebaseOptions(
+        API_KEY,
+        AUTH_DOMAIN,
+        DATABASE_URL,
+        PROJECT_ID,
+        STORAGE_BUCKET,
+        MESSAGING_SENDER_ID,
+        APP_ID,
+        MEASUREMENT_ID,
+    ))
+
     window.onload = {
         render(document.getElementById("root")) {
             I18nextProvider {
@@ -23,7 +29,7 @@ fun main() {
                 Suspense {
                     attrs.asDynamic()["fallback"] = "Loading..."
 
-                    routing()
+                    KoinAppProvider { routing() }
                 }
             }
         }

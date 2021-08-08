@@ -5,9 +5,9 @@ import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.should
 import io.ktor.client.*
 import net.subroh0508.colormaster.api.imasparql.di.Api
-import net.subroh0508.colormaster.db.IdolColorsDatabase
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
+import net.subroh0508.colormaster.model.ui.commons.ThemeType
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import net.subroh0508.colormaster.repository.di.IdolColorsRepositories
 import net.subroh0508.colormaster.repository.mock.*
@@ -15,25 +15,22 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class IdolColorsRepositorySpec : FunSpec() {
-    private val mockDatabase: IdolColorsDatabase = object : IdolColorsDatabase {
-        override suspend fun getFavorites() = setOf<String>()
-        override suspend fun addFavorite(id: String) = Unit
-        override suspend fun removeFavorite(id: String) = Unit
-    }
-
     private fun mockApi(
         languages: Languages,
         block: () -> HttpClient,
     ): IdolColorsRepository = koinApplication {
         val appPreference: AppPreference = object : AppPreference {
+            override val themeType: ThemeType? = null
             override val lang = languages
+            override fun setThemeType(type: ThemeType) = Unit
             override fun setLanguage(lang: Languages) = Unit
         }
 
         modules(
             Api.Module(block()) + module {
-                single { mockDatabase }
                 single { appPreference }
+                single { mockAuthenticationClient }
+                single { mockFirestoreClient }
             } + IdolColorsRepositories.Module
         )
     }.koin.get(IdolColorsRepository::class)

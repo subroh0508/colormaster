@@ -14,6 +14,7 @@ external interface I18next {
     fun use(module: dynamic): I18next
     fun changeLanguage(lng: String): Promise<I18nextText>
     fun t(vararg arg: Any): String
+
     val languages: Array<String>
     val language: String
 }

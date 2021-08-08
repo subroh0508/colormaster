@@ -1,5 +1,6 @@
 package components.templates
 
+import AuthenticationDispatcherContext
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import components.atoms.link
@@ -10,19 +11,23 @@ import materialui.components.list.list
 import materialui.components.listitem.listItem
 import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
+import materialui.components.tooltip.tooltip
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.components.typography.typographyH6
 import materialui.styles.makeStyles
 import materialui.styles.muitheme.spacing
+import materialui.styles.typography.fontSize
+import net.subroh0508.colormaster.model.authentication.CurrentUser
+import net.subroh0508.colormaster.presentation.home.viewmodel.JsAuthenticationViewModel
 import react.*
 import react.router.dom.useHistory
 import toDevelopment
 import toHowToUse
+import toMyIdols
 import toRoot
 import toTerms
-import utilities.invoke
-import utilities.useTranslation
+import utilities.*
 
 fun RBuilder.appMenu(handler: RHandler<AppMenuProps>) = child(AppMenuComponent, handler = handler)
 
@@ -31,18 +36,14 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
     val history = useHistory()
     val (t, _) = useTranslation()
 
+    val viewModel = useContext(AuthenticationDispatcherContext)
+
     list {
         listItem {
             attrs.classes(classes.title)
             listItemText {
-                attrs.primary {
-                    typographyH6 {
-                        +"COLOR M@STER"
-                    }
-                }
-                attrs.secondary {
-                    +"v2021.07.18"
-                }
+                attrs.primary { typographyH6 { +APP_NAME } }
+                attrs.secondary { +APP_VERSION }
             }
         }
         divider {}
@@ -52,6 +53,14 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
             id = "search-idol", label = t("appMenu.search.attributes")
         ) { history.toRoot() }
         divider {}
+        if (viewModel.signedIn) {
+            parent(classes, t("appMenu.myPage.label"))
+            nestedListItem(
+                classes,
+                id = "mypage-myidols", label = t("appMenu.myPage.myIdols")
+            ) { history.toMyIdols() }
+            divider {}
+        }
         parent(classes, t("appMenu.about.label"))
         nestedListItem(
             classes,
@@ -66,6 +75,20 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
             id = "about-terms", label = t("appMenu.about.terms")
         ) { history.toTerms() }
         divider {}
+        parent(classes, t("appMenu.account.label")) {
+            tooltip {
+                attrs { title { +t("appMenu.account.description") } }
+
+                icon { attrs.classes(classes.helpIcon); +"help_outline_icon" }
+            }
+        }
+        signInWithGoogle(
+            classes,
+            t = t,
+            currentUser = props.currentUser,
+            viewModel = viewModel,
+        )
+        divider {}
         anchorItem(
             classes,
             id = "github", label = t("appMenu.links.github"), href = "https://github.com/subroh0508/colormaster"
@@ -79,7 +102,8 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
 
 private fun RBuilder.parent(
     classes: AppMenuStyle,
-    label: String
+    label: String,
+    block: RBuilder.() -> Unit = {},
 ) = list {
     attrs.classes(classes.parent)
 
@@ -88,6 +112,8 @@ private fun RBuilder.parent(
         attrs.variant = TypographyVariant.subtitle1
         +label
     }
+
+    block()
 }
 
 private fun RBuilder.nestedListItem(
@@ -102,6 +128,30 @@ private fun RBuilder.nestedListItem(
         attrs.classes(classes.itemButton)
         attrs.onClickFunction = { onClick() }
         +label
+    }
+}
+
+private fun RBuilder.signInWithGoogle(
+    classes: AppMenuStyle,
+    t: I18nextText,
+    currentUser: CurrentUser?,
+    viewModel: JsAuthenticationViewModel,
+) = list {
+    key = "sign-in-with-google"
+    attrs.classes(classes.item)
+
+    if (currentUser?.isAnonymous != false) {
+        button {
+            attrs.classes(classes.googleButton)
+            attrs.onClickFunction = { viewModel.signInGoogle(isMobile) }
+        }
+        return@list
+    }
+
+    button {
+        attrs.classes(classes.itemButton)
+        attrs.onClickFunction = { viewModel.signOut() }
+        +t("appMenu.account.signOut")
     }
 }
 
@@ -132,6 +182,7 @@ private fun RBuilder.anchorItem(
 }
 
 external interface AppMenuProps : RProps {
+    var currentUser: CurrentUser?
     var onCloseMenu: () -> Unit
 }
 
@@ -139,8 +190,10 @@ private external interface AppMenuStyle {
     val title: String
     val parent: String
     val parentLabel: String
+    val helpIcon: String
     val item: String
     val itemButton: String
+    val googleButton: String
     val itemIcon: String
 }
 
@@ -155,6 +208,10 @@ private val useStyles = makeStyles<AppMenuStyle> {
     "parentLabel" {
         fontWeight = FontWeight.w700
     }
+    "helpIcon" {
+        margin(LinearDimension.auto, 4.px)
+        fontSize = theme.typography.subtitle1.fontSize
+    }
     "item" {
         display = Display.flex
         paddingTop = 0.px
@@ -165,6 +222,14 @@ private val useStyles = makeStyles<AppMenuStyle> {
         paddingLeft = theme.spacing(4)
         justifyContent = JustifyContent.flexStart
         textTransform = TextTransform.none
+    }
+    "googleButton" {
+        height = 52.px
+        width = 100.pct
+        padding(0.px, theme.spacing(2))
+        margin(theme.spacing(1), theme.spacing(4), theme.spacing(2))
+        background = "url(/sign_in_with_google.png)"
+        backgroundSize = "contain"
     }
     "itemIcon" {
         minWidth = 36.px

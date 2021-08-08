@@ -14,19 +14,14 @@ abstract class SearchViewModel<T: SearchParams>(
     emptyParams: T,
     coroutineScope: CoroutineScope? = null,
 ) : ViewModel(coroutineScope) {
-    @ExperimentalCoroutinesApi
     protected val searchParams: MutableStateFlow<T> by lazy { MutableStateFlow(emptyParams) }
-    @ExperimentalCoroutinesApi
     protected val idolsLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<IdolColor>>(listOf())) }
-    @ExperimentalCoroutinesApi
     protected val selected: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
-    @ExperimentalCoroutinesApi
+    protected val inCharges: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
     protected val favorites: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
 
     private val items: List<IdolColor> get() = idolsLoadState.value.getValueOrNull() ?: listOf()
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     abstract val uiModel: Flow<SearchUiModel>
 
     open fun search() {
@@ -56,10 +51,22 @@ abstract class SearchViewModel<T: SearchParams>(
     fun select(item: IdolColor, selected: Boolean) { this.selected.value = if (selected) this.selected.value + listOf(item.id) else this.selected.value - listOf(item.id) }
     fun selectAll(selected: Boolean) { this.selected.value = if (selected) items.map(IdolColor::id) else listOf() }
 
+    fun loadInCharges() {
+        viewModelScope.launch { inCharges.value = idolColorsRepository.getInChargeOfIdolIds() }
+    }
     fun loadFavorites() {
         viewModelScope.launch { favorites.value = idolColorsRepository.getFavoriteIdolIds() }
     }
 
+    fun registerInChargeOf(id: String, inCharge: Boolean) {
+        viewModelScope.launch {
+            if (inCharge)
+                idolColorsRepository.registerInChargeOf(id)
+            else
+                idolColorsRepository.unregisterInChargeOf(id)
+            inCharges.value = idolColorsRepository.getInChargeOfIdolIds()
+        }
+    }
     fun favorite(id: String, favorite: Boolean) {
         viewModelScope.launch {
             if (favorite)

@@ -12,14 +12,16 @@ import kotlinx.coroutines.launch
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import kotlinx.html.js.*
+import materialui.components.icon.enums.IconFontSize
 import materialui.components.icon.icon
 import materialui.components.paper.paper
 import materialui.styles.makeStyles
+import materialui.styles.palette.primary
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.common.throttleFirst
 import react.*
 import react.dom.attrs
-import styled.ReactModule
+import react.dom.div
 import styled.animation
 import utilities.isMobile
 
@@ -31,6 +33,8 @@ private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { p
 
     val handleOnClick = useCallback(props.onClick, arrayOf(props.item.id))
     val handleOnDoubleClick = useCallback(props.onDoubleClick, arrayOf(props.item.id))
+    val handleOnInChargeClick = useCallback(props.onInChargeClick, arrayOf(props.item.id))
+    val handleOnFavoriteClick = useCallback(props.onFavoriteClick, arrayOf(props.item.id))
 
     val channel = throttleFirstMouseEventChannel(100) { setMouseEvent(it) }
 
@@ -38,39 +42,58 @@ private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { p
         if (previous == Mouse.CLICK || next == Mouse.CLICK) channel?.trySend(next) else setMouseEvent(next)
     }
 
-    paper {
-        attrs {
-            classes(rootStyle(classes, mouse, props.isSelected))
-
-            onClickFunction = { offerMouseEvent(mouse, Mouse.CLICK) }
-            onMouseOverFunction = { offerMouseEvent(mouse, Mouse.OVER) }
-            onMouseOutFunction = { offerMouseEvent(mouse, Mouse.OUT) }
-        }
-
-        if (props.isSelected) {
-            icon {
-                attrs.classes(classes.checkIcon)
-                +"check_circle_outline_icon"
-            }
-        }
-
-        clickHandler {
-            key = props.item.id
-
+    div(classes.frame) {
+        paper {
             attrs {
-                onClick = { handleOnClick(props.item, !props.isSelected) }
-                onDoubleClick = { handleOnDoubleClick(props.item) }
+                classes(rootStyle(classes, mouse, props.isSelected))
+
+                onClickFunction = { offerMouseEvent(mouse, Mouse.CLICK) }
+                onMouseOverFunction = { offerMouseEvent(mouse, Mouse.OVER) }
+                onMouseOutFunction = { offerMouseEvent(mouse, Mouse.OUT) }
             }
 
-            colorPreviewItem {
+            if (props.isSelected) {
+                icon {
+                    attrs.classes(classes.checkIcon)
+                    +"check_circle_outline_icon"
+                }
+            }
+
+            clickHandler {
+                key = props.item.id
+
                 attrs {
-                    name = props.item.name
-                    color = props.item.color
-                    isBrighter = props.item.isBrighter
+                    onClick = { handleOnClick(props.item, !props.isSelected) }
+                    onDoubleClick = { handleOnDoubleClick(props.item) }
+                }
+
+                colorPreviewItem {
+                    attrs {
+                        name = props.item.name
+                        color = props.item.color
+                        isBrighter = props.item.isBrighter
+                    }
                 }
             }
         }
+
+        if (props.isBottomIconsVisible) {
+            icon {
+                attrs.classes(classes.inChargeIcon)
+                attrs.fontSize = IconFontSize.small
+                attrs.onClickFunction = { handleOnInChargeClick(props.item, !props.inCharge) }
+                +"star${if (props.inCharge) "" else "_border"}_icon"
+            }
+
+            icon {
+                attrs.classes(classes.favoriteIcon)
+                attrs.fontSize = IconFontSize.small
+                attrs.onClickFunction = { handleOnFavoriteClick(props.item, !props.favorite) }
+                +"favorite${if (props.favorite) "" else "_border"}_icon"
+            }
+        }
     }
+
 })
 
 private inline fun throttleFirstMouseEventChannel(
@@ -90,17 +113,25 @@ private inline fun throttleFirstMouseEventChannel(
 
 external interface ColorGridItem : RProps {
     var item: IdolColor
+    var isBottomIconsVisible: Boolean
     var isSelected: Boolean
+    var inCharge: Boolean
+    var favorite: Boolean
     var onClick: (IdolColor, Boolean) -> Unit
     var onDoubleClick: (IdolColor) -> Unit
+    var onInChargeClick: (IdolColor, Boolean) -> Unit
+    var onFavoriteClick: (IdolColor, Boolean) -> Unit
 }
 
 private external interface ColorGridStyle {
+    val frame: String
     val root: String
     val small: String
     val mouseOver: String
     val mouseOut: String
     val checkIcon: String
+    val inChargeIcon: String
+    val favoriteIcon: String
 }
 
 private enum class Mouse {
@@ -108,10 +139,14 @@ private enum class Mouse {
 }
 
 private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
-    dynamic("root") { props ->
+    "frame" {
+        position = Position.relative
         width = 100.pct
+    }
+    dynamic("root") { props ->
+        position = Position.relative
         color = if (props.item.isBrighter) Color.black else Color.white
-        margin(4.px)
+        margin(4.px, 4.px, if (props.isBottomIconsVisible) 24.px else 4.px)
 
         descendants(".$COLOR_PREVIEW_ITEM_CLASS_NAME") {
             height = 50.px
@@ -144,6 +179,20 @@ private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
         left = 0.px
         bottom = 0.px
         margin(LinearDimension.auto, 4.px)
+    }
+    "inChargeIcon" {
+        position = Position.absolute
+        right = 24.px
+        bottom = 0.px
+        margin(LinearDimension.auto, 4.px)
+        color = theme.palette.text.primary
+    }
+    "favoriteIcon" {
+        position = Position.absolute
+        right = 0.px
+        bottom = 0.px
+        margin(LinearDimension.auto, 4.px)
+        color = theme.palette.text.primary
     }
 }
 

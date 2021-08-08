@@ -1,5 +1,6 @@
 package components.templates
 
+import AuthenticationProviderContext
 import components.atoms.*
 import components.organisms.IDOL_COLOR_GRID_ACTIONS_CLASS_NAME
 import components.organisms.idolColorGridsActions
@@ -23,15 +24,15 @@ import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.*
 import react.dom.div
 import themes.APP_BAR_SM_UP
-import utilities.useTranslation
 
 fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(IdolSearchPanelComponent, handler = handler)
 
 private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps> { props ->
     val classes = useStyles()
-    val (t, _) = useTranslation()
     val isSmUp = useMediaQuery("@media (min-width: 600px)")
     val uiModel = props.model
+
+    val currentUser = useContext(AuthenticationProviderContext)
 
     val drawerAnchor = if (isSmUp) DrawerAnchor.right else DrawerAnchor.bottom
     val actionsStyle = "${classes.actions} ${if (props.isOpenedGrids) "" else classes.actionsHide}"
@@ -57,8 +58,11 @@ private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps>
             div(classes.panel) {
                 idolColorGrids {
                     attrs.items = uiModel.items
+                    attrs.isBottomIconsVisible = currentUser != null
                     attrs.onClick = props.onClickIdolColor
                     attrs.onDoubleClick = props.onDoubleClickIdolColor
+                    attrs.onInChargeClick = props.onInChargeClickIdolColor
+                    attrs.onFavoriteClick = props.onFavoriteClickIdolColor
                 }
             }
 
@@ -83,6 +87,8 @@ external interface IdolSearchPanelProps : RProps {
     var onChangeSearchQuery: (String?) -> Unit
     var onClickIdolColor: (IdolColor, Boolean) -> Unit
     var onDoubleClickIdolColor: (IdolColor) -> Unit
+    var onInChargeClickIdolColor: (IdolColor, Boolean) -> Unit
+    var onFavoriteClickIdolColor: (IdolColor, Boolean) -> Unit
     var onClickPreview: () -> Unit
     var onClickPenlight: () -> Unit
     var onClickSelectAll: (Boolean) -> Unit

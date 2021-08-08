@@ -25,9 +25,10 @@ sealed class SearchUiModel {
         operator fun invoke(
             loadState: LoadState,
             selected: List<String>,
+            inCharges: List<String>,
             favorites: List<String>,
         ) = Favorites(
-            loadState.getIdolColorListItems(selected, favorites),
+            loadState.getIdolColorListItems(selected, inCharges, favorites),
             loadState.getErrorOrNull(),
             loadState.isLoading,
         )
@@ -36,9 +37,10 @@ sealed class SearchUiModel {
             params: SearchParams.ByName,
             loadState: LoadState,
             selected: List<String>,
+            inCharges: List<String>,
             favorites: List<String>,
         ) = ByName(
-            loadState.getIdolColorListItems(selected, favorites),
+            loadState.getIdolColorListItems(selected, inCharges, favorites),
             params,
             loadState.getErrorOrNull(),
             loadState.isLoading,
@@ -49,9 +51,10 @@ sealed class SearchUiModel {
             idolColorLoadState: LoadState,
             liveLoadState: LoadState,
             selected: List<String>,
+            inCharges: List<String>,
             favorites: List<String>,
         ) = ByLive(
-            idolColorLoadState.getIdolColorListItems(selected, favorites),
+            idolColorLoadState.getIdolColorListItems(selected, inCharges, favorites),
             params.suggests(liveLoadState.getValueOrNull() ?: listOf()),
             idolColorLoadState.getErrorOrNull() ?: liveLoadState.getErrorOrNull(),
             idolColorLoadState.isLoading || liveLoadState.isLoading,
@@ -59,9 +62,10 @@ sealed class SearchUiModel {
 
         private fun LoadState.getIdolColorListItems(
             selected: List<String>,
+            inCharges: List<String>,
             favorites: List<String>,
         ) = getValueOrNull<List<IdolColor>>()
-            ?.map { IdolColorListItem(it, selected.contains(it.id), favorites.contains(it.id)) }
+            ?.map { IdolColorListItem(it, selected.contains(it.id), inCharges.contains(it.id), favorites.contains(it.id)) }
             ?: listOf()
     }
 

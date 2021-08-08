@@ -9,11 +9,21 @@
       "label": "Search",
       "attributes": "Name/Attributes"
     },
+    "myPage": {
+      "label": "My Page",
+      "myIdols": "In Charge Of/Favorites"
+    },
     "about": {
       "label": "About",
       "howToUse": "How to use",
       "development": "How it works",
       "terms": "Terms"
+    },
+    "account": {
+      "label": "Account",
+      "description": "By linking to an external account, you can register and view in charge of and favorite idols.",
+      "signInWithGoogle": "Sign in with Google",
+      "signOut": "Sign out"
     },
     "links": {
       "github": "GitHub",
@@ -51,12 +61,19 @@
   },
   "searchPanel": {
     "messages": {
-      "default_by_name": "10 idols at random",
-      "default_by_live": "Please input Live Name",
+      "defaultByName": "10 idols at random",
+      "defaultByLive": "Please input Live Name",
       "searching": "Searching...",
       "error": "Error",
       "success": "Result: {{count}} idol",
-      "success_plural": "Result: {{count}} idols"
+      "successPlural": "Result: {{count}} idols"
+    }
+  },
+  "myPage": {
+    "myIdols": {
+      "inCharges": "In Charge Of Idols",
+      "favorites": "Favorite Idols",
+      "groups": "My Groups"
     }
   },
   "about": {

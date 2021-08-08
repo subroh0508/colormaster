@@ -13,6 +13,7 @@ object Libraries {
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val js = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
+        const val playServices = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$version"
 
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
     }
@@ -66,7 +67,7 @@ object Libraries {
         const val material = "com.google.android.material:material:$materialVersion"
 
         object Compose {
-            const val version = "1.0.0-rc02"
+            const val version = "1.0.0"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val material = "androidx.compose.material:material:$version"
@@ -79,6 +80,20 @@ object Libraries {
 
             const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
+    }
+
+    object Firebase {
+        private const val bomVersion = "28.2.1"
+
+        const val bom = "com.google.firebase:firebase-bom:$bomVersion"
+        const val auth = "com.google.firebase:firebase-auth-ktx"
+        const val firestore = "com.google.firebase:firebase-firestore-ktx"
+    }
+
+    object GoogleServices {
+        private const val authVersion = "19.0.0"
+
+        const val auth = "com.google.android.gms:play-services-auth:$authVersion"
     }
 
     object Html {
@@ -123,6 +138,9 @@ object Libraries {
         const val reactAutoSuggestVersion = "10.0.2"
         const val reactAutoSuggest = "react-autosuggest"
 
+        const val firebaseVersion = "8.7.1"
+        const val firebase = "firebase"
+
         object I18next {
             const val version = "^19.4.5"
             const val core = "i18next"
@@ -136,7 +154,7 @@ object Libraries {
     }
 
     object MockK {
-        private const val version = "1.11.0"
+        private const val version = "1.12.0"
 
         const val core = "io.mockk:mockk-common:$version"
         const val android = "io.mockk:mockk:$version"

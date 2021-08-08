@@ -18,10 +18,8 @@ class PreviewViewModel(
     private val repository: IdolColorsRepository,
     coroutineScope: CoroutineScope? = null,
 ) : ViewModel(coroutineScope) {
-    @ExperimentalCoroutinesApi
     private val _idolsLoadState: MutableStateFlow<LoadState> by lazy { MutableStateFlow(LoadState.Loaded<List<IdolColor>>(listOf())) }
 
-    @ExperimentalCoroutinesApi
     val uiModel: Flow<FullscreenPreviewUiModel>
         get() = _idolsLoadState.map { FullscreenPreviewUiModel(it) }
             .apply { launchIn(viewModelScope) }
