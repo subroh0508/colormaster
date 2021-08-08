@@ -154,7 +154,7 @@ object Libraries {
     }
 
     object MockK {
-        private const val version = "1.11.0"
+        private const val version = "1.12.0"
 
         const val core = "io.mockk:mockk-common:$version"
         const val android = "io.mockk:mockk:$version"

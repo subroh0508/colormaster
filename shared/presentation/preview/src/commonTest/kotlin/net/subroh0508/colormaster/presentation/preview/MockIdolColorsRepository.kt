@@ -7,8 +7,11 @@ class MockIdolColorsRepository : IdolColorsRepository {
     lateinit var expectedIds: List<String>
     lateinit var everySearch: (List<String>) -> List<IdolColor>
 
+    override suspend fun registerInChargeOf(id: String) = Unit
+    override suspend fun unregisterInChargeOf(id: String) = Unit
     override suspend fun favorite(id: String) = Unit
     override suspend fun unfavorite(id: String) = Unit
+    override suspend fun getInChargeOfIdolIds(): List<String> = listOf()
     override suspend fun getFavoriteIdolIds(): List<String> = listOf()
     override suspend fun rand(limit: Int): List<IdolColor> = listOf()
     override suspend fun search(ids: List<String>): List<IdolColor> = if (expectedIds == ids) everySearch(ids) else listOf()
