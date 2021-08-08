@@ -21,7 +21,7 @@
     },
     "account": {
       "label": "Account",
-      "description": "By linking to an external account, you can register and view your favorite idols.",
+      "description": "By linking to an external account, you can register and view in charge of and favorite idols.",
       "signInWithGoogle": "Sign in with Google",
       "signOut": "Sign out"
     },
