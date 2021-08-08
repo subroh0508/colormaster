@@ -9,17 +9,20 @@ data class IdolColorListItem internal constructor(
     val name: IdolName,
     val hexColor: HexColor,
     val selected: Boolean = false,
+    val inCharge: Boolean = false,
     val favorite: Boolean = false,
 ) {
     constructor(
         idolColor: IdolColor,
         selected: Boolean = false,
+        inCharge: Boolean = false,
         favorite: Boolean = false,
     ) : this(
         idolColor.id,
         IdolName(idolColor.name),
         idolColor.hexColor,
         selected,
+        inCharge,
         favorite,
     )
 

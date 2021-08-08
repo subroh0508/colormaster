@@ -11,7 +11,7 @@
     },
     "myPage": {
       "label": "マイページ",
-      "myIdols": "担当・推し・グループ"
+      "myIdols": "担当・推し"
     },
     "about": {
       "label": "このアプリについて",
@@ -71,7 +71,7 @@
   },
   "myPage": {
     "myIdols": {
-      "managed": "担当アイドル一覧",
+      "inCharges": "担当アイドル一覧",
       "favorites": "推しアイドル一覧",
       "groups": "マイグループ"
     }

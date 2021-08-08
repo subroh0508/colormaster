@@ -12,9 +12,11 @@ import kotlinx.coroutines.launch
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import kotlinx.html.js.*
+import materialui.components.icon.enums.IconFontSize
 import materialui.components.icon.icon
 import materialui.components.paper.paper
 import materialui.styles.makeStyles
+import materialui.styles.palette.primary
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.common.throttleFirst
 import react.*
@@ -30,6 +32,7 @@ private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { p
 
     val handleOnClick = useCallback(props.onClick, arrayOf(props.item.id))
     val handleOnDoubleClick = useCallback(props.onDoubleClick, arrayOf(props.item.id))
+    val handleOnInChargeClick = useCallback(props.onInChargeClick, arrayOf(props.item.id))
     val handleOnFavoriteClick = useCallback(props.onFavoriteClick, arrayOf(props.item.id))
 
     val channel = throttleFirstMouseEventChannel(100) { setMouseEvent(it) }
@@ -54,9 +57,17 @@ private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { p
             }
         }
 
-        if (props.isFavoriteEnable) {
+        if (props.isBottomIconsVisible) {
+            icon {
+                attrs.classes(classes.inChargeIcon)
+                attrs.fontSize = IconFontSize.small
+                attrs.onClickFunction = { handleOnInChargeClick(props.item, !props.inCharge) }
+                +"star${if (props.inCharge) "" else "_border"}_icon"
+            }
+
             icon {
                 attrs.classes(classes.favoriteIcon)
+                attrs.fontSize = IconFontSize.small
                 attrs.onClickFunction = { handleOnFavoriteClick(props.item, !props.favorite) }
                 +"favorite${if (props.favorite) "" else "_border"}_icon"
             }
@@ -98,11 +109,13 @@ private inline fun throttleFirstMouseEventChannel(
 
 external interface ColorGridItem : RProps {
     var item: IdolColor
-    var isFavoriteEnable: Boolean
+    var isBottomIconsVisible: Boolean
     var isSelected: Boolean
+    var inCharge: Boolean
     var favorite: Boolean
     var onClick: (IdolColor, Boolean) -> Unit
     var onDoubleClick: (IdolColor) -> Unit
+    var onInChargeClick: (IdolColor, Boolean) -> Unit
     var onFavoriteClick: (IdolColor, Boolean) -> Unit
 }
 
@@ -112,6 +125,7 @@ private external interface ColorGridStyle {
     val mouseOver: String
     val mouseOut: String
     val checkIcon: String
+    val inChargeIcon: String
     val favoriteIcon: String
 }
 
@@ -124,7 +138,7 @@ private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
         position = Position.relative
         width = 100.pct
         color = if (props.item.isBrighter) Color.black else Color.white
-        margin(4.px)
+        margin(4.px, 4.px, if (props.isBottomIconsVisible) 24.px else 4.px)
 
         descendants(".$COLOR_PREVIEW_ITEM_CLASS_NAME") {
             height = 50.px
@@ -158,13 +172,19 @@ private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
         bottom = 0.px
         margin(LinearDimension.auto, 4.px)
     }
-
+    "inChargeIcon" {
+        position = Position.absolute
+        right = 24.px
+        bottom = (-24).px
+        margin(LinearDimension.auto, 4.px)
+        color = theme.palette.text.primary
+    }
     "favoriteIcon" {
         position = Position.absolute
-        top = 0.px
         right = 0.px
-        bottom = 0.px
+        bottom = (-24).px
         margin(LinearDimension.auto, 4.px)
+        color = theme.palette.text.primary
     }
 }
 

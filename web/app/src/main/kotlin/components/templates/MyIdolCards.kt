@@ -70,7 +70,7 @@ private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props
 
 private fun RBuilder.managedIdolsCard(
     handler: RHandler<RProps>,
-) = cardFrame("myPage.myIdols.managed", handler)
+) = cardFrame("myPage.myIdols.inCharges", handler)
 private fun RBuilder.myFavoriteIdolsCard(
     handler: RHandler<RProps>,
 ) = cardFrame("myPage.myIdols.favorites", handler)

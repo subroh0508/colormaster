@@ -2,7 +2,6 @@ package net.subroh0508.colormaster.presentation.search.viewmodel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.model.IdolColor
@@ -26,9 +25,17 @@ class SearchByLiveViewModel(
             idolsLoadState,
             liveLoadState,
             selected,
+            inCharges,
             favorites,
-        ) { params, idolsLoadState, liveLoadState, selected, favorites ->
-            SearchUiModel(params, idolsLoadState, liveLoadState, selected, favorites)
+        ) { args ->
+            SearchUiModel(
+                args[0] as SearchParams.ByLive,
+                args[1] as LoadState,
+                args[2] as LoadState,
+                args[3] as List<String>,
+                args[4] as List<String>,
+                args[5] as List<String>,
+            )
         }.distinctUntilChanged().apply { launchIn(viewModelScope) }
 
     fun changeLiveNameSuggestQuery(rawQuery: String?) = setSearchParams(searchParams.value.change(rawQuery))

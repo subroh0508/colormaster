@@ -11,7 +11,7 @@
     },
     "myPage": {
       "label": "My Page",
-      "myIdols": "Managed/Favorites/Groups"
+      "myIdols": "In Charge Of/Favorites"
     },
     "about": {
       "label": "About",
@@ -71,7 +71,7 @@
   },
   "myPage": {
     "myIdols": {
-      "managed": "Managed Idols",
+      "inCharges": "In Charge Of Idols",
       "favorites": "Favorites Idols",
       "groups": "My Groups"
     }
