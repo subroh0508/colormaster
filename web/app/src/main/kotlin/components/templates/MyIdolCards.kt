@@ -113,7 +113,11 @@ private fun RBuilder.cardFrame(
             }
         }
 
-        cardContent { props.children() }
+        cardContent {
+            attrs.classes(classes.cardContent)
+
+            props.children()
+        }
     }
 }, handler = handler)
 
@@ -122,6 +126,7 @@ private const val MY_IDOL_CARD_ELEMENT_CLASS_NAME = "my-idol-card-element"
 private external interface MyIdolCardsStyles {
     val root: String
     val card: String
+    val cardContent: String
 }
 
 private val useStyles = makeStyles<MyIdolCardsStyles> {
@@ -135,6 +140,7 @@ private val useStyles = makeStyles<MyIdolCardsStyles> {
         descendants(".$IDOL_COLOR_GRID_ACTIONS_CLASS_NAME") {
             width = LinearDimension.auto
             float = Float.right
+            paddingRight = 0.px
 
             descendants("button") {
                 borderStyle = BorderStyle.none
@@ -161,5 +167,8 @@ private val useStyles = makeStyles<MyIdolCardsStyles> {
         (theme.breakpoints.up(Breakpoint.sm)) {
             marginBottom = 0.px
         }
+    }
+    "cardContent" {
+        paddingTop = 0.px
     }
 }
