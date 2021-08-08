@@ -40,13 +40,38 @@ internal class IdolColorsRepositoryImpl(
             IdolColorJson.serializer(),
         ).toIdolColors()
 
-    override suspend fun search(ids: List<String>)  =
-        imasparqlClient.search(
-            SearchByIdQuery(appPreference.lang.code, ids).build(),
-            IdolColorJson.serializer(),
-        ).toIdolColors()
+    override suspend fun search(ids: List<String>) =
+        if (ids.isEmpty())
+            listOf()
+        else
+            imasparqlClient.search(
+                SearchByIdQuery(appPreference.lang.code, ids).build(),
+                IdolColorJson.serializer(),
+            ).toIdolColors()
+
+    override suspend fun getInChargeOfIdolIds() = getUserDocument().inCharges
 
     override suspend fun getFavoriteIdolIds() = getUserDocument().favorites
+
+    override suspend fun registerInChargeOf(id: String) {
+        val uid = currentUser?.uid ?: return
+
+        getUsersCollection().document(uid).set(
+            UserDocument.serializer(),
+            getUserDocument().copy(inCharges = getInChargeOfIdolIds() + id),
+            merge = true,
+        )
+    }
+
+    override suspend fun unregisterInChargeOf(id: String) {
+        val uid = currentUser?.uid ?: return
+
+        getUsersCollection().document(uid).set(
+            UserDocument.serializer(),
+            getUserDocument().copy(inCharges = getInChargeOfIdolIds() - id),
+            merge = true,
+        )
+    }
 
     override suspend fun favorite(id: String) {
         val uid = currentUser?.uid ?: return

@@ -46,6 +46,7 @@ private val MyIdolsContainer = functionalComponent<RProps> {
     useEffect(currentUser) {
         if (currentUser == null) return@useEffect
 
+        viewModel.loadInCharges()
         viewModel.loadFavorites()
     }
 

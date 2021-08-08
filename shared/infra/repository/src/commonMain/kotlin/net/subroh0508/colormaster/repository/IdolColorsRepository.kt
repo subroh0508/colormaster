@@ -11,7 +11,13 @@ interface IdolColorsRepository {
 
     suspend fun search(ids: List<String>): List<IdolColor>
 
+    suspend fun getInChargeOfIdolIds(): List<String>
+
     suspend fun getFavoriteIdolIds(): List<String>
+
+    suspend fun registerInChargeOf(id: String)
+
+    suspend fun unregisterInChargeOf(id: String)
 
     suspend fun favorite(id: String)
 

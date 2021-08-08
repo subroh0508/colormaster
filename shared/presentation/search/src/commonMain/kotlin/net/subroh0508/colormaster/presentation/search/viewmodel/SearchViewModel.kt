@@ -52,7 +52,7 @@ abstract class SearchViewModel<T: SearchParams>(
     fun selectAll(selected: Boolean) { this.selected.value = if (selected) items.map(IdolColor::id) else listOf() }
 
     fun loadInCharges() {
-        viewModelScope.launch { inCharges.value /* = idolColorsRepository.getInChargeOfIdolIds()*/ }
+        viewModelScope.launch { inCharges.value = idolColorsRepository.getInChargeOfIdolIds() }
     }
     fun loadFavorites() {
         viewModelScope.launch { favorites.value = idolColorsRepository.getFavoriteIdolIds() }
@@ -61,10 +61,10 @@ abstract class SearchViewModel<T: SearchParams>(
     fun registerInChargeOf(id: String, inCharge: Boolean) {
         viewModelScope.launch {
             if (inCharge)
-                idolColorsRepository/*.registerInChargeOf(id)*/
+                idolColorsRepository.registerInChargeOf(id)
             else
-                idolColorsRepository/*.unregisterInChargeOf(id)*/
-            inCharges.value /* = idolColorsRepository.getInChargeOfIdolIds()*/
+                idolColorsRepository.unregisterInChargeOf(id)
+            inCharges.value = idolColorsRepository.getInChargeOfIdolIds()
         }
     }
     fun favorite(id: String, favorite: Boolean) {

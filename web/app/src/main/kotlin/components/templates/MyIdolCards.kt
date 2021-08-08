@@ -23,9 +23,9 @@ import utilities.useTranslation
 fun RBuilder.myIdolsCards(handler: RHandler<MyIdolCardsProps>) = child(MyIdolCardsComponent, handler = handler)
 
 external interface MyIdolCardsProps : RProps {
-    var managed: List<IdolColorListItem>
+    var inCharges: List<IdolColorListItem>
     var favorites: List<IdolColorListItem>
-    var onSelectManaged: (item: IdolColor, isSelected: Boolean) -> Unit
+    var onSelectInChargeOf: (item: IdolColor, isSelected: Boolean) -> Unit
     var onSelectFavorite: (item: IdolColor, isSelected: Boolean) -> Unit
 }
 
@@ -34,18 +34,18 @@ private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props
 
     container {
         div(classes.root) {
-            managedIdolsCard {
+            inChargeOfIdolsCard {
                 idolColorGrids {
                     attrs {
-                        items = props.managed
-                        onClick = props.onSelectManaged
+                        items = props.inCharges
+                        onClick = props.onSelectInChargeOf
                     }
                 }
 
                 idolColorGridsActions {
                     attrs {
                         showLabel = false
-                        selected = props.managed.filter(IdolColorListItem::selected).map { IdolColor(it.id, it.name.value, it.hexColor) }
+                        selected = props.inCharges.filter(IdolColorListItem::selected).map { IdolColor(it.id, it.name.value, it.hexColor) }
                     }
                 }
             }
@@ -68,7 +68,7 @@ private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props
     }
 }
 
-private fun RBuilder.managedIdolsCard(
+private fun RBuilder.inChargeOfIdolsCard(
     handler: RHandler<RProps>,
 ) = cardFrame("myPage.myIdols.inCharges", handler)
 private fun RBuilder.myFavoriteIdolsCard(

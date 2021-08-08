@@ -12,27 +12,34 @@ class MyIdolsViewModel(
     private val idolColorsRepository: IdolColorsRepository,
     coroutineScope: CoroutineScope? = null,
 ) : ViewModel(coroutineScope) {
-    private val managed: MutableStateFlow<List<IdolColor>> by lazy { MutableStateFlow(listOf()) }
+    private val inCharges: MutableStateFlow<List<IdolColor>> by lazy { MutableStateFlow(listOf()) }
     private val favorites: MutableStateFlow<List<IdolColor>> by lazy { MutableStateFlow(listOf()) }
-    private val selectedManaged: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
+    private val selectedInCharges: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
     private val selectedFavorites: MutableStateFlow<List<String>> by lazy { MutableStateFlow(listOf()) }
 
     val uiModel: StateFlow<MyIdolsUiModel> by lazy {
         combine(
-            managed,
+            inCharges,
             favorites,
-            selectedManaged,
+            selectedInCharges,
             selectedFavorites,
-        ) { managed, favorites, selectedManaged, selectedFavorites ->
-            MyIdolsUiModel(managed, favorites, selectedManaged, selectedFavorites)
+        ) { inCharges, favorites, selectedInCharges, selectedFavorites ->
+            MyIdolsUiModel(inCharges, favorites, selectedInCharges, selectedFavorites)
         }
             .distinctUntilChanged()
             .stateIn(viewModelScope, SharingStarted.Eagerly, MyIdolsUiModel())
     }
 
     private val currentFavorites get() = uiModel.value.favorites
-    private val currentManaged get() = uiModel.value.managed
+    private val currentInCharges get() = uiModel.value.inCharges
 
+    fun loadInCharges() {
+        viewModelScope.launch {
+            inCharges.value = idolColorsRepository.search(
+                idolColorsRepository.getInChargeOfIdolIds(),
+            )
+        }
+    }
     fun loadFavorites() {
         viewModelScope.launch {
             favorites.value = idolColorsRepository.search(
@@ -55,17 +62,17 @@ class MyIdolsViewModel(
             else
                 listOf()
     }
-    fun selectManaged(item: IdolColor, selected: Boolean) {
-        selectedManaged.value =
+    fun selectInChargeOf(item: IdolColor, selected: Boolean) {
+        selectedInCharges.value =
             if (selected)
-                selectedManaged.value + listOf(item.id)
+                selectedInCharges.value + listOf(item.id)
             else
-                selectedManaged.value - listOf(item.id)
+                selectedInCharges.value - listOf(item.id)
     }
-    fun selectManagedAll(selected: Boolean) {
-        selectedManaged.value =
+    fun selectInChargeOfAll(selected: Boolean) {
+        selectedInCharges.value =
             if (selected)
-                currentManaged.map(IdolColor::id)
+                currentInCharges.map(IdolColor::id)
             else
                 listOf()
     }

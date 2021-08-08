@@ -103,6 +103,7 @@ private fun <T: SearchParams, VM: SearchViewModel<T>> IdolSearchContainer(
     useEffect(currentUser) {
         if (currentUser == null) return@useEffect
 
+        viewModel.loadInCharges()
         viewModel.loadFavorites()
     }
 

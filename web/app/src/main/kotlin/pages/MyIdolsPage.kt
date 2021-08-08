@@ -18,8 +18,8 @@ private val MyIdolsPageComponent = functionalComponent<RProps> {
     val myIdolsViewModel = useContext(MyIdolsDispatcherContext)
     val myIdolsUiModel = useContext(MyIdolsProviderContext)
 
-    val managed = myIdolsUiModel.managed.map {
-        IdolColorListItem(it, selected = myIdolsUiModel.selectedManaged.contains(it.id))
+    val inCharges = myIdolsUiModel.inCharges.map {
+        IdolColorListItem(it, selected = myIdolsUiModel.selectedInCharges.contains(it.id))
     }
     val favorites = myIdolsUiModel.favorites.map {
         IdolColorListItem(it, selected = myIdolsUiModel.selectedFavorites.contains(it.id))
@@ -28,9 +28,9 @@ private val MyIdolsPageComponent = functionalComponent<RProps> {
     div {
         div(classes.toolbar) {}
         myIdolsCards {
-            attrs.managed = managed
+            attrs.inCharges = inCharges
             attrs.favorites = favorites
-            attrs.onSelectManaged = myIdolsViewModel::selectManaged
+            attrs.onSelectInChargeOf = myIdolsViewModel::selectInChargeOf
             attrs.onSelectFavorite = myIdolsViewModel::selectFavorite
         }
     }
