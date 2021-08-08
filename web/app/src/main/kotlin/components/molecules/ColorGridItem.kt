@@ -21,6 +21,7 @@ import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.common.throttleFirst
 import react.*
 import react.dom.attrs
+import react.dom.div
 import styled.animation
 import utilities.isMobile
 
@@ -41,19 +42,38 @@ private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { p
         if (previous == Mouse.CLICK || next == Mouse.CLICK) channel?.trySend(next) else setMouseEvent(next)
     }
 
-    paper {
-        attrs {
-            classes(rootStyle(classes, mouse, props.isSelected))
+    div(classes.frame) {
+        paper {
+            attrs {
+                classes(rootStyle(classes, mouse, props.isSelected))
 
-            onClickFunction = { offerMouseEvent(mouse, Mouse.CLICK) }
-            onMouseOverFunction = { offerMouseEvent(mouse, Mouse.OVER) }
-            onMouseOutFunction = { offerMouseEvent(mouse, Mouse.OUT) }
-        }
+                onClickFunction = { offerMouseEvent(mouse, Mouse.CLICK) }
+                onMouseOverFunction = { offerMouseEvent(mouse, Mouse.OVER) }
+                onMouseOutFunction = { offerMouseEvent(mouse, Mouse.OUT) }
+            }
 
-        if (props.isSelected) {
-            icon {
-                attrs.classes(classes.checkIcon)
-                +"check_circle_outline_icon"
+            if (props.isSelected) {
+                icon {
+                    attrs.classes(classes.checkIcon)
+                    +"check_circle_outline_icon"
+                }
+            }
+
+            clickHandler {
+                key = props.item.id
+
+                attrs {
+                    onClick = { handleOnClick(props.item, !props.isSelected) }
+                    onDoubleClick = { handleOnDoubleClick(props.item) }
+                }
+
+                colorPreviewItem {
+                    attrs {
+                        name = props.item.name
+                        color = props.item.color
+                        isBrighter = props.item.isBrighter
+                    }
+                }
             }
         }
 
@@ -72,24 +92,8 @@ private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { p
                 +"favorite${if (props.favorite) "" else "_border"}_icon"
             }
         }
-
-        clickHandler {
-            key = props.item.id
-
-            attrs {
-                onClick = { handleOnClick(props.item, !props.isSelected) }
-                onDoubleClick = { handleOnDoubleClick(props.item) }
-            }
-
-            colorPreviewItem {
-                attrs {
-                    name = props.item.name
-                    color = props.item.color
-                    isBrighter = props.item.isBrighter
-                }
-            }
-        }
     }
+
 })
 
 private inline fun throttleFirstMouseEventChannel(
@@ -120,6 +124,7 @@ external interface ColorGridItem : RProps {
 }
 
 private external interface ColorGridStyle {
+    val frame: String
     val root: String
     val small: String
     val mouseOver: String
@@ -134,9 +139,12 @@ private enum class Mouse {
 }
 
 private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
-    dynamic("root") { props ->
+    "frame" {
         position = Position.relative
         width = 100.pct
+    }
+    dynamic("root") { props ->
+        position = Position.relative
         color = if (props.item.isBrighter) Color.black else Color.white
         margin(4.px, 4.px, if (props.isBottomIconsVisible) 24.px else 4.px)
 
@@ -175,14 +183,14 @@ private val useStyles = makeStyles<ColorGridStyle, ColorGridItem> {
     "inChargeIcon" {
         position = Position.absolute
         right = 24.px
-        bottom = (-24).px
+        bottom = 0.px
         margin(LinearDimension.auto, 4.px)
         color = theme.palette.text.primary
     }
     "favoriteIcon" {
         position = Position.absolute
         right = 0.px
-        bottom = (-24).px
+        bottom = 0.px
         margin(LinearDimension.auto, 4.px)
         color = theme.palette.text.primary
     }
