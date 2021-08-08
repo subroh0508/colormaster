@@ -5,15 +5,20 @@ import containers.MyIdolsDispatcherContext
 import containers.MyIdolsProviderContext
 import materialui.styles.makeStyles
 import materialui.styles.mixins.toolbar
+import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
 import react.*
 import react.dom.div
+import react.router.dom.useHistory
+import toPenlight
+import toPreview
 
 @Suppress("FunctionName")
 fun RBuilder.MyIdolsPage() = child(MyIdolsPageComponent)
 
 private val MyIdolsPageComponent = functionalComponent<RProps> {
     val classes = useStyles()
+    val history = useHistory()
 
     val myIdolsViewModel = useContext(MyIdolsDispatcherContext)
     val myIdolsUiModel = useContext(MyIdolsProviderContext)
@@ -25,13 +30,20 @@ private val MyIdolsPageComponent = functionalComponent<RProps> {
         IdolColorListItem(it, selected = myIdolsUiModel.selectedFavorites.contains(it.id))
     }
 
+    fun query(items: List<IdolColor>) = items.joinToString("&") { "id=${it.id}" }
+
     div {
         div(classes.toolbar) {}
         myIdolsCards {
             attrs.inCharges = inCharges
             attrs.favorites = favorites
             attrs.onSelectInChargeOf = myIdolsViewModel::selectInChargeOf
+            attrs.onSelectInChargeOfAll = myIdolsViewModel::selectInChargeOfAll
             attrs.onSelectFavorite = myIdolsViewModel::selectFavorite
+            attrs.onSelectFavoritesAll = myIdolsViewModel::selectFavoritesAll
+            attrs.onDoubleClickIdolColor = { history.toPenlight(query(listOf(it))) }
+            attrs.onClickPreview = { history.toPreview(query(it)) }
+            attrs.onClickPenlight = { history.toPenlight(query(it)) }
         }
     }
 }

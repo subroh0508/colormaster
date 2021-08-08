@@ -25,27 +25,43 @@ fun RBuilder.myIdolsCards(handler: RHandler<MyIdolCardsProps>) = child(MyIdolCar
 external interface MyIdolCardsProps : RProps {
     var inCharges: List<IdolColorListItem>
     var favorites: List<IdolColorListItem>
+    var onDoubleClickIdolColor: (IdolColor) -> Unit
     var onSelectInChargeOf: (item: IdolColor, isSelected: Boolean) -> Unit
+    var onSelectInChargeOfAll: (isSelected: Boolean) -> Unit
     var onSelectFavorite: (item: IdolColor, isSelected: Boolean) -> Unit
+    var onSelectFavoritesAll: (isSelected: Boolean) -> Unit
+    var onClickPreview: (items: List<IdolColor>) -> Unit
+    var onClickPenlight: (items: List<IdolColor>) -> Unit
 }
 
 private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props ->
     val classes = useStyles()
 
+    val inCharges = props.inCharges.filter(IdolColorListItem::selected).map {
+        IdolColor(it.id, it.name.value, it.hexColor)
+    }
+    val favorites = props.favorites.filter(IdolColorListItem::selected).map {
+        IdolColor(it.id, it.name.value, it.hexColor)
+    }
+
     container {
         div(classes.root) {
             inChargeOfIdolsCard {
-                idolColorGrids {
+                    idolColorGrids {
                     attrs {
                         items = props.inCharges
                         onClick = props.onSelectInChargeOf
+                        onDoubleClick = props.onDoubleClickIdolColor
                     }
                 }
 
                 idolColorGridsActions {
                     attrs {
                         showLabel = false
-                        selected = props.inCharges.filter(IdolColorListItem::selected).map { IdolColor(it.id, it.name.value, it.hexColor) }
+                        selected = inCharges
+                        onClickSelectAll = props.onSelectInChargeOfAll
+                        onClickPreview = { props.onClickPreview(inCharges) }
+                        onClickPenlight = { props.onClickPenlight(inCharges) }
                     }
                 }
             }
@@ -54,13 +70,17 @@ private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props
                     attrs {
                         items = props.favorites
                         onClick = props.onSelectFavorite
+                        onDoubleClick = props.onDoubleClickIdolColor
                     }
                 }
 
                 idolColorGridsActions {
                     attrs {
                         showLabel = false
-                        selected = props.favorites.filter(IdolColorListItem::selected).map { IdolColor(it.id, it.name.value, it.hexColor) }
+                        selected = favorites
+                        onClickSelectAll = props.onSelectFavoritesAll
+                        onClickPreview = { props.onClickPreview(favorites) }
+                        onClickPenlight = { props.onClickPenlight(favorites) }
                     }
                 }
             }
