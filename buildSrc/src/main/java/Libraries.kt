@@ -151,11 +151,6 @@ object Libraries {
             const val reactVersion = "^11.8.0"
             const val react = "react-i18next"
         }
-
-        object Firebase {
-            const val authVersion = "0.16.8"
-            const val auth = "@firebase/auth"
-        }
     }
 
     object MockK {

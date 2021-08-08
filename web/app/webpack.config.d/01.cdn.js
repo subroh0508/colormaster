@@ -24,6 +24,10 @@ if (config.mode === 'production') {
       'i18next': 'i18next',
       'i18next-http-backend': 'i18nextHttpBackend',
       'react-i18next': 'ReactI18next',
+      'firebase': 'firebase',
+      'firebase/app': 'firebase',
+      'firebase/auth': 'firebase',
+      'firebase/firestore': 'firebase',
     },
   ];
   config.plugins.push(
@@ -56,7 +60,15 @@ if (config.mode === 'production') {
         {
           name: 'react-i18next',
           path: 'react-i18next.min.js',
-        }
+        },
+        {
+          name: 'firebase',
+          paths: [
+            'firebase-app.js',
+            'firebase-auth.js',
+            'firebase-firestore.js',
+          ],
+        },
       ],
       pathToNodeModules: path.resolve(rootPath, 'build/js'),
     }),
