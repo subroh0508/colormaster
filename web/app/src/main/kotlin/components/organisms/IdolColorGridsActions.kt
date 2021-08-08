@@ -21,7 +21,7 @@ fun RBuilder.idolColorGridsActions(handler: RHandler<IdolColorGridsActionsProps>
 
 private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsActionsProps> { props ->
     val classes = useStyle()
-    val showLabel = useMediaQuery("@media (min-width: 380px)")
+    val showLabel = props.showLabel ?: useMediaQuery("@media (min-width: 380px)")
     val (t, _) = useTranslation()
 
     buttonGroup {
@@ -69,6 +69,7 @@ private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsA
 }
 
 external interface IdolColorGridsActionsProps : RProps {
+    var showLabel: Boolean?
     var selected: List<IdolColor>
     var onClickPreview: () -> Unit
     var onClickPenlight: () -> Unit

@@ -1,10 +1,9 @@
 package components.templates
 
+import components.organisms.IDOL_COLOR_GRID_ACTIONS_CLASS_NAME
 import components.organisms.idolColorGrids
-import kotlinx.css.flexGrow
-import kotlinx.css.marginBottom
-import kotlinx.css.paddingTop
-import kotlinx.css.px
+import components.organisms.idolColorGridsActions
+import kotlinx.css.*
 import materialui.components.card.card
 import materialui.components.cardcontent.cardContent
 import materialui.components.cardheader.cardHeader
@@ -42,12 +41,26 @@ private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props
                         onClick = props.onSelectManaged
                     }
                 }
+
+                idolColorGridsActions {
+                    attrs {
+                        showLabel = false
+                        selected = props.managed.filter(IdolColorListItem::selected).map { IdolColor(it.id, it.name.value, it.hexColor) }
+                    }
+                }
             }
             myFavoriteIdolsCard {
                 idolColorGrids {
                     attrs {
                         items = props.favorites
                         onClick = props.onSelectFavorite
+                    }
+                }
+
+                idolColorGridsActions {
+                    attrs {
+                        showLabel = false
+                        selected = props.favorites.filter(IdolColorListItem::selected).map { IdolColor(it.id, it.name.value, it.hexColor) }
                     }
                 }
             }
@@ -97,6 +110,28 @@ private val useStyles = makeStyles<MyIdolCardsStyles> {
 
         descendants(".$MY_IDOL_CARD_ELEMENT_CLASS_NAME") {
             marginBottom = theme.spacing(4)
+        }
+
+        descendants(".$IDOL_COLOR_GRID_ACTIONS_CLASS_NAME") {
+            width = LinearDimension.auto
+            float = Float.right
+
+            descendants("button") {
+                borderStyle = BorderStyle.none
+
+                not(":last-of-type") {
+                    width = 36.px
+
+                    descendants("span") {
+                        margin(0.px)
+                    }
+                }
+
+                lastOfType {
+                    width = 96.px
+                    justifyContent = JustifyContent.left
+                }
+            }
         }
     }
     "card" {
