@@ -8,6 +8,7 @@ import materialui.components.card.card
 import materialui.components.cardcontent.cardContent
 import materialui.components.cardheader.cardHeader
 import materialui.components.container.container
+import materialui.components.icon.icon
 import materialui.components.typography.typographyH6
 import materialui.styles.breakpoint.Breakpoint
 import materialui.styles.breakpoint.up
@@ -17,6 +18,7 @@ import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
 import react.*
 import react.dom.div
+import react.dom.span
 import utilities.invoke
 import utilities.useTranslation
 
@@ -90,12 +92,13 @@ private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props
 
 private fun RBuilder.inChargeOfIdolsCard(
     handler: RHandler<RProps>,
-) = cardFrame("myPage.myIdols.inCharges", handler)
+) = cardFrame("star", "myPage.myIdols.inCharges", handler)
 private fun RBuilder.myFavoriteIdolsCard(
     handler: RHandler<RProps>,
-) = cardFrame("myPage.myIdols.favorites", handler)
+) = cardFrame("favorite", "myPage.myIdols.favorites", handler)
 
 private fun RBuilder.cardFrame(
+    icon: String,
     labelKey: String,
     handler: RHandler<RProps>
 ) = child(functionalComponent { props ->
@@ -109,7 +112,13 @@ private fun RBuilder.cardFrame(
 
         cardHeader {
             attrs.title {
-                typographyH6 { +t(labelKey) }
+                span(classes.cardTitle) {
+                    icon {
+                        attrs.classes(classes.cardTitleIcon)
+                        +"${icon}_icon"
+                    }
+                    typographyH6 { +t(labelKey) }
+                }
             }
         }
 
@@ -126,6 +135,8 @@ private const val MY_IDOL_CARD_ELEMENT_CLASS_NAME = "my-idol-card-element"
 private external interface MyIdolCardsStyles {
     val root: String
     val card: String
+    val cardTitle: String
+    val cardTitleIcon: String
     val cardContent: String
 }
 
@@ -167,6 +178,14 @@ private val useStyles = makeStyles<MyIdolCardsStyles> {
         (theme.breakpoints.up(Breakpoint.sm)) {
             marginBottom = 0.px
         }
+    }
+    "cardTitle" {
+        display = Display.flex
+        flexDirection = FlexDirection.row
+        alignItems = Align.center
+    }
+    "cardTitleIcon" {
+        marginRight = 2.px
     }
     "cardContent" {
         paddingTop = 0.px
