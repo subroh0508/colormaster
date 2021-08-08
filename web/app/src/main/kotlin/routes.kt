@@ -5,20 +5,27 @@ import org.w3c.dom.url.URLSearchParams
 import pages.DevelopmentPage
 import pages.HowToUsePage
 import pages.TermsPage
-import react.RBuilder
+import react.*
 import react.router.dom.*
 
 fun RBuilder.routing() = browserRouter {
-    AppFrameContainer {
-        switch {
-            Languages.values().forEach { lang ->
-                route("${lang.basename}/", exact = true) { IdolSearchContainer() }
+    AppFrameContainer { child(switchComponent) }
+}
+
+private val switchComponent = functionalComponent<RProps> {
+    val currentUser = useContext(AuthenticationProviderContext)
+
+    switch {
+        Languages.values().forEach { lang ->
+            route("${lang.basename}/", exact = true) { IdolSearchContainer() }
+            route("${lang.basename}/preview", exact = true) { PreviewContainer() }
+            route("${lang.basename}/penlight", exact = true) { PenlightContainer() }
+            route("${lang.basename}/howtouse", exact = true) { HowToUsePage() }
+            route("${lang.basename}/development", exact = true) { DevelopmentPage() }
+            route("${lang.basename}/terms", exact = true) { TermsPage() }
+
+            if (currentUser != null) {
                 route("${lang.basename}/myidols", exact = true) { MyIdolsContainer() }
-                route("${lang.basename}/preview", exact = true) { PreviewContainer() }
-                route("${lang.basename}/penlight", exact = true) { PenlightContainer() }
-                route("${lang.basename}/howtouse", exact = true) { HowToUsePage() }
-                route("${lang.basename}/development", exact = true) { DevelopmentPage() }
-                route("${lang.basename}/terms", exact = true) { TermsPage() }
             }
         }
     }

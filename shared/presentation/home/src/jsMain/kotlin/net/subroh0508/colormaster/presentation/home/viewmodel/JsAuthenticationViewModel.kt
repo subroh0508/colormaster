@@ -13,6 +13,8 @@ class JsAuthenticationViewModel(
     repository: AuthenticationRepository,
     coroutineScope: CoroutineScope? = null,
 ) : AuthenticationViewModel(repository, coroutineScope) {
+    val signedIn get() = uiModel.value.isSignedIn
+
     fun subscribe() {
         repository.subscribe().onEach {
             currentUserLoadState.value = LoadState.Loaded(it)

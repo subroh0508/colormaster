@@ -53,12 +53,14 @@ private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
             id = "search-idol", label = t("appMenu.search.attributes")
         ) { history.toRoot() }
         divider {}
-        parent(classes, t("appMenu.myPage.label"))
-        nestedListItem(
-            classes,
-            id = "mypage-myidols", label = t("appMenu.myPage.myIdols")
-        ) { history.toMyIdols() }
-        divider {}
+        if (viewModel.signedIn) {
+            parent(classes, t("appMenu.myPage.label"))
+            nestedListItem(
+                classes,
+                id = "mypage-myidols", label = t("appMenu.myPage.myIdols")
+            ) { history.toMyIdols() }
+            divider {}
+        }
         parent(classes, t("appMenu.about.label"))
         nestedListItem(
             classes,
