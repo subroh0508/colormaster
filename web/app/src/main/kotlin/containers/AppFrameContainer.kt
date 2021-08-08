@@ -95,7 +95,11 @@ private val AppFrameContainer = functionalComponent<RProps> { props ->
 
         setAppPreferenceState(appPreferenceState.copy(themeType = preferredType))
     }
-    useEffect(lang.code == appPreference.lang.code) { appPreference.setLanguage(lang) }
+    useEffect(lang.code != appPreference.lang.code) {
+        appPreference.setLanguage(lang)
+
+        setAppPreferenceState(appPreferenceState.copy(lang = lang))
+    }
 
     useEffect(appPreferenceState) { appPreference.setThemeType(appPreferenceState.themeType) }
 
