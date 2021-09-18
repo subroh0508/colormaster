@@ -109,7 +109,7 @@ object Libraries {
     }
 
     class JsWrappers(kotlinVersion: String) {
-        val version = "pre.209-kotlin-$kotlinVersion"
+        val version = "pre.246-kotlin-$kotlinVersion"
 
         private val reactVersion = "${Npm.reactVersion}-$version"
         val react = "org.jetbrains.kotlin-wrappers:kotlin-react:$reactVersion"
@@ -125,7 +125,7 @@ object Libraries {
         val extensions = "org.jetbrains.kotlin-wrappers:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.5.8"
+            const val version = "0.7.0"
             const val core = "net.subroh0508.kotlinmaterialui:core:$version"
         }
     }
@@ -133,7 +133,7 @@ object Libraries {
     object Npm {
         internal const val reactVersion = "17.0.2"
         internal const val reactRouterDomVersion = "5.2.0"
-        internal const val styledComponentVersion = "5.3.0"
+        internal const val styledComponentVersion = "5.3.1"
 
         const val reactAutoSuggestVersion = "10.0.2"
         const val reactAutoSuggest = "react-autosuggest"
