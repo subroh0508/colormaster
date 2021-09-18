@@ -2,13 +2,13 @@
 
 object Libraries {
     object Serialization {
-        const val version = "1.2.1"
+        const val version = "1.2.2"
 
         const val core = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version"
     }
 
     object Coroutines {
-        const val version = "1.5.0"
+        const val version = "1.5.2"
 
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
@@ -19,7 +19,7 @@ object Libraries {
     }
 
     object Ktor {
-        const val version = "1.6.0"
+        const val version = "1.6.3"
 
         const val client = "io.ktor:ktor-client-core:$version"
         const val clientOkHttp= "io.ktor:ktor-client-okhttp:$version"
@@ -39,7 +39,7 @@ object Libraries {
     }
 
     object Koin {
-        const val version = "3.0.2"
+        const val version = "3.1.2"
 
         const val core = "io.insert-koin:koin-core:$version"
         const val android = "io.insert-koin:koin-android:$version"
@@ -59,7 +59,7 @@ object Libraries {
         private const val annotationVersion = "1.1.0"
         const val annotation = "androidx.annotation:annotation:$annotationVersion"
 
-        private const val activityVersion = "1.3.0-rc02"
+        private const val activityVersion = "1.4.0-alpha02"
         const val activity = "androidx.activity:activity-ktx:$activityVersion"
         const val activityCompose = "androidx.activity:activity-compose:$activityVersion"
 
@@ -67,7 +67,7 @@ object Libraries {
         const val material = "com.google.android.material:material:$materialVersion"
 
         object Compose {
-            const val version = "1.0.0"
+            const val version = "1.1.0-alpha03"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val material = "androidx.compose.material:material:$version"
@@ -83,7 +83,7 @@ object Libraries {
     }
 
     object Firebase {
-        private const val bomVersion = "28.2.1"
+        private const val bomVersion = "28.4.1"
 
         const val bom = "com.google.firebase:firebase-bom:$bomVersion"
         const val auth = "com.google.firebase:firebase-auth-ktx"
@@ -91,7 +91,7 @@ object Libraries {
     }
 
     object GoogleServices {
-        private const val authVersion = "19.0.0"
+        private const val authVersion = "19.2.0"
 
         const val auth = "com.google.android.gms:play-services-auth:$authVersion"
     }
@@ -109,7 +109,7 @@ object Libraries {
     }
 
     class JsWrappers(kotlinVersion: String) {
-        val version = "pre.209-kotlin-$kotlinVersion"
+        val version = "pre.246-kotlin-$kotlinVersion"
 
         private val reactVersion = "${Npm.reactVersion}-$version"
         val react = "org.jetbrains.kotlin-wrappers:kotlin-react:$reactVersion"
@@ -125,7 +125,7 @@ object Libraries {
         val extensions = "org.jetbrains.kotlin-wrappers:kotlin-extensions:$extensionsVersion"
 
         object MaterialUi {
-            const val version = "0.5.8"
+            const val version = "0.7.0"
             const val core = "net.subroh0508.kotlinmaterialui:core:$version"
         }
     }
@@ -133,7 +133,7 @@ object Libraries {
     object Npm {
         internal const val reactVersion = "17.0.2"
         internal const val reactRouterDomVersion = "5.2.0"
-        internal const val styledComponentVersion = "5.3.0"
+        internal const val styledComponentVersion = "5.3.1"
 
         const val reactAutoSuggestVersion = "10.0.2"
         const val reactAutoSuggest = "react-autosuggest"
@@ -161,7 +161,7 @@ object Libraries {
     }
 
     object Kotest {
-        private const val version = "4.6.0"
+        private const val version = "4.6.3"
 
         const val engine = "io.kotest:kotest-framework-engine:$version"
         const val runnerJunit5 = "io.kotest:kotest-runner-junit5:$version"

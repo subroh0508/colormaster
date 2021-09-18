@@ -13,7 +13,7 @@ import react.dom.attrs
 fun RBuilder.supportableCheckBox(handler: RHandler<SupportableCheckBoxProps>) = child(
     SupportableCheckBoxComponent, handler = handler)
 
-private val SupportableCheckBoxComponent = functionalComponent<SupportableCheckBoxProps> { props ->
+private val SupportableCheckBoxComponent = functionComponent<SupportableCheckBoxProps> { props ->
     fun handleOnClick(event: Event) = if (props.clearedAll) props.onClickClearedAll(event) else props.onClickCheckedAll(event)
 
     iconButton {
@@ -40,7 +40,7 @@ private val SupportableCheckBoxComponent = functionalComponent<SupportableCheckB
 private const val CHECKED_ALL_ID = "checked-all"
 private const val CLEARED_ALL_ID = "cleared-all"
 
-external interface SupportableCheckBoxProps : RProps {
+external interface SupportableCheckBoxProps : PropsWithChildren {
     var clearedAll: Boolean
     var onClickCheckedAll: (Event) -> Unit
     var onClickClearedAll: (Event) -> Unit

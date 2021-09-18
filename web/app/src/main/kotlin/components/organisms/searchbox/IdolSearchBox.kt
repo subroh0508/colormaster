@@ -20,7 +20,7 @@ fun RBuilder.idolSearchBox(uiModel: SearchUiModel, handler: RHandler<IdolSearchB
 
 const val DEBOUNCE_TIMEOUT_MILLS = 500L
 
-external interface IdolSearchBoxProps<T: SearchParams> : RProps {
+external interface IdolSearchBoxProps<T: SearchParams> : PropsWithChildren {
     var params: T
     var onChangeSearchParams: (SearchParams) -> Unit
     var onChangeSearchQuery: (String?) -> Unit

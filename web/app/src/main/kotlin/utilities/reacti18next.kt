@@ -3,23 +3,23 @@
 package utilities
 
 import react.RBuilder
-import react.RClass
+import react.ComponentClass
 import react.RHandler
-import react.RProps
+import react.PropsWithChildren
 
 @JsModule("react-i18next")
 external object ReactI18next {
     val initReactI18next: dynamic
-    val I18nextProvider: RClass<ReactI18nextProps>
+    val I18nextProvider: ComponentClass<ReactI18nextProps>
     val useTranslation: () -> Array<dynamic>
-    val Trans: RClass<TransProps>
+    val Trans: ComponentClass<TransProps>
 }
 
-external interface ReactI18nextProps : RProps {
+external interface ReactI18nextProps : PropsWithChildren {
     var i18n: I18next
 }
 
-external interface TransProps : RProps {
+external interface TransProps : PropsWithChildren {
     var i18nKey: String
 }
 

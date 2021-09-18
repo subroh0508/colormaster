@@ -14,10 +14,11 @@ import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.attrs
+import react.dom.setProp
 
 fun RBuilder.extensionMenu(handler: RHandler<ExtensionMenuProps>) = child(ExtensionMenuComponent, handler = handler)
 
-private val ExtensionMenuComponent = functionalComponent<ExtensionMenuProps> { props ->
+private val ExtensionMenuComponent = functionComponent<ExtensionMenuProps> { props ->
     val (anchorEl, setAnchorEl) = useState<EventTarget?>(null)
 
     fun handleMenuOpen(event: Event) = setAnchorEl(event.currentTarget)
@@ -63,7 +64,7 @@ private val ExtensionMenuComponent = functionalComponent<ExtensionMenuProps> { p
     }
 }
 
-external interface ExtensionMenuProps : RProps {
+external interface ExtensionMenuProps : PropsWithChildren {
     var menuItems: List<ExtensionMenuItemProps>
 }
 
@@ -71,7 +72,7 @@ fun ExtensionMenuProps.menuItems(vararg item: ExtensionMenuItemProps.() -> Unit)
     menuItems = item.map { jsObject(it) }
 }
 
-external interface ExtensionMenuItemProps : RProps {
+external interface ExtensionMenuItemProps : PropsWithChildren {
     var id: String
     var label: String
     var onClick: (Event, String) -> Unit

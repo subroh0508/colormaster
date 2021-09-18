@@ -8,26 +8,27 @@ import materialui.components.slide.enums.SlideDirection
 import materialui.components.slide.slide
 import net.subroh0508.colormaster.model.IdolColor
 import react.*
+import react.dom.setProp
 
-val FullscreenPenlightComponent = functionalComponent<FullscreenModalProps> { props ->
+val FullscreenPenlightComponent = functionComponent<FullscreenModalProps> { props ->
     child(FullscreenPreviewDialogComponent) {
         attrs.items = props.items
         attrs.isColorOnly = true
     }
 }
 
-val FullscreenPreviewComponent = functionalComponent<FullscreenModalProps> { props ->
+val FullscreenPreviewComponent = functionComponent<FullscreenModalProps> { props ->
     child(FullscreenPreviewDialogComponent) {
         attrs.items = props.items
         attrs.isColorOnly = false
     }
 }
 
-external interface FullscreenModalProps : RProps {
+external interface FullscreenModalProps : PropsWithChildren {
     var items: List<IdolColor>
 }
 
-private val FullscreenPreviewDialogComponent = functionalComponent<ColorPreviewProps> { props ->
+private val FullscreenPreviewDialogComponent = functionComponent<ColorPreviewProps> { props ->
     dialog {
         attrs.fullScreen = true
         attrs.open = true
@@ -37,7 +38,7 @@ private val FullscreenPreviewDialogComponent = functionalComponent<ColorPreviewP
     }
 }
 
-private val Transition = forwardRef<RProps> { props, ref ->
+private val Transition = forwardRef<PropsWithChildren> { props, ref ->
     slide {
         attrs {
             direction = SlideDirection.up

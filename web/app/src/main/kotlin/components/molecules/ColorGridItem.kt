@@ -27,14 +27,14 @@ import utilities.isMobile
 
 fun RBuilder.colorGridItem(handler: RHandler<ColorGridItem>) = child(ColorGridItemComponent, handler = handler)
 
-private val ColorGridItemComponent = memo(functionalComponent<ColorGridItem> { props ->
+private val ColorGridItemComponent = memo(functionComponent<ColorGridItem> { props ->
     val classes = useStyles(props)
     val (mouse, setMouseEvent) = useState(Mouse.NONE)
 
-    val handleOnClick = useCallback(props.onClick, arrayOf(props.item.id))
-    val handleOnDoubleClick = useCallback(props.onDoubleClick, arrayOf(props.item.id))
-    val handleOnInChargeClick = useCallback(props.onInChargeClick, arrayOf(props.item.id))
-    val handleOnFavoriteClick = useCallback(props.onFavoriteClick, arrayOf(props.item.id))
+    val handleOnClick = useCallback(props.item.id, callback = props.onClick)
+    val handleOnDoubleClick = useCallback(props.item.id, callback = props.onDoubleClick)
+    val handleOnInChargeClick = useCallback(props.item.id, callback = props.onInChargeClick)
+    val handleOnFavoriteClick = useCallback(props.item.id, callback = props.onFavoriteClick)
 
     val channel = throttleFirstMouseEventChannel(100) { setMouseEvent(it) }
 
@@ -111,7 +111,7 @@ private inline fun throttleFirstMouseEventChannel(
     }).current
 }
 
-external interface ColorGridItem : RProps {
+external interface ColorGridItem : PropsWithChildren {
     var item: IdolColor
     var isBottomIconsVisible: Boolean
     var isSelected: Boolean

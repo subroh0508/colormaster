@@ -9,7 +9,7 @@ import react.dom.attrs
 
 fun RBuilder.clickHandler(handler: RHandler<ClickHandlerProps>) = child(ClickHandlerComponent, handler = handler)
 
-private val ClickHandlerComponent = functionalComponent<ClickHandlerProps> { props ->
+private val ClickHandlerComponent = functionComponent<ClickHandlerProps> { props ->
     val lastTimeRef = useRef(0L)
 
     div {
@@ -32,7 +32,7 @@ private const val DEFAULT_DOUBLE_CLICK_DURATION_MILLIS = 200
 
 private fun handleOnClick(
     durationMillis: Int,
-    lastTimeRef: RMutableRef<Long>,
+    lastTimeRef: MutableRefObject<Long>,
     onClick: () -> Unit,
     onDoubleClick: () -> Unit
 ) {
@@ -56,7 +56,7 @@ private fun handleOnClick(
     }, durationMillis)
 }
 
-external interface ClickHandlerProps : RProps {
+external interface ClickHandlerProps : PropsWithChildren {
     var onClick: () -> Unit
     var onDoubleClick: () -> Unit
     var doubleClickDurationMillis: Int?

@@ -5,14 +5,14 @@ import org.w3c.dom.events.Event
 import react.*
 
 @JsModule("react-autosuggest")
-private external val AutoSuggest: RClass<AutoSuggestProps<*>>
+private external val AutoSuggest: ComponentClass<AutoSuggestProps<*>>
 
 fun <T: Any> RBuilder.autoSuggest(handler: RHandler<AutoSuggestProps<T>>) = AutoSuggest {
     @Suppress("UNCHECKED_CAST")
     handler(this as RElementBuilder<AutoSuggestProps<T>>)
 }
 
-external interface AutoSuggestProps<T: Any> : RProps {
+external interface AutoSuggestProps<T: Any> : PropsWithChildren {
     var suggestions: Array<T>
     var alwaysRenderSuggestions: Boolean
     var onSuggestionsFetchRequested: (T?) -> Unit
@@ -29,7 +29,7 @@ fun <T: Any> AutoSuggestProps<T>.inputProps(block: AutoSuggestInputProps.() -> U
     inputProps = jsObject(block)
 }
 
-external interface AutoSuggestInputProps : RProps  {
+external interface AutoSuggestInputProps : PropsWithChildren  {
     var placeholder: String?
     var value: Any?
     var autoComplete: String
@@ -46,10 +46,9 @@ external interface RenderSuggestionOptions {
     val isHighlighted: Boolean
 }
 
-external interface RenderSuggestionsContainerOptions : RProps {
-    val containerProps: RProps
+external interface RenderSuggestionsContainerOptions : PropsWithChildren {
+    val containerProps: PropsWithChildren
     val query: String
-    val children: Any?
 }
 
 external interface OnChangeOptions {

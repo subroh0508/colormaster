@@ -15,7 +15,7 @@ import utilities.useTranslation
 
 fun RBuilder.titleChips(handler: RHandler<TitleChipsProps>) = child(TitleChipsComponent, handler = handler)
 
-private val TitleChipsComponent = functionalComponent<TitleChipsProps> { props ->
+private val TitleChipsComponent = functionComponent<TitleChipsProps> { props ->
     val classes = useStyles()
     val (t, _) = useTranslation()
 
@@ -45,7 +45,7 @@ private val TitleChipsComponent = functionalComponent<TitleChipsProps> { props -
     }
 }
 
-external interface TitleChipsProps : RProps {
+external interface TitleChipsProps : PropsWithChildren {
     var title: Brands?
     var onSelect: ((Brands, Boolean) -> Unit)?
 }

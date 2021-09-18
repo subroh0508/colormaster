@@ -37,13 +37,14 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.attrs
 import react.dom.div
+import react.dom.setProp
 import themes.APP_BAR_SM_UP
 import utilities.invoke
 import utilities.useTranslation
 
 fun RBuilder.appBarTop(handler: RHandler<AppBarTopProps>) = child(AppBarTopComponent, handler = handler)
 
-private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
+private val AppBarTopComponent = functionComponent<AppBarTopProps> { props ->
     val classes = useStyles(props)
     val appBarStyle = "${classes.appBar} ${if (props.expand) classes.appBarExpand else ""}"
     val (t, _) = useTranslation()
@@ -116,7 +117,7 @@ private val AppBarTopComponent = functionalComponent<AppBarTopProps> { props ->
     }
 }
 
-external interface AppBarTopProps : RProps {
+external interface AppBarTopProps : PropsWithChildren {
     var themeType: PaletteType
     var lang: Languages
     var pathname: String
@@ -134,7 +135,7 @@ fun AppBarTopProps.MenuComponent(block: RBuilder.() -> Unit) {
     MenuComponent = buildElement(block)
 }
 
-private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { props ->
+private val LanguageMenuComponent = functionComponent<LanguageMenuProps> { props ->
     val (languageMenu, setLanguageMenu) = useState<HTMLButtonElement?>(null)
     val (t, _) = useTranslation()
 
@@ -184,7 +185,7 @@ private val LanguageMenuComponent = functionalComponent<LanguageMenuProps> { pro
     }
 }
 
-private external interface LanguageMenuProps : RProps {
+private external interface LanguageMenuProps : PropsWithChildren {
     var lang: Languages
     var pathname: String
 }

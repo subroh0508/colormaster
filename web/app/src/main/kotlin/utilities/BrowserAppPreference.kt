@@ -28,7 +28,7 @@ internal class BrowserAppPreference(
         val themeType: ThemeType,
     ) {
         constructor(preference: AppPreference) : this(
-            lang = preference.lang ?: Languages.JAPANESE,
+            lang = preference.lang,
             themeType = preference.themeType ?: ThemeType.light,
         )
     }

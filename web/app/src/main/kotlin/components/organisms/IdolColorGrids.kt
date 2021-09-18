@@ -14,7 +14,7 @@ import react.dom.div
 
 fun RBuilder.idolColorGrids(handler: RHandler<IdolColorGridsProps>) = child(IdolColorGridsComponent, handler = handler)
 
-private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> { props ->
+private val IdolColorGridsComponent = functionComponent<IdolColorGridsProps> { props ->
     val containerRef = useRef<HTMLDivElement>(null)
     val classes = useStyles(jsObject {
         val width = containerRef.current?.clientWidth ?: 200
@@ -46,7 +46,7 @@ private val IdolColorGridsComponent = functionalComponent<IdolColorGridsProps> {
     }
 }
 
-external interface IdolColorGridsProps : RProps {
+external interface IdolColorGridsProps : PropsWithChildren {
     var items: List<IdolColorListItem>
     var isBottomIconsVisible: Boolean
     var onClick: (item: IdolColor, isSelected: Boolean) -> Unit
@@ -55,7 +55,7 @@ external interface IdolColorGridsProps : RProps {
     var onFavoriteClick: ((item: IdolColor, favorite: Boolean) -> Unit)?
 }
 
-private external interface GridsWidth : RProps {
+private external interface GridsWidth : PropsWithChildren {
     var containerWidth: Int
     var columns: Int
 }

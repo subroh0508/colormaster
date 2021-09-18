@@ -8,9 +8,9 @@ import kotlinext.js.jsObject
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import react.RBuilder
-import react.RProps
+import react.PropsWithChildren
 import react.child
-import react.functionalComponent
+import react.functionComponent
 import utilities.I18nextText
 import utilities.invoke
 import utilities.useTranslation
@@ -21,7 +21,7 @@ fun RBuilder.message(opened: Boolean, uiModel: SearchUiModel) = when (uiModel) {
     is SearchUiModel.Favorites -> Unit
 }
 
-private val MessageByNameComponent = functionalComponent<MessageProps<SearchUiModel.ByName>> { props ->
+private val MessageByNameComponent = functionComponent<MessageProps<SearchUiModel.ByName>> { props ->
     val (t, _) = useTranslation()
 
     when {
@@ -41,7 +41,7 @@ private val MessageByNameComponent = functionalComponent<MessageProps<SearchUiMo
     }
 }
 
-private val MessageByLiveComponent = functionalComponent<MessageProps<SearchUiModel.ByLive>> { props ->
+private val MessageByLiveComponent = functionComponent<MessageProps<SearchUiModel.ByLive>> { props ->
     val (t, _) = useTranslation()
 
     val liveName = (props.model.params as? SearchParams.ByLive)?.liveName
@@ -67,7 +67,7 @@ private operator fun I18nextText.invoke(key: String, count: Int) = invoke(
     key, jsObject { this.asDynamic()["count"] = count }
 )
 
-private external interface MessageProps<T: SearchUiModel> : RProps {
+private external interface MessageProps<T: SearchUiModel> : PropsWithChildren {
     var opened: Boolean
     var model: T
 }

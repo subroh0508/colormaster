@@ -26,7 +26,7 @@ fun RBuilder.infoAlert(handler: RHandler<AlertsProps>) = child(alertComponent) {
 fun RBuilder.warningAlert(handler: RHandler<AlertsProps>) = child(alertComponent) { handler(); attrs.type = AlertsType.warning }
 fun RBuilder.errorAlert(handler: RHandler<AlertsProps>) = child(alertComponent) { handler(); attrs.type = AlertsType.error }
 
-private val alertComponent = functionalComponent<AlertsProps> { props ->
+private val alertComponent = functionComponent<AlertsProps> { props ->
     val classes = useStyles()
 
     val alertsClassName = when (props.type) {
@@ -77,9 +77,9 @@ private val alertComponent = functionalComponent<AlertsProps> { props ->
     }
 }
 
-private fun RBuilder.alertTitle(handler: RHandler<RProps>) = child(alertTitleComponent, handler = handler)
+private fun RBuilder.alertTitle(handler: RHandler<PropsWithChildren>) = child(alertTitleComponent, handler = handler)
 
-private val alertTitleComponent = functionalComponent<RProps> { props ->
+private val alertTitleComponent = functionComponent<PropsWithChildren> { props ->
     val classes = useTitleStyles()
 
     typography(factory = { DIV(mapOf(), it) }) {
@@ -95,7 +95,7 @@ enum class AlertsType {
     success, info, warning, error
 }
 
-external interface AlertsProps : RProps {
+external interface AlertsProps : PropsWithChildren {
     var type: AlertsType?
     var title: String?
     var message: String

@@ -24,7 +24,7 @@ import utilities.useTranslation
 
 fun RBuilder.myIdolsCards(handler: RHandler<MyIdolCardsProps>) = child(MyIdolCardsComponent, handler = handler)
 
-external interface MyIdolCardsProps : RProps {
+external interface MyIdolCardsProps : PropsWithChildren {
     var inCharges: List<IdolColorListItem>
     var favorites: List<IdolColorListItem>
     var onDoubleClickIdolColor: (IdolColor) -> Unit
@@ -36,7 +36,7 @@ external interface MyIdolCardsProps : RProps {
     var onClickPenlight: (items: List<IdolColor>) -> Unit
 }
 
-private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props ->
+private val MyIdolCardsComponent = functionComponent<MyIdolCardsProps> { props ->
     val classes = useStyles()
 
     val inCharges = props.inCharges.filter(IdolColorListItem::selected).map {
@@ -91,17 +91,17 @@ private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props
 }
 
 private fun RBuilder.inChargeOfIdolsCard(
-    handler: RHandler<RProps>,
+    handler: RHandler<PropsWithChildren>,
 ) = cardFrame("star", "myPage.myIdols.inCharges", handler)
 private fun RBuilder.myFavoriteIdolsCard(
-    handler: RHandler<RProps>,
+    handler: RHandler<PropsWithChildren>,
 ) = cardFrame("favorite", "myPage.myIdols.favorites", handler)
 
 private fun RBuilder.cardFrame(
     icon: String,
     labelKey: String,
-    handler: RHandler<RProps>
-) = child(functionalComponent { props ->
+    handler: RHandler<PropsWithChildren>
+) = child(functionComponent { props ->
     val classes = useStyles()
     val (t, _) = useTranslation()
 

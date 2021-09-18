@@ -10,13 +10,13 @@ import react.*
 
 fun RBuilder.previewModal(handler: RHandler<PreviewModalProps>) = child(PreviewModalComponent, handler = handler)
 
-external interface PreviewModalProps : RProps {
+external interface PreviewModalProps : PropsWithChildren {
     var model: FullscreenPreviewUiModel
     @Suppress("PropertyName")
-    var PreviewComponent: FunctionalComponent<FullscreenModalProps>
+    var PreviewComponent: FunctionComponent<FullscreenModalProps>
 }
 
-private val PreviewModalComponent = functionalComponent<PreviewModalProps> { props ->
+private val PreviewModalComponent = functionComponent<PreviewModalProps> { props ->
     val (items, error, isLoading) = props.model
 
     when {

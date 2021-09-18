@@ -11,14 +11,14 @@ import kotlinx.css.pct
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.IdolColor
 import react.RBuilder
-import react.RProps
+import react.PropsWithChildren
 import react.child
 import react.dom.div
-import react.functionalComponent
+import react.functionComponent
 
 fun RBuilder.colorPreview(props: ColorPreviewProps) = child(ColorPreviewComponent, props)
 
-private val ColorPreviewComponent = functionalComponent<ColorPreviewProps> { props ->
+private val ColorPreviewComponent = functionComponent<ColorPreviewProps> { props ->
     val classes = useStyle(props)
     val rootStyle = "${classes.root} ${if (props.isColorOnly) classes.text else ""}"
 
@@ -35,7 +35,7 @@ private fun List<IdolColor>.toItemProps(): List<ColorPreviewItemProps> = map {
     }
 }
 
-external interface ColorPreviewProps : RProps {
+external interface ColorPreviewProps : PropsWithChildren {
     var items: List<IdolColor>
     var isColorOnly: Boolean
 }

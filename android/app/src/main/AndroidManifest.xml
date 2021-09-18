@@ -14,7 +14,8 @@
         android:theme="@style/AppTheme.ColorMaster.DayNight"
         android:name=".ColorMasterApplication">
         <activity android:name=".pages.activity.HomeActivity"
-            android:windowSoftInputMode="stateUnspecified|adjustResize">
+            android:windowSoftInputMode="stateUnspecified|adjustResize"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

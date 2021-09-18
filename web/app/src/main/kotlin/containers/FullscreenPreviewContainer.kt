@@ -16,18 +16,22 @@ import react.*
 import useQuery
 
 @Suppress("FunctionName")
-fun RBuilder.PenlightContainer() = childFunction(FullscreenPreviewContextProvider) { model: FullscreenPreviewUiModel ->
-    previewModal {
-        attrs.model = model
-        attrs.PreviewComponent = FullscreenPenlightComponent
+fun RBuilder.PenlightContainer() = child(FullscreenPreviewContextProvider) {
+    attrs.children { model ->
+        previewModal {
+            attrs.model = model
+            attrs.PreviewComponent = FullscreenPenlightComponent
+        }
     }
 }
 
 @Suppress("FunctionName")
-fun RBuilder.PreviewContainer() = childFunction(FullscreenPreviewContextProvider) { model: FullscreenPreviewUiModel ->
-    previewModal {
-        attrs.model = model
-        attrs.PreviewComponent = FullscreenPreviewComponent
+fun RBuilder.PreviewContainer() = child(FullscreenPreviewContextProvider) {
+    attrs.children { model ->
+        previewModal {
+            attrs.model = model
+            attrs.PreviewComponent = FullscreenPreviewComponent
+        }
     }
 }
 
@@ -40,17 +44,17 @@ private fun module(appScope: CoroutineScope) = module {
     }
 }
 
-private val FullscreenPreviewContextProvider = KoinComponent(
+private val FullscreenPreviewContextProvider = KoinComponent<PreviewViewModel, FullscreenPreviewContainerProps>(
     FullscreenPreviewContext,
     PREVIEW_SCOPE_ID,
     ::module,
 ) { props ->
-    childFunction(FullscreenPreviewContainer) { model: FullscreenPreviewUiModel ->
-        props.children(model)
+    child(FullscreenPreviewContainer) {
+        attrs.children = { model -> props.children(model) }
     }
 }
 
-private val FullscreenPreviewContainer = functionalComponent<RProps> { props ->
+private val FullscreenPreviewContainer = functionComponent<FullscreenPreviewContainerProps> { props ->
     val ids = useQuery().getAll("id")
 
     val (_, appScope) = useContext(KoinContext)
@@ -66,5 +70,17 @@ private val FullscreenPreviewContainer = functionalComponent<RProps> { props ->
         viewModel.fetch(ids.toList())
     }
 
-    props.children(uiModel)
+    props.children(this, uiModel)
+}
+
+private external interface FullscreenPreviewContainerProps : Props {
+    var children: (FullscreenPreviewUiModel) -> ReactElement
+}
+
+private fun FullscreenPreviewContainerProps.children(render: RBuilder.(FullscreenPreviewUiModel) -> Unit) {
+    children = { model -> buildElement(RBuilder()) { render(model) } }
+}
+
+private fun FullscreenPreviewContainerProps.children(builder: RBuilder, model: FullscreenPreviewUiModel) {
+    builder.child(children(model))
 }

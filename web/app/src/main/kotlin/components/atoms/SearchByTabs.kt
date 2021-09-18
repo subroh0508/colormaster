@@ -13,7 +13,7 @@ import utilities.useTranslation
 
 fun RBuilder.searchByTabs(handler: RHandler<SearchByTabsProps>) = child(TabsComponent, handler = handler)
 
-private val TabsComponent = functionalComponent<SearchByTabsProps> { props ->
+private val TabsComponent = functionComponent<SearchByTabsProps> { props ->
     val (t, _) = useTranslation()
 
     tabs {
@@ -36,7 +36,7 @@ private val TabsComponent = functionalComponent<SearchByTabsProps> { props ->
 
 private fun indexOf(index: Int) = SearchByTab.values().find { it.ordinal == index }
 
-external interface SearchByTabsProps : RProps {
+external interface SearchByTabsProps : PropsWithChildren {
     var index: Int
     var onChangeTab: (SearchByTab) -> Unit
 }
