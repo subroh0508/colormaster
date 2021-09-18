@@ -239,6 +239,6 @@ private val useStyles = makeStyles<ResponsiveDrawerStyle> {
         right = 0.px
         bottom = 0.px
         width = theme.spacing(3)
-        margin(LinearDimension.auto, theme.spacing(2), theme.spacing(1), LinearDimension.auto)
+        margin = theme.spacing(LinearDimension.auto, u(2), u(1), LinearDimension.auto)
     }
 }

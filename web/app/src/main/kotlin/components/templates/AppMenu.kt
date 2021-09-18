@@ -226,8 +226,8 @@ private val useStyles = makeStyles<AppMenuStyle> {
     "googleButton" {
         height = 52.px
         width = 100.pct
-        padding(0.px, theme.spacing(2))
-        margin(theme.spacing(1), theme.spacing(4), theme.spacing(2))
+        padding = theme.spacing(0.px, u(2))
+        margin = theme.spacing(u(1), u(4), u(2))
         background = "url(/sign_in_with_google.png)"
         backgroundSize = "contain"
     }
