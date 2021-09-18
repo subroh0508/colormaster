@@ -8,27 +8,33 @@ import pages.TermsPage
 import react.*
 import react.router.dom.*
 
-fun RBuilder.routing() = browserRouter {
+fun RBuilder.routing() = BrowserRouter {
     AppFrameContainer { child(switchComponent) }
 }
 
-private val switchComponent = functionComponent<RProps> {
+private val switchComponent = functionComponent<PropsWithChildren> {
     val currentUser = useContext(AuthenticationProviderContext)
 
-    switch {
+    Switch {
         Languages.values().forEach { lang ->
-            route("${lang.basename}/", exact = true) { IdolSearchContainer() }
-            route("${lang.basename}/preview", exact = true) { PreviewContainer() }
-            route("${lang.basename}/penlight", exact = true) { PenlightContainer() }
-            route("${lang.basename}/howtouse", exact = true) { HowToUsePage() }
-            route("${lang.basename}/development", exact = true) { DevelopmentPage() }
-            route("${lang.basename}/terms", exact = true) { TermsPage() }
+            route(lang) { IdolSearchContainer() }
+            route(lang, "preview") { PreviewContainer() }
+            route(lang, "penlight") { PenlightContainer() }
+            route(lang, "howtouse") { HowToUsePage() }
+            route(lang, "development") { DevelopmentPage() }
+            route(lang, "terms") { TermsPage() }
 
             if (currentUser != null) {
-                route("${lang.basename}/myidols", exact = true) { MyIdolsContainer() }
+                route(lang, "myidols") { MyIdolsContainer() }
             }
         }
     }
+}
+
+private fun RBuilder.route(lang: Languages, path: String = "", render: Render) = Route {
+    attrs { this.path = arrayOf("${lang.basename}/$path"); exact = true }
+
+    render()
 }
 
 fun useQuery() = URLSearchParams(useLocation().search)

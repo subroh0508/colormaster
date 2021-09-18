@@ -30,7 +30,7 @@ private val LinkComponent = functionComponent<LinkProps> { props ->
     }
 }
 
-private external interface LinkProps : RProps {
+private external interface LinkProps : PropsWithChildren {
     var href: String
     var target: String
 }

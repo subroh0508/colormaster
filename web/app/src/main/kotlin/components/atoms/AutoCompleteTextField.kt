@@ -59,7 +59,7 @@ fun <T: Any> AutoCompleteTextFieldComponent() = functionComponent<AutoCompleteTe
     }
 }
 
-external interface AutoCompleteTextFieldProps<T: Any> : RProps {
+external interface AutoCompleteTextFieldProps<T: Any> : PropsWithChildren {
     var suggestions: List<T>
     var query: String?
     var getSuggestionValue: (T) -> String
@@ -83,8 +83,8 @@ private val SuggestionContainerComponent = functionComponent<SuggestionContainer
     }
 }
 
-private external interface SuggestionContainerProps : RProps {
-    var containerProps: RProps
+private external interface SuggestionContainerProps : PropsWithChildren {
+    var containerProps: PropsWithChildren
 }
 
 private external interface SuggestionContainerStyle {
@@ -117,7 +117,7 @@ private val SuggestionComponent = functionComponent<SuggestionProps> { props ->
     }
 }
 
-private external interface SuggestionProps : RProps {
+private external interface SuggestionProps : PropsWithChildren {
     var value: String
     var isHighlighted: Boolean
 }
@@ -153,7 +153,7 @@ private val AutoCompleteInputComponent = functionComponent<AutoCompleteInputProp
     }
 }
 
-private external interface AutoCompleteInputProps : RProps {
+private external interface AutoCompleteInputProps : PropsWithChildren {
     var inputProps: AutoSuggestInputProps
 }
 

@@ -56,7 +56,7 @@ private fun handleOnClick(
     }, durationMillis)
 }
 
-external interface ClickHandlerProps : RProps {
+external interface ClickHandlerProps : PropsWithChildren {
     var onClick: () -> Unit
     var onDoubleClick: () -> Unit
     var doubleClickDurationMillis: Int?

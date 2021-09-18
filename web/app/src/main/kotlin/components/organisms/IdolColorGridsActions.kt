@@ -68,7 +68,7 @@ private val IdolColorGridsActionsComponent = functionComponent<IdolColorGridsAct
     }
 }
 
-external interface IdolColorGridsActionsProps : RProps {
+external interface IdolColorGridsActionsProps : PropsWithChildren {
     var showLabel: Boolean?
     var selected: List<IdolColor>
     var onClickPreview: () -> Unit

@@ -105,7 +105,7 @@ private val HiddenXsDown = functionComponent<ResponsiveDrawerProps> { props ->
     }
 }
 
-external interface ResponsiveDrawerProps : RProps {
+external interface ResponsiveDrawerProps : PropsWithChildren {
     var anchor: DrawerAnchor
     var opened: Boolean
     @Suppress("PropertyName")

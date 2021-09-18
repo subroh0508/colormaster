@@ -36,7 +36,7 @@ private val TabsComponent = functionComponent<SearchByTabsProps> { props ->
 
 private fun indexOf(index: Int) = SearchByTab.values().find { it.ordinal == index }
 
-external interface SearchByTabsProps : RProps {
+external interface SearchByTabsProps : PropsWithChildren {
     var index: Int
     var onChangeTab: (SearchByTab) -> Unit
 }

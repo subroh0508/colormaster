@@ -79,7 +79,7 @@ private val IdolSearchPanelComponent = functionComponent<IdolSearchPanelProps> {
     }
 }
 
-external interface IdolSearchPanelProps : RProps {
+external interface IdolSearchPanelProps : PropsWithChildren {
     var model: SearchUiModel
     var isOpenedGrids: Boolean
     var onClickToggleGrids: () -> Unit

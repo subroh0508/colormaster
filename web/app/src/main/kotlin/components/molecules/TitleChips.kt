@@ -45,7 +45,7 @@ private val TitleChipsComponent = functionComponent<TitleChipsProps> { props ->
     }
 }
 
-external interface TitleChipsProps : RProps {
+external interface TitleChipsProps : PropsWithChildren {
     var title: Brands?
     var onSelect: ((Brands, Boolean) -> Unit)?
 }

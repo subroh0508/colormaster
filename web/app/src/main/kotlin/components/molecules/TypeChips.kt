@@ -72,7 +72,7 @@ private val Types.displayNameKey: String get() = when (this) {
     else -> ""
 }
 
-external interface TypeChipsProps : RProps {
+external interface TypeChipsProps : PropsWithChildren {
     var types: Set<Types>
     var allTypes: Set<Types>
     var onSelect: ((Types, Boolean) -> Unit)?

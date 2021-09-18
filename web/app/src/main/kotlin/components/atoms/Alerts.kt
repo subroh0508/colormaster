@@ -77,9 +77,9 @@ private val alertComponent = functionComponent<AlertsProps> { props ->
     }
 }
 
-private fun RBuilder.alertTitle(handler: RHandler<RProps>) = child(alertTitleComponent, handler = handler)
+private fun RBuilder.alertTitle(handler: RHandler<PropsWithChildren>) = child(alertTitleComponent, handler = handler)
 
-private val alertTitleComponent = functionComponent<RProps> { props ->
+private val alertTitleComponent = functionComponent<PropsWithChildren> { props ->
     val classes = useTitleStyles()
 
     typography(factory = { DIV(mapOf(), it) }) {
@@ -95,7 +95,7 @@ enum class AlertsType {
     success, info, warning, error
 }
 
-external interface AlertsProps : RProps {
+external interface AlertsProps : PropsWithChildren {
     var type: AlertsType?
     var title: String?
     var message: String

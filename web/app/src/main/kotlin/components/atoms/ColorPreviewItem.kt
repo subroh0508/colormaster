@@ -24,7 +24,7 @@ private val ColorPreviewItemComponent = memo(functionComponent<ColorPreviewItemP
     }
 })
 
-external interface ColorPreviewItemProps : RProps {
+external interface ColorPreviewItemProps : PropsWithChildren {
     var name: String
     var color: String
     var isBrighter: Boolean

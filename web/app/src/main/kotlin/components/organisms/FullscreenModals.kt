@@ -24,7 +24,7 @@ val FullscreenPreviewComponent = functionComponent<FullscreenModalProps> { props
     }
 }
 
-external interface FullscreenModalProps : RProps {
+external interface FullscreenModalProps : PropsWithChildren {
     var items: List<IdolColor>
 }
 
@@ -38,7 +38,7 @@ private val FullscreenPreviewDialogComponent = functionComponent<ColorPreviewPro
     }
 }
 
-private val Transition = forwardRef<RProps> { props, ref ->
+private val Transition = forwardRef<PropsWithChildren> { props, ref ->
     slide {
         attrs {
             direction = SlideDirection.up

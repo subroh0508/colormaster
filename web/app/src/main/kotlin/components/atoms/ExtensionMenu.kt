@@ -64,7 +64,7 @@ private val ExtensionMenuComponent = functionComponent<ExtensionMenuProps> { pro
     }
 }
 
-external interface ExtensionMenuProps : RProps {
+external interface ExtensionMenuProps : PropsWithChildren {
     var menuItems: List<ExtensionMenuItemProps>
 }
 
@@ -72,7 +72,7 @@ fun ExtensionMenuProps.menuItems(vararg item: ExtensionMenuItemProps.() -> Unit)
     menuItems = item.map { jsObject(it) }
 }
 
-external interface ExtensionMenuItemProps : RProps {
+external interface ExtensionMenuItemProps : PropsWithChildren {
     var id: String
     var label: String
     var onClick: (Event, String) -> Unit

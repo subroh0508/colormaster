@@ -26,7 +26,7 @@ private val chipComponent = functionComponent<ChipProps> { props ->
     }
 }
 
-external interface ChipProps : RProps {
+external interface ChipProps : PropsWithChildren {
     var label: String
     var isChecked: Boolean
     var onClick: ((event: Event) -> Unit)?

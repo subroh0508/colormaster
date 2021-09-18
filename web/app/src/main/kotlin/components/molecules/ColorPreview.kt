@@ -11,7 +11,7 @@ import kotlinx.css.pct
 import materialui.styles.makeStyles
 import net.subroh0508.colormaster.model.IdolColor
 import react.RBuilder
-import react.RProps
+import react.PropsWithChildren
 import react.child
 import react.dom.div
 import react.functionComponent
@@ -35,7 +35,7 @@ private fun List<IdolColor>.toItemProps(): List<ColorPreviewItemProps> = map {
     }
 }
 
-external interface ColorPreviewProps : RProps {
+external interface ColorPreviewProps : PropsWithChildren {
     var items: List<IdolColor>
     var isColorOnly: Boolean
 }

@@ -117,7 +117,7 @@ private val AppBarTopComponent = functionComponent<AppBarTopProps> { props ->
     }
 }
 
-external interface AppBarTopProps : RProps {
+external interface AppBarTopProps : PropsWithChildren {
     var themeType: PaletteType
     var lang: Languages
     var pathname: String
@@ -185,7 +185,7 @@ private val LanguageMenuComponent = functionComponent<LanguageMenuProps> { props
     }
 }
 
-private external interface LanguageMenuProps : RProps {
+private external interface LanguageMenuProps : PropsWithChildren {
     var lang: Languages
     var pathname: String
 }

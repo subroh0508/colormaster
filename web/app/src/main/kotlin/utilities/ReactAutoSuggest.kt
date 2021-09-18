@@ -12,7 +12,7 @@ fun <T: Any> RBuilder.autoSuggest(handler: RHandler<AutoSuggestProps<T>>) = Auto
     handler(this as RElementBuilder<AutoSuggestProps<T>>)
 }
 
-external interface AutoSuggestProps<T: Any> : RProps {
+external interface AutoSuggestProps<T: Any> : PropsWithChildren {
     var suggestions: Array<T>
     var alwaysRenderSuggestions: Boolean
     var onSuggestionsFetchRequested: (T?) -> Unit
@@ -29,7 +29,7 @@ fun <T: Any> AutoSuggestProps<T>.inputProps(block: AutoSuggestInputProps.() -> U
     inputProps = jsObject(block)
 }
 
-external interface AutoSuggestInputProps : RProps  {
+external interface AutoSuggestInputProps : PropsWithChildren  {
     var placeholder: String?
     var value: Any?
     var autoComplete: String
@@ -46,8 +46,8 @@ external interface RenderSuggestionOptions {
     val isHighlighted: Boolean
 }
 
-external interface RenderSuggestionsContainerOptions : RProps {
-    val containerProps: RProps
+external interface RenderSuggestionsContainerOptions : PropsWithChildren {
+    val containerProps: PropsWithChildren
     val query: String
 }
 

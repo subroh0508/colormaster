@@ -21,7 +21,7 @@ val AuthenticationDispatcherContext = createContext<JsAuthenticationViewModel>()
 
 fun RBuilder.KoinAppProvider(
     scope: CoroutineScope = MainScope(),
-    handler: RHandler<RProps>,
+    handler: RHandler<PropsWithChildren>,
 ) = child(functionComponent { props ->
     val (_, i18n) = useTranslation()
 

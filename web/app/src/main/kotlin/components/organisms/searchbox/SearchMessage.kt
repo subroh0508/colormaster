@@ -8,7 +8,7 @@ import kotlinext.js.jsObject
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
 import react.RBuilder
-import react.RProps
+import react.PropsWithChildren
 import react.child
 import react.functionComponent
 import utilities.I18nextText
@@ -67,7 +67,7 @@ private operator fun I18nextText.invoke(key: String, count: Int) = invoke(
     key, jsObject { this.asDynamic()["count"] = count }
 )
 
-private external interface MessageProps<T: SearchUiModel> : RProps {
+private external interface MessageProps<T: SearchUiModel> : PropsWithChildren {
     var opened: Boolean
     var model: T
 }

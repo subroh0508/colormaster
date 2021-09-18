@@ -24,7 +24,7 @@ private val ThemeProviderComponent = functionComponent<ThemeProviderProps> { pro
     }
 }
 
-external interface ThemeProviderProps : RProps {
+external interface ThemeProviderProps : PropsWithChildren {
     var paletteType: PaletteType
 }
 

@@ -31,7 +31,7 @@ private val CheckboxComponent = functionComponent<CheckboxProps> { props ->
     }
 }
 
-external interface CheckboxProps : RProps {
+external interface CheckboxProps : PropsWithChildren {
     var label: String
     var isChecked: Boolean
     var onClick: ((event: Event) -> Unit)?

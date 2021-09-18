@@ -12,7 +12,7 @@ import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.components.typography.typographyH5
 import react.RBuilder
-import react.RProps
+import react.PropsWithChildren
 import react.child
 import react.dom.*
 import react.functionComponent
@@ -25,7 +25,7 @@ import utilities.useTranslation
 @Suppress("FunctionName")
 fun RBuilder.HowToUsePage() = StaticPage { child(HowToUseComponent) }
 
-val HowToUseComponent = functionComponent<RProps> {
+val HowToUseComponent = functionComponent<PropsWithChildren> {
     val (t, _) = useTranslation()
 
     card {

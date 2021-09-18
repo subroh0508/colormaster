@@ -28,13 +28,13 @@ import useQuery
 import utilities.BrowserAppPreference
 
 @Suppress("FunctionName")
-fun RBuilder.AppFrameContainer(handler: RHandler<RProps>) = child(AppContextProvider, handler = handler)
+fun RBuilder.AppFrameContainer(handler: RHandler<PropsWithChildren>) = child(AppContextProvider, handler = handler)
 
 private const val APP_FRAME_SCOPE_ID = "APP_FRAME_SCOPE"
 
 private val AppPreferenceDispatcherContext = createContext<AppPreference>()
 
-private val AppContextProvider = functionComponent<RProps> { props ->
+private val AppContextProvider = functionComponent<PropsWithChildren> { props ->
     val (koinApp, appScope) = useContext(KoinContext)
 
     val (appPreference, setAppPreference) = useState<AppPreference>()
@@ -75,7 +75,7 @@ private val AppContextProvider = functionComponent<RProps> { props ->
     }
 }
 
-private val AppFrameContainer = functionComponent<RProps> { props ->
+private val AppFrameContainer = functionComponent<PropsWithChildren> { props ->
     val preferredType = if (useMediaQuery("(prefers-color-scheme: dark)")) PaletteType.dark else PaletteType.light
     val history = useHistory()
     val lang = language(history)

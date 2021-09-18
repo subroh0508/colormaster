@@ -10,7 +10,7 @@ import react.*
 
 fun RBuilder.previewModal(handler: RHandler<PreviewModalProps>) = child(PreviewModalComponent, handler = handler)
 
-external interface PreviewModalProps : RProps {
+external interface PreviewModalProps : PropsWithChildren {
     var model: FullscreenPreviewUiModel
     @Suppress("PropertyName")
     var PreviewComponent: FunctionComponent<FullscreenModalProps>

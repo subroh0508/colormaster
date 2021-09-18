@@ -40,7 +40,7 @@ private val SupportableCheckBoxComponent = functionComponent<SupportableCheckBox
 private const val CHECKED_ALL_ID = "checked-all"
 private const val CLEARED_ALL_ID = "cleared-all"
 
-external interface SupportableCheckBoxProps : RProps {
+external interface SupportableCheckBoxProps : PropsWithChildren {
     var clearedAll: Boolean
     var onClickCheckedAll: (Event) -> Unit
     var onClickClearedAll: (Event) -> Unit

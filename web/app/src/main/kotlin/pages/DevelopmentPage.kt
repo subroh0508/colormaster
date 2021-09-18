@@ -6,7 +6,7 @@ import materialui.components.cardcontent.cardContent
 import materialui.components.cardheader.cardHeader
 import materialui.components.typography.typographyH5
 import react.RBuilder
-import react.RProps
+import react.PropsWithChildren
 import react.child
 import react.dom.*
 import react.functionComponent
@@ -17,7 +17,7 @@ import utilities.useTranslation
 @Suppress("FunctionName")
 fun RBuilder.DevelopmentPage() = StaticPage { child(DevelopmentComponent) }
 
-private val DevelopmentComponent = functionComponent<RProps> {
+private val DevelopmentComponent = functionComponent<PropsWithChildren> {
     val (t, _) = useTranslation()
 
     card {

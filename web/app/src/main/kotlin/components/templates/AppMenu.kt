@@ -181,7 +181,7 @@ private fun RBuilder.anchorItem(
     }
 }
 
-external interface AppMenuProps : RProps {
+external interface AppMenuProps : PropsWithChildren {
     var currentUser: CurrentUser?
     var onCloseMenu: () -> Unit
 }

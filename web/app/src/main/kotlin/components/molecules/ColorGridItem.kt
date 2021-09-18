@@ -111,7 +111,7 @@ private inline fun throttleFirstMouseEventChannel(
     }).current
 }
 
-external interface ColorGridItem : RProps {
+external interface ColorGridItem : PropsWithChildren {
     var item: IdolColor
     var isBottomIconsVisible: Boolean
     var isSelected: Boolean
