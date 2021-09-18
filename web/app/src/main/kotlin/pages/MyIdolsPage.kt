@@ -16,7 +16,7 @@ import toPreview
 @Suppress("FunctionName")
 fun RBuilder.MyIdolsPage() = child(MyIdolsPageComponent)
 
-private val MyIdolsPageComponent = functionalComponent<RProps> {
+private val MyIdolsPageComponent = functionComponent<RProps> {
     val classes = useStyles()
     val history = useHistory()
 

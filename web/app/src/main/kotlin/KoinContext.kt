@@ -22,7 +22,7 @@ val AuthenticationDispatcherContext = createContext<JsAuthenticationViewModel>()
 fun RBuilder.KoinAppProvider(
     scope: CoroutineScope = MainScope(),
     handler: RHandler<RProps>,
-) = child(functionalComponent { props ->
+) = child(functionComponent { props ->
     val (_, i18n) = useTranslation()
 
     val koinApp = koinApplication {
@@ -37,11 +37,18 @@ fun RBuilder.KoinAppProvider(
 }, handler = handler)
 
 inline fun <reified VM: ViewModel> KoinComponent(
-    context: RContext<VM>,
+    context: Context<VM>,
     scopeId: String,
     crossinline module: (CoroutineScope) -> Module,
-    crossinline handler: RBuilder.(RProps) -> Unit = { it.children() },
-) = functionalComponent<RProps> { props ->
+    crossinline handler: RBuilder.(PropsWithChildren) -> Unit = { it.children() },
+) = KoinComponent<VM, PropsWithChildren>(context, scopeId, module, handler)
+
+inline fun <reified VM: ViewModel, P: Props> KoinComponent(
+    context: Context<VM>,
+    scopeId: String,
+    crossinline module: (CoroutineScope) -> Module,
+    crossinline handler: RBuilder.(P) -> Unit,
+) = functionComponent<P> { props ->
     val (koinApp, appScope) = useContext(KoinContext)
     val (viewModel, setViewModel) = useState<VM>()
 
@@ -59,7 +66,7 @@ inline fun <reified VM: ViewModel> KoinComponent(
         }
     }
 
-    viewModel ?: return@functionalComponent
+    viewModel ?: return@functionComponent
 
     context.Provider {
         attrs.value = viewModel

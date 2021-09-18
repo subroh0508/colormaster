@@ -26,7 +26,7 @@ import useQuery
 
 fun RBuilder.IdolSearchContainer() = child(IdolSearchContextProvider)
 
-private val IdolSearchContextProvider = functionalComponent<RProps> {
+private val IdolSearchContextProvider = functionComponent<RProps> {
     val component = SearchByTab.findByQuery(useQuery().get("by")).let { tab ->
         when (tab) {
             SearchByTab.BY_NAME -> SearchByNameContextProvider
@@ -80,10 +80,10 @@ private val SearchByLiveContextProvider get() = KoinComponent(
 }
 
 private fun <T: SearchParams, VM: SearchViewModel<T>> IdolSearchContainer(
-    context: RContext<VM>,
+    context: Context<VM>,
     init: SearchUiModel,
     onChangeQuery: VM.(String?) -> Unit,
-) = functionalComponent<RProps> {
+) = functionComponent<RProps> {
     val history = useHistory()
 
     val (_, appScope) = useContext(KoinContext)

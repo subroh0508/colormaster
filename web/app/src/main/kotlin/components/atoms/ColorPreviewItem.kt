@@ -14,7 +14,7 @@ fun RBuilder.colorPreviewItem(
     handler: RHandler<ColorPreviewItemProps> = {}
 ) = child(ColorPreviewItemComponent, props, handler)
 
-private val ColorPreviewItemComponent = memo(functionalComponent<ColorPreviewItemProps> { props ->
+private val ColorPreviewItemComponent = memo(functionComponent<ColorPreviewItemProps> { props ->
     val classes = useStyles(props)
 
     div("$COLOR_PREVIEW_ITEM_CLASS_NAME ${classes.root}") {

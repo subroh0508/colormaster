@@ -5,7 +5,7 @@ import org.w3c.dom.events.Event
 import react.*
 
 @JsModule("react-autosuggest")
-private external val AutoSuggest: RClass<AutoSuggestProps<*>>
+private external val AutoSuggest: ComponentClass<AutoSuggestProps<*>>
 
 fun <T: Any> RBuilder.autoSuggest(handler: RHandler<AutoSuggestProps<T>>) = AutoSuggest {
     @Suppress("UNCHECKED_CAST")
@@ -49,7 +49,6 @@ external interface RenderSuggestionOptions {
 external interface RenderSuggestionsContainerOptions : RProps {
     val containerProps: RProps
     val query: String
-    val children: Any?
 }
 
 external interface OnChangeOptions {

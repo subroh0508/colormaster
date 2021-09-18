@@ -26,7 +26,7 @@ fun RBuilder.typesCinderellaGirlsChips(handler: RHandler<TypeChipsProps>) = chil
 fun RBuilder.typesMillionLiveChips(handler: RHandler<TypeChipsProps>) = child(TypeChipsComponent) { handler(); attrs.allTypes = Types.MILLION_LIVE.values().toSet() }
 fun RBuilder.typesSideMChips(handler: RHandler<TypeChipsProps>) = child(TypeChipsComponent) { handler(); attrs.allTypes = Types.SIDE_M.values().toSet() }
 
-private val TypeChipsComponent = functionalComponent<TypeChipsProps> { props ->
+private val TypeChipsComponent = functionComponent<TypeChipsProps> { props ->
     val classes = useStyles()
     val (t, _) = useTranslation()
 

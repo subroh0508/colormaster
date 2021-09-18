@@ -14,11 +14,11 @@ import react.RBuilder
 import react.RProps
 import react.child
 import react.dom.div
-import react.functionalComponent
+import react.functionComponent
 
 fun RBuilder.colorPreview(props: ColorPreviewProps) = child(ColorPreviewComponent, props)
 
-private val ColorPreviewComponent = functionalComponent<ColorPreviewProps> { props ->
+private val ColorPreviewComponent = functionComponent<ColorPreviewProps> { props ->
     val classes = useStyle(props)
     val rootStyle = "${classes.root} ${if (props.isColorOnly) classes.text else ""}"
 

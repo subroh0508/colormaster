@@ -14,10 +14,11 @@ import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.attrs
+import react.dom.setProp
 
 fun RBuilder.extensionMenu(handler: RHandler<ExtensionMenuProps>) = child(ExtensionMenuComponent, handler = handler)
 
-private val ExtensionMenuComponent = functionalComponent<ExtensionMenuProps> { props ->
+private val ExtensionMenuComponent = functionComponent<ExtensionMenuProps> { props ->
     val (anchorEl, setAnchorEl) = useState<EventTarget?>(null)
 
     fun handleMenuOpen(event: Event) = setAnchorEl(event.currentTarget)

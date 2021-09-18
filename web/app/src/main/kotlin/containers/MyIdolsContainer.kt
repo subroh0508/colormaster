@@ -30,7 +30,7 @@ private fun module(appScope: CoroutineScope) = module {
 
 private val MyIdolsContextProvider = KoinComponent(MyIdolsDispatcherContext, MY_IDOLS_SCOPE_ID, ::module)
 
-private val MyIdolsContainer = functionalComponent<RProps> {
+private val MyIdolsContainer = functionComponent<RProps> {
     val (_, appScope) = useContext(KoinContext)
     val currentUser = useContext(AuthenticationProviderContext)
     val viewModel = useContext(MyIdolsDispatcherContext)

@@ -9,7 +9,7 @@ import react.RBuilder
 import react.RProps
 import react.child
 import react.dom.*
-import react.functionalComponent
+import react.functionComponent
 import utilities.Trans
 import utilities.invoke
 import utilities.useTranslation
@@ -17,7 +17,7 @@ import utilities.useTranslation
 @Suppress("FunctionName")
 fun RBuilder.DevelopmentPage() = StaticPage { child(DevelopmentComponent) }
 
-private val DevelopmentComponent = functionalComponent<RProps> {
+private val DevelopmentComponent = functionComponent<RProps> {
     val (t, _) = useTranslation()
 
     card {

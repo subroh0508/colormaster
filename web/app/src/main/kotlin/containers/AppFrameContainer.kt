@@ -34,7 +34,7 @@ private const val APP_FRAME_SCOPE_ID = "APP_FRAME_SCOPE"
 
 private val AppPreferenceDispatcherContext = createContext<AppPreference>()
 
-private val AppContextProvider = functionalComponent<RProps> { props ->
+private val AppContextProvider = functionComponent<RProps> { props ->
     val (koinApp, appScope) = useContext(KoinContext)
 
     val (appPreference, setAppPreference) = useState<AppPreference>()
@@ -59,8 +59,8 @@ private val AppContextProvider = functionalComponent<RProps> { props ->
         }
     }
 
-    appPreference ?: return@functionalComponent
-    viewModel ?: return@functionalComponent
+    appPreference ?: return@functionComponent
+    viewModel ?: return@functionComponent
 
     AppPreferenceDispatcherContext.Provider {
         attrs.value = appPreference
@@ -75,7 +75,7 @@ private val AppContextProvider = functionalComponent<RProps> { props ->
     }
 }
 
-private val AppFrameContainer = functionalComponent<RProps> { props ->
+private val AppFrameContainer = functionComponent<RProps> { props ->
     val preferredType = if (useMediaQuery("(prefers-color-scheme: dark)")) PaletteType.dark else PaletteType.light
     val history = useHistory()
     val lang = language(history)

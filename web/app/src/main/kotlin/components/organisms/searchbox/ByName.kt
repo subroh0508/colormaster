@@ -12,7 +12,7 @@ import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import react.dom.attrs
 import react.dom.form
-import react.functionalComponent
+import react.functionComponent
 import react.useEffect
 import react.useState
 import utilities.inputTarget
@@ -20,7 +20,7 @@ import utilities.invoke
 import utilities.useDebounceEffect
 import utilities.useTranslation
 
-val SearchByNameComponent = functionalComponent<SearchByNameProps> { props ->
+val SearchByNameComponent = functionComponent<SearchByNameProps> { props ->
     val classes = useStyle()
     val (t, _) = useTranslation()
 

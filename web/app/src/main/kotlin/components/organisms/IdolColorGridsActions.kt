@@ -19,7 +19,7 @@ const val IDOL_COLOR_GRID_ACTIONS_CLASS_NAME = "idol-color-grid-actions"
 
 fun RBuilder.idolColorGridsActions(handler: RHandler<IdolColorGridsActionsProps>) = child(IdolColorGridsActionsComponent, handler = handler)
 
-private val IdolColorGridsActionsComponent = functionalComponent<IdolColorGridsActionsProps> { props ->
+private val IdolColorGridsActionsComponent = functionComponent<IdolColorGridsActionsProps> { props ->
     val classes = useStyle()
     val showLabel = props.showLabel ?: useMediaQuery("@media (min-width: 380px)")
     val (t, _) = useTranslation()

@@ -27,7 +27,7 @@ import themes.APP_BAR_SM_UP
 
 fun RBuilder.idolSearchPanel(handler: RHandler<IdolSearchPanelProps>) = child(IdolSearchPanelComponent, handler = handler)
 
-private val IdolSearchPanelComponent = functionalComponent<IdolSearchPanelProps> { props ->
+private val IdolSearchPanelComponent = functionComponent<IdolSearchPanelProps> { props ->
     val classes = useStyles()
     val isSmUp = useMediaQuery("@media (min-width: 600px)")
     val uiModel = props.model

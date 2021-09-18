@@ -1,8 +1,6 @@
 package components.atoms
 
 import kotlinx.css.*
-import kotlinx.css.properties.border
-import kotlinx.css.properties.borderTop
 import kotlinx.html.js.onClickFunction
 import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
@@ -31,7 +29,7 @@ fun RBuilder.responsiveDrawer(handler: RHandler<ResponsiveDrawerProps>) {
     child(HiddenXsDown, handler = handler)
 }
 
-private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
+private val HiddenSmUp = functionComponent<ResponsiveDrawerProps> { props ->
     val classes = useStyles()
     val rootStyle = "${classes.root} ${if (props.opened) classes.open else classes.close}"
     val headerStyle = "${classes.header} ${if (props.opened) classes.headerOpen else classes.headerClose}"
@@ -73,7 +71,7 @@ private val HiddenSmUp = functionalComponent<ResponsiveDrawerProps> { props ->
     }
 }
 
-private val HiddenXsDown = functionalComponent<ResponsiveDrawerProps> { props ->
+private val HiddenXsDown = functionComponent<ResponsiveDrawerProps> { props ->
     val classes = useStyles()
     val rootStyle = "${classes.root} ${classes.open}"
     val headerStyle = "${classes.header} ${if (props.opened) classes.headerOpen else classes.headerClose}"
@@ -135,7 +133,7 @@ private external interface ResponsiveDrawerStyle {
 }
 
 private val useStyles = makeStyles<ResponsiveDrawerStyle> {
-    val offsetTop = CSSBuilder().apply {
+    val offsetTop = CssBuilder().apply {
         top = 56.px
         media("(min-width:0px) and (orientation: landscape)") {
             top = 48.px

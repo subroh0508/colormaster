@@ -12,7 +12,7 @@ import react.dom.attrs
 
 fun RBuilder.chip(handler: RHandler<ChipProps>) = child(chipComponent, handler = handler)
 
-private val chipComponent = functionalComponent<ChipProps> { props ->
+private val chipComponent = functionComponent<ChipProps> { props ->
     val classes = useStyles()
 
     chip {

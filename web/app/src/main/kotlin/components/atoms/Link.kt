@@ -18,7 +18,7 @@ fun RBuilder.link(href: String, target: String = "_blank", block: RBuilder.() ->
     block()
 }
 
-private val LinkComponent = functionalComponent<LinkProps> { props ->
+private val LinkComponent = functionComponent<LinkProps> { props ->
     val classes = useStyle()
 
     muiLink {

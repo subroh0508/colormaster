@@ -14,7 +14,7 @@ import react.dom.span
 
 fun RBuilder.checkbox(handler: RHandler<CheckboxProps>) = child(CheckboxComponent, handler = handler)
 
-private val CheckboxComponent = functionalComponent<CheckboxProps> { props ->
+private val CheckboxComponent = functionComponent<CheckboxProps> { props ->
     val classes = useStyles()
 
     formControlLabel {

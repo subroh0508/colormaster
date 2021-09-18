@@ -15,7 +15,7 @@ import react.RBuilder
 import react.RProps
 import react.child
 import react.dom.*
-import react.functionalComponent
+import react.functionComponent
 import styled.css
 import styled.styledSpan
 import utilities.Trans
@@ -25,7 +25,7 @@ import utilities.useTranslation
 @Suppress("FunctionName")
 fun RBuilder.HowToUsePage() = StaticPage { child(HowToUseComponent) }
 
-val HowToUseComponent = functionalComponent<RProps> {
+val HowToUseComponent = functionComponent<RProps> {
     val (t, _) = useTranslation()
 
     card {

@@ -2,10 +2,10 @@
 
 package utilities
 
-import react.FunctionalComponent
+import react.FunctionComponent
 import react.RProps
 
 external fun <P : RProps> memo(
-    fc: FunctionalComponent<P>,
+    fc: FunctionComponent<P>,
     compare: (previous: P, next: P) -> Boolean
-): FunctionalComponent<P>
+): FunctionComponent<P>

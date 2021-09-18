@@ -36,7 +36,7 @@ external interface MyIdolCardsProps : RProps {
     var onClickPenlight: (items: List<IdolColor>) -> Unit
 }
 
-private val MyIdolCardsComponent = functionalComponent<MyIdolCardsProps> { props ->
+private val MyIdolCardsComponent = functionComponent<MyIdolCardsProps> { props ->
     val classes = useStyles()
 
     val inCharges = props.inCharges.filter(IdolColorListItem::selected).map {
@@ -101,7 +101,7 @@ private fun RBuilder.cardFrame(
     icon: String,
     labelKey: String,
     handler: RHandler<RProps>
-) = child(functionalComponent { props ->
+) = child(functionComponent { props ->
     val classes = useStyles()
     val (t, _) = useTranslation()
 

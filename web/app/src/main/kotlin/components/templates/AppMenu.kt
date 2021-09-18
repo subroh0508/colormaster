@@ -31,7 +31,7 @@ import utilities.*
 
 fun RBuilder.appMenu(handler: RHandler<AppMenuProps>) = child(AppMenuComponent, handler = handler)
 
-private val AppMenuComponent = functionalComponent<AppMenuProps> { props ->
+private val AppMenuComponent = functionComponent<AppMenuProps> { props ->
     val classes = useStyles()
     val history = useHistory()
     val (t, _) = useTranslation()

@@ -17,7 +17,7 @@ import utilities.*
 private const val AUTO_COMPLETE_TEXT_DEBOUNCE_TIMEOUT_MILLS = 500L
 
 @Suppress("FunctionName")
-fun <T: Any> AutoCompleteTextFieldComponent() = functionalComponent<AutoCompleteTextFieldProps<T>> { props ->
+fun <T: Any> AutoCompleteTextFieldComponent() = functionComponent<AutoCompleteTextFieldProps<T>> { props ->
     val (suggestsQuery, setSuggestsQuery) = useState("")
 
     useEffect(props.query) { setSuggestsQuery(props.query ?: "") }
@@ -71,11 +71,11 @@ private fun renderSuggestionContainer(handler: RHandler<SuggestionContainerProps
     child(SuggestionContainerComponent, handler = handler)
 }
 
-private val SuggestionContainerComponent = functionalComponent<SuggestionContainerProps> { props ->
+private val SuggestionContainerComponent = functionComponent<SuggestionContainerProps> { props ->
     val classes = useSuggestionContainerStyle()
 
     paper(PaperStyle.root to classes.root) {
-        @Suppress("UNCHECKED_CAST")
+        @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         props(props.containerProps as PaperProps)
         attrs.square = true
 
@@ -85,7 +85,6 @@ private val SuggestionContainerComponent = functionalComponent<SuggestionContain
 
 private external interface SuggestionContainerProps : RProps {
     var containerProps: RProps
-    var children: Any?
 }
 
 private external interface SuggestionContainerStyle {
@@ -106,7 +105,7 @@ private fun renderSuggestion(handler: RHandler<SuggestionProps>) = buildElement 
     child(SuggestionComponent, handler = handler)
 }
 
-private val SuggestionComponent = functionalComponent<SuggestionProps> { props ->
+private val SuggestionComponent = functionComponent<SuggestionProps> { props ->
     val classes = useSuggestionStyle()
 
     menuItem(button = false) {
@@ -139,7 +138,7 @@ private fun renderInputComponent(handler: RHandler<AutoCompleteInputProps>) = bu
     child(AutoCompleteInputComponent, handler = handler)
 }
 
-private val AutoCompleteInputComponent = functionalComponent<AutoCompleteInputProps> { props ->
+private val AutoCompleteInputComponent = functionComponent<AutoCompleteInputProps> { props ->
     val classes = useAutoCompleteInputStyle()
     val (t, _) = useTranslation()
 
