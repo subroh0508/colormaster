@@ -20,9 +20,9 @@ object Android {
     const val versionName = "0.0.1"
 
     object Versions {
-        const val compileSdk = 30
+        const val compileSdk = 31
         const val minSdk = 21
-        const val targetSdk = 30
+        const val targetSdk = 31
     }
 }
 

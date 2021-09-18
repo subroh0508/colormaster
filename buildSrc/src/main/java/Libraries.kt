@@ -59,7 +59,7 @@ object Libraries {
         private const val annotationVersion = "1.1.0"
         const val annotation = "androidx.annotation:annotation:$annotationVersion"
 
-        private const val activityVersion = "1.3.0-rc02"
+        private const val activityVersion = "1.4.0-alpha02"
         const val activity = "androidx.activity:activity-ktx:$activityVersion"
         const val activityCompose = "androidx.activity:activity-compose:$activityVersion"
 
@@ -67,7 +67,7 @@ object Libraries {
         const val material = "com.google.android.material:material:$materialVersion"
 
         object Compose {
-            const val version = "1.0.0"
+            const val version = "1.1.0-alpha03"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val material = "androidx.compose.material:material:$version"
