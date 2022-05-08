@@ -1,3 +1,7 @@
+plugins {
+    `node-convensions`
+}
+
 buildscript {
     repositories {
         google()
