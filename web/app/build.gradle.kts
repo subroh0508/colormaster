@@ -49,14 +49,12 @@ kotlin {
 
                 implementation(Libraries.Serialization.core)
 
-                implementation(Libraries.Html.js)
-                implementation(Libraries.Css(kotlinVersion).js)
-
-                implementation(Libraries.JsWrappers(kotlinVersion).react)
-                implementation(Libraries.JsWrappers(kotlinVersion).reactDom)
-                implementation(Libraries.JsWrappers(kotlinVersion).reactRouterDom)
-                implementation(Libraries.JsWrappers(kotlinVersion).styled)
-                implementation(Libraries.JsWrappers(kotlinVersion).extensions)
+                implementation(enforcedPlatform(kotlinWrappersBom))
+                implementation(Libraries.JsWrappers.react)
+                implementation(Libraries.JsWrappers.reactDom)
+                implementation(Libraries.JsWrappers.reactRouterDom)
+                implementation(Libraries.JsWrappers.styled)
+                implementation(Libraries.JsWrappers.extensions)
                 implementation(Libraries.JsWrappers.MaterialUi.core)
 
                 implementation(Libraries.Koin.core)
@@ -72,7 +70,6 @@ kotlin {
         }
     }
 }
-
 
 val browserWebpack = tasks.getByName("browserProductionWebpack")
 

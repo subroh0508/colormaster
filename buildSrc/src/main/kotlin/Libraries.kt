@@ -96,33 +96,12 @@ object Libraries {
         const val auth = "com.google.android.gms:play-services-auth:$authVersion"
     }
 
-    object Html {
-        const val version = "0.7.3"
-
-        const val js = "org.jetbrains.kotlinx:kotlinx-html-js:$version"
-    }
-
-    class Css(kotlinVersion: String) {
-        val version = "1.0.0-${JsWrappers(kotlinVersion).version}"
-
-        val js = "org.jetbrains.kotlin-wrappers:kotlin-css-js:$version"
-    }
-
-    class JsWrappers(kotlinVersion: String) {
-        val version = "pre.246-kotlin-$kotlinVersion"
-
-        private val reactVersion = "${Npm.reactVersion}-$version"
-        val react = "org.jetbrains.kotlin-wrappers:kotlin-react:$reactVersion"
-        val reactDom = "org.jetbrains.kotlin-wrappers:kotlin-react-dom:$reactVersion"
-
-        private val reactRouterDomVersion = "${Npm.reactRouterDomVersion}-$version"
-        val reactRouterDom = "org.jetbrains.kotlin-wrappers:kotlin-react-router-dom:$reactRouterDomVersion"
-
-        private val styledVersion = "${Npm.styledComponentVersion}-$version"
-        val styled = "org.jetbrains.kotlin-wrappers:kotlin-styled:$styledVersion"
-
-        private val extensionsVersion = "1.0.1-$version"
-        val extensions = "org.jetbrains.kotlin-wrappers:kotlin-extensions:$extensionsVersion"
+    object JsWrappers {
+        val react = "org.jetbrains.kotlin-wrappers:kotlin-react"
+        val reactDom = "org.jetbrains.kotlin-wrappers:kotlin-react-dom"
+        val reactRouterDom = "org.jetbrains.kotlin-wrappers:kotlin-react-router-dom"
+        val styled = "org.jetbrains.kotlin-wrappers:kotlin-styled"
+        val extensions = "org.jetbrains.kotlin-wrappers:kotlin-extensions"
 
         object MaterialUi {
             const val version = "0.7.0"
@@ -131,10 +110,6 @@ object Libraries {
     }
 
     object Npm {
-        internal const val reactVersion = "17.0.2"
-        internal const val reactRouterDomVersion = "5.2.0"
-        internal const val styledComponentVersion = "5.3.1"
-
         const val reactAutoSuggestVersion = "10.0.2"
         const val reactAutoSuggest = "react-autosuggest"
 
