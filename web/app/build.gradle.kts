@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     kotlin("js")
-    id("kotlinx-serialization")
+    kotlin("plugin.serialization")
 }
 
 kotlin {

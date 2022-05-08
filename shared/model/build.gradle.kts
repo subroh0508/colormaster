@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
     `android-multiplatform`
-    id("kotlinx-serialization")
+    kotlin("plugin.serialization")
 }
 
 kotlinMpp {

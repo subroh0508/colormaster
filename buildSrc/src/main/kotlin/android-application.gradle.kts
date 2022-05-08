@@ -16,11 +16,4 @@ android {
             excludes.add("META-INF/*")
         }
     }
-
-    buildFeatures.compose = true
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Libraries.Jetpack.Compose.version
-        //kotlinCompilerVersion = kotlinVersion
-    }
 }
