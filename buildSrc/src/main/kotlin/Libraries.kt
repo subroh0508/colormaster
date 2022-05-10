@@ -111,6 +111,8 @@ object Libraries {
         const val firebaseVersion = "8.7.1"
         const val firebase = "firebase"
 
+        const val materialComponentWeb = "^14.0.0"
+
         object I18next {
             const val version = "^19.4.5"
             const val core = "i18next"

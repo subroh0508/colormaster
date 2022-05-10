@@ -35,6 +35,9 @@ kotlin {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
 
+                implementation(npm("@material/chips", Libraries.Npm.materialComponentWeb))
+                implementation(npm("@material/theme", Libraries.Npm.materialComponentWeb))
+
                 implementation(devNpm("sass", "^1.51.0"))
                 implementation(devNpm("sass-loader", "^12.6.0"))
                 implementation(devNpm("extract-loader", "^5.1.0"))
