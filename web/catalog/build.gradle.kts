@@ -36,6 +36,7 @@ kotlin {
                 implementation(compose.runtime)
 
                 implementation(npm("@material/chips", Libraries.Npm.materialComponentWeb))
+                implementation(npm("@material/textfield", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/theme", Libraries.Npm.materialComponentWeb))
 
                 implementation(devNpm("sass", "^1.51.0"))

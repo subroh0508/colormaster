@@ -1,3 +1,13 @@
-@import 'theme';
+@use "@material/theme" with (
+  $primary: #e65100,
+  $secondary: #fff09f,
+  $background: #fafafa,
+);
 
-@import '@material/chips/styles';
+@use '@material/floating-label/mdc-floating-label';
+@use '@material/notched-outline/mdc-notched-outline';
+@use '@material/textfield';
+
+@use '@material/chips/styles';
+
+@include textfield.core-styles;

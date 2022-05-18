@@ -1,4 +1,6 @@
 import org.jetbrains.compose.web.css.Style
+import org.jetbrains.compose.web.css.padding
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.renderComposable
@@ -8,9 +10,12 @@ fun main() {
         Style(MaterialTheme())
 
         Div { Text("Hello, World!") }
-        Div {
+        Div({ style { padding(16.px) } }) {
             Chip("Chip One") { console.log("click!") }
             OutlinedChip("Chip Two") { console.log("click!") }
+        }
+        Div({ style { padding(12.px) } }) {
+            OutlinedTextField("名前を入力")
         }
     }
 }
