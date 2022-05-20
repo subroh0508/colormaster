@@ -14,7 +14,7 @@ pluginManagement {
 
 include(
     ":android:app",
-    ":web:app",
+    //":web:app",
     ":web:catalog",
     ":shared:base",
     ":shared:model",

@@ -1,13 +1,31 @@
-@use "@material/theme" with (
-  $primary: #e65100,
-  $secondary: #fff09f,
-  $background: #fafafa,
+$color-primary: #e65100;
+$color-secondary: #fff09f;
+$color-background: #fafafa;
+
+@use '@material/theme' with (
+  $primary: $color-primary,
+  $secondary: $color-secondary,
+  $background: $color-background,
 );
+
+@use '@material/checkbox';
+@use '@material/form-field';
+
+@use '@material/chips/styles';
 
 @use '@material/floating-label/mdc-floating-label';
 @use '@material/notched-outline/mdc-notched-outline';
 @use '@material/textfield';
 
-@use '@material/chips/styles';
+@include checkbox.core-styles;
+.mdc-checkbox {
+  @include checkbox.container-colors(
+    $unmarked-stroke-color: $color-primary,
+    $unmarked-fill-color: transparent
+  );
+  @include checkbox.ink-color(white);
+}
+
+@include form-field.core-styles;
 
 @include textfield.core-styles;

@@ -1,7 +1,6 @@
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.StyleSheet
 import org.jetbrains.compose.web.css.rgba
-import org.jetbrains.compose.web.css.selectors.type
 
 class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
     companion object {
@@ -12,17 +11,17 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
     }
 
     object Var {
-        const val primary = "var(--${Name.primary}, ${MaterialTheme.primary})"
-        const val secondary = "var(--${Name.secondary}, ${MaterialTheme.secondary})"
-        const val surface = "var(--${Name.surface}, ${MaterialTheme.surface})"
-        const val background = "var(--${Name.background}, ${MaterialTheme.background})"
-        const val onPrimary = "var(--${Name.onPrimary}, #ffffff)"
-        const val onSecondary = "var(--${Name.onSecondary}, #ffffff)"
-        const val onSurface = "var(--${Name.onSurface}, rgba(0, 0, 0, 0.87))"
-        const val textPrimaryLight = "var(--${Name.textSecondaryLight}, rgba(0, 0, 0, 0.87))"
-        const val textPrimaryDark = "var(--${Name.textSecondaryDark}, #ffffff)"
-        const val textSecondaryLight = "var(--${Name.textSecondaryLight}, rgba(0, 0, 0, 0.60))"
-        const val textSecondaryDark = "var(--${Name.textSecondaryDark}, rgba(255, 255, 255, 0.70))"
+        val primary = Color("var(--${Name.primary}, ${MaterialTheme.primary})")
+        val secondary = Color("var(--${Name.secondary}, ${MaterialTheme.secondary})")
+        val surface = Color("var(--${Name.surface}, ${MaterialTheme.surface})")
+        val background = Color("var(--${Name.background}, ${MaterialTheme.background})")
+        val onPrimary = Color("var(--${Name.onPrimary}, #ffffff)")
+        val onSecondary = Color("var(--${Name.onSecondary}, #ffffff)")
+        val onSurface = Color("var(--${Name.onSurface}, rgba(0, 0, 0, 0.87))")
+        val textPrimaryLight = Color("var(--${Name.textSecondaryLight}, rgba(0, 0, 0, 0.87))")
+        val textPrimaryDark = Color("var(--${Name.textSecondaryDark}, #ffffff)")
+        val textSecondaryLight = Color("var(--${Name.textSecondaryLight}, rgba(0, 0, 0, 0.60))")
+        val textSecondaryDark = Color("var(--${Name.textSecondaryDark}, rgba(255, 255, 255, 0.70))")
     }
 
     private object Name {
@@ -33,10 +32,10 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
         const val onPrimary = "mdc-theme-on-primary"
         const val onSecondary = "mdc-theme-on-secondary"
         const val onSurface = "mdc-theme-on-surface"
-        const val textPrimaryLight = "--mdc-theme-text-primary-on-light"
-        const val textPrimaryDark = "--mdc-theme-text-primary-on-dark"
-        const val textSecondaryLight = "--mdc-theme-text-secondary-on-light"
-        const val textSecondaryDark = "--mdc-theme-text-secondary-on-dark"
+        const val textPrimaryLight = "mdc-theme-text-primary-on-light"
+        const val textPrimaryDark = "mdc-theme-text-primary-on-dark"
+        const val textSecondaryLight = "mdc-theme-text-secondary-on-light"
+        const val textSecondaryDark = "mdc-theme-text-secondary-on-dark"
     }
 
     init {
@@ -52,6 +51,7 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
             variable(Name.textPrimaryDark, Color.white)
             variable(Name.textSecondaryLight, rgba(0, 0, 0, 0.60))
             variable(Name.textSecondaryDark, rgba(255, 255, 255, 0.70))
+            variable("mdc-checkbox-checked-color", Color(primary))
         }
     }
 }

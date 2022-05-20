@@ -1,3 +1,6 @@
+package components
+
+import MaterialTheme
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Button
@@ -12,7 +15,7 @@ fun Chip(
     label,
     MaterialTheme.Var.onPrimary,
     {
-        background(MaterialTheme.Var.primary)
+        backgroundColor(MaterialTheme.Var.primary)
     },
     onClick,
 )
@@ -25,9 +28,9 @@ fun OutlinedChip(
     label,
     MaterialTheme.Var.primary,
     {
-        background(MaterialTheme.Var.background)
-        property("color", MaterialTheme.Var.primary)
-        property("border-color", MaterialTheme.Var.primary)
+        backgroundColor(MaterialTheme.Var.background)
+        color(MaterialTheme.Var.primary)
+        border { color(MaterialTheme.Var.primary) }
         border {
             width(1.px)
             style(LineStyle.Solid)
@@ -39,8 +42,8 @@ fun OutlinedChip(
 @Composable
 private fun StyledChip(
     label: String,
-    color: String,
-    style: StyleBuilder.() -> Unit,
+    color: CSSColorValue,
+    style: StyleScope.() -> Unit,
     onClick: () -> Unit,
 ) {
     Span({
@@ -59,9 +62,7 @@ private fun StyledChip(
                 })
                 Span({
                     classes("mdc-evolution-chip__text-label")
-                    style {
-                        property("color", color)
-                    }
+                    style { color(color) }
                 }) { Text(label) }
             }
         }

@@ -1,4 +1,9 @@
+import components.Checkbox
+import components.Chip
+import components.OutlinedChip
+import components.OutlinedTextField
 import org.jetbrains.compose.web.css.Style
+import org.jetbrains.compose.web.css.StyleSheet
 import org.jetbrains.compose.web.css.padding
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
@@ -14,8 +19,12 @@ fun main() {
             Chip("Chip One") { console.log("click!") }
             OutlinedChip("Chip Two") { console.log("click!") }
         }
-        Div({ style { padding(12.px) } }) {
+        Div({ style { padding(16.px) } }) {
             OutlinedTextField("名前を入力")
+        }
+        Div({ style { padding(16.px) } }) {
+            Checkbox("チェックボックス 1")
+            Checkbox("チェックボックス 2", value = true)
         }
     }
 }

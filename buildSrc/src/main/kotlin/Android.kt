@@ -58,7 +58,6 @@ internal fun Project.androidBaseExt() = androidExt {
 
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions.jvmTarget = "1.8"
-        kotlinOptions.useIR = true
     }
     tasks.withType<Test> {
         useJUnitPlatform()
