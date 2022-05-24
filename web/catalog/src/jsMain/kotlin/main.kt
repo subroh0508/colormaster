@@ -1,7 +1,4 @@
-import components.Checkbox
-import components.Chip
-import components.OutlinedChip
-import components.OutlinedTextField
+import components.*
 import org.jetbrains.compose.web.css.Style
 import org.jetbrains.compose.web.css.StyleSheet
 import org.jetbrains.compose.web.css.padding
@@ -25,6 +22,10 @@ fun main() {
         Div({ style { padding(16.px) } }) {
             Checkbox("チェックボックス 1")
             Checkbox("チェックボックス 2", value = true)
+        }
+        Div({ style { padding(16.px) } }) {
+            OutlinedButton("ボタン 1") { console.log("click!") }
+            OutlinedButton("ボタン 2", "bookmark") { console.log("click!") }
         }
     }
 }

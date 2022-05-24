@@ -8,10 +8,12 @@ $color-background: #fafafa;
   $background: $color-background,
 );
 
+@use '@material/button/styles' as mdc-button;
+
 @use '@material/checkbox';
 @use '@material/form-field';
 
-@use '@material/chips/styles';
+@use '@material/chips/styles' as mdc-chips;
 
 @use '@material/floating-label/mdc-floating-label';
 @use '@material/notched-outline/mdc-notched-outline';
