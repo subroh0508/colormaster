@@ -15,17 +15,13 @@ fun OutlinedButton(
     icon: String? = null,
     onClick: (SyntheticMouseEvent) -> Unit = {},
 ) {
-    var element by remember { mutableStateOf<HTMLElement?>(null) }
-
-    SideEffect {
-        element?.let { attachRippleTo(it)}
-    }
+    val element = rememberRippleElement()
 
     Button({
         classes(*buttonClasses(icon != null))
         ref {
-            element = it
-            onDispose { element = null }
+            element.value = it
+            onDispose { element.value = null }
         }
         onClick(onClick)
     }) {

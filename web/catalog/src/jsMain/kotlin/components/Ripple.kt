@@ -15,11 +15,7 @@ fun Ripple(
     unbounded: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    var element by remember { mutableStateOf<HTMLElement?>(null) }
-
-    SideEffect {
-        element?.let { attachRippleTo(it) { isUnbounded = unbounded } }
-    }
+    val element = rememberRippleElement(unbounded)
 
     TagElement(
         TagElementBuilder(tag),
@@ -28,9 +24,20 @@ fun Ripple(
 
             classes("mdc-ripple-surface")
             ref {
-                element = it
-                onDispose { element = null }
+                element.value = it
+                onDispose { element.value = null }
             }
         },
     ) { content() }
+}
+
+@Composable
+fun rememberRippleElement(unbounded: Boolean = false): MutableState<HTMLElement?> {
+    val element = remember { mutableStateOf<HTMLElement?>(null) }
+
+    SideEffect {
+        element.value?.let { attachRippleTo(it) { isUnbounded = unbounded } }
+    }
+
+    return element
 }

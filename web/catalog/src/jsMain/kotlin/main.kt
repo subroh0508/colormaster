@@ -27,5 +27,23 @@ fun main() {
             OutlinedButton("ボタン 1") { console.log("click!") }
             OutlinedButton("ボタン 2", "bookmark") { console.log("click!") }
         }
+
+        Div({ style { padding(16.px) } }) {
+            ListGroup {
+                ListGroupSubHeader { Text("ヘッダー 1") }
+                List {
+                    ListItem { Text("リスト 1") }
+                    ListItem { Text("リスト 2") }
+                    ListItem { Text("リスト 3") }
+                }
+
+                ListGroupSubHeader { Text("ヘッダー 2") }
+                List {
+                    ListItem { Text("リスト 3") }
+                    ListItem { Text("リスト 4") }
+                    ListItem { Text("リスト 5") }
+                }
+            }
+        }
     }
 }

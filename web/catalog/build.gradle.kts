@@ -40,6 +40,7 @@ kotlin {
                 implementation(npm("@material/chips", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/checkbox", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/form-field", Libraries.Npm.materialComponentWeb))
+                implementation(npm("@material/list", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/ripple", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/textfield", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/theme", Libraries.Npm.materialComponentWeb))
