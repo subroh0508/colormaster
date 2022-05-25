@@ -13,7 +13,7 @@ $color-background: #fafafa;
 @use '@material/checkbox';
 @use '@material/form-field';
 
-@use "@material/card";
+@use '@material/card';
 
 @use '@material/chips/styles' as mdc-chips;
 
@@ -27,6 +27,8 @@ $color-background: #fafafa;
 @use '@material/floating-label/mdc-floating-label';
 @use '@material/notched-outline/mdc-notched-outline';
 @use '@material/textfield';
+
+@use '@material/typography/mdc-typography';
 
 @include card.core-styles;
 
@@ -44,3 +46,9 @@ $color-background: #fafafa;
 @include form-field.core-styles;
 
 @include textfield.core-styles;
+
+.mdc-card__header {
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+  }
+}

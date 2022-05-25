@@ -27,7 +27,6 @@ fun main() {
             OutlinedButton("ボタン 1") { console.log("click!") }
             OutlinedButton("ボタン 2", "bookmark") { console.log("click!") }
         }
-
         Div({ style { padding(16.px) } }) {
             ListGroup {
                 ListGroupSubHeader { Text("ヘッダー 1") }
@@ -45,10 +44,29 @@ fun main() {
                 }
             }
         }
-
         Div({ style { padding(16.px) } }) {
             TabBar(0, TabContent("タブ 1"), TabContent("タブ 2"), TabContent("タブ 3"))
             TabBar(2, TabContent("タブ 4", "favorites"), TabContent("タブ 5", "access_time"), TabContent("タブ 6", "near_me"))
+        }
+        Div({ style { padding(16.px) } }) {
+            Card {
+                CardHeader {
+                    TypographyHeadline5 { Text("タイトル") }
+                }
+                CardContent {
+                    Text("吾輩は猫である。名前はまだない。")
+                }
+            }
+        }
+        Div({ style { padding(16.px) } }) {
+            OutlinedCard {
+                CardHeader {
+                    TypographyHeadline5 { Text("タイトル") }
+                }
+                CardContent {
+                    Text("吾輩は猫である。名前はまだない。")
+                }
+            }
         }
     }
 }
