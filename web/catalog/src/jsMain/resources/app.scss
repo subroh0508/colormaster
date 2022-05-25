@@ -13,6 +13,8 @@ $color-background: #fafafa;
 @use '@material/checkbox';
 @use '@material/form-field';
 
+@use "@material/card";
+
 @use '@material/chips/styles' as mdc-chips;
 
 @use '@material/list';
@@ -25,6 +27,8 @@ $color-background: #fafafa;
 @use '@material/floating-label/mdc-floating-label';
 @use '@material/notched-outline/mdc-notched-outline';
 @use '@material/textfield';
+
+@include card.core-styles;
 
 @include checkbox.core-styles;
 .mdc-checkbox {

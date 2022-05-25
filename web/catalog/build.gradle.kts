@@ -37,6 +37,7 @@ kotlin {
                 implementation(compose.runtime)
 
                 implementation(npm("@material/button", Libraries.Npm.materialComponentWeb))
+                implementation(npm("@material/card", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/chips", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/checkbox", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/form-field", Libraries.Npm.materialComponentWeb))
