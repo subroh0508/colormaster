@@ -1,6 +1,4 @@
-import org.jetbrains.compose.web.css.Color
-import org.jetbrains.compose.web.css.StyleSheet
-import org.jetbrains.compose.web.css.rgba
+import org.jetbrains.compose.web.css.*
 
 class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
     companion object {
@@ -52,6 +50,16 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
             variable(Name.textSecondaryLight, rgba(0, 0, 0, 0.60))
             variable(Name.textSecondaryDark, rgba(255, 255, 255, 0.70))
             variable("mdc-checkbox-checked-color", Color(primary))
+        }
+
+        type("html") style  {
+            height(100.percent)
+            margin(0.px)
+        }
+        type("body") style {
+            height(100.percent)
+            margin(0.px)
+            backgroundColor(Var.background)
         }
     }
 }

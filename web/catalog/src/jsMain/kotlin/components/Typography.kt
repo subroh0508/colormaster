@@ -116,7 +116,7 @@ fun TypographyOverline(
 @Composable
 fun Typography(
     variant: String,
-    tag: String,
+    tag: String = "div",
     applyAttrs: (AttrsScope<HTMLElement>.() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
