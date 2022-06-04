@@ -24,8 +24,11 @@ fun main() {
             Checkbox("チェックボックス 2", value = true)
         }
         Div({ style { padding(16.px) } }) {
-            OutlinedButton("ボタン 1") { console.log("click!") }
-            OutlinedButton("ボタン 2", "bookmark") { console.log("click!") }
+            ButtonGroup {
+                OutlinedButton("ボタン 1") { console.log("click!") }
+                OutlinedButton("ボタン 2", "bookmark") { console.log("click!") }
+                OutlinedButton("ボタン 3", "bookmark") { console.log("click!") }
+            }
         }
         Div({ style { padding(16.px) } }) {
             ListGroup {

@@ -61,5 +61,8 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
             margin(0.px)
             backgroundColor(Var.background)
         }
+        type("style") style  {
+            margin(0.px)
+        }
     }
 }

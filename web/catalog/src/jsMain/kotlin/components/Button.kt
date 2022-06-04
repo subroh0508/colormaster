@@ -2,12 +2,8 @@ package components
 
 import androidx.compose.runtime.*
 import androidx.compose.web.events.SyntheticMouseEvent
-import externals.attachRippleTo
-import org.jetbrains.compose.web.dom.Button
-import org.jetbrains.compose.web.dom.I
-import org.jetbrains.compose.web.dom.Span
-import org.jetbrains.compose.web.dom.Text
-import org.w3c.dom.HTMLElement
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.*
 
 @Composable
 fun OutlinedButton(
@@ -18,7 +14,7 @@ fun OutlinedButton(
     val element = rememberRippleElement()
 
     Button({
-        classes(*buttonClasses(icon != null))
+        classes(*outlinedButtonClasses(icon != null))
         ref {
             element.value = it
             onDispose { element.value = null }
@@ -32,7 +28,19 @@ fun OutlinedButton(
     }
 }
 
-private fun buttonClasses(hasIcon: Boolean) = listOfNotNull(
+@Composable
+fun ButtonGroup(
+    content: @Composable () -> Unit,
+) {
+    Style(ButtonGroupStyle)
+
+    Div({
+        classes(ButtonGroupStyle.group)
+        attr("role", "group")
+    }) { content() }
+}
+
+private fun outlinedButtonClasses(hasIcon: Boolean) = listOfNotNull(
     "mdc-button",
     "mdc-button--outlined",
     if (hasIcon) "mdc-button--icon-leading" else null,
@@ -46,4 +54,23 @@ private fun ButtonIcon(icon: String?) {
         classes("material-icons", "mdc-button__icon")
         attr("aria-hidden", "true")
     }) { Text(icon) }
+}
+
+private object ButtonGroupStyle : StyleSheet() {
+    val group by style {
+        display(DisplayStyle.LegacyInlineFlex)
+
+        (type("button") + not(firstChild)) style {
+            property("border-top-left-radius", "0")
+            property("border-bottom-left-radius", "0")
+
+            marginLeft((-1).px)
+        }
+
+        (type("button") + not(lastChild)) style {
+            property("border-right-color", "transparent")
+            property("border-top-right-radius", "0")
+            property("border-bottom-right-radius", "0")
+        }
+    }
 }
