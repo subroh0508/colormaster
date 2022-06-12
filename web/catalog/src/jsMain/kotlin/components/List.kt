@@ -101,6 +101,9 @@ fun ListGroupSubHeader(
     tag: String = "h6",
 ) = ListGroupSubHeader(tag = tag) { Text(text) }
 
+@Composable
+fun Divider() = Hr { classes("mdc-deprecated-list-divider") }
+
 private fun listClasses(singleLine: Boolean) = listOfNotNull(
     "mdc-deprecated-list",
     if (singleLine) null else "mdc-deprecated-list--two-line",

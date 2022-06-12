@@ -17,6 +17,13 @@ fun main() {
         Style(MaterialTheme())
 
         ModalDrawer(
+            headerContent = {
+                DrawerHeader(
+                    title = "タイトル",
+                    subtitle = "リリース日: 2022.01.01",
+                )
+                Divider()
+            },
             drawerContent = {
                 DrawerContent {
                     ListGroupSubHeader("ヘッダー 1")
@@ -27,6 +34,7 @@ fun main() {
                     DrawerListItem("リスト 2", activated = true)
                     DrawerListItem("リスト 3")
 
+                    Divider()
                     ListGroupSubHeader("ヘッダー 2")
                     DrawerListItem("リスト 3")
                     DrawerListItem("リスト 4")
