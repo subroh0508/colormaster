@@ -1,11 +1,6 @@
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import components.*
-import externals.MDCDrawer
-import externals.MDCMenu
 import org.jetbrains.compose.web.css.Style
-import org.jetbrains.compose.web.css.StyleSheet
 import org.jetbrains.compose.web.css.padding
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
@@ -62,6 +57,7 @@ private fun MainContent() {
     }
     Div({ style { padding(16.px) } }) {
         OutlinedTextField("名前を入力")
+        OutlinedTextArea("名前を入力(複数行)")
     }
     Div({ style { padding(16.px) } }) {
         Menu(
