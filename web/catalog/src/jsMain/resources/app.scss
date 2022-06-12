@@ -19,8 +19,6 @@ $color-background: #fafafa;
 
 @use '@material/drawer';
 
-@use "@material/icon-button/styles" as mdc-icon-button;
-
 @use '@material/list';
 
 @use '@material/tab-bar/mdc-tab-bar';
@@ -31,6 +29,9 @@ $color-background: #fafafa;
 @use '@material/floating-label/mdc-floating-label';
 @use '@material/notched-outline/mdc-notched-outline';
 @use '@material/textfield';
+
+@use '@material/icon-button/icon-button';
+@use '@material/top-app-bar/mdc-top-app-bar';
 
 @use '@material/typography/mdc-typography';
 
@@ -53,6 +54,8 @@ $color-background: #fafafa;
 @include form-field.core-styles;
 
 @include textfield.core-styles;
+
+@include icon-button.core-styles;
 
 .mdc-card__header {
   h1, h2, h3, h4, h5, h6 {

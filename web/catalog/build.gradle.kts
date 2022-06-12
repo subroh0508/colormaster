@@ -46,6 +46,7 @@ kotlin {
                 implementation(npm("@material/list", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/ripple", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/tab-bar", Libraries.Npm.materialComponentWeb))
+                implementation(npm("@material/top-app-bar", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/textfield", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/typography", Libraries.Npm.materialComponentWeb))
                 implementation(npm("@material/theme", Libraries.Npm.materialComponentWeb))

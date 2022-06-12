@@ -30,16 +30,21 @@ fun main() {
                     DrawerListItem("リスト 5")
                 }
             },
-            mainContent = { drawer -> MainContent(drawer) },
+            mainContent = { drawer ->
+                TopAppBar(
+                    TopAppBarVariant.Fixed,
+                    navigationContent = {
+                        Icon("menu") { drawer?.open = true }
+                        TopAppTitle("Sample App")
+                    },
+                ) { MainContent() }
+            },
         )
     }
 }
 
 @Composable
-private fun MainContent(drawer: MDCDrawer?) {
-    Div({ style { padding(16.px) } }) {
-        Icon("menu") { drawer?.open = true }
-    }
+private fun MainContent() {
     Div({ style { padding(16.px) } }) {
         Chip("Chip One") { console.log("click!") }
         OutlinedChip("Chip Two") { console.log("click!") }
