@@ -1,9 +1,10 @@
 package components
 
 import androidx.compose.runtime.*
-import androidx.compose.web.events.SyntheticMouseEvent
+import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import org.w3c.dom.HTMLButtonElement
 
 private object ButtonVariant {
     const val Outlined = "outlined"
@@ -13,12 +14,12 @@ private object ButtonVariant {
 @Composable
 fun TextButton(
     label: String,
-    onClick: (SyntheticMouseEvent) -> Unit = {},
+    applyAttrs: (AttrsScope<HTMLButtonElement>.() -> Unit)? = null,
     leadingIcon: String? = null,
     trailingIcon: String? = null,
 ) = MaterialButton(
     null,
-    onClick,
+    applyAttrs,
     leadingIcon,
     trailingIcon,
 ) { Text(label) }
@@ -26,12 +27,12 @@ fun TextButton(
 @Composable
 fun OutlinedButton(
     label: String,
-    onClick: (SyntheticMouseEvent) -> Unit = {},
+    applyAttrs: (AttrsScope<HTMLButtonElement>.() -> Unit)? = null,
     leadingIcon: String? = null,
     trailingIcon: String? = null,
 ) = MaterialButton(
     ButtonVariant.Outlined,
-    onClick,
+    applyAttrs,
     leadingIcon,
     trailingIcon
 ) { Text(label) }
@@ -51,7 +52,7 @@ fun ButtonGroup(
 @Composable
 private fun MaterialButton(
     variant: String? = null,
-    onClick: (SyntheticMouseEvent) -> Unit = {},
+    applyAttrs: (AttrsScope<HTMLButtonElement>.() -> Unit)? = null,
     leadingIcon: String? = null,
     trailingIcon: String? = null,
     label: @Composable () -> Unit,
@@ -59,12 +60,13 @@ private fun MaterialButton(
     val element = rememberRippleElement()
 
     Button({
+        applyAttrs?.invoke(this)
+
         classes(*buttonClasses(variant, leadingIcon != null, trailingIcon != null))
         ref {
             element.value = it
             onDispose { element.value = null }
         }
-        onClick(onClick)
     }) {
         Span({ classes("mdc-button__ripple") })
         Span({ classes("mdc-button__focus-ring") })

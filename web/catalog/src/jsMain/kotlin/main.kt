@@ -60,7 +60,10 @@ private fun MainContent() {
             anchor = { menu ->
                 TextButton(
                     "メニュー",
-                    { menu?.open = true },
+                    {
+                        onClick { menu?.open = true }
+                        attr("aria-describedby", "menu-id")
+                    },
                     trailingIcon = "expand_more",
                 )
             },
@@ -68,6 +71,7 @@ private fun MainContent() {
             MenuItem("日本語")
             MenuItem("English")
         }
+        Tooltip("menu-id", "言語切り替え")
     }
     Div({ style { padding(16.px) } }) {
         Checkbox("チェックボックス 1")
@@ -75,9 +79,9 @@ private fun MainContent() {
     }
     Div({ style { padding(16.px) } }) {
         ButtonGroup {
-            OutlinedButton("ボタン 1", onClick = { console.log("click!") })
-            OutlinedButton("ボタン 2", { console.log("click!") }, "bookmark")
-            OutlinedButton("ボタン 3", { console.log("click!") }, "bookmark")
+            OutlinedButton("ボタン 1", { onClick { console.log("click!") } })
+            OutlinedButton("ボタン 2", { onClick { console.log("click!") } }, "bookmark")
+            OutlinedButton("ボタン 3", { onClick { console.log("click!") } }, "bookmark")
         }
     }
     Div({ style { padding(16.px) } }) {

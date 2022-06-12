@@ -33,6 +33,8 @@ $color-background: #fafafa;
 @use '@material/notched-outline/mdc-notched-outline';
 @use '@material/textfield';
 
+@use '@material/tooltip/styles' as mdc-tooltip;
+
 @use '@material/icon-button/icon-button';
 @use '@material/top-app-bar/mdc-top-app-bar';
 
