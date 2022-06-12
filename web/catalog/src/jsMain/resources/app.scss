@@ -17,6 +17,10 @@ $color-background: #fafafa;
 
 @use '@material/chips/styles' as mdc-chips;
 
+@use '@material/drawer';
+
+@use "@material/icon-button/styles" as mdc-icon-button;
+
 @use '@material/list';
 
 @use '@material/tab-bar/mdc-tab-bar';
@@ -40,6 +44,9 @@ $color-background: #fafafa;
   );
   @include checkbox.ink-color(white);
 }
+
+@include drawer.core-styles;
+@include drawer.modal-core-styles;
 
 @include list.deprecated-core-styles;
 
