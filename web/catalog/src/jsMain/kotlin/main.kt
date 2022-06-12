@@ -1,6 +1,9 @@
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import components.*
 import externals.MDCDrawer
+import externals.MDCMenu
 import org.jetbrains.compose.web.css.Style
 import org.jetbrains.compose.web.css.StyleSheet
 import org.jetbrains.compose.web.css.padding
@@ -53,14 +56,28 @@ private fun MainContent() {
         OutlinedTextField("名前を入力")
     }
     Div({ style { padding(16.px) } }) {
+        Menu(
+            anchor = { menu ->
+                TextButton(
+                    "メニュー",
+                    { menu?.open = true },
+                    trailingIcon = "expand_more",
+                )
+            },
+        ) {
+            MenuItem("日本語")
+            MenuItem("English")
+        }
+    }
+    Div({ style { padding(16.px) } }) {
         Checkbox("チェックボックス 1")
         Checkbox("チェックボックス 2", value = true)
     }
     Div({ style { padding(16.px) } }) {
         ButtonGroup {
-            OutlinedButton("ボタン 1") { console.log("click!") }
-            OutlinedButton("ボタン 2", "bookmark") { console.log("click!") }
-            OutlinedButton("ボタン 3", "bookmark") { console.log("click!") }
+            OutlinedButton("ボタン 1", onClick = { console.log("click!") })
+            OutlinedButton("ボタン 2", { console.log("click!") }, "bookmark")
+            OutlinedButton("ボタン 3", { console.log("click!") }, "bookmark")
         }
     }
     Div({ style { padding(16.px) } }) {

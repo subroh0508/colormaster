@@ -5,28 +5,36 @@ import androidx.compose.web.events.SyntheticMouseEvent
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 
+private object ButtonVariant {
+    const val Outlined = "outlined"
+    const val Contained = "raised"
+}
+
+@Composable
+fun TextButton(
+    label: String,
+    onClick: (SyntheticMouseEvent) -> Unit = {},
+    leadingIcon: String? = null,
+    trailingIcon: String? = null,
+) = MaterialButton(
+    null,
+    onClick,
+    leadingIcon,
+    trailingIcon,
+) { Text(label) }
+
 @Composable
 fun OutlinedButton(
     label: String,
-    icon: String? = null,
     onClick: (SyntheticMouseEvent) -> Unit = {},
-) {
-    val element = rememberRippleElement()
-
-    Button({
-        classes(*outlinedButtonClasses(icon != null))
-        ref {
-            element.value = it
-            onDispose { element.value = null }
-        }
-        onClick(onClick)
-    }) {
-        Span({ classes("mdc-button__ripple") })
-        Span({ classes("mdc-button__focus-ring") })
-        ButtonIcon(icon)
-        Span({ classes("mdc-button__label") }) { Text(label) }
-    }
-}
+    leadingIcon: String? = null,
+    trailingIcon: String? = null,
+) = MaterialButton(
+    ButtonVariant.Outlined,
+    onClick,
+    leadingIcon,
+    trailingIcon
+) { Text(label) }
 
 @Composable
 fun ButtonGroup(
@@ -40,10 +48,41 @@ fun ButtonGroup(
     }) { content() }
 }
 
-private fun outlinedButtonClasses(hasIcon: Boolean) = listOfNotNull(
+@Composable
+private fun MaterialButton(
+    variant: String? = null,
+    onClick: (SyntheticMouseEvent) -> Unit = {},
+    leadingIcon: String? = null,
+    trailingIcon: String? = null,
+    label: @Composable () -> Unit,
+) {
+    val element = rememberRippleElement()
+
+    Button({
+        classes(*buttonClasses(variant, leadingIcon != null, trailingIcon != null))
+        ref {
+            element.value = it
+            onDispose { element.value = null }
+        }
+        onClick(onClick)
+    }) {
+        Span({ classes("mdc-button__ripple") })
+        Span({ classes("mdc-button__focus-ring") })
+        leadingIcon?.let { ButtonIcon(it) }
+        Span({ classes("mdc-button__label") }) { label() }
+        trailingIcon?.let { ButtonIcon(it) }
+    }
+}
+
+private fun buttonClasses(
+    variant: String?,
+    hasLeadingIcon: Boolean,
+    hasTrailingIcon: Boolean,
+) = listOfNotNull(
     "mdc-button",
-    "mdc-button--outlined",
-    if (hasIcon) "mdc-button--icon-leading" else null,
+    variant?.let { "mdc-button--$it" },
+    if (hasLeadingIcon) "mdc-button--icon-leading" else null,
+    if (hasTrailingIcon) "mdc-button--icon-trailing" else null,
 ).toTypedArray()
 
 @Composable

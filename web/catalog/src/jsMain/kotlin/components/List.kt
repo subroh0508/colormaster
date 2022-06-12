@@ -9,6 +9,7 @@ import utilities.TagElementBuilder
 
 @Composable
 fun List(
+    applyAttrs: (AttrsScope<HTMLElement>.() -> Unit)? = null,
     singleLine: Boolean = true,
     tag: String = "ul",
     content: @Composable () -> Unit,
@@ -22,6 +23,8 @@ fun List(
     TagElement<HTMLElement>(
         tag,
         {
+            applyAttrs?.invoke(this)
+
             classes(*listClasses(singleLine))
             ref {
                 element = it
