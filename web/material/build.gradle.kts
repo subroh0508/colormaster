@@ -11,7 +11,7 @@ kotlin {
         browser {
             commonWebpackConfig {
                 cssSupport.enabled = true
-                outputFileName = "catalog.bundle.js"
+                outputFileName = "material.bundle.js"
             }
             runTask {
                 sourceMaps = true
