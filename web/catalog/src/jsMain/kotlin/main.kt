@@ -53,7 +53,7 @@ fun main() {
 private fun MainContent() {
     Div({ style { padding(16.px) } }) {
         Chip("Chip One") { console.log("click!") }
-        OutlinedChip("Chip Two") { console.log("click!") }
+        Chip("Chip Two", selected = true) { console.log("click!") }
     }
     Div({ style { padding(16.px) } }) {
         OutlinedTextField("名前を入力")

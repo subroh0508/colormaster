@@ -38,6 +38,8 @@ $color-background: #fafafa;
 @use '@material/icon-button/icon-button';
 @use '@material/top-app-bar/mdc-top-app-bar';
 
+@use '@material/ripple';
+
 @use '@material/typography/mdc-typography';
 
 @include card.core-styles;
@@ -49,6 +51,19 @@ $color-background: #fafafa;
     $unmarked-fill-color: transparent
   );
   @include checkbox.ink-color(white);
+}
+
+.mdc-evolution-chip {
+  border: 1px rgba(0, 0, 0, 0.12) solid;
+  background-color: var(--mdc-theme-background);
+
+  &--activated {
+    background-color: rgba(var(--mdc-theme-primary-rgb), 0.12);
+  }
+
+  &--activated &__text-label {
+    color: var(--mdc-theme-primary);
+  }
 }
 
 @include drawer.core-styles;

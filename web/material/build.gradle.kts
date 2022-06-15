@@ -7,27 +7,7 @@ plugins {
 }
 
 kotlin {
-    js(IR) {
-        browser {
-            commonWebpackConfig {
-                cssSupport.enabled = true
-                outputFileName = "material.bundle.js"
-            }
-            runTask {
-                sourceMaps = true
-                devServer = KotlinWebpackConfig.DevServer(
-                    port = 8088,
-                    contentBase = mutableListOf("${projectDir.path}/src/jsMain/resources"),
-                )
-            }
-            webpackTask {
-                sourceMaps = false
-            }
-        }
-
-        useCommonJs()
-        binaries.executable()
-    }
+    js(IR) { nodejs() }
 
     sourceSets {
         named("jsMain") {
@@ -36,29 +16,22 @@ kotlin {
                 implementation(compose.web.svg)
                 implementation(compose.runtime)
 
-                implementation(npm("@material/button", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/card", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/chips", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/checkbox", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/drawer", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/form-field", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/icon-button", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/list", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/menu", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/ripple", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/tab-bar", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/textfield", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/tooltip", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/top-app-bar", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/typography", Libraries.Npm.materialComponentWeb))
-                implementation(npm("@material/theme", Libraries.Npm.materialComponentWeb))
-
-                implementation(devNpm("sass", "^1.51.0"))
-                implementation(devNpm("sass-loader", "^12.6.0"))
-                implementation(devNpm("extract-loader", "^5.1.0"))
-                implementation(devNpm("file-loader", "^6.2.0"))
-                implementation(devNpm("autoprefixer", "^10.4.7"))
-                implementation(devNpm("postcss-loader", "^6.2.1"))
+                api(npm("@material/button", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/card", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/chips", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/checkbox", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/drawer", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/form-field", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/icon-button", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/list", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/menu", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/ripple", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/tab-bar", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/textfield", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/tooltip", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/top-app-bar", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/typography", Libraries.Npm.materialComponentWeb))
+                api(npm("@material/theme", Libraries.Npm.materialComponentWeb))
             }
         }
     }

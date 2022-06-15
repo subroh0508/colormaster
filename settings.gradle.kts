@@ -16,6 +16,7 @@ include(
     ":android:app",
     //":web:app",
     ":web:material",
+    ":web:catalog",
     ":shared:base",
     ":shared:model",
     ":shared:components:core",

@@ -39,6 +39,7 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
     init {
         type(":root") style  {
             variable(Name.primary, Color(if (dark) "#ffcc80" else primary))
+            variable("${Name.primary}-rgb", if (dark) "255,204,128" else "230,81,0")
             variable(Name.secondary, Color(secondary))
             variable(Name.surface, Color(if (dark) "#303030" else surface))
             variable(Name.background, Color(if (dark) "#121212" else background))

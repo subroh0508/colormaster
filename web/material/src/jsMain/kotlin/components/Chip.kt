@@ -1,8 +1,6 @@
 package components
 
-import MaterialTheme
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
@@ -10,46 +8,10 @@ import org.jetbrains.compose.web.dom.Text
 @Composable
 fun Chip(
     label: String,
-    onClick: () -> Unit,
-) = StyledChip(
-    label,
-    MaterialTheme.Var.onPrimary,
-    {
-        backgroundColor(MaterialTheme.Var.primary)
-    },
-    onClick,
-)
-
-@Composable
-fun OutlinedChip(
-    label: String,
-    onClick: () -> Unit,
-) = StyledChip(
-    label,
-    MaterialTheme.Var.primary,
-    {
-        backgroundColor(MaterialTheme.Var.background)
-        color(MaterialTheme.Var.primary)
-        border { color(MaterialTheme.Var.primary) }
-        border {
-            width(1.px)
-            style(LineStyle.Solid)
-        }
-    },
-    onClick,
-)
-
-@Composable
-private fun StyledChip(
-    label: String,
-    color: CSSColorValue,
-    style: StyleScope.() -> Unit,
-    onClick: () -> Unit,
+    selected: Boolean = false,
+    onClick: () -> Unit = {},
 ) {
-    Span({
-        classes("mdc-evolution-chip")
-        style(style)
-    }) {
+    Span({ classes(*chipClasses(selected)) }) {
         Span({
             classes("mdc-evolution-chip__cell", "mdc-evolution-chip__cell--primary")
         }) {
@@ -62,9 +24,13 @@ private fun StyledChip(
                 })
                 Span({
                     classes("mdc-evolution-chip__text-label")
-                    style { color(color) }
                 }) { Text(label) }
             }
         }
     }
 }
+
+private fun chipClasses(selected: Boolean) = listOfNotNull(
+    "mdc-evolution-chip",
+    if (selected) "mdc-evolution-chip--activated" else null,
+).toTypedArray()
