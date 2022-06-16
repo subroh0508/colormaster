@@ -5,10 +5,10 @@ import org.jetbrains.compose.web.css.padding
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
-import org.jetbrains.compose.web.renderComposable
+import org.jetbrains.compose.web.renderComposableInBody
 
 fun main() {
-    renderComposable(rootElementId = "root") {
+    renderComposableInBody {
         Style(MaterialTheme())
 
         ModalDrawer(
