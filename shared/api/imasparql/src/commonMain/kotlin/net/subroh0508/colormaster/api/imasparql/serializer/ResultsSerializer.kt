@@ -12,12 +12,10 @@ import kotlinx.serialization.encoding.Encoder
 internal class ResultsSerializer<T: Any>(
     private val bindingSerializer: KSerializer<T>
 ) : KSerializer<Response.Results<T>> {
-    @kotlinx.serialization.InternalSerializationApi
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Response.Results") {
         element("bindings", bindingSerializer.descriptor)
     }
 
-    @kotlinx.serialization.InternalSerializationApi
     override fun deserialize(decoder: Decoder): Response.Results<T> {
         val inp = decoder.beginStructure(descriptor)
 

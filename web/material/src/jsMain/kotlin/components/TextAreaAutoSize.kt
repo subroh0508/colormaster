@@ -79,8 +79,8 @@ private fun ShadowTextArea(
             top(0.px)
             left(0.px)
             transform { translateZ(0.px) }
-            readOnly()
         }
+        readOnly()
 
         ref {
             element = it

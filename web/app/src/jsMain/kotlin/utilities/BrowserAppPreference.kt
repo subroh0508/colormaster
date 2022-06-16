@@ -29,7 +29,7 @@ internal class BrowserAppPreference(
     ) {
         constructor(preference: AppPreference) : this(
             lang = preference.lang,
-            themeType = preference.themeType ?: ThemeType.light,
+            themeType = preference.themeType ?: ThemeType.DAY,
         )
     }
 }

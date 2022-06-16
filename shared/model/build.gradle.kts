@@ -6,15 +6,9 @@ plugins {
 
 kotlinMpp {
     sourceSets {
-        val commonMain by getting {
+        named("commonMain") {
             dependencies {
                 implementation(project(":shared:base"))
-            }
-        }
-
-        val jsMain by getting {
-            dependencies {
-                implementation(Libraries.JsWrappers.MaterialUi.core)
             }
         }
     }

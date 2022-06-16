@@ -2,7 +2,7 @@
 
 package utilities
 
-import kotlinext.js.jsObject
+import kotlinx.js.jso
 import kotlin.js.Promise
 import kotlinext.js.require
 
@@ -39,19 +39,18 @@ external interface I18nextBackendOptions {
     var loadPath: String
 }
 
-fun I18nextOptions.resources(code: String, res: dynamic) { resources = jsObject { this[code] = res } }
+fun I18nextOptions.resources(code: String, res: dynamic) { resources = jso { this[code] = res } }
 fun I18nextOptions.fallbackLng(vararg lng: String) { this.asDynamic()["fallbackLng"] = lng }
-fun I18nextOptions.backend(options: I18nextBackendOptions.() -> Unit) { this.asDynamic()["backend"] = jsObject(options) }
+fun I18nextOptions.backend(options: I18nextBackendOptions.() -> Unit) { this.asDynamic()["backend"] = jso(options) }
 fun I18nextResources.ja(res: dynamic) { this.asDynamic()["ja.translation"] = res }
 operator fun I18nextResources.set(code: String, res: dynamic) { this.asDynamic()[code] = js("{ translation: res }") }
 
-fun I18next.init(options: I18nextOptions.() -> Unit) = init(jsObject(options), undefined)
+fun I18next.init(options: I18nextOptions.() -> Unit) = init(jso(options), undefined)
 operator fun I18nextText.invoke(key: String): String = asDynamic()(key) as String
 operator fun I18nextText.invoke(key: String, args: Any): String = asDynamic()(key, args) as String
 
 fun i18nextInit() = i18next.
     use(httpBackend).
-    use(ReactI18next.initReactI18next).
     apply {
         init {
             resources("ja", require("locale/ja"))

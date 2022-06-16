@@ -77,6 +77,9 @@ object Libraries {
         const val util = "org.jetbrains.compose.ui:ui-util"
     }
 
+    private const val decomposeVersion = "0.6.0"
+    const val decompose = "com.arkivanov.decompose:decompose:$decomposeVersion"
+
     object Firebase {
         private const val bomVersion = "28.4.1"
 
@@ -92,22 +95,10 @@ object Libraries {
     }
 
     object JsWrappers {
-        val react = "org.jetbrains.kotlin-wrappers:kotlin-react"
-        val reactDom = "org.jetbrains.kotlin-wrappers:kotlin-react-dom"
-        val reactRouterDom = "org.jetbrains.kotlin-wrappers:kotlin-react-router-dom"
-        val styled = "org.jetbrains.kotlin-wrappers:kotlin-styled"
         val extensions = "org.jetbrains.kotlin-wrappers:kotlin-extensions"
-
-        object MaterialUi {
-            const val version = "0.7.0"
-            const val core = "net.subroh0508.kotlinmaterialui:core:$version"
-        }
     }
 
     object Npm {
-        const val reactAutoSuggestVersion = "10.0.2"
-        const val reactAutoSuggest = "react-autosuggest"
-
         const val firebaseVersion = "8.7.1"
         const val firebase = "firebase"
 
@@ -119,9 +110,6 @@ object Libraries {
 
             const val httpBackendVersion = "^1.0.15"
             const val httpBackend = "i18next-http-backend"
-
-            const val reactVersion = "^11.8.0"
-            const val react = "react-i18next"
         }
     }
 

@@ -8,6 +8,9 @@ plugins {
 
 kotlin {
     js(IR) {
+        useCommonJs()
+        binaries.executable()
+
         browser {
             commonWebpackConfig {
                 cssSupport.enabled = true
@@ -24,19 +27,16 @@ kotlin {
                 sourceMaps = false
             }
         }
-
-        useCommonJs()
-        binaries.executable()
     }
 
     sourceSets {
         named("jsMain") {
             dependencies {
+                implementation(project(":web:material"))
+
                 implementation(compose.web.core)
                 implementation(compose.web.svg)
                 implementation(compose.runtime)
-
-                implementation(project(":web:material"))
 
                 implementation(devNpm("sass", "^1.51.0"))
                 implementation(devNpm("sass-loader", "^12.6.0"))
