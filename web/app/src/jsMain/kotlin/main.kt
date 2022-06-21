@@ -1,7 +1,10 @@
 import androidx.compose.runtime.Composable
+import components.templates.MainFrame
+import material.components.TopAppBar
 import utilities.*
 import net.subroh0508.colormaster.components.core.FirebaseOptions
 import net.subroh0508.colormaster.components.core.initializeApp
+import org.jetbrains.compose.web.css.Style
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.renderComposable
 
@@ -22,5 +25,7 @@ fun main() {
 
 @Composable
 private fun App() {
-    Text("Hello, World!")
+    Style(MaterialTheme())
+
+    MainFrame()
 }

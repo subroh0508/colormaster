@@ -75,6 +75,17 @@ $color-background: #fafafa;
 
 @include textfield.core-styles;
 
+.mdc-top-app-bar {
+  background-color: var(--mdc-theme-background);
+
+  .mdc-top-app-bar__action-item--unbounded {
+    color: var(--mdc-theme-on-surface);
+  }
+  .mdc-top-app-bar__navigation-icon--unbounded {
+    color: var(--mdc-theme-on-surface);
+  }
+}
+
 @include icon-button.core-styles;
 
 .mdc-card__header {
