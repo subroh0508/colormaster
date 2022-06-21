@@ -1,5 +1,5 @@
 import androidx.compose.runtime.Composable
-import components.*
+import material.components.*
 import org.jetbrains.compose.web.css.Style
 import org.jetbrains.compose.web.css.padding
 import org.jetbrains.compose.web.css.px

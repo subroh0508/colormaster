@@ -1,4 +1,4 @@
-package components
+package material.components
 
 import androidx.compose.runtime.*
 import org.jetbrains.compose.web.ExperimentalComposeWebApi

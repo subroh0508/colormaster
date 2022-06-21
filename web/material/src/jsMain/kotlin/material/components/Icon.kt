@@ -1,4 +1,4 @@
-package components
+package material.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.web.events.SyntheticMouseEvent

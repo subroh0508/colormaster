@@ -1,7 +1,7 @@
-package components
+package material.components
 
 import androidx.compose.runtime.*
-import externals.MDCDrawer
+import material.externals.MDCDrawer
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLElement
@@ -77,4 +77,4 @@ fun DrawerListItem(
     text: String,
     activated: Boolean = false,
     applyAttrs: (AttrsScope<HTMLElement>.() -> Unit)? = null,
-) { ListItem(text, applyAttrs, activated = activated, tag = "a")}
+) { ListItem(text, applyAttrs, activated = activated, tag = "a") }

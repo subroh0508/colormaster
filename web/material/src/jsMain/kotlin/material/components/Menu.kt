@@ -1,8 +1,8 @@
-package components
+package material.components
 
 import androidx.compose.runtime.*
 import androidx.compose.web.events.SyntheticMouseEvent
-import externals.MDCMenu
+import material.externals.MDCMenu
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 

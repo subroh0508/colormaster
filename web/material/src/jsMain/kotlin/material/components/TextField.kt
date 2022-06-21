@@ -1,7 +1,7 @@
-package components
+package material.components
 
 import androidx.compose.runtime.*
-import externals.MDCTextField
+import material.externals.MDCTextField
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.dom.*
 

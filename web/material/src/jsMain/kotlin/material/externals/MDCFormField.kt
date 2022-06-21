@@ -1,11 +1,11 @@
-package externals
+package material.externals
 
 import org.w3c.dom.Element
 
 @JsModule("@material/form-field")
 @JsNonModule
 private external object MDCFormFieldModule {
-    class MDCFormField(root: Element?) : externals.MDCFormField {
+    class MDCFormField(root: Element?) : material.externals.MDCFormField {
         override var input: Any?
             get() = definedExternally
             set(value) = definedExternally

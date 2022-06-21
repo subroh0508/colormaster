@@ -1,11 +1,11 @@
-package components
+package material.components
 
 import androidx.compose.runtime.*
-import externals.attachRippleTo
+import material.externals.attachRippleTo
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.dom.TagElement
 import org.w3c.dom.HTMLElement
-import utilities.TagElementBuilder
+import material.utilities.TagElementBuilder
 
 
 @Composable

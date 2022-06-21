@@ -1,8 +1,10 @@
-package components
+package material.components
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.web.events.SyntheticMouseEvent
+import material.externals.MDCTopAppBar
 import org.jetbrains.compose.web.dom.*
+import org.w3c.dom.HTMLElement
 
 object TopAppBarVariant {
     const val Short = "short"
@@ -19,9 +21,24 @@ fun TopAppBar(
     actionContent: (@Composable () -> Unit)? = null,
     mainContent: @Composable () -> Unit,
 ) {
-    Header({ classes(*topAppBarClasses(variant)) }) {
-        navigationContent?.let { AlignStartSection(it) }
-        actionContent?.let { AlignEndSection(it) }
+    var element by remember { mutableStateOf<HTMLElement?>(null) }
+
+    SideEffect {
+        element?.let { MDCTopAppBar(it) }
+    }
+
+
+    Header({
+        classes(*topAppBarClasses(variant))
+        ref {
+            element = it
+            onDispose { element = null }
+        }
+    }) {
+        Div({ classes("mdc-top-app-bar__row") }) {
+            navigationContent?.let { AlignStartSection(it) }
+            actionContent?.let { AlignEndSection(it) }
+        }
     }
 
     Main({ classes(topAppBarMainClass(variant)) }) {
@@ -35,7 +52,7 @@ fun TopAppNavigationIcon(
     ariaLabel: String? = null,
     onClick: (SyntheticMouseEvent) -> Unit = {},
 ) = Button({
-    classes("material-icons", "mdc-top-app-bar__navigation-icon", "mdc-icon-button")
+    classes("material-icons", "mdc-top-app-bar__navigation-icon--unbounded", "mdc-icon-button")
     ariaLabel?.let { attr("aria-label", it) }
 
     onClick(onClick)
@@ -57,7 +74,7 @@ fun TopAppActionIcon(
     ariaLabel: String? = null,
     onClick: (SyntheticMouseEvent) -> Unit = {},
 ) = Button({
-    classes("material-icons", "mdc-top-app-bar__action-item", "mdc-icon-button")
+    classes("material-icons", "mdc-top-app-bar__action-item--unbounded", "mdc-icon-button")
     ariaLabel?.let { attr("aria-label", it) }
 
     onClick(onClick)

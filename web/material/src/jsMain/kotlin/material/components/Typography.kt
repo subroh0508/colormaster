@@ -1,10 +1,10 @@
-package components
+package material.components
 
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.dom.TagElement
 import org.w3c.dom.HTMLElement
-import utilities.TagElementBuilder
+import material.utilities.TagElementBuilder
 
 object TypographyVariant {
     const val Headline1 = "headline1"

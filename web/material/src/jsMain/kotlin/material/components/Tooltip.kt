@@ -1,7 +1,7 @@
-package components
+package material.components
 
 import androidx.compose.runtime.*
-import externals.MDCTooltip
+import material.externals.MDCTooltip
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 

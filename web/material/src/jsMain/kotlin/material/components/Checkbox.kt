@@ -1,8 +1,8 @@
-package components
+package material.components
 
 import androidx.compose.runtime.*
-import externals.MDCCheckbox
-import externals.MDCFormField
+import material.externals.MDCCheckbox
+import material.externals.MDCFormField
 import org.jetbrains.compose.web.ExperimentalComposeWebSvgApi
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.dom.Div

@@ -1,9 +1,9 @@
-package components
+package material.components
 
 import androidx.compose.runtime.*
 import androidx.compose.web.events.SyntheticMouseEvent
-import externals.MDCTab
-import externals.MDCTabBar
+import material.externals.MDCTab
+import material.externals.MDCTabBar
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLElement
 

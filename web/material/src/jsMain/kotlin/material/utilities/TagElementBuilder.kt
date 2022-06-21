@@ -1,4 +1,4 @@
-package utilities
+package material.utilities
 
 import kotlinx.browser.document
 import org.jetbrains.compose.web.dom.ElementBuilder

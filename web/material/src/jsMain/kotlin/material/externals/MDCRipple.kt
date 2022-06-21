@@ -1,4 +1,4 @@
-package externals
+package material.externals
 
 import org.w3c.dom.Element
 
@@ -6,7 +6,7 @@ import org.w3c.dom.Element
 @JsNonModule
 private external object MDCRippleModule {
     object MDCRipple {
-        fun attachTo(root: Element?, opts: RippleOption): externals.MDCRipple
+        fun attachTo(root: Element?, opts: RippleOption): material.externals.MDCRipple
     }
 }
 

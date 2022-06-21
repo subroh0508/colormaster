@@ -1,4 +1,4 @@
-package externals
+package material.externals
 
 import org.w3c.dom.Element
 
@@ -6,7 +6,7 @@ import org.w3c.dom.Element
 @JsNonModule
 private external object MDCTooltipModule {
     object MDCTooltip {
-        fun attachTo(root: Element?) : externals.MDCTooltip
+        fun attachTo(root: Element?) : material.externals.MDCTooltip
     }
 }
 
