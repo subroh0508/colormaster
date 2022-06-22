@@ -36,7 +36,10 @@ fun rememberRippleElement(unbounded: Boolean = false): MutableState<HTMLElement?
     val element = remember { mutableStateOf<HTMLElement?>(null) }
 
     SideEffect {
-        element.value?.let { attachRippleTo(it) { isUnbounded = unbounded } }
+        element.value?.let {
+            val ripple = attachRippleTo(it) { isUnbounded = unbounded }
+            console.log(ripple)
+        }
     }
 
     return element

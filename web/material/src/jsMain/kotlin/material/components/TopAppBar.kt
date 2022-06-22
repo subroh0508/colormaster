@@ -27,7 +27,6 @@ fun TopAppBar(
         element?.let { MDCTopAppBar(it) }
     }
 
-
     Header({
         classes(*topAppBarClasses(variant))
         ref {
@@ -51,12 +50,10 @@ fun TopAppNavigationIcon(
     icon: String,
     ariaLabel: String? = null,
     onClick: (SyntheticMouseEvent) -> Unit = {},
-) = Button({
-    classes("material-icons", "mdc-top-app-bar__navigation-icon--unbounded", "mdc-icon-button")
+) = Icon(icon, {
+    classes("material-icons", "mdc-top-app-bar__navigation-icon")
     ariaLabel?.let { attr("aria-label", it) }
-
-    onClick(onClick)
-}) { Text(icon) }
+}, onClick)
 
 @Composable
 fun TopAppTitle(
@@ -73,20 +70,16 @@ fun TopAppActionIcon(
     icon: String,
     ariaLabel: String? = null,
     onClick: (SyntheticMouseEvent) -> Unit = {},
-) = Button({
-    classes("material-icons", "mdc-top-app-bar__action-item--unbounded", "mdc-icon-button")
+) = Icon(icon, {
+    classes("mdc-top-app-bar__action-item", "mdc-icon-button")
     ariaLabel?.let { attr("aria-label", it) }
-
-    onClick(onClick)
-}) { Text(icon) }
+}, onClick)
 
 @Composable
 private fun AlignStartSection(content: @Composable () -> Unit) {
     Section({
         classes("mdc-top-app-bar__section", "mdc-top-app-bar__section--align-start")
-    }) {
-        content()
-    }
+    }) { content() }
 }
 
 @Composable
@@ -94,9 +87,7 @@ private fun AlignEndSection(content: @Composable () -> Unit) {
     Section({
         classes("mdc-top-app-bar__section", "mdc-top-app-bar__section--align-end")
         attr("role", "toolbar")
-    }) {
-        content()
-    }
+    }) { content() }
 }
 
 private fun topAppBarClasses(variant: String?) = listOfNotNull(
