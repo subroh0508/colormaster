@@ -1,10 +1,10 @@
 package components.organisms.drawer
 
 import androidx.compose.runtime.Composable
-import components.atoms.list.ListGroupSubHeader
+import components.atoms.drawer.DrawerListItem
 import material.components.Divider
-import material.components.DrawerListItem
 import material.components.Icon
+import material.components.ListGroupSubHeader
 import material.components.DrawerContent as MaterialDrawerContent
 import material.externals.MDCDrawer
 import org.jetbrains.compose.web.dom.Text
@@ -25,16 +25,14 @@ private fun SearchMenu() {
     ListGroupSubHeader("検索")
     DrawerListItem("名前・属性検索") {
         attr("aria-current", "page")
-        attr("tabindex", "-1")
+        attr("tabindex", "0")
     }
 }
 
 @Composable
 private fun AboutMenu() {
     ListGroupSubHeader("このアプリについて")
-    DrawerListItem("使い方") {
-        attr("tabindex", "-1")
-    }
+    DrawerListItem("使い方")
     DrawerListItem("仕組み")
     DrawerListItem("利用規約")
 }
@@ -48,12 +46,12 @@ private fun SignInMenu() {
 
 @Composable
 private fun LinkMenu() {
-    DrawerListItem({ attr("tabindex", "-1") }) {
+    DrawerListItem {
         Icon("launch")
         Text("GitHub")
     }
 
-    DrawerListItem({ attr("tabindex", "-1") }) {
+    DrawerListItem {
         Icon("launch")
         Text("開発者Twitter")
     }

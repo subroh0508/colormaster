@@ -78,10 +78,10 @@ $color-background: #fafafa;
 .mdc-top-app-bar {
   background-color: var(--mdc-theme-background);
 
-  .mdc-top-app-bar__action-item--unbounded {
+  .mdc-top-app-bar__action-item {
     color: var(--mdc-theme-on-surface);
   }
-  .mdc-top-app-bar__navigation-icon--unbounded {
+  .mdc-top-app-bar__navigation-icon {
     color: var(--mdc-theme-on-surface);
   }
 }
