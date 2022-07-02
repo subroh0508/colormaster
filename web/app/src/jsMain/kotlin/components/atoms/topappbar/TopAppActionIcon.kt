@@ -1,18 +1,18 @@
 package components.atoms.topappbar
 
 import androidx.compose.runtime.Composable
-import material.components.Icon
+import material.components.IconButton
 import org.jetbrains.compose.web.attributes.AttrsScope
-import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLButtonElement
 
 @Composable
 fun TopAppActionIcon(
     icon: String,
-    applyAttrs: (AttrsScope<HTMLElement>.() -> Unit)? = null,
+    applyAttrs: (AttrsScope<HTMLButtonElement>.() -> Unit)? = null,
     tooltip: @Composable (String) -> Unit,
 ) {
-    Icon(icon, applyAttrs = {
-        classes("mdc-top-app-bar__action-item", "mdc-icon-button")
+    IconButton(icon, applyAttrs = {
+        classes("mdc-top-app-bar__action-item")
         applyAttrs?.invoke(this)
         attr("aria-describedby", icon)
     })

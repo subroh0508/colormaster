@@ -17,10 +17,9 @@ fun Icon(
 ) = ComposableIcon(icon, applyAttrs)
 
 @Composable
-fun Icon(
+fun IconButton(
     icon: String,
     applyAttrs: (AttrsScope<HTMLButtonElement>.() -> Unit)? = null,
-    onClick: ((SyntheticMouseEvent) -> Unit),
 ) {
     val element = rememberRippleElement(unbounded = true)
 
@@ -31,8 +30,6 @@ fun Icon(
             element.value = it
             onDispose { element.value = null }
         }
-
-        onClick(onClick)
     }) {
         Span({ classes("mdc-icon-button__ripple") })
         Span({ classes("mdc-icon-button__focus-ring") })

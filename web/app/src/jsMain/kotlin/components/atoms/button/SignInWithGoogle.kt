@@ -1,6 +1,5 @@
 package components.atoms.button
 
-import MaterialTheme
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.ExperimentalComposeWebSvgApi
 import org.jetbrains.compose.web.attributes.AttrsScope

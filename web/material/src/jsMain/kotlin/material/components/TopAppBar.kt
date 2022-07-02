@@ -50,10 +50,11 @@ fun TopAppNavigationIcon(
     icon: String,
     ariaLabel: String? = null,
     onClick: (SyntheticMouseEvent) -> Unit = {},
-) = Icon(icon, {
+) = IconButton(icon) {
     classes("material-icons", "mdc-top-app-bar__navigation-icon")
     ariaLabel?.let { attr("aria-label", it) }
-}, onClick)
+    onClick(onClick)
+}
 
 @Composable
 fun TopAppTitle(
@@ -70,10 +71,11 @@ fun TopAppActionIcon(
     icon: String,
     ariaLabel: String? = null,
     onClick: (SyntheticMouseEvent) -> Unit = {},
-) = Icon(icon, {
+) = IconButton(icon) {
     classes("mdc-top-app-bar__action-item", "mdc-icon-button")
     ariaLabel?.let { attr("aria-label", it) }
-}, onClick)
+    onClick(onClick)
+}
 
 @Composable
 private fun AlignStartSection(content: @Composable () -> Unit) {
