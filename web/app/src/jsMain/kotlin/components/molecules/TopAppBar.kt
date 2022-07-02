@@ -11,17 +11,13 @@ import material.components.TopAppBar as MaterialTopAppBar
 @Composable
 fun TopAppBar(
     onClickNavigation: (SyntheticMouseEvent) -> Unit,
-    onClickTranslate: (SyntheticMouseEvent) -> Unit,
-    onClickBrightness: (SyntheticMouseEvent) -> Unit,
+    actionContent: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) = MaterialTopAppBar(
     TopAppBarVariant.Fixed,
     navigationContent = {
         TopAppNavigationIcon("menu", onClick = onClickNavigation)
     },
-    actionContent = {
-        TopAppActionIcon("translate", onClick = onClickTranslate)
-        TopAppActionIcon("brightness_4", onClick = onClickBrightness)
-    },
+    actionContent = actionContent,
     mainContent = content,
 )

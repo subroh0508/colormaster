@@ -4,15 +4,11 @@ import androidx.compose.runtime.Composable
 import components.atoms.button.SignInWithGoogle
 import components.atoms.drawer.DrawerListItem
 import components.atoms.list.ListGroupSubHeader
+import components.atoms.tooltip.Tooltip
 import material.components.Divider
-import material.components.Icon
-import material.components.Tooltip
 import material.components.DrawerContent as MaterialDrawerContent
 import material.externals.MDCDrawer
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.A
-import org.jetbrains.compose.web.dom.Span
-import org.jetbrains.compose.web.dom.Text
 
 @Composable
 fun DrawerContent(drawer: MDCDrawer?) = MaterialDrawerContent {
@@ -51,8 +47,6 @@ private fun SignInMenu() {
             Tooltip(
                 it,
                 "外部アカウントと連携することで、担当・推しアイドルの登録および閲覧ができるようになります",
-                showDelayMs = 0L,
-                hideDelayMs = 0L,
             )
         },
     )

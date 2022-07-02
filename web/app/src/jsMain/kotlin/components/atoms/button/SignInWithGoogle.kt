@@ -2,7 +2,6 @@ package components.atoms.button
 
 import MaterialTheme
 import androidx.compose.runtime.Composable
-import material.components.rememberRippleElement
 import org.jetbrains.compose.web.ExperimentalComposeWebSvgApi
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.*
@@ -16,30 +15,11 @@ import org.w3c.dom.svg.SVGElement
 @Composable
 fun SignInWithGoogle(
     applyAttrs: (AttrsScope<HTMLButtonElement>.() -> Unit)? = null,
-) {
-    val element = rememberRippleElement()
-
-    Style(SignInWithGoogleStyle)
-
-    Button({
-        applyAttrs?.invoke(this)
-
-        classes("mdc-button", "mdc-button--icon-leading", SignInWithGoogleStyle.button)
-        ref {
-            element.value = it
-            onDispose { element.value = null }
-        }
-    }) {
-        Span({ classes("mdc-button__ripple") })
-        Span({ classes("mdc-button__focus-ring") })
-        I({ classes("mdc-button__icon") }) {
-            GoogleIcon()
-        }
-        Span({ classes("mdc-button__label") }) {
-            Text("Sign in with Google")
-        }
-    }
-}
+) = TextButton(
+    applyAttrs,
+    SignInWithGoogleStyle,
+    leadingIcon = { GoogleIcon() },
+) { Text("Sign in with Google") }
 
 @OptIn(ExperimentalComposeWebSvgApi::class)
 @Composable
@@ -128,8 +108,8 @@ private fun ElementScope<SVGElement>.SvgPathGoogle() {
     )
 }
 
-private object SignInWithGoogleStyle : StyleSheet() {
-    val button by style {
+private object SignInWithGoogleStyle : TextButtonStyle() {
+    override val button by style {
         height(40.px)
         padding(0.px)
         border(1.px, LineStyle.Solid, Color("#4285FA"))
@@ -152,10 +132,10 @@ private object SignInWithGoogleStyle : StyleSheet() {
         }
 
         (className("mdc-button__ripple") + before) style {
-            backgroundColor(MaterialTheme.Var.ripple)
+            backgroundColor(Color.black)
         }
         (className("mdc-button__ripple") + after) style {
-            backgroundColor(MaterialTheme.Var.ripple)
+            backgroundColor(Color.black)
         }
     }
 }
