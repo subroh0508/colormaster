@@ -10,7 +10,10 @@ private external object MDCTooltipModule {
     }
 }
 
-external interface MDCTooltip
+external interface MDCTooltip {
+    fun setHideDelay(delayMs: Number)
+    fun setShowDelay(delayMs: Number)
+}
 
 @Suppress("FunctionName")
 fun MDCTooltip(root: Element?) = MDCTooltipModule.MDCTooltip.attachTo(root)

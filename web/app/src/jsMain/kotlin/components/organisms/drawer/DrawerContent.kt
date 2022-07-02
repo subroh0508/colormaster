@@ -3,9 +3,10 @@ package components.organisms.drawer
 import androidx.compose.runtime.Composable
 import components.atoms.button.SignInWithGoogle
 import components.atoms.drawer.DrawerListItem
+import components.atoms.list.ListGroupSubHeader
 import material.components.Divider
 import material.components.Icon
-import material.components.ListGroupSubHeader
+import material.components.Tooltip
 import material.components.DrawerContent as MaterialDrawerContent
 import material.externals.MDCDrawer
 import org.jetbrains.compose.web.css.*
@@ -43,9 +44,18 @@ private fun AboutMenu() {
 
 @Composable
 private fun SignInMenu() {
-    ListGroupSubHeader {
-        Text("連携アカウント")
-    }
+    ListGroupSubHeader(
+        "sign-in",
+        "連携アカウント",
+        helpContent = {
+            Tooltip(
+                it,
+                "外部アカウントと連携することで、担当・推しアイドルの登録および閲覧ができるようになります",
+                showDelayMs = 0L,
+                hideDelayMs = 0L,
+            )
+        },
+    )
     SignInWithGoogle {
         style {
             margin(8.px, 8.px, 8.px, 16.px)

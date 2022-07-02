@@ -40,7 +40,9 @@ fun main() {
                 TopAppBar(
                     TopAppBarVariant.Fixed,
                     navigationContent = {
-                        Icon("menu") { drawer?.open = true }
+                        Icon("menu", onClick = {
+                            drawer?.open = true
+                        })
                         TopAppTitle("Sample App")
                     },
                 ) { MainContent() }

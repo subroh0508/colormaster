@@ -97,6 +97,21 @@ fun ListGroupSubHeader(
 
 @Composable
 fun ListGroupSubHeader(
+    tag: String = "h6",
+    applyAttrs: (AttrsScope<HTMLElement>.() -> Unit)? = null,
+    content: @Composable () -> Unit,
+) {
+    TagElement<HTMLElement>(
+        tag,
+        {
+            classes("mdc-deprecated-list-group__subheader")
+            applyAttrs?.invoke(this)
+        },
+    ) { content() }
+}
+
+@Composable
+fun ListGroupSubHeader(
     text: String,
     tag: String = "h6",
 ) = ListGroupSubHeader(tag = tag) { Text(text) }
