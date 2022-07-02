@@ -13,14 +13,15 @@ import org.w3c.dom.HTMLElement
 @Composable
 fun Icon(
     icon: String,
-    applyAttrs: (AttrsScope<HTMLButtonElement>.() -> Unit)? = null,
-    onClick: ((SyntheticMouseEvent) -> Unit)? = null,
-) {
-    if (onClick == null) {
-        ComposableIcon(icon)
-        return
-    }
+    applyAttrs: (AttrsScope<HTMLElement>.() -> Unit)? = null,
+) = ComposableIcon(icon, applyAttrs)
 
+@Composable
+fun Icon(
+    icon: String,
+    applyAttrs: (AttrsScope<HTMLButtonElement>.() -> Unit)? = null,
+    onClick: ((SyntheticMouseEvent) -> Unit),
+) {
     val element = rememberRippleElement(unbounded = true)
 
     Button({
@@ -40,8 +41,11 @@ fun Icon(
 }
 
 @Composable
-private fun ComposableIcon(icon: String) {
-    I({ classes("material-icons") }) {
+private fun ComposableIcon(icon: String, applyAttrs: (AttrsScope<HTMLElement>.() -> Unit)? = null) {
+    I({
+        classes("material-icons")
+        applyAttrs?.invoke(this)
+    }) {
         Text(icon)
     }
 }

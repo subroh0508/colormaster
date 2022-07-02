@@ -6,6 +6,7 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
         const val secondary = "#fff09f"
         const val surface = "#ffffff"
         const val background = "#fafafa"
+        const val textLink = "#00B5E2"
     }
 
     object Var {
@@ -16,6 +17,7 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
         val onPrimary = Color("var(--${Name.onPrimary}, #ffffff)")
         val onSecondary = Color("var(--${Name.onSecondary}, #ffffff)")
         val onSurface = Color("var(--${Name.onSurface}, rgba(0, 0, 0, 0.87))")
+        val textLink = Color("var(--${Name.textLink}, ${MaterialTheme.textLink})")
         val textPrimaryLight = Color("var(--${Name.textSecondaryLight}, rgba(0, 0, 0, 0.87))")
         val textPrimaryDark = Color("var(--${Name.textSecondaryDark}, #ffffff)")
         val textSecondaryLight = Color("var(--${Name.textSecondaryLight}, rgba(0, 0, 0, 0.60))")
@@ -30,6 +32,7 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
         const val onPrimary = "mdc-theme-on-primary"
         const val onSecondary = "mdc-theme-on-secondary"
         const val onSurface = "mdc-theme-on-surface"
+        const val textLink = "mdc-theme-text-link"
         const val textPrimaryLight = "mdc-theme-text-primary-on-light"
         const val textPrimaryDark = "mdc-theme-text-primary-on-dark"
         const val textSecondaryLight = "mdc-theme-text-secondary-on-light"
@@ -46,6 +49,7 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
             variable(Name.onPrimary, if (dark) rgba(0, 0, 0, 0.87) else Color.white)
             variable(Name.onSecondary, if (dark) rgba(0, 0, 0, 0.87) else Color.white)
             variable(Name.onSurface, if (dark) Color.white else rgba(0, 0, 0, 0.87))
+            variable(Name.textLink, rgb(0, 181, 226))
             variable(Name.textPrimaryLight, rgba(0, 0, 0, 0.87))
             variable(Name.textPrimaryDark, Color.white)
             variable(Name.textSecondaryLight, rgba(0, 0, 0, 0.60))

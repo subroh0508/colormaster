@@ -59,7 +59,7 @@ fun TypographyHeadline5(
 
 @Composable
 fun TypographyHeadline6(
-    tag: String = "h1",
+    tag: String = "h6",
     applyAttrs: (AttrsScope<HTMLElement>.() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) = Typography(TypographyVariant.Headline6, tag, applyAttrs, content)

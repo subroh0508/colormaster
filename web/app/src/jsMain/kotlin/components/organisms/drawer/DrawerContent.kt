@@ -7,6 +7,10 @@ import material.components.Icon
 import material.components.ListGroupSubHeader
 import material.components.DrawerContent as MaterialDrawerContent
 import material.externals.MDCDrawer
+import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.display
+import org.jetbrains.compose.web.dom.A
+import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
@@ -46,13 +50,6 @@ private fun SignInMenu() {
 
 @Composable
 private fun LinkMenu() {
-    DrawerListItem {
-        Icon("launch")
-        Text("GitHub")
-    }
-
-    DrawerListItem {
-        Icon("launch")
-        Text("開発者Twitter")
-    }
+    DrawerListItem("GitHub", "https://github.com/subroh0508/colormaster")
+    DrawerListItem("開発者Twitter", "https://twitter.com/subroh_0508")
 }
