@@ -1,14 +1,14 @@
 package components.organisms.drawer
 
 import androidx.compose.runtime.Composable
+import components.atoms.button.SignInWithGoogle
 import components.atoms.drawer.DrawerListItem
 import material.components.Divider
 import material.components.Icon
 import material.components.ListGroupSubHeader
 import material.components.DrawerContent as MaterialDrawerContent
 import material.externals.MDCDrawer
-import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.display
+import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
@@ -45,6 +45,11 @@ private fun AboutMenu() {
 private fun SignInMenu() {
     ListGroupSubHeader {
         Text("連携アカウント")
+    }
+    SignInWithGoogle {
+        style {
+            margin(8.px, 8.px, 8.px, 16.px)
+        }
     }
 }
 

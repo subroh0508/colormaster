@@ -22,6 +22,7 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
         val textPrimaryDark = Color("var(--${Name.textSecondaryDark}, #ffffff)")
         val textSecondaryLight = Color("var(--${Name.textSecondaryLight}, rgba(0, 0, 0, 0.60))")
         val textSecondaryDark = Color("var(--${Name.textSecondaryDark}, rgba(255, 255, 255, 0.70))")
+        val ripple = Color("var(--${Name.ripple}, #000000)")
     }
 
     private object Name {
@@ -37,6 +38,7 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
         const val textPrimaryDark = "mdc-theme-text-primary-on-dark"
         const val textSecondaryLight = "mdc-theme-text-secondary-on-light"
         const val textSecondaryDark = "mdc-theme-text-secondary-on-dark"
+        const val ripple = "mdc-ripple-color"
     }
 
     init {
@@ -55,6 +57,7 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
             variable(Name.textSecondaryLight, rgba(0, 0, 0, 0.60))
             variable(Name.textSecondaryDark, rgba(255, 255, 255, 0.70))
             variable("mdc-checkbox-checked-color", Color(primary))
+            variable(Name.ripple, if (dark) Color.white else Color.black)
         }
 
         type("html") style  {

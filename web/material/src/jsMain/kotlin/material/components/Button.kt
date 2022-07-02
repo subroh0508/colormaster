@@ -17,12 +17,21 @@ fun TextButton(
     applyAttrs: (AttrsScope<HTMLButtonElement>.() -> Unit)? = null,
     leadingIcon: String? = null,
     trailingIcon: String? = null,
+) = TextButton(applyAttrs, leadingIcon, trailingIcon) { Text(label) }
+
+@Composable
+fun TextButton(
+    applyAttrs: (AttrsScope<HTMLButtonElement>.() -> Unit)? = null,
+    leadingIcon: String? = null,
+    trailingIcon: String? = null,
+    content: @Composable () -> Unit,
 ) = MaterialButton(
     null,
     applyAttrs,
     leadingIcon,
     trailingIcon,
-) { Text(label) }
+    content,
+)
 
 @Composable
 fun OutlinedButton(
