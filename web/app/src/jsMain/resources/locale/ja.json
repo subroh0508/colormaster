@@ -1,4 +1,6 @@
 {
+  "title": "COLOR M@STER",
+  "version": "v2022.06.22",
   "appBar": {
     "changeLanguage": "言語の切り替え",
     "darkTheme": "ダークテーマ",

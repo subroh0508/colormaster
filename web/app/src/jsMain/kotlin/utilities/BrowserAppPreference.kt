@@ -1,8 +1,11 @@
 package utilities
 
+import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.compositionLocalOf
 import kotlinx.browser.localStorage
 import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
+import net.subroh0508.colormaster.model.ui.commons.I18n
 import net.subroh0508.colormaster.model.ui.commons.ThemeType
 import org.koin.dsl.module
 import org.w3c.dom.Storage
@@ -10,15 +13,19 @@ import org.w3c.dom.get
 import org.w3c.dom.set
 import kotlin.reflect.KProperty
 
+internal val LocalBrowserApp: ProvidableCompositionLocal<Pair<I18n, AppPreference>?> = compositionLocalOf { null }
+
 internal class BrowserAppPreference(
     localStorage: Storage,
-    i18next: I18next,
-) : AppPreference {
+    private val i18next: I18next,
+) : AppPreference, I18n {
     override val lang get() = language ?: Languages.JAPANESE
     override val themeType get() = paletteType
 
     override fun setLanguage(lang: Languages) { language = lang }
     override fun setThemeType(type: ThemeType) { paletteType = type }
+
+    override fun t(vararg arg: Any) = i18next.t(*arg)
 
     private var language by i18next
     private var paletteType by localStorage
@@ -58,5 +65,8 @@ private operator fun I18next.setValue(
 
 @Suppress("FunctionName")
 internal fun AppPreferenceModule(i18next: I18next) = module {
-    single<AppPreference> { BrowserAppPreference(localStorage, i18next) }
+    val preference = BrowserAppPreference(localStorage, i18next)
+
+    single<AppPreference> { preference }
+    single<I18n> { preference }
 }

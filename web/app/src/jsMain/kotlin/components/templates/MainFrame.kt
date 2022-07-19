@@ -11,6 +11,7 @@ import material.components.MenuItem
 import material.externals.MDCDrawer
 import material.externals.open
 import org.jetbrains.compose.web.dom.Text
+import utilities.LocalBrowserApp
 import material.components.ModalDrawer as MaterialModalDrawer
 
 @Composable
@@ -30,11 +31,13 @@ private fun DrawerMain(drawer: MDCDrawer?) = TopAppBar(
 
 @Composable
 private fun DrawerActionContent() {
+    val (i18n, _) = LocalBrowserApp.current ?: return
+
     MenuButton(
         "translate",
         { classes("mdc-top-app-bar__action-item") },
         icon = "translate",
-        tooltip = { Tooltip(it, "言語の切り替え") },
+        tooltip = { Tooltip(it, i18n.t("appBar.changeLanguage")) },
     ) {
         MenuItem("日本語")
         MenuItem("English")
@@ -42,7 +45,7 @@ private fun DrawerActionContent() {
 
     TopAppActionIcon(
         "brightness_4",
-        tooltip = { Tooltip(it, "ダークテーマ") },
+        tooltip = { Tooltip(it, i18n.t("appBar.darkTheme")) },
     )
 }
 
