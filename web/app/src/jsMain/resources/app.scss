@@ -8,6 +8,8 @@ $color-background: #fafafa;
   $background: $color-background,
 );
 
+@use '@material/theme/mdc-theme';
+
 @use '@material/button/styles' as mdc-button;
 
 @use '@material/checkbox';
@@ -96,4 +98,12 @@ $color-background: #fafafa;
 
 .mdc-tooltip__surface {
   background-color: rgba(97, 97, 97, 0.92);
+}
+
+.mdc-theme-text-primary {
+  color: var(--mdc-theme-text-primary) !important;
+}
+
+.mdc-theme-text-secondary {
+  color: var(--mdc-theme-text-secondary) !important;
 }

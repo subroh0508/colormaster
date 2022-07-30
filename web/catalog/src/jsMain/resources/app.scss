@@ -8,6 +8,8 @@ $color-background: #fafafa;
   $background: $color-background,
 );
 
+@use '@material/theme/mdc-theme';
+
 @use '@material/button/styles' as mdc-button;
 
 @use '@material/checkbox';
@@ -81,4 +83,12 @@ $color-background: #fafafa;
   h1, h2, h3, h4, h5, h6 {
     margin: 0;
   }
+}
+
+.mdc-theme-text-primary {
+  color: var(--mdc-theme-text-primary) !important;
+}
+
+.mdc-theme-text-secondary {
+  color: var(--mdc-theme-text-secondary) !important;
 }

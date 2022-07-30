@@ -87,24 +87,13 @@ fun ListGroup(content: @Composable () -> Unit) {
 @Composable
 fun ListGroupSubHeader(
     tag: String = "h6",
-    content: @Composable () -> Unit,
-) {
-    TagElement<HTMLElement>(
-        tag,
-        { classes("mdc-deprecated-list-group__subheader") },
-    ) { content() }
-}
-
-@Composable
-fun ListGroupSubHeader(
-    tag: String = "h6",
     applyAttrs: (AttrsScope<HTMLElement>.() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     TagElement<HTMLElement>(
         tag,
         {
-            classes("mdc-deprecated-list-group__subheader")
+            classes("mdc-theme-text-secondary", "mdc-deprecated-list-group__subheader")
             applyAttrs?.invoke(this)
         },
     ) { content() }
@@ -125,6 +114,7 @@ private fun listClasses(singleLine: Boolean) = listOfNotNull(
 ).toTypedArray()
 
 private fun listItemClasses(activated: Boolean) = listOfNotNull(
+    "mdc-theme-text-primary",
     "mdc-deprecated-list-item",
     if (activated) "mdc-deprecated-list-item--activated" else null,
 ).toTypedArray()

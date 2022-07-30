@@ -45,11 +45,11 @@ fun DrawerHeader(
     Div({ classes("mdc-drawer__header") }) {
         TagElement<HTMLElement>(
             titleTag,
-            { classes("mdc-drawer__title") },
+            { classes("mdc-theme-text-primary", "mdc-drawer__title") },
         ) { title() }
         TagElement<HTMLElement>(
             subtitleTag,
-            { classes("mdc-drawer__subtitle") },
+            { classes("mdc-theme-text-secondary", "mdc-drawer__subtitle") },
         ) { subtitle() }
     }
 }

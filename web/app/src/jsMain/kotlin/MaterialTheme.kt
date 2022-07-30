@@ -18,8 +18,8 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
         val onSecondary = Color("var(--${Name.onSecondary}, #ffffff)")
         val onSurface = Color("var(--${Name.onSurface}, rgba(0, 0, 0, 0.87))")
         val textLink = Color("var(--${Name.textLink}, ${MaterialTheme.textLink})")
-        val textPrimaryLight = Color("var(--${Name.textSecondaryLight}, rgba(0, 0, 0, 0.87))")
-        val textPrimaryDark = Color("var(--${Name.textSecondaryDark}, #ffffff)")
+        val textPrimaryLight = Color("var(--${Name.textPrimaryLight}, rgba(0, 0, 0, 0.87))")
+        val textPrimaryDark = Color("var(--${Name.textPrimaryDark}, #ffffff)")
         val textSecondaryLight = Color("var(--${Name.textSecondaryLight}, rgba(0, 0, 0, 0.60))")
         val textSecondaryDark = Color("var(--${Name.textSecondaryDark}, rgba(255, 255, 255, 0.70))")
         val ripple = Color("var(--${Name.ripple}, #000000)")
@@ -34,8 +34,10 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
         const val onSecondary = "mdc-theme-on-secondary"
         const val onSurface = "mdc-theme-on-surface"
         const val textLink = "mdc-theme-text-link"
+        const val textPrimary = "mdc-theme-text-primary"
         const val textPrimaryLight = "mdc-theme-text-primary-on-light"
         const val textPrimaryDark = "mdc-theme-text-primary-on-dark"
+        const val textSecondary = "mdc-theme-text-secondary"
         const val textSecondaryLight = "mdc-theme-text-secondary-on-light"
         const val textSecondaryDark = "mdc-theme-text-secondary-on-dark"
         const val ripple = "mdc-ripple-color"
@@ -52,8 +54,10 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
             variable(Name.onSecondary, if (dark) rgba(0, 0, 0, 0.87) else Color.white)
             variable(Name.onSurface, if (dark) Color.white else rgba(0, 0, 0, 0.87))
             variable(Name.textLink, rgb(0, 181, 226))
+            variable(Name.textPrimary, (if (dark) Var.textPrimaryDark else Var.textPrimaryLight).toString())
             variable(Name.textPrimaryLight, rgba(0, 0, 0, 0.87))
             variable(Name.textPrimaryDark, Color.white)
+            variable(Name.textSecondary, (if (dark) Var.textSecondaryDark else Var.textSecondaryLight).toString())
             variable(Name.textSecondaryLight, rgba(0, 0, 0, 0.60))
             variable(Name.textSecondaryDark, rgba(255, 255, 255, 0.70))
             variable("mdc-checkbox-checked-color", Color(primary))

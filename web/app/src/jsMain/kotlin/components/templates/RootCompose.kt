@@ -22,7 +22,7 @@ fun RootCompose(
     }
 
     CompositionLocalProvider(
-        LocalBrowserApp provides appState
+        LocalBrowserApp provides appState,
     ) { content(koinApplication.koin.get()) }
 }
 
