@@ -1,11 +1,13 @@
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import components.templates.MainFrame
+import components.templates.RootCompose
 import utilities.*
 import net.subroh0508.colormaster.components.core.FirebaseOptions
 import net.subroh0508.colormaster.components.core.initializeApp
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import net.subroh0508.colormaster.model.ui.commons.I18n
+import net.subroh0508.colormaster.model.ui.commons.ThemeType
 import org.jetbrains.compose.web.css.Style
 import org.jetbrains.compose.web.renderComposable
 import org.koin.dsl.koinApplication
@@ -22,23 +24,11 @@ fun main() {
         MEASUREMENT_ID,
     ))
 
-    val koinApp = koinApplication {
-        modules(AppPreferenceModule(i18nextInit()))
-    }
-
     renderComposable(rootElementId = "root") {
-        App(koinApp.koin.get(), koinApp.koin.get())
+        RootCompose(i18nextInit()) { preference ->
+            Style(MaterialTheme(preference.themeType == ThemeType.NIGHT))
+
+            MainFrame(preference)
+        }
     }
-}
-
-@Composable
-private fun App(
-    i18n: I18n,
-    preference: AppPreference,
-) = CompositionLocalProvider(
-    LocalBrowserApp provides (i18n to preference),
-) {
-    Style(MaterialTheme())
-
-    MainFrame()
 }

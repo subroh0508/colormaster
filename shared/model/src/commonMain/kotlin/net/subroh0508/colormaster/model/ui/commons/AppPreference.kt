@@ -8,4 +8,5 @@ interface AppPreference {
 
     fun setLanguage(lang: Languages)
     fun setThemeType(type: ThemeType)
+    fun toggleThemeType()
 }

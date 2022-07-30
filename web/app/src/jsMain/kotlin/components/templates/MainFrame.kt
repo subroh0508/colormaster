@@ -10,28 +10,32 @@ import components.organisms.drawer.DrawerHeader
 import material.components.MenuItem
 import material.externals.MDCDrawer
 import material.externals.open
+import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import org.jetbrains.compose.web.dom.Text
-import utilities.LocalBrowserApp
+import utilities.LocalI18n
 import material.components.ModalDrawer as MaterialModalDrawer
 
 @Composable
-fun MainFrame() {
+fun MainFrame(preference: AppPreference) {
     MaterialModalDrawer(
         headerContent = { DrawerHeader() },
         drawerContent = { DrawerContent(it) },
-        mainContent = { DrawerMain(it) },
+        mainContent = { DrawerMain(it, preference) },
     )
 }
 
 @Composable
-private fun DrawerMain(drawer: MDCDrawer?) = TopAppBar(
+private fun DrawerMain(
+    drawer: MDCDrawer?,
+    preference: AppPreference,
+) = TopAppBar(
     onClickNavigation = { drawer?.open() },
-    actionContent = { DrawerActionContent() },
+    actionContent = { DrawerActionContent(preference) },
 ) { Text("Hello, World!") }
 
 @Composable
-private fun DrawerActionContent() {
-    val (i18n, _) = LocalBrowserApp.current ?: return
+private fun DrawerActionContent(preference: AppPreference) {
+    val i18n = LocalI18n() ?: return
 
     MenuButton(
         "translate",
@@ -45,6 +49,7 @@ private fun DrawerActionContent() {
 
     TopAppActionIcon(
         "brightness_4",
+        { onClick { preference.toggleThemeType() } },
         tooltip = { Tooltip(it, i18n.t("appBar.darkTheme")) },
     )
 }
