@@ -4,15 +4,16 @@ import androidx.compose.runtime.Composable
 import material.components.Divider
 import org.jetbrains.compose.web.dom.Text
 import utilities.LocalI18n
+import utilities.invoke
 import material.components.DrawerHeader as MaterialDrawerHeader
 
 @Composable
 fun DrawerHeader() {
-    val i18n = LocalI18n() ?: return
+    val t = LocalI18n() ?: return
 
     MaterialDrawerHeader(
-        title = { Text(i18n.t("title")) },
-        subtitle = { Text(i18n.t("version")) },
+        title = { Text(t("title")) },
+        subtitle = { Text(t("version")) },
     )
     Divider()
 }

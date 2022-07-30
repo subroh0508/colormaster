@@ -24,23 +24,22 @@ internal fun LocalI18n() = LocalBrowserApp.current.i18n
 
 internal class BrowserAppPreference(
     localStorage: Storage,
-    private val i18next: I18next,
+    override val lang: Languages,
+    private val i18n: I18nextText,
     private val onChange: (State) -> Unit,
 ) : AppPreference {
-    override val lang get() = language ?: Languages.JAPANESE
     override val theme get() = themeType ?: ThemeType.DAY
 
     override fun setLanguage(lang: Languages) {
-        val next = window.location.pathname.replace(language?.basename ?: "", "")
+        val next = window.location.pathname.replace(this.lang.basename, "")
 
         window.location.replace(lang.basename + next)
     }
     override fun setThemeType(type: ThemeType) {
         themeType = type
-        onChange(State(this))
+        onChange(State(this, i18n))
     }
 
-    private var language by i18next
     private var themeType by localStorage
 
     private val Languages.basename get() = when (this) {
@@ -51,12 +50,12 @@ internal class BrowserAppPreference(
     data class State(
         override val lang: Languages = Languages.JAPANESE,
         override val theme: ThemeType = ThemeType.DAY,
-        val i18n: I18next? = null,
+        val i18n: I18nextText? = null,
     ) : AppPreference.State {
-        constructor(preference: BrowserAppPreference) : this(
-            lang = preference.language ?: Languages.JAPANESE,
+        constructor(preference: BrowserAppPreference, i18n: I18nextText) : this(
+            lang = preference.lang,
             theme = preference.themeType ?: ThemeType.DAY,
-            i18n = preference.i18next,
+            i18n = i18n,
         )
     }
 }
@@ -88,12 +87,13 @@ private operator fun I18next.setValue(
 
 @Suppress("FunctionName")
 internal fun AppPreferenceModule(
-    i18next: I18next,
+    lang: Languages,
+    i18n: I18nextText,
     onChange: (BrowserAppPreference.State) -> Unit,
 ) = module {
-    val preference = BrowserAppPreference(localStorage, i18next, onChange)
+    val preference = BrowserAppPreference(localStorage, lang, i18n, onChange)
 
     single<AppPreference> { preference }
 
-    onChange(BrowserAppPreference.State(preference))
+    onChange(BrowserAppPreference.State(preference, i18n))
 }

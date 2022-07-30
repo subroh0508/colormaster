@@ -4,10 +4,10 @@ import kotlinx.browser.window
 import utilities.*
 import net.subroh0508.colormaster.components.core.FirebaseOptions
 import net.subroh0508.colormaster.components.core.initializeApp
+import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.ThemeType
 import org.jetbrains.compose.web.css.Style
 import org.jetbrains.compose.web.renderComposable
-import org.w3c.dom.url.URLSearchParams
 
 fun main() {
     initializeApp(FirebaseOptions(
@@ -24,9 +24,11 @@ fun main() {
     val i18next = i18nextInit()
 
     i18next.changeLanguage(window)
-        .then {
+        .then { i18n ->
+            val lang = Languages.valueOfCode(i18next.language) ?: Languages.JAPANESE
+
             renderComposable(rootElementId = "root") {
-                RootCompose(i18next) { preference ->
+                RootCompose(lang, i18n) { preference ->
                     Style(MaterialTheme(preference.theme == ThemeType.NIGHT))
 
                     MainFrame(preference)

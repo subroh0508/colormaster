@@ -10,6 +10,7 @@ import material.components.DrawerContent as MaterialDrawerContent
 import material.externals.MDCDrawer
 import org.jetbrains.compose.web.css.*
 import utilities.LocalI18n
+import utilities.invoke
 
 @Composable
 fun DrawerContent(drawer: MDCDrawer?) = MaterialDrawerContent {
@@ -24,10 +25,10 @@ fun DrawerContent(drawer: MDCDrawer?) = MaterialDrawerContent {
 
 @Composable
 private fun SearchMenu() {
-    val i18n = LocalI18n() ?: return
+    val t = LocalI18n() ?: return
 
-    ListGroupSubHeader(i18n.t("appMenu.search.label"))
-    DrawerListItem(i18n.t("appMenu.search.attributes")) {
+    ListGroupSubHeader(t("appMenu.search.label"))
+    DrawerListItem(t("appMenu.search.attributes")) {
         attr("aria-current", "page")
         attr("tabindex", "0")
     }
@@ -35,25 +36,25 @@ private fun SearchMenu() {
 
 @Composable
 private fun AboutMenu() {
-    val i18n = LocalI18n() ?: return
+    val t = LocalI18n() ?: return
 
-    ListGroupSubHeader(i18n.t("appMenu.about.label"))
-    DrawerListItem(i18n.t("appMenu.about.howToUse"))
-    DrawerListItem(i18n.t("appMenu.about.development"))
-    DrawerListItem(i18n.t("appMenu.about.terms"))
+    ListGroupSubHeader(t("appMenu.about.label"))
+    DrawerListItem(t("appMenu.about.howToUse"))
+    DrawerListItem(t("appMenu.about.development"))
+    DrawerListItem(t("appMenu.about.terms"))
 }
 
 @Composable
 private fun SignInMenu() {
-    val i18n = LocalI18n() ?: return
+    val t = LocalI18n() ?: return
 
     ListGroupSubHeader(
         "sign-in",
-        i18n.t("appMenu.account.label"),
+        t("appMenu.account.label"),
         helpContent = {
             Tooltip(
                 it,
-                i18n.t("appMenu.account.description"),
+                t("appMenu.account.description"),
             )
         },
     )
@@ -66,8 +67,8 @@ private fun SignInMenu() {
 
 @Composable
 private fun LinkMenu() {
-    val i18n = LocalI18n() ?: return
+    val t = LocalI18n() ?: return
 
-    DrawerListItem(i18n.t("appMenu.links.github"), "https://github.com/subroh0508/colormaster")
-    DrawerListItem(i18n.t("appMenu.links.twitter"), "https://twitter.com/subroh_0508")
+    DrawerListItem(t("appMenu.links.github"), "https://github.com/subroh0508/colormaster")
+    DrawerListItem(t("appMenu.links.twitter"), "https://twitter.com/subroh_0508")
 }
