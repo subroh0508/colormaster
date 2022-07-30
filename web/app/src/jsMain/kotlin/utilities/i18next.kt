@@ -5,6 +5,8 @@ package utilities
 import kotlinx.js.jso
 import kotlin.js.Promise
 import kotlinext.js.require
+import net.subroh0508.colormaster.model.Languages
+import org.w3c.dom.Window
 
 @JsModule("i18next/i18next")
 private external val i18next: I18next
@@ -62,3 +64,10 @@ fun i18nextInit() = i18next.
             }
         }
     }
+
+fun I18next.changeLanguage(window: Window): Promise<I18nextText> {
+    val code = window.location.pathname.split("/")[1].takeIf(String::isNotBlank)
+    val language = code?.let { Languages.valueOfCode(it) } ?: Languages.JAPANESE
+
+    return changeLanguage(language.code)
+}

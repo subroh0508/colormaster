@@ -20,7 +20,7 @@ kotlin {
                 sourceMaps = true
                 devServer = KotlinWebpackConfig.DevServer(
                     port = 8088,
-                    contentBase = mutableListOf("${projectDir.path}/src/main/resources")
+                    contentBase = mutableListOf("${projectDir.path}/src/jsMain/resources")
                 )
             }
             webpackTask {

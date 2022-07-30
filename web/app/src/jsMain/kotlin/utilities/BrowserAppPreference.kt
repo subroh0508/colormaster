@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import kotlinx.browser.localStorage
+import kotlinx.browser.window
 import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import net.subroh0508.colormaster.model.ui.commons.I18n
@@ -14,7 +15,7 @@ import org.w3c.dom.get
 import org.w3c.dom.set
 import kotlin.reflect.KProperty
 
-internal val LocalBrowserApp: ProvidableCompositionLocal<BrowserAppPreference.State> = compositionLocalOf {
+val LocalBrowserApp: ProvidableCompositionLocal<AppPreference.State> = compositionLocalOf {
     BrowserAppPreference.State()
 }
 
@@ -25,40 +26,43 @@ internal class BrowserAppPreference(
     localStorage: Storage,
     private val i18next: I18next,
     private val onChange: (State) -> Unit,
-) : AppPreference, I18n {
+) : AppPreference {
     override val lang get() = language ?: Languages.JAPANESE
-    override val themeType get() = paletteType
+    override val theme get() = themeType ?: ThemeType.DAY
 
     override fun setLanguage(lang: Languages) {
-        language = lang
-        onChange(State(this))
+        val next = window.location.pathname.replace(language?.basename ?: "", "")
+
+        window.location.replace(lang.basename + next)
     }
     override fun setThemeType(type: ThemeType) {
-        paletteType = type
+        themeType = type
         onChange(State(this))
     }
-    override fun toggleThemeType() {
-        paletteType = if (paletteType == ThemeType.DAY) ThemeType.NIGHT else ThemeType.DAY
-        onChange(State(this))
-    }
-
-    override fun t(vararg arg: Any) = i18next.t(*arg)
 
     private var language by i18next
-    private var paletteType by localStorage
+    private var themeType by localStorage
+
+    private val Languages.basename get() = when (this) {
+        Languages.JAPANESE -> ""
+        Languages.ENGLISH -> "/en"
+    }
 
     data class State(
-        val lang: Languages = Languages.JAPANESE,
-        val themeType: ThemeType = ThemeType.DAY,
-        val i18n: I18n? = null,
-    ) {
+        override val lang: Languages = Languages.JAPANESE,
+        override val theme: ThemeType = ThemeType.DAY,
+        val i18n: I18next? = null,
+    ) : AppPreference.State {
         constructor(preference: BrowserAppPreference) : this(
-            lang = preference.lang,
-            themeType = preference.themeType ?: ThemeType.DAY,
-            i18n = preference,
+            lang = preference.language ?: Languages.JAPANESE,
+            theme = preference.themeType ?: ThemeType.DAY,
+            i18n = preference.i18next,
         )
     }
 }
+
+internal val AppPreference.State.i18n get() = (this as? BrowserAppPreference.State)?.i18n
+internal operator fun AppPreference.State.component3() = i18n
 
 private operator fun Storage.getValue(
     thisRef: BrowserAppPreference,

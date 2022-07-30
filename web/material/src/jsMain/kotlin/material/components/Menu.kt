@@ -51,6 +51,6 @@ fun MenuItem(
 @Composable
 fun MenuItem(
     text: String,
-    onClick: (SyntheticMouseEvent) -> Unit = {},
     activated: Boolean = false,
+    onClick: (SyntheticMouseEvent) -> Unit = {},
 ) = MenuItem(onClick, activated) { Text(text) }

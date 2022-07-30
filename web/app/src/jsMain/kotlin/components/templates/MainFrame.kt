@@ -7,12 +7,17 @@ import components.atoms.topappbar.TopAppActionIcon
 import components.molecules.TopAppBar
 import components.organisms.drawer.DrawerContent
 import components.organisms.drawer.DrawerHeader
+import kotlinx.browser.window
 import material.components.MenuItem
 import material.externals.MDCDrawer
 import material.externals.open
+import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
+import net.subroh0508.colormaster.model.ui.commons.ThemeType
 import org.jetbrains.compose.web.dom.Text
-import utilities.LocalI18n
+import utilities.I18next
+import utilities.LocalBrowserApp
+import utilities.component3
 import material.components.ModalDrawer as MaterialModalDrawer
 
 @Composable
@@ -35,7 +40,8 @@ private fun DrawerMain(
 
 @Composable
 private fun DrawerActionContent(preference: AppPreference) {
-    val i18n = LocalI18n() ?: return
+    val (lang, theme, i18n) = LocalBrowserApp.current
+    i18n ?: return
 
     MenuButton(
         "translate",
@@ -43,14 +49,31 @@ private fun DrawerActionContent(preference: AppPreference) {
         icon = "translate",
         tooltip = { Tooltip(it, i18n.t("appBar.changeLanguage")) },
     ) {
-        MenuItem("日本語")
-        MenuItem("English")
+        MenuItem("日本語", activated = lang == Languages.JAPANESE) {
+            preference.setLanguage(Languages.JAPANESE)
+        }
+        MenuItem("English", activated = lang == Languages.ENGLISH) {
+            preference.setLanguage(Languages.ENGLISH)
+        }
     }
 
     TopAppActionIcon(
-        "brightness_4",
-        { onClick { preference.toggleThemeType() } },
-        tooltip = { Tooltip(it, i18n.t("appBar.darkTheme")) },
+        theme.icon,
+        { onClick { preference.setThemeType(theme.next) } },
+        tooltip = { Tooltip(it, i18n.themeLabel(theme)) },
     )
 }
 
+private val ThemeType.icon get() = when (this) {
+    ThemeType.DAY -> "brightness_4"
+    ThemeType.NIGHT -> "brightness_7"
+}
+
+private val ThemeType.next get() = ThemeType.values()[(ordinal + 1) % 2]
+
+private fun I18next.themeLabel(theme: ThemeType) = t(
+    when (theme) {
+        ThemeType.DAY -> "appBar.darkTheme"
+        ThemeType.NIGHT -> "appBar.lightTheme"
+    }
+)

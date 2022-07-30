@@ -9,6 +9,7 @@ import material.components.Divider
 import material.components.DrawerContent as MaterialDrawerContent
 import material.externals.MDCDrawer
 import org.jetbrains.compose.web.css.*
+import utilities.LocalI18n
 
 @Composable
 fun DrawerContent(drawer: MDCDrawer?) = MaterialDrawerContent {
@@ -23,8 +24,10 @@ fun DrawerContent(drawer: MDCDrawer?) = MaterialDrawerContent {
 
 @Composable
 private fun SearchMenu() {
-    ListGroupSubHeader("検索")
-    DrawerListItem("名前・属性検索") {
+    val i18n = LocalI18n() ?: return
+
+    ListGroupSubHeader(i18n.t("appMenu.search.label"))
+    DrawerListItem(i18n.t("appMenu.search.attributes")) {
         attr("aria-current", "page")
         attr("tabindex", "0")
     }
@@ -32,21 +35,25 @@ private fun SearchMenu() {
 
 @Composable
 private fun AboutMenu() {
-    ListGroupSubHeader("このアプリについて")
-    DrawerListItem("使い方")
-    DrawerListItem("仕組み")
-    DrawerListItem("利用規約")
+    val i18n = LocalI18n() ?: return
+
+    ListGroupSubHeader(i18n.t("appMenu.about.label"))
+    DrawerListItem(i18n.t("appMenu.about.howToUse"))
+    DrawerListItem(i18n.t("appMenu.about.development"))
+    DrawerListItem(i18n.t("appMenu.about.terms"))
 }
 
 @Composable
 private fun SignInMenu() {
+    val i18n = LocalI18n() ?: return
+
     ListGroupSubHeader(
         "sign-in",
-        "連携アカウント",
+        i18n.t("appMenu.account.label"),
         helpContent = {
             Tooltip(
                 it,
-                "外部アカウントと連携することで、担当・推しアイドルの登録および閲覧ができるようになります",
+                i18n.t("appMenu.account.description"),
             )
         },
     )
@@ -59,6 +66,8 @@ private fun SignInMenu() {
 
 @Composable
 private fun LinkMenu() {
-    DrawerListItem("GitHub", "https://github.com/subroh0508/colormaster")
-    DrawerListItem("開発者Twitter", "https://twitter.com/subroh_0508")
+    val i18n = LocalI18n() ?: return
+
+    DrawerListItem(i18n.t("appMenu.links.github"), "https://github.com/subroh0508/colormaster")
+    DrawerListItem(i18n.t("appMenu.links.twitter"), "https://twitter.com/subroh_0508")
 }

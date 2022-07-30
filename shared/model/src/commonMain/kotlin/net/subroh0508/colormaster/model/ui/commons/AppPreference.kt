@@ -4,9 +4,14 @@ import net.subroh0508.colormaster.model.Languages
 
 interface AppPreference {
     val lang: Languages
-    val themeType: ThemeType?
-
+    val theme: ThemeType
     fun setLanguage(lang: Languages)
     fun setThemeType(type: ThemeType)
-    fun toggleThemeType()
+    interface State {
+        val lang: Languages
+        val theme: ThemeType
+
+        operator fun component1(): Languages
+        operator fun component2(): ThemeType
+    }
 }
