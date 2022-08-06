@@ -8,12 +8,13 @@ import components.molecules.TopAppBar
 import components.organisms.drawer.DrawerContent
 import components.organisms.drawer.DrawerHeader
 import material.components.MenuItem
+import material.components.TopAppBarVariant
 import material.externals.MDCDrawer
 import material.externals.open
 import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import net.subroh0508.colormaster.model.ui.commons.ThemeType
-import org.jetbrains.compose.web.dom.Text
+import page.SearchIdolPage
 import utilities.*
 import material.components.ModalDrawer as MaterialModalDrawer
 
@@ -30,10 +31,21 @@ fun MainFrame(preference: AppPreference) {
 private fun DrawerMain(
     drawer: MDCDrawer?,
     preference: AppPreference,
+) = SearchIdolPage(
+    TopAppBarVariant.Fixed,
+    appBar = { TopAppBar(it, drawer, preference) },
+)
+
+@Composable
+private fun TopAppBar(
+    variant: String,
+    drawer: MDCDrawer?,
+    preference: AppPreference,
 ) = TopAppBar(
+    variant,
     onClickNavigation = { drawer?.open() },
     actionContent = { DrawerActionContent(preference) },
-) { Text("Hello, World!") }
+)
 
 @Composable
 private fun DrawerActionContent(preference: AppPreference) {

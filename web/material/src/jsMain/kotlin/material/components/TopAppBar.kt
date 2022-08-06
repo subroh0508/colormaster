@@ -19,7 +19,7 @@ fun TopAppBar(
     variant: String? = null,
     navigationContent: (@Composable () -> Unit)? = null,
     actionContent: (@Composable () -> Unit)? = null,
-    mainContent: @Composable () -> Unit,
+    mainContent: (@Composable () -> Unit)? = null,
 ) {
     var element by remember { mutableStateOf<HTMLElement?>(null) }
 
@@ -40,9 +40,7 @@ fun TopAppBar(
         }
     }
 
-    Main({ classes(topAppBarMainClass(variant)) }) {
-        mainContent()
-    }
+    mainContent?.let { TopAppBarMainContent(variant, it) }
 }
 
 @Composable
@@ -65,6 +63,12 @@ fun TopAppTitle(
 
     onClick(onClick)
 }) { Text(text) }
+
+@Composable
+fun TopAppBarMainContent(
+    variant: String? = null,
+    content: @Composable () -> Unit,
+) = Main({ classes(topAppBarMainClass(variant)) }) { content() }
 
 @Composable
 fun TopAppActionIcon(
