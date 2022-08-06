@@ -1,5 +1,6 @@
 import net.subroh0508.colormaster.model.HexColor
 import org.jetbrains.compose.web.css.*
+import utilities.alpha
 import utilities.darken
 import utilities.lighten
 
@@ -14,15 +15,6 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         const val surface = "#ffffff"
         const val background = "#fafafa"
         const val textLink = "#00B5E2"
-
-        const val info = "#4FC3F7"
-        const val success = ""
-        const val warning = ""
-        const val error = ""
-        const val textInfo = "#063D6B"
-        const val textSuccess = ""
-        const val textWarning = ""
-        const val textError = ""
     }
 
     object Var {
@@ -95,30 +87,30 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         fun alertText(color: CSSColorValue) = if (dark) color.lighten(0.6) else color.darken(0.6)
 
         type(":root") style  {
-            variable(Name.primary, palette.primary())
+            variable(Name.primary, palette.primary)
             variable("${Name.primary}-rgb", if (dark) "255,204,128" else "230,81,0")
-            variable(Name.secondary, palette.secondary())
-            variable(Name.surface, palette.surface())
-            variable(Name.background, palette.background())
-            variable(Name.onPrimary, palette.onPrimary(if (dark) 0.87 else 1))
-            variable(Name.onSecondary, palette.onSecondary(if (dark) 0.87 else 1))
-            variable(Name.onSurface, palette.onSurface(if (dark) 1 else 0.87))
-            variable(Name.textPrimary, palette.textPrimary(if (dark) 1 else 0.87))
-            variable(Name.textSecondary, palette.textSecondary(if (dark) 0.70 else 0.60))
-            variable(Name.textLink, palette.textLink())
+            variable(Name.secondary, palette.secondary)
+            variable(Name.surface, palette.surface)
+            variable(Name.background, palette.background)
+            variable(Name.onPrimary, palette.onPrimary.alpha(if (dark) 0.87 else 1))
+            variable(Name.onSecondary, palette.onSecondary.alpha(if (dark) 0.87 else 1))
+            variable(Name.onSurface, palette.onSurface.alpha(if (dark) 1 else 0.87))
+            variable(Name.textPrimary, palette.textPrimary.alpha(if (dark) 1 else 0.87))
+            variable(Name.textSecondary, palette.textSecondary.alpha(if (dark) 0.70 else 0.60))
+            variable(Name.textLink, palette.textLink)
 
-            variable(Name.info, alert.info())
-            variable(Name.success, alert.success())
-            variable(Name.warning, alert.warning())
-            variable(Name.error, alert.error())
-            variable(Name.backgroundInfo, alertBackground(lightAlert.info()))
-            variable(Name.backgroundSuccess, alertBackground(lightAlert.success()))
-            variable(Name.backgroundWarning, alertBackground(lightAlert.warning()))
-            variable(Name.backgroundError, alertBackground(lightAlert.error()))
-            variable(Name.textInfo, alertText(lightAlert.info()))
-            variable(Name.textSuccess, alertText(lightAlert.success()))
-            variable(Name.textWarning, alertText(lightAlert.warning()))
-            variable(Name.textError, alertText(lightAlert.error()))
+            variable(Name.info, alert.info)
+            variable(Name.success, alert.success)
+            variable(Name.warning, alert.warning)
+            variable(Name.error, alert.error)
+            variable(Name.backgroundInfo, alertBackground(lightAlert.info))
+            variable(Name.backgroundSuccess, alertBackground(lightAlert.success))
+            variable(Name.backgroundWarning, alertBackground(lightAlert.warning))
+            variable(Name.backgroundError, alertBackground(lightAlert.error))
+            variable(Name.textInfo, alertText(lightAlert.info))
+            variable(Name.textSuccess, alertText(lightAlert.success))
+            variable(Name.textWarning, alertText(lightAlert.warning))
+            variable(Name.textError, alertText(lightAlert.error))
 
             variable("mdc-checkbox-checked-color", Color(primary))
             variable(Name.ripple, if (dark) Color.white else Color.black)

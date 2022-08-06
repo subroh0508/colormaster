@@ -1,7 +1,15 @@
 package utilities
 
 import org.jetbrains.compose.web.css.CSSColorValue
+import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.rgb
+import org.jetbrains.compose.web.css.rgba
+
+fun CSSColorValue.alpha(alpha: Number): CSSColorValue {
+    val (red, green, blue) = parseToRGB()
+
+    return rgba(red, green, blue, alpha)
+}
 
 fun CSSColorValue.lighten(coefficient: Number): CSSColorValue {
     val (red, green, blue) = parseToRGB()
@@ -23,6 +31,13 @@ fun CSSColorValue.darken(coefficient: Number): CSSColorValue {
     )
 }
 
-private fun CSSColorValue.parseToRGB() = toString().let {
-    """rgba?\(([0-9, ]+)\)""".toRegex().find(it)?.groupValues?.get(1)?.split(",") ?: listOf()
-}.map { it.trim().toIntOrNull() ?: 0 }
+fun CSSColorValue.parseToRGB(): List<Int> {
+    when (this) {
+        Color.white -> return listOf(255, 255, 255)
+        Color.black -> return listOf(0, 0, 0)
+    }
+
+    return toString().let {
+        """rgba?\(([0-9, ]+)\)""".toRegex().find(it)?.groupValues?.get(1)?.split(",") ?: listOf()
+    }.map { it.trim().toIntOrNull() ?: 0 }
+}
