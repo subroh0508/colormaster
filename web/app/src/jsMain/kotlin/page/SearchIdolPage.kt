@@ -1,7 +1,10 @@
 package page
 
 import androidx.compose.runtime.Composable
+import components.atoms.alert.Alert
+import components.atoms.alert.AlertType
 import components.atoms.backdrop.Backdrop
+import components.atoms.backdrop.BackdropFrontHeader
 import components.atoms.backdrop.BackdropValues
 import components.atoms.backdrop.rememberBackdropState
 import material.components.IconButton
@@ -9,12 +12,15 @@ import material.components.TopAppBarMainContent
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
+import utilities.LocalI18n
+import utilities.invoke
 
 @Composable
 fun SearchIdolPage(
     variant: String,
     appBar: @Composable (String) -> Unit,
 ) {
+    val t = LocalI18n() ?: return
     val backdropState = rememberBackdropState(BackdropValues.Concealed)
 
     Backdrop(
@@ -22,20 +28,15 @@ fun SearchIdolPage(
         appBar = { appBar(variant) },
         backLayerContent = {
             TopAppBarMainContent(variant) {
-                Div({ style { color(Color.white) } }) { Text("back layer") }
+
             }
         },
         frontLayerContent = {
-            Div({ style { color(Color.white); width(100.percent) } }) {
-                Text("front layer")
-                IconButton("expand_more") {
-                    onClick {
-                        backdropState.value = when (backdropState.value) {
-                            BackdropValues.Revealed -> BackdropValues.Concealed
-                            BackdropValues.Concealed -> BackdropValues.Revealed
-                        }
-                    }
-                }
+            BackdropFrontHeader(backdropState) {
+                Alert(
+                    AlertType.Info,
+                    t("searchPanel.messages.defaultByName"),
+                )
             }
         },
     )

@@ -2,6 +2,8 @@ package components.atoms.backdrop
 
 import MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.web.events.SyntheticMouseEvent
+import material.components.IconButton
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
 import material.utilities.rememberMediaQuery
 import org.jetbrains.compose.web.css.*
@@ -36,6 +38,34 @@ fun Backdrop(
 
         Div({ classes(BackdropStyleSheet.frontLayer) }) {
             frontLayerContent()
+        }
+    }
+}
+
+@Composable
+fun BackdropFrontHeader(
+    backdropState: MutableState<BackdropValues>,
+    content: @Composable () -> Unit,
+) {
+    val wide by rememberMediaQuery(MEDIA_QUERY_TABLET_SMALL)
+
+    Style(BackdropFrontHeaderStyleSheet)
+
+    Div({ classes(BackdropFrontHeaderStyleSheet.content) }) {
+        content()
+
+        if (!wide) {
+            val icon = "expand_${if (backdropState.value == BackdropValues.Revealed) "more" else "less"}"
+
+            IconButton(icon) {
+                classes(BackdropFrontHeaderStyleSheet.icon)
+                onClick {
+                    backdropState.value = when (backdropState.value) {
+                        BackdropValues.Revealed -> BackdropValues.Concealed
+                        BackdropValues.Concealed -> BackdropValues.Revealed
+                    }
+                }
+            }
         }
     }
 }
@@ -83,11 +113,36 @@ private object BackdropStyleSheet : StyleSheet() {
     }
 }
 
+private object BackdropFrontHeaderStyleSheet : StyleSheet() {
+    val content by style {
+        position(Position.Fixed)
+        property("left", 0)
+        property("right", 0)
+        padding(8.px)
+
+        media(MEDIA_QUERY_TABLET_SMALL) {
+            self style {
+                width(100.percent - WIDE_BACK_LAYER_WIDTH.px - 16.px)
+                property("right", 0)
+                property("margin", "0 0 0 auto")
+            }
+        }
+    }
+
+    val icon by style {
+        position(Position.Absolute)
+        property("right", 0)
+        property("bottom", 0)
+        property("margin", "auto 8px 8px auto")
+        color(MaterialTheme.Var.onSurface)
+    }
+}
+
 private class OverlayFrontLayerStyleSheet(private val state: BackdropValues) : StyleSheet() {
     val content by style {
         display(DisplayStyle.Flex)
         position(Position.Fixed)
-        property("z-index", 1200)
+        property("z-index", 4)
         property("left", 0)
         property("right", 0)
         property("bottom", 0)
