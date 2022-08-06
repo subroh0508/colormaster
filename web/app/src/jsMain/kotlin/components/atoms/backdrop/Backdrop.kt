@@ -47,6 +47,7 @@ fun rememberBackdropState(
 
 private const val OVERLAY_FRONT_LAYER_CORNER_RADIUS = 16
 private const val CONCEALED_FRONT_LAYER_HEIGHT = 64
+private const val REVEALED_FRONT_LAYER_TOP = 56
 
 @Composable
 private fun OverlayFrontLayer(
@@ -99,13 +100,18 @@ private class OverlayFrontLayerStyleSheet(private val state: BackdropValues) : S
             bottomLeft = 0.px,
             bottomRight = 0.px,
         )
+        property("transition", "top 375ms cubic-bezier(0, 0, 0.2, 1) 0ms")
 
-        if (state == BackdropValues.Concealed) {
-            height(CONCEALED_FRONT_LAYER_HEIGHT.px)
-        }
-        else {
-            height(auto)
-            property("top", "56px")
+        when (state) {
+            BackdropValues.Concealed -> {
+                height(CONCEALED_FRONT_LAYER_HEIGHT.px)
+                property("top", "calc(${100.percent} - ${CONCEALED_FRONT_LAYER_HEIGHT}px)")
+            }
+            BackdropValues.Revealed -> {
+                height(auto)
+                property("top", "${REVEALED_FRONT_LAYER_TOP}px")
+            }
+
         }
     }
 }
