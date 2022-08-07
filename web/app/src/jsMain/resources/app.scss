@@ -93,6 +93,7 @@ $color-background: #fafafa;
   }
 
   &--outlined {
+    @include textfield.ink-color(var(--mdc-theme-text-primary));
     @include textfield.outline-color(var(--mdc-theme-text-hint));
     @include textfield.hover-outline-color(var(--mdc-theme-text-primary));
   }
