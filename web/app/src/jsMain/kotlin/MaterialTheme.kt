@@ -9,27 +9,15 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
 
     private val dark = palette is Palette.Dark
 
-    companion object {
-        const val primary = "#e65100"
-        const val secondary = "#fff09f"
-        const val surface = "#ffffff"
-        const val background = "#fafafa"
-        const val textLink = "#00B5E2"
-    }
-
     object Var {
-        val primary = Color("var(--${Name.primary}, ${MaterialTheme.primary})")
-        val secondary = Color("var(--${Name.secondary}, ${MaterialTheme.secondary})")
-        val surface = Color("var(--${Name.surface}, ${MaterialTheme.surface})")
-        val background = Color("var(--${Name.background}, ${MaterialTheme.background})")
-        val onPrimary = Color("var(--${Name.onPrimary}, #ffffff)")
-        val onSecondary = Color("var(--${Name.onSecondary}, #ffffff)")
-        val onSurface = Color("var(--${Name.onSurface}, rgba(0, 0, 0, 0.87))")
-        val textLink = Color("var(--${Name.textLink}, ${MaterialTheme.textLink})")
-        val textPrimaryLight = Color("var(--${Name.textPrimaryLight}, rgba(0, 0, 0, 0.87))")
-        val textPrimaryDark = Color("var(--${Name.textPrimaryDark}, #ffffff)")
-        val textSecondaryLight = Color("var(--${Name.textSecondaryLight}, rgba(0, 0, 0, 0.60))")
-        val textSecondaryDark = Color("var(--${Name.textSecondaryDark}, rgba(255, 255, 255, 0.70))")
+        val primary = Color("var(--${Name.primary})")
+        val secondary = Color("var(--${Name.secondary})")
+        val surface = Color("var(--${Name.surface})")
+        val background = Color("var(--${Name.background})")
+        val onPrimary = Color("var(--${Name.onPrimary})")
+        val onSecondary = Color("var(--${Name.onSecondary})")
+        val onSurface = Color("var(--${Name.onSurface})")
+        val textLink = Color("var(--${Name.textLink})")
 
         val info = Color("var(--${Name.info})")
         val success = Color("var(--${Name.success})")
@@ -44,7 +32,7 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         val textWarning = Color("var(--${Name.textWarning})")
         val textError = Color("var(--${Name.textError})")
 
-        val ripple = Color("var(--${Name.ripple}, #000000)")
+        val ripple = Color("var(--${Name.ripple})")
     }
 
     private object Name {
@@ -57,11 +45,7 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         const val onSurface = "mdc-theme-on-surface"
         const val textLink = "mdc-theme-text-link"
         const val textPrimary = "mdc-theme-text-primary"
-        const val textPrimaryLight = "mdc-theme-text-primary-on-light"
-        const val textPrimaryDark = "mdc-theme-text-primary-on-dark"
         const val textSecondary = "mdc-theme-text-secondary"
-        const val textSecondaryLight = "mdc-theme-text-secondary-on-light"
-        const val textSecondaryDark = "mdc-theme-text-secondary-on-dark"
         const val textHint = "mdc-theme-text-hint"
         const val textDisabled = "mdc-theme-text-disabled"
 
@@ -78,6 +62,7 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         const val textWarning = "mdc-theme-text-warning"
         const val textError = "mdc-theme-text-error"
 
+        const val checkboxChecked = "mdc-checkbox-checked-color"
         const val ripple = "mdc-ripple-color"
         const val chipSurface = "mdc-chip-surface-color"
         const val chipSurfaceActivated = "mdc-chip-surface-activated-color"
@@ -118,7 +103,7 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
             variable(Name.textWarning, alertText(lightAlert.warning))
             variable(Name.textError, alertText(lightAlert.error))
 
-            variable("mdc-checkbox-checked-color", palette.primary)
+            variable(Name.checkboxChecked, palette.primary)
             variable(Name.ripple, if (dark) Color.white else Color.black)
             variable(Name.chipSurface, (if (dark) Color.white else Color.black).alpha(0.12))
             variable(Name.chipSurfaceActivated, palette.primary.alpha(0.12))
