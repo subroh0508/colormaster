@@ -4,7 +4,9 @@ import androidx.compose.runtime.*
 import androidx.compose.web.events.SyntheticMouseEvent
 import material.externals.MDCTab
 import material.externals.MDCTabBar
+import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.dom.*
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
 data class TabContent(
@@ -20,6 +22,7 @@ fun TabBar(active: Int, vararg tabContent: TabContent) = TabBar(active, tabConte
 fun TabBar(
     active: Int,
     tabContents: List<TabContent>,
+    attrsScope: (AttrsScope<HTMLDivElement>.() -> Unit)? = null,
 ) {
     var element by remember { mutableStateOf<HTMLElement?>(null) }
     var index by remember { mutableStateOf(active) }
@@ -31,6 +34,8 @@ fun TabBar(
     Div({
         classes("mdc-tab-bar")
         attr("role", "tab-list")
+        attrsScope?.invoke(this)
+
         ref {
             element = it
             onDispose { element = null }

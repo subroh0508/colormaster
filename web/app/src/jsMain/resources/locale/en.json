@@ -48,9 +48,9 @@
       "brands": "Brands",
       "type": {
         "label": "Type",
-        "cute": "Cute",
-        "cool": "Cool",
-        "passion": "Passion",
+        "cu": "Cute",
+        "co": "Cool",
+        "pa": "Passion",
         "princess": "Princess",
         "fairy": "Fairy",
         "angel": "Angel",

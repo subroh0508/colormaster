@@ -1,13 +1,3 @@
-$color-primary: #e65100;
-$color-secondary: #fff09f;
-$color-background: #fafafa;
-
-@use '@material/theme' with (
-  $primary: $color-primary,
-  $secondary: $color-secondary,
-  $background: $color-background,
-);
-
 @use '@material/theme/mdc-theme';
 
 @use '@material/button/styles' as mdc-button;
@@ -49,18 +39,28 @@ $color-background: #fafafa;
 @include checkbox.core-styles;
 .mdc-checkbox {
   @include checkbox.container-colors(
-    $unmarked-stroke-color: $color-primary,
+    $marked-stroke-color: var(--mdc-theme-primary),
+    $marked-fill-color: var(--mdc-theme-primary),
+    $unmarked-stroke-color: var(--mdc-theme-primary),
     $unmarked-fill-color: transparent
   );
-  @include checkbox.ink-color(white);
+  @include checkbox.ink-color(var(--mdc-theme-on-primary));
+}
+.mdc-form-field {
+  label {
+    color: var(--mdc-theme-text-primary);
+  }
 }
 
 .mdc-evolution-chip {
-  border: 1px rgba(0, 0, 0, 0.12) solid;
-  background-color: var(--mdc-theme-background);
+  background-color: var(--mdc-chip-surface-color);
+
+  & &__text-label {
+    color: var(--mdc-theme-text-primary);
+  }
 
   &--activated {
-    background-color: rgba(var(--mdc-theme-primary-rgb), 0.12);
+    background-color: var(--mdc-chip-surface-activated-color);
   }
 
   &--activated &__text-label {

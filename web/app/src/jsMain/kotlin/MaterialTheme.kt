@@ -64,7 +64,6 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         const val textSecondaryDark = "mdc-theme-text-secondary-on-dark"
         const val textHint = "mdc-theme-text-hint"
         const val textDisabled = "mdc-theme-text-disabled"
-        const val ripple = "mdc-ripple-color"
 
         const val info = "mdc-theme-info"
         const val success = "mdc-theme-success"
@@ -78,6 +77,10 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         const val textSuccess = "mdc-theme-text-success"
         const val textWarning = "mdc-theme-text-warning"
         const val textError = "mdc-theme-text-error"
+
+        const val ripple = "mdc-ripple-color"
+        const val chipSurface = "mdc-chip-surface-color"
+        const val chipSurfaceActivated = "mdc-chip-surface-activated-color"
     }
 
     init {
@@ -90,7 +93,6 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
 
         type(":root") style  {
             variable(Name.primary, palette.primary)
-            variable("${Name.primary}-rgb", if (dark) "255,204,128" else "230,81,0")
             variable(Name.secondary, palette.secondary)
             variable(Name.surface, palette.surface)
             variable(Name.background, palette.background)
@@ -116,8 +118,10 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
             variable(Name.textWarning, alertText(lightAlert.warning))
             variable(Name.textError, alertText(lightAlert.error))
 
-            variable("mdc-checkbox-checked-color", Color(primary))
+            variable("mdc-checkbox-checked-color", palette.primary)
             variable(Name.ripple, if (dark) Color.white else Color.black)
+            variable(Name.chipSurface, (if (dark) Color.white else Color.black).alpha(0.12))
+            variable(Name.chipSurfaceActivated, palette.primary.alpha(0.12))
         }
 
         type("html") style  {

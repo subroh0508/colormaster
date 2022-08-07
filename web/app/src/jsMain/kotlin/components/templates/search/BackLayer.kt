@@ -8,6 +8,8 @@ import material.components.TabBar
 import material.components.TabContent
 import material.components.TopAppBarMainContent
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
+import org.jetbrains.compose.web.css.marginBottom
+import org.jetbrains.compose.web.css.px
 import utilities.LocalI18n
 import utilities.invoke
 
@@ -33,5 +35,7 @@ private fun SearchTabs(onChange: (SearchByTab) -> Unit) {
         SearchByTab.values().map { tab ->
             TabContent(t(tab.labelKey)) { onChange(tab) }
         },
-    )
+    ) {
+        style { marginBottom(24.px) }
+    }
 }
