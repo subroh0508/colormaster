@@ -15,9 +15,7 @@ import org.w3c.dom.get
 import org.w3c.dom.set
 import kotlin.reflect.KProperty
 
-val LocalBrowserApp: ProvidableCompositionLocal<AppPreference.State> = compositionLocalOf {
-    BrowserAppPreference.State()
-}
+internal val LocalBrowserApp = compositionLocalOf { BrowserAppPreference.State() }
 
 @Composable
 internal fun LocalI18n() = LocalBrowserApp.current.i18n
@@ -59,9 +57,6 @@ internal class BrowserAppPreference(
         )
     }
 }
-
-internal val AppPreference.State.i18n get() = (this as? BrowserAppPreference.State)?.i18n
-internal operator fun AppPreference.State.component3() = i18n
 
 private operator fun Storage.getValue(
     thisRef: BrowserAppPreference,
