@@ -78,24 +78,16 @@ $color-background: #fafafa;
 @include textfield.core-styles;
 
 .mdc-text-field {
-  :not(.mdc-text-field--disabled) {
-    .mdc-floating-label {
-      color: var(--mdc-theme-text-secondary);
-    }
-  }
-
-  &--focused {
-    :not(.mdc-text-field--disabled) {
-      .mdc-floating-label {
-        color: var(--mdc-theme-primary);
-      }
-    }
-  }
-
   &--outlined {
+    @include textfield.label-color(var(--mdc-theme-text-secondary));
+
     @include textfield.ink-color(var(--mdc-theme-text-primary));
     @include textfield.outline-color(var(--mdc-theme-text-hint));
     @include textfield.hover-outline-color(var(--mdc-theme-text-primary));
+  }
+
+  &--focused {
+    @include textfield.label-color(var(--mdc-theme-primary));
   }
 }
 
