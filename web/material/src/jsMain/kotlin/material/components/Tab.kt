@@ -14,9 +14,12 @@ data class TabContent(
 )
 
 @Composable
+fun TabBar(active: Int, vararg tabContent: TabContent) = TabBar(active, tabContent.toList())
+
+@Composable
 fun TabBar(
     active: Int,
-    vararg tabContent: TabContent,
+    tabContents: List<TabContent>,
 ) {
     var element by remember { mutableStateOf<HTMLElement?>(null) }
     var index by remember { mutableStateOf(active) }
@@ -36,7 +39,7 @@ fun TabBar(
         Div({ classes("mdc-tab-scroller") }) {
             Div({ classes("mdc-tab-scroller__scroll-area") }) {
                 Div({ classes("mdc-tab-scroller__scroll-content") }) {
-                    tabContent.forEachIndexed { i, (label, icon, onClick) ->
+                    tabContents.forEachIndexed { i, (label, icon, onClick) ->
                         Tab(label, icon, i == index) {
                             index = i
                             onClick(it)
@@ -75,7 +78,7 @@ fun Tab(
     }) {
         Span({ classes("mdc-tab__content") }) {
             TabContentIcon(icon)
-            Span({ classes("mdc-tab__text-label") }) {
+            Span({ classes(*tabTextLabelClasses(active)) }) {
                 Text(label)
             }
         }
@@ -96,6 +99,11 @@ private fun TabIndicator(active: Boolean) {
 private fun tabClasses(active: Boolean) = listOfNotNull(
     "mdc-tab",
     if (active) "mdc-tab--active" else null,
+).toTypedArray()
+
+private fun tabTextLabelClasses(active: Boolean) = listOfNotNull(
+    "mdc-tab__text-label",
+    if (!active) "mdc-theme-text-secondary" else null,
 ).toTypedArray()
 
 private fun tabIndicatorClasses(active: Boolean) = listOfNotNull(

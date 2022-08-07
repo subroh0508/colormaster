@@ -62,6 +62,8 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         const val textSecondary = "mdc-theme-text-secondary"
         const val textSecondaryLight = "mdc-theme-text-secondary-on-light"
         const val textSecondaryDark = "mdc-theme-text-secondary-on-dark"
+        const val textHint = "mdc-theme-text-hint"
+        const val textDisabled = "mdc-theme-text-disabled"
         const val ripple = "mdc-ripple-color"
 
         const val info = "mdc-theme-info"
@@ -97,6 +99,8 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
             variable(Name.onSurface, palette.onSurface.alpha(if (dark) 1 else 0.87))
             variable(Name.textPrimary, palette.textPrimary.alpha(if (dark) 1 else 0.87))
             variable(Name.textSecondary, palette.textSecondary.alpha(if (dark) 0.70 else 0.60))
+            variable(Name.textHint, palette.textPrimary.alpha(if (dark) 0.50 else 0.38))
+            variable(Name.textDisabled, palette.textPrimary.alpha(if (dark) 0.50 else 0.38))
             variable(Name.textLink, palette.textLink)
 
             variable(Name.info, alert.info)

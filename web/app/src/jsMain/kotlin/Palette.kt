@@ -1,10 +1,6 @@
 import org.jetbrains.compose.web.css.CSSColorValue
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.rgb
-import org.jetbrains.compose.web.css.rgba
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 
 sealed class Palette {
     abstract val primary: CSSColorValue

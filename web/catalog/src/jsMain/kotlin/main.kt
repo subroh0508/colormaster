@@ -58,8 +58,8 @@ private fun MainContent() {
         Chip("Chip Two", selected = true) { console.log("click!") }
     }
     Div({ style { padding(16.px) } }) {
-        OutlinedTextField("名前を入力")
-        OutlinedTextArea("名前を入力(複数行)")
+        OutlinedTextField("名前を入力") {}
+        OutlinedTextArea("名前を入力(複数行)") {}
     }
     Div({ style { padding(16.px) } }) {
         Menu(

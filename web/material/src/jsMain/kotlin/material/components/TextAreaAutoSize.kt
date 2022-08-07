@@ -6,14 +6,14 @@ import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.attributes.readOnly
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.TextArea
-import org.jetbrains.compose.web.events.SyntheticChangeEvent
+import org.jetbrains.compose.web.events.SyntheticInputEvent
 import org.w3c.dom.HTMLTextAreaElement
 
 @Composable
 fun TextAreaAutoSize(
     label: String,
     value: String?,
-    onChange: (SyntheticChangeEvent<String, HTMLTextAreaElement>) -> Unit = {},
+    onChange: (SyntheticInputEvent<String, HTMLTextAreaElement>) -> Unit = {},
     applyAttrs: (AttrsScope<HTMLTextAreaElement>.() -> Unit)? = null,
 ) {
     val classNames = remember { mutableStateOf(arrayOf<String>()) }
@@ -35,16 +35,16 @@ private fun ActualTextArea(
     value: String?,
     classNames: MutableState<Array<String>>,
     state: MutableState<String>,
-    onChange: (SyntheticChangeEvent<String, HTMLTextAreaElement>) -> Unit,
+    onChange: (SyntheticInputEvent<String, HTMLTextAreaElement>) -> Unit,
     applyAttrs: (AttrsScope<HTMLTextAreaElement>.() -> Unit)?,
 ) = TextArea {
     applyAttrs?.invoke(this)
     style { overflow("hidden") }
 
-    value?.let { value(it) }
+    value(value ?: "")
     onInput {
         state.value = it.value
-        onChange(onChange)
+        onChange(it)
     }
 
     ref {

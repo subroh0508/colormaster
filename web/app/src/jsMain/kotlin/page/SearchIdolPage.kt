@@ -7,6 +7,7 @@ import components.atoms.backdrop.Backdrop
 import components.atoms.backdrop.BackdropFrontHeader
 import components.atoms.backdrop.BackdropValues
 import components.atoms.backdrop.rememberBackdropState
+import components.templates.search.BackLayer
 import material.components.IconButton
 import material.components.TopAppBarMainContent
 import org.jetbrains.compose.web.css.*
@@ -26,11 +27,7 @@ fun SearchIdolPage(
     Backdrop(
         backdropState,
         appBar = { appBar(variant) },
-        backLayerContent = {
-            TopAppBarMainContent(variant) {
-
-            }
-        },
+        backLayerContent = { BackLayer(variant) },
         frontLayerContent = {
             BackdropFrontHeader(backdropState) {
                 Alert(
