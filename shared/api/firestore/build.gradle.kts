@@ -8,10 +8,10 @@ kotlinMpp {
     sourceSets {
         all {
             languageSettings.apply {
-                useExperimentalAnnotation("kotlin.Experimental")
-                useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
-                useExperimentalAnnotation("kotlinx.serialization.ExperimentalSerializationApi")
-                useExperimentalAnnotation("kotlinx.serialization.InternalSerializationApi")
+                optIn("kotlin.Experimental")
+                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                optIn("kotlinx.serialization.ExperimentalSerializationApi")
+                optIn("kotlinx.serialization.InternalSerializationApi")
             }
         }
 

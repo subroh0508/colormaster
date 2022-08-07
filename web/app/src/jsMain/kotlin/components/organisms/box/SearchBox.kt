@@ -37,6 +37,7 @@ fun SearchBox(type: SearchByTab) {
         when (v) {
             is SearchParams.ByName -> ByName(v) { params.value = it }
             is SearchParams.ByLive -> ByLive(v) { params.value = it }
+            is SearchParams.None -> Unit
         }
     }
 }
