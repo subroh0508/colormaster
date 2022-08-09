@@ -28,6 +28,6 @@ fun <T> CheckBoxGroup(
             checked,
             id,
             { style { marginRight(16.px) } },
-        ) { onClick(item, checked) }
+        ) { onClick(item, !checked) }
     }
 }

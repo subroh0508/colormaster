@@ -8,6 +8,7 @@ import material.components.TabBar
 import material.components.TabContent
 import material.components.TopAppBarMainContent
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
+import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import org.jetbrains.compose.web.css.marginBottom
 import org.jetbrains.compose.web.css.px
 import utilities.LocalI18n
@@ -16,13 +17,14 @@ import utilities.invoke
 @Composable
 fun BackLayer(
     topAppBarVariant: String,
+    onChange: (SearchParams) -> Unit,
 ) {
-    val tab = remember { mutableStateOf(SearchByTab.BY_NAME) }
+    val (tab, setTab) = remember { mutableStateOf(SearchByTab.BY_NAME) }
 
     TopAppBarMainContent(topAppBarVariant) {
-        SearchTabs { tab.value = it }
+        SearchTabs(setTab)
 
-        SearchBox(tab.value)
+        SearchBox(tab, onChange)
     }
 }
 

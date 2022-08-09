@@ -6,18 +6,18 @@ import components.atoms.alert.Alert
 import components.atoms.alert.AlertType
 import components.atoms.backdrop.BackdropFrontHeader
 import components.atoms.backdrop.BackdropValues
-import page.SearchUiModel
+import net.subroh0508.colormaster.presentation.common.LoadState
 import utilities.LocalI18n
 import utilities.invoke
 
 @Composable
 fun FrontLayer(
     backdropState: MutableState<BackdropValues>,
-    model: SearchUiModel,
+    loadState: LoadState,
 ) {
     val t = LocalI18n() ?: return
 
-    console.log(model)
+    console.log(loadState)
 
     BackdropFrontHeader(backdropState) {
         Alert(

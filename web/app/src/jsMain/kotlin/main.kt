@@ -16,9 +16,6 @@ private val koinApp = koinApplication { }
 
 val LocalKoinApp = compositionLocalOf { koinApp }
 
-@Composable
-fun CurrentLocalKoinApp() = LocalKoinApp.current
-
 fun main() {
     initializeApp(FirebaseOptions(
         API_KEY,

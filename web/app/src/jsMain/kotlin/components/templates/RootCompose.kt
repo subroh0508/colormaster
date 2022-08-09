@@ -1,6 +1,5 @@
 package components.templates
 
-import CurrentLocalKoinApp
 import LocalKoinApp
 import androidx.compose.runtime.*
 import net.subroh0508.colormaster.components.core.AppModule
@@ -19,22 +18,8 @@ fun RootCompose(
     i18n: I18nextText,
     content: @Composable (AppPreference) -> Unit,
 ) {
-    val appState = remember { mutableStateOf(BrowserAppPreference.State(i18n = i18n)) }
-
-    CompositionLocalProvider(
-        LocalKoinApp provides koinApp,
-    ) { Content(lang, i18n, appState, content) }
-}
-
-@Composable
-private fun Content(
-    lang: Languages,
-    i18n: I18nextText,
-    appState: MutableState<BrowserAppPreference.State>,
-    content: @Composable (AppPreference) -> Unit,
-) {
-    val koinApp = CurrentLocalKoinApp()
-    val preference = remember { mutableStateOf<AppPreference?>(null) }
+    val appState = remember(i18n) { mutableStateOf(BrowserAppPreference.State(i18n = i18n)) }
+    val preference = remember(koinApp) { mutableStateOf<AppPreference?>(null) }
 
     SideEffect {
         koinApp.modules(AppModule + AppPreferenceModule(lang, i18n) { appState.value = it })
@@ -43,8 +28,7 @@ private fun Content(
     }
 
     CompositionLocalProvider(
+        LocalKoinApp provides koinApp,
         LocalBrowserApp provides appState.value,
     ) { preference.value?.let { content(it) } }
 }
-
-
