@@ -19,6 +19,7 @@ fun ListItemCard(
     classes("mdc-typography--body2")
     style {
         height(52.px)
+        borderRadius(16.px)
         justifyContent(JustifyContent.Center)
         textAlign("center")
         fontWeight("bold")

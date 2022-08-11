@@ -2,7 +2,6 @@ package components.atoms.backdrop
 
 import MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.web.events.SyntheticMouseEvent
 import material.components.IconButton
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
 import material.utilities.rememberMediaQuery
@@ -11,6 +10,7 @@ import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.dom.Div
 
 const val WIDE_BACK_LAYER_WIDTH = 408
+const val TOP_APP_BAR_HEIGHT = 64
 
 enum class BackdropValues { Concealed, Revealed }
 
@@ -75,8 +75,8 @@ fun rememberBackdropState(
     initialValues: BackdropValues = BackdropValues.Concealed,
 ) = remember(initialValues) { mutableStateOf(initialValues) }
 
-private const val OVERLAY_FRONT_LAYER_CORNER_RADIUS = 16
-private const val CONCEALED_FRONT_LAYER_HEIGHT = 64
+private const val FRONT_LAYER_BORDER_RADIUS = 16
+private const val CONCEALED_FRONT_LAYER_HEIGHT = 68
 private const val REVEALED_FRONT_LAYER_TOP = 56
 
 @Composable
@@ -97,12 +97,6 @@ private object BackdropStyleSheet : StyleSheet() {
     val content by style {
         display(DisplayStyle.Flex)
         height(100.vh)
-
-        media(MEDIA_QUERY_TABLET_SMALL) {
-            type("header") style  {
-                width(WIDE_BACK_LAYER_WIDTH.px)
-            }
-        }
     }
 
     val frontLayer by style {
@@ -110,6 +104,13 @@ private object BackdropStyleSheet : StyleSheet() {
         flexShrink(0)
         width(100.percent - WIDE_BACK_LAYER_WIDTH.px)
         backgroundColor(MaterialTheme.Var.surface)
+
+        media(MEDIA_QUERY_TABLET_SMALL) {
+            self style {
+                marginTop(TOP_APP_BAR_HEIGHT.px)
+                frontLayerBorderRadius(wide = true)
+            }
+        }
     }
 }
 
@@ -122,7 +123,8 @@ private object BackdropFrontHeaderStyleSheet : StyleSheet() {
 
         media(MEDIA_QUERY_TABLET_SMALL) {
             self style {
-                width(100.percent - WIDE_BACK_LAYER_WIDTH.px - 16.px)
+                width(100.percent - WIDE_BACK_LAYER_WIDTH.px - 8.px)
+                padding(8.px, 0.px, 8.px)
                 property("right", 0)
                 property("margin", "0 0 0 auto")
             }
@@ -133,7 +135,7 @@ private object BackdropFrontHeaderStyleSheet : StyleSheet() {
         position(Position.Absolute)
         property("right", 0)
         property("bottom", 0)
-        property("margin", "auto 8px 8px auto")
+        property("margin", "auto 10px 10px auto")
         color(MaterialTheme.Var.onSurface)
     }
 }
@@ -149,12 +151,7 @@ private class OverlayFrontLayerStyleSheet(private val state: BackdropValues) : S
         maxHeight(100.percent)
         property("flex", "1 0 auto")
         backgroundColor(MaterialTheme.Var.surface)
-        borderRadius(
-            topLeft = OVERLAY_FRONT_LAYER_CORNER_RADIUS.px,
-            topRight = OVERLAY_FRONT_LAYER_CORNER_RADIUS.px,
-            bottomLeft = 0.px,
-            bottomRight = 0.px,
-        )
+        frontLayerBorderRadius(wide = false)
         property("transition", "top 375ms cubic-bezier(0, 0, 0.2, 1) 0ms")
 
         when (state) {
@@ -170,3 +167,10 @@ private class OverlayFrontLayerStyleSheet(private val state: BackdropValues) : S
         }
     }
 }
+
+private fun CSSBuilder.frontLayerBorderRadius(wide: Boolean) = borderRadius(
+    topLeft = FRONT_LAYER_BORDER_RADIUS.px,
+    topRight = (if (wide) 0 else FRONT_LAYER_BORDER_RADIUS).px,
+    bottomLeft = 0.px,
+    bottomRight = 0.px,
+)

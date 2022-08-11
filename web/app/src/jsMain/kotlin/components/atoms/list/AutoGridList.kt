@@ -16,15 +16,10 @@ fun AutoGridList(
     attrsScope: (AttrsScope<HTMLDivElement>.() -> Unit)? = null,
     content: @Composable (Float) -> Unit,
 ) {
-    val wide by rememberMediaQuery(MEDIA_QUERY_TABLET_SMALL)
     val (ref, setRef) = remember { mutableStateOf<HTMLDivElement?>(null) }
     val (width, setWidth) = remember(ref, gridMinWidth, marginHorizontal) { mutableStateOf(gridMinWidth.toFloat()) }
 
-    DisposableEffect(ref, wide, gridMinWidth, marginHorizontal) {
-        if (!wide) {
-            return@DisposableEffect onDispose {  }
-        }
-
+    DisposableEffect(ref, gridMinWidth, marginHorizontal) {
         val observer = ResizeObserver { entries, _ ->
             setWidth(calcGridWidth(entries, gridMinWidth, marginHorizontal))
         }

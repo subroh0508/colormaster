@@ -2,10 +2,12 @@ package components.atoms.alert
 
 import MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import material.components.Icon
 import material.components.TypographyBody2
+import material.utilities.MEDIA_QUERY_TABLET_SMALL
+import material.utilities.rememberMediaQuery
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.css.CSSUnit.Companion.rem
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 
@@ -15,33 +17,40 @@ enum class AlertType { Info, Success, Warning, Error }
 fun Alert(
     type: AlertType,
     message: String,
-) = Div({
-    style {
-        display(DisplayStyle.Flex)
-        alignItems(AlignItems.Center)
-        padding(6.px, 16.px)
-        borderRadius(4.px)
-        backgroundColor(type.backgroundColor)
-    }
-}) {
-    Icon(type.icon, applyAttrs = {
-        style {
-            width(1.5.cssRem)
-            height(1.5.cssRem)
-            color(type.color)
-            marginRight(12.px)
-        }
-    })
+) {
+    val wide by rememberMediaQuery(MEDIA_QUERY_TABLET_SMALL)
 
-    TypographyBody2(
-        tag = "div",
-        {
+    Div({
+        style {
+            display(DisplayStyle.Flex)
+            alignItems(AlignItems.Center)
+            padding(8.px, 16.px)
+            if (wide)
+                borderRadius(16.px, 0.px, 0.px, 16.px)
+            else
+                borderRadius(16.px)
+            backgroundColor(type.backgroundColor)
+        }
+    }) {
+        Icon(type.icon, applyAttrs = {
             style {
-                padding(8.px, 0.px)
-                color(type.textColor)
+                width(1.5.cssRem)
+                height(1.5.cssRem)
+                color(type.color)
+                marginRight(12.px)
             }
-        },
-    ) { Text(message) }
+        })
+
+        TypographyBody2(
+            tag = "div",
+            {
+                style {
+                    padding(8.px, 0.px)
+                    color(type.textColor)
+                }
+            },
+        ) { Text(message) }
+    }
 }
 
 private val AlertType.icon get() = when (this) {

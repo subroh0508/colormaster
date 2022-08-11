@@ -21,7 +21,9 @@ fun SearchResultList(
         marginHorizontal = GRID_MARGIN_HORIZONTAL,
         {
             style {
-                padding(64.px, 4.px, 8.px)
+                marginTop(64.px)
+                padding(8.px, 4.px, 8.px)
+                overflowY("auto")
             }
         },
     ) { width ->
@@ -30,7 +32,6 @@ fun SearchResultList(
                 display(DisplayStyle.Flex)
                 flexGrow(1)
                 flexFlow(FlexDirection.Row, FlexWrap.Wrap)
-                marginTop(8.px)
             }
         }) {
             items.forEach { item ->
