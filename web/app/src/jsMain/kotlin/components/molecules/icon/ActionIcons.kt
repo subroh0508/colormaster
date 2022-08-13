@@ -25,7 +25,6 @@ private object ActionIconsStyle : StyleSheet() {
     val content by style {
         display(DisplayStyle.Flex)
         justifyContent(JustifyContent.FlexEnd)
-        color(MaterialTheme.Var.onSurface)
 
         (className("material-icons") + not(lastChild)) style {
             marginRight(4.px)

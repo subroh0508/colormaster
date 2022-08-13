@@ -18,12 +18,13 @@ fun ListItemCard(
 ) = Card({
     classes("mdc-typography--body2")
     style {
-        height(52.px)
         borderRadius(16.px)
         justifyContent(JustifyContent.Center)
         textAlign("center")
         fontWeight("bold")
     }
+    onClick(onClick)
+    onDoubleClick(onDoubleClick)
     attrsScope?.invoke(this)
 }) {
     content()
@@ -35,9 +36,6 @@ fun ListItemCard(
                 left(0.px)
                 margin(0.px, 4.px)
             }
-
-            onClick { onClick(onClick) }
-            onDoubleClick { onDoubleClick(onDoubleClick) }
         }
     }
 }

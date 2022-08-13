@@ -18,6 +18,9 @@ import kotlin.reflect.KProperty
 internal val LocalBrowserApp = compositionLocalOf { BrowserAppPreference.State() }
 
 @Composable
+internal fun LocalDarkTheme() = LocalBrowserApp.current.dark
+
+@Composable
 internal fun LocalI18n() = LocalBrowserApp.current.i18n
 
 internal class BrowserAppPreference(
@@ -55,6 +58,8 @@ internal class BrowserAppPreference(
             theme = preference.themeType ?: ThemeType.DAY,
             i18n = i18n,
         )
+
+        val dark = theme == ThemeType.NIGHT
     }
 }
 

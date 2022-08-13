@@ -4,8 +4,6 @@ import MaterialTheme
 import androidx.compose.runtime.Composable
 import components.molecules.card.ListItemCard
 import components.molecules.icon.ActionIcons
-import material.components.Card
-import material.components.Icon
 import net.subroh0508.colormaster.model.IdolColor
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.*
@@ -13,6 +11,8 @@ import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLDivElement
+import utilities.*
+import utilities.LocalDarkTheme
 
 @Composable
 fun IdolCard(
@@ -35,30 +35,73 @@ fun IdolCard(
 }) {
     ListItemCard(
         selected,
-        {
-            style {
-                backgroundColor(Color(item.color))
-            }
-            attrsScope?.invoke(this)
-        },
+        { attrsScope?.invoke(this) },
         onClick =  { onClick(item, !selected) },
         onDoubleClick = { onDoubleClick(item) },
     ) {
-        Text(item.name)
-        Br { }
-        Text(item.color)
+        Div {
+            Content(item, isActionIconsVisible)
+
+            if (isActionIconsVisible) {
+                ActionIconsBar(
+                    item,
+                    inCharge,
+                    favorite,
+                    onClick,
+                    onInChargeClick,
+                    onFavoriteClick,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun Content(
+    item: IdolColor,
+    isActionIconsVisible: Boolean,
+) = Div({
+    style {
+        padding(8.px)
+        if (isActionIconsVisible)
+            borderRadius(16.px, 16.px, 0.px, 0.px)
+        else
+            borderRadius(16.px)
+        backgroundColor(Color(item.color))
+    }
+}) {
+    Text(item.name)
+    Br { }
+    Text(item.color)
+}
+
+@Composable
+private fun ActionIconsBar(
+    item: IdolColor,
+    inCharge: Boolean,
+    favorite: Boolean,
+    onClick: (IdolColor, Boolean) -> Unit,
+    onInChargeClick: (IdolColor, Boolean) -> Unit,
+    onFavoriteClick: (IdolColor, Boolean) -> Unit,
+) {
+    val dark = LocalDarkTheme()
+
+    val inChargeIcon = "star${if (inCharge) "" else "_border"}"
+    val inFavoriteIcon = "favorite${if (favorite) "" else "_border"}"
+
+    val background = Color(item.color).let {
+        if (dark) it.darken(0.3) else it.lighten(0.3)
     }
 
-    if (isActionIconsVisible) {
-        val inChargeIcon = "star${if (inCharge) "" else "_border"}"
-        val inFavoriteIcon = "favorite${if (favorite) "" else "_border"}"
-
-        ActionIcons(
-            {
-                style { marginTop(4.px) }
-            },
-            inChargeIcon to { onInChargeClick(item, !inCharge) },
-            inFavoriteIcon to { onFavoriteClick(item, !favorite) },
-        )
-    }
+    ActionIcons(
+        {
+            style {
+                padding(4.px, 8.px)
+                borderRadius(0.px, 0.px, 16.px, 16.px)
+                backgroundColor(background)
+            }
+        },
+        inChargeIcon to { onInChargeClick(item, !inCharge) },
+        inFavoriteIcon to { onFavoriteClick(item, !favorite) },
+    )
 }

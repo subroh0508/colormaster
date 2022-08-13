@@ -1,6 +1,8 @@
 package components.organisms.list
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import components.atoms.list.AutoGridList
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.common.LoadState
@@ -15,6 +17,8 @@ fun SearchResultList(
     loadState: LoadState,
 ) {
     val items: List<IdolColor> = loadState.getValueOrNull() ?: return
+
+    val (selections, setSelections) = remember(loadState) { mutableStateOf<List<String>>(listOf()) }
 
     AutoGridList(
         gridMinWidth = GRID_MIN_WIDTH,
@@ -37,11 +41,13 @@ fun SearchResultList(
             items.forEach { item ->
                 IdolCard(
                     item,
-                    isActionIconsVisible = false,
-                    selected = false,
+                    isActionIconsVisible = true,
+                    selected = selections.contains(item.id),
                     inCharge = false,
                     favorite = false,
-                    onClick = { _, _ -> },
+                    onClick = { (id), selected ->
+                        setSelections(buildSelections(selections, id, selected))
+                    },
                     onDoubleClick = { _ -> },
                     onInChargeClick = { _, _ -> },
                     onFavoriteClick = { _, _ -> },
@@ -50,3 +56,9 @@ fun SearchResultList(
         }
     }
 }
+
+private fun buildSelections(
+    selections: List<String>,
+    id: String,
+    selected: Boolean,
+) = if (selected) selections + id else selections - id

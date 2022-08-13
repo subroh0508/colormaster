@@ -37,7 +37,16 @@ fun CSSColorValue.parseToRGB(): List<Int> {
         Color.black -> return listOf(0, 0, 0)
     }
 
-    return toString().let {
+    val strColor = toString()
+    if (strColor.startsWith("#")) {
+        return listOf(
+            strColor.substring(1..2).toIntOrNull(16) ?: 0,
+            strColor.substring(3..4).toIntOrNull(16) ?: 0,
+            strColor.substring(5..6).toIntOrNull(16) ?: 0,
+        )
+    }
+
+    return strColor.let {
         """rgba?\(([0-9, ]+)\)""".toRegex().find(it)?.groupValues?.get(1)?.split(",") ?: listOf()
     }.map { it.trim().toIntOrNull() ?: 0 }
 }
