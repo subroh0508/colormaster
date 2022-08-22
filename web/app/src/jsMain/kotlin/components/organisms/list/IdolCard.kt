@@ -27,32 +27,29 @@ fun IdolCard(
     onFavoriteClick: (IdolColor, Boolean) -> Unit,
     attrsScope: (AttrsScope<HTMLDivElement>.() -> Unit)? = null,
 ) = Div({
+    classes("mdc-typography--body2")
     style {
-        position(Position.Relative)
+        justifyContent(JustifyContent.Center)
+        textAlign("center")
+        fontWeight("bold")
         margin(4.px)
         color(if (item.isBrighter) Color.black else Color.white)
     }
+    onClick { onClick(item, !selected)  }
+    onDoubleClick { onDoubleClick(item) }
+    attrsScope?.invoke(this)
 }) {
-    ListItemCard(
-        selected,
-        { attrsScope?.invoke(this) },
-        onClick =  { onClick(item, !selected) },
-        onDoubleClick = { onDoubleClick(item) },
-    ) {
-        Div {
-            Content(item, isActionIconsVisible)
+    Content(item, isActionIconsVisible)
 
-            if (isActionIconsVisible) {
-                ActionIconsBar(
-                    item,
-                    inCharge,
-                    favorite,
-                    onClick,
-                    onInChargeClick,
-                    onFavoriteClick,
-                )
-            }
-        }
+    if (isActionIconsVisible) {
+        ActionIconsBar(
+            item,
+            inCharge,
+            favorite,
+            onClick,
+            onInChargeClick,
+            onFavoriteClick,
+        )
     }
 }
 
@@ -63,10 +60,16 @@ private fun Content(
 ) = Div({
     style {
         padding(8.px)
-        if (isActionIconsVisible)
+        property("border-style", "solid")
+        property("border-color", Color(item.color))
+        if (isActionIconsVisible) {
             borderRadius(16.px, 16.px, 0.px, 0.px)
-        else
+            borderWidth(1.px, 1.px, 0.px)
+        }
+        else {
             borderRadius(16.px)
+            borderWidth(1.px)
+        }
         backgroundColor(Color(item.color))
     }
 }) {
@@ -98,7 +101,11 @@ private fun ActionIconsBar(
             style {
                 padding(4.px, 8.px)
                 borderRadius(0.px, 0.px, 16.px, 16.px)
-                backgroundColor(background)
+                property("border-style", "solid")
+                property("border-color", MaterialTheme.Var.divider)
+                borderWidth(0.px, 1.px, 1.px)
+                color(MaterialTheme.Var.onSurface)
+                backgroundColor(MaterialTheme.Var.surface)
             }
         },
         inChargeIcon to { onInChargeClick(item, !inCharge) },

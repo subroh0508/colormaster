@@ -14,6 +14,7 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         val secondary = Color("var(--${Name.secondary})")
         val surface = Color("var(--${Name.surface})")
         val background = Color("var(--${Name.background})")
+        val divider = Color("var(--${Name.divider})")
         val onPrimary = Color("var(--${Name.onPrimary})")
         val onSecondary = Color("var(--${Name.onSecondary})")
         val onSurface = Color("var(--${Name.onSurface})")
@@ -40,6 +41,7 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         const val secondary = "mdc-theme-secondary"
         const val surface = "mdc-theme-surface"
         const val background = "mdc-theme-background"
+        const val divider = "mdc-theme-divider"
         const val onPrimary = "mdc-theme-on-primary"
         const val onSecondary = "mdc-theme-on-secondary"
         const val onSurface = "mdc-theme-on-surface"
@@ -81,6 +83,7 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
             variable(Name.secondary, palette.secondary)
             variable(Name.surface, palette.surface)
             variable(Name.background, palette.background)
+            variable(Name.divider, palette.divider)
             variable(Name.onPrimary, palette.onPrimary.alpha(if (dark) 0.87 else 1))
             variable(Name.onSecondary, palette.onSecondary.alpha(if (dark) 0.87 else 1))
             variable(Name.onSurface, palette.onSurface.alpha(if (dark) 1 else 0.87))

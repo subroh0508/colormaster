@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.web.events.SyntheticMouseEvent
 import material.components.Card
 import material.components.Icon
+import material.components.OutlinedCard
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.*
 import org.w3c.dom.HTMLDivElement
@@ -15,7 +16,7 @@ fun ListItemCard(
     onClick: (SyntheticMouseEvent) -> Unit = {},
     onDoubleClick: (SyntheticMouseEvent) -> Unit = {},
     content: @Composable () -> Unit,
-) = Card({
+) = OutlinedCard({
     classes("mdc-typography--body2")
     style {
         borderRadius(16.px)

@@ -1,12 +1,14 @@
 import org.jetbrains.compose.web.css.CSSColorValue
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.rgb
+import org.jetbrains.compose.web.css.rgba
 
 sealed class Palette {
     abstract val primary: CSSColorValue
     abstract val secondary: CSSColorValue
     abstract val surface: CSSColorValue
     abstract val background: CSSColorValue
+    abstract val divider: CSSColorValue
 
     abstract val onPrimary: CSSColorValue
     abstract val onSecondary: CSSColorValue
@@ -21,6 +23,7 @@ sealed class Palette {
         override val secondary: CSSColorValue = rgb(255, 240, 159),
         override val surface: CSSColorValue = Color.white,
         override val background: CSSColorValue = rgb(250, 250, 250),
+        override val divider: CSSColorValue = rgba(0, 0, 0, 0.12),
         override val onPrimary: CSSColorValue = Color.white,
         override val onSecondary: CSSColorValue = Color.white,
         override val onSurface: CSSColorValue = Color.black,
@@ -34,6 +37,7 @@ sealed class Palette {
         override val secondary: CSSColorValue = rgb(255, 240, 159),
         override val surface: CSSColorValue = rgb(48, 48, 48),
         override val background: CSSColorValue = rgb(18, 18, 18),
+        override val divider: CSSColorValue = rgba(255, 255, 255, 0.12),
         override val onPrimary: CSSColorValue = Color.black,
         override val onSecondary: CSSColorValue = Color.black,
         override val onSurface: CSSColorValue = Color.white,
