@@ -7,6 +7,8 @@ import org.jetbrains.compose.web.ExperimentalComposeWebSvgApi
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.builders.InputAttrsScope
+import org.jetbrains.compose.web.css.Color
+import org.jetbrains.compose.web.css.backgroundColor
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Input
 import org.jetbrains.compose.web.dom.Label
@@ -21,14 +23,31 @@ import org.w3c.dom.HTMLInputElement
 private const val CHECKBOX_ID = "checkbox"
 private const val CHECKMARK_PATH = "M1.73,12.91 8.1,19.28 22.79,4.59"
 
-@OptIn(ExperimentalComposeWebSvgApi::class)
 @Composable
 fun Checkbox(
     label: String,
     value: Boolean = false,
     id: String = CHECKBOX_ID,
+    ripple: Boolean = true,
     attrsScope: (AttrsScope<HTMLDivElement>.() -> Unit)? = null,
     onChange: ((SyntheticInputEvent<Boolean, HTMLInputElement>) -> Unit)? = null,
+) = Checkbox(
+    id,
+    value,
+    ripple,
+    attrsScope,
+    onChange,
+) { Label(CHECKBOX_ID) { Text(label) } }
+
+@OptIn(ExperimentalComposeWebSvgApi::class)
+@Composable
+fun Checkbox(
+    id: String,
+    value: Boolean = false,
+    ripple: Boolean = true,
+    attrsScope: (AttrsScope<HTMLDivElement>.() -> Unit)? = null,
+    onChange: ((SyntheticInputEvent<Boolean, HTMLInputElement>) -> Unit)? = null,
+    label: @Composable () -> Unit = {},
 ) {
     var checkboxElement by remember { mutableStateOf<HTMLElement?>(null) }
     var formFieldElement by remember { mutableStateOf<HTMLElement?>(null) }
@@ -67,11 +86,11 @@ fun Checkbox(
                 }
                 Div({ classes("mdc-checkbox__mixedmark") })
             }
-            Div({
-                classes("mdc-checkbox__ripple")
-            })
-            Div({ classes("mdc-checkbox__focus-ring") })
+            if (ripple) {
+                Div({ classes("mdc-checkbox__ripple") })
+                Div({ classes("mdc-checkbox__focus-ring") })
+            }
         }
-        Label(CHECKBOX_ID) { Text(label) }
+        label()
     }
 }

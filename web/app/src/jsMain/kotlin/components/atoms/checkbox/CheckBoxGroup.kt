@@ -27,7 +27,7 @@ fun <T> CheckBoxGroup(
             item.toString(),
             checked,
             id,
-            { style { marginRight(16.px) } },
+            attrsScope = { style { marginRight(16.px) } },
         ) { onClick(item, !checked) }
     }
 }

@@ -6,19 +6,25 @@ import material.components.Icon
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Span
 import org.w3c.dom.HTMLDivElement
 
 @Composable
 fun ActionIcons(
     attrsScope: (AttrsScope<HTMLDivElement>.() -> Unit)?,
-    vararg icon: Pair<String, (SyntheticMouseEvent) -> Unit>,
+    leading: @Composable () -> Unit,
+    trailing: @Composable () -> Unit,
 ) {
     Style(ActionIconsStyle)
 
     Div({
         classes(ActionIconsStyle.content)
         attrsScope?.invoke(this)
-    }) { icon.forEach { (name, onClick) -> Icon(name) { onClick(onClick) } } }
+    }) {
+        leading()
+        Span({ style { flexGrow(1) } })
+        trailing()
+    }
 }
 
 private object ActionIconsStyle : StyleSheet() {

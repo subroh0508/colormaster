@@ -41,7 +41,7 @@ fun SearchResultList(
             items.forEach { item ->
                 IdolCard(
                     item,
-                    isActionIconsVisible = true,
+                    isActionIconsVisible = false,
                     selected = selections.contains(item.id),
                     inCharge = false,
                     favorite = false,

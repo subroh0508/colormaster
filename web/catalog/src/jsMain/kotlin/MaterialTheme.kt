@@ -50,7 +50,6 @@ class MaterialTheme(private val dark: Boolean = false) : StyleSheet() {
             variable(Name.textPrimaryDark, Color.white)
             variable(Name.textSecondaryLight, rgba(0, 0, 0, 0.60))
             variable(Name.textSecondaryDark, rgba(255, 255, 255, 0.70))
-            variable("mdc-checkbox-checked-color", Color(primary))
         }
 
         type("html") style  {
