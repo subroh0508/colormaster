@@ -24,7 +24,7 @@ fun <T> ChipGroup(
         Chip(
             it.toString(),
             it == selected,
-            { style { margin(0.px, 8.px, 8.px, 0.px) } },
+            attrsScope = { style { margin(0.px, 8.px, 8.px, 0.px) } },
         ) { onClick(if (it != selected) it else null) }
     }
 }

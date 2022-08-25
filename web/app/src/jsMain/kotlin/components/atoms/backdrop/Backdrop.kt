@@ -101,6 +101,7 @@ private object BackdropStyleSheet : StyleSheet() {
 
     val frontLayer by style {
         display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Column)
         flexShrink(0)
         width(100.percent - WIDE_BACK_LAYER_WIDTH.px)
         backgroundColor(MaterialTheme.Var.surface)
@@ -116,17 +117,12 @@ private object BackdropStyleSheet : StyleSheet() {
 
 private object BackdropFrontHeaderStyleSheet : StyleSheet() {
     val content by style {
-        position(Position.Fixed)
-        property("left", 0)
-        property("right", 0)
+        position(Position.Relative)
         padding(8.px)
 
         media(MEDIA_QUERY_TABLET_SMALL) {
             self style {
-                width(100.percent - WIDE_BACK_LAYER_WIDTH.px - 8.px)
-                padding(8.px, 0.px, 8.px)
-                property("right", 0)
-                property("margin", "0 0 0 auto")
+                padding(8.px, 0.px, 8.px, 8.px)
             }
         }
     }
@@ -143,6 +139,7 @@ private object BackdropFrontHeaderStyleSheet : StyleSheet() {
 private class OverlayFrontLayerStyleSheet(private val state: BackdropValues) : StyleSheet() {
     val content by style {
         display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Column)
         position(Position.Fixed)
         property("z-index", 4)
         property("left", 0)

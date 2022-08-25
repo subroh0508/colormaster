@@ -2,6 +2,8 @@ package material.components
 
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.attributes.AttrsScope
+import org.jetbrains.compose.web.css.marginRight
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
@@ -11,6 +13,7 @@ import org.w3c.dom.HTMLSpanElement
 fun Chip(
     label: String,
     selected: Boolean = false,
+    leadingIcon: String? = null,
     attrsScope: (AttrsScope<HTMLSpanElement>.() -> Unit)? = null,
     onClick: () -> Unit = {},
 ) {
@@ -25,9 +28,19 @@ fun Chip(
                 classes("mdc-evolution-chip__action", "mdc-evolution-chip__action--primary")
                 onClick { onClick() }
             }) {
-                Span({
-                    classes("mdc-evolution-chip__ripple", "mdc-evolution-chip__ripple--primary")
-                })
+                Span({ classes("mdc-evolution-chip__ripple", "mdc-evolution-chip__ripple--primary") })
+
+                if (leadingIcon != null) {
+                    Span({
+                        classes("mdc-evolution-chip__graphic")
+                        style { marginRight(4.px) }
+                    }) {
+                        Span({ classes("mdc-evolution-chip__icon", "mdc-evolution-chip__icon--primary", "material-icons") }) {
+                            Text(leadingIcon)
+                        }
+                    }
+                }
+
                 Span({
                     classes("mdc-evolution-chip__text-label")
                 }) { Text(label) }

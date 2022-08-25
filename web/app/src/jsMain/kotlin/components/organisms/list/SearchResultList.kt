@@ -25,8 +25,7 @@ fun SearchResultList(
         marginHorizontal = GRID_MARGIN_HORIZONTAL,
         {
             style {
-                marginTop(64.px)
-                padding(8.px, 4.px, 8.px)
+                padding(8.px, 4.px, 56.px)
                 overflowY("auto")
             }
         },
