@@ -71,6 +71,8 @@
       "successPlural": "Result: {{count}} idols"
     },
     "error": {
+      "4xx": "There is an error in your request. Please contact the developer.",
+      "5xx": "An error has occurred on the server. Please try again in a few minutes or contact the developer.",
       "unknown": "An unexpected error has occurred. Please reload."
     }
   },
