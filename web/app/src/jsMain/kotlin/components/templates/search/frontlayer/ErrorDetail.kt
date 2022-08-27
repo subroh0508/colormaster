@@ -1,5 +1,6 @@
 package components.templates.search.frontlayer
 
+import MaterialTheme
 import androidx.compose.runtime.Composable
 import io.ktor.client.features.*
 import material.components.*
@@ -52,8 +53,10 @@ private fun buildMessage(t: I18nextText, error: Throwable): String {
 private object ErrorDetailStyle : StyleSheet() {
     val content by style {
         margin(8.px, 8.px, 56.px)
+        property("border-color", MaterialTheme.Var.divider)
         borderRadius(16.px)
         property("word-wrap", "break-word")
+        color(MaterialTheme.Var.onSurface)
 
         media(MEDIA_QUERY_TABLET_SMALL) {
             self style {
@@ -64,6 +67,7 @@ private object ErrorDetailStyle : StyleSheet() {
                     bottomLeft = 16.px,
                     bottomRight = 0.px,
                 )
+                property("border-right", "none")
             }
         }
     }
