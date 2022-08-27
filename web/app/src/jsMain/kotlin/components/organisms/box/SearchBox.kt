@@ -1,6 +1,7 @@
 package components.organisms.box
 
 import androidx.compose.runtime.*
+import components.atoms.textfield.DebouncedTextForm
 import components.atoms.textfield.OutlinedTextField
 import components.organisms.box.form.BrandForm
 import components.organisms.box.form.TypeForm
@@ -39,6 +40,8 @@ fun SearchBox(
     }
 }
 
+private const val DEBOUNCE_TIME_MILLIS = 500L
+
 private const val LABEL_BY_NAME = "search-by-name"
 private const val LABEL_BY_LIVE = "search-by-live"
 
@@ -47,12 +50,18 @@ private fun ByName(state: MutableState<SearchParams>) {
     val t = LocalI18n() ?: return
     val params = state.value as? SearchParams.ByName ?: return
 
-    OutlinedTextField(
-        LABEL_BY_NAME,
-        t("searchBox.attributes.idolName"),
+    DebouncedTextForm(
         params.idolName?.value,
-        { style { padding(8.px, 16.px) } },
-    ) { state.value = params.change(it.value.takeIf(String::isNotBlank)?.let(::IdolName)) }
+        DEBOUNCE_TIME_MILLIS,
+        onDebouncedChange = { state.value = params.change(it?.let(::IdolName)) },
+    ) { textState ->
+        OutlinedTextField(
+            LABEL_BY_NAME,
+            t("searchBox.attributes.idolName"),
+            textState.value,
+            { style { padding(8.px, 16.px) } },
+        ) { textState.value = it.value.takeIf(String::isNotBlank) }
+    }
 
     BrandForm(params.brands) { brand ->
         state.value = params.change(brand)

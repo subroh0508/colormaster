@@ -8,7 +8,6 @@ import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.events.SyntheticInputEvent
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLLabelElement
 import org.w3c.dom.HTMLTextAreaElement
 
 @Composable
