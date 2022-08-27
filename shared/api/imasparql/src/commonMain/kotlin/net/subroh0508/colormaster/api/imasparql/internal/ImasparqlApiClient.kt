@@ -12,16 +12,8 @@ import net.subroh0508.colormaster.api.imasparql.serializer.Response
 
 internal class ImasparqlApiClient(
     private val httpClient: HttpClient,
+    private val json: Json,
 ) : ImasparqlClient {
-    private val json by lazy {
-        Json {
-            isLenient = true
-            ignoreUnknownKeys = true
-            allowSpecialFloatingPointValues = true
-            useArrayPolymorphism = true
-        }
-    }
-
     override suspend fun <T> search(
         query: String,
         serializer: KSerializer<T>,

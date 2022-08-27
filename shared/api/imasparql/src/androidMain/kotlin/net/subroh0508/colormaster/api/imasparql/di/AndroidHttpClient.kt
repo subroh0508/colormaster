@@ -8,13 +8,14 @@ import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.accept
 import io.ktor.http.URLProtocol
 import io.ktor.http.userAgent
+import kotlinx.serialization.json.Json
 import net.subroh0508.colormaster.api.imasparql.BuildConfig
 import net.subroh0508.colormaster.api.imasparql.HOSTNAME
 import net.subroh0508.colormaster.api.imasparql.internal.ContentType
 import net.subroh0508.colormaster.api.imasparql.internal.UserAgent
 import okhttp3.logging.HttpLoggingInterceptor
 
-internal actual val httpClient get() = HttpClient(OkHttp) {
+internal actual fun httpClient(json: Json) = HttpClient(OkHttp) {
     engine {
         if (BuildConfig.DEBUG) {
             val loggingInterceptor = HttpLoggingInterceptor()
@@ -37,11 +38,6 @@ internal actual val httpClient get() = HttpClient(OkHttp) {
     }
     Json {
         acceptContentTypes = listOf(ContentType.Application.SparqlJson)
-        serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
-            isLenient = true
-            ignoreUnknownKeys = true
-            allowSpecialFloatingPointValues = true
-            useArrayPolymorphism = true
-        })
+        serializer = KotlinxSerializer(json)
     }
 }
