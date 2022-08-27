@@ -55,7 +55,7 @@ fun Alert(
 
 private val AlertType.icon get() = when (this) {
     AlertType.Info -> "info_outlined"
-    AlertType.Success -> "success_outlined"
+    AlertType.Success -> "check_circle_outlined"
     AlertType.Warning -> "report_problem_outlined"
     AlertType.Error -> "error_outlined"
 }

@@ -1,57 +1,17 @@
-package components.templates.search
+package components.templates.search.frontlayer
 
-import MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import components.atoms.alert.Alert
-import components.atoms.alert.AlertType
-import components.atoms.backdrop.BackdropFrontHeader
 import components.atoms.backdrop.BackdropValues
 import components.atoms.chip.OutlinedChip
-import components.organisms.list.SearchResultList
-import material.components.Chip
 import material.components.IconButton
 import material.components.Tooltip
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
-import material.utilities.rememberMediaQuery
-import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.presentation.common.LoadState
 import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import utilities.LocalI18n
 import utilities.invoke
-
-@Composable
-fun FrontLayer(
-    backdropState: MutableState<BackdropValues>,
-    loadState: LoadState,
-) {
-    val t = LocalI18n() ?: return
-    val wide by rememberMediaQuery(MEDIA_QUERY_TABLET_SMALL)
-
-    console.log(loadState)
-
-    SearchResultList(
-        loadState,
-        header = { selections, setSelectionsAll ->
-            BackdropFrontHeader(backdropState) {
-                ActionButtons(
-                    wide,
-                    backdropState,
-                    selections,
-                    onSelectAllClick = setSelectionsAll,
-                )
-                Alert(
-                    AlertType.Info,
-                    t("searchPanel.messages.defaultByName"),
-                )
-            }
-        },
-    )
-}
 
 private const val ICON_PREVIEW = "palette"
 private const val ICON_PENLIGHT = "highlight"
@@ -64,7 +24,7 @@ private const val BUTTON_ALL_SELECT = "button-all-select"
 private const val BUTTON_ALL_DESELECT = "button-all-deselect"
 
 @Composable
-private fun ActionButtons(
+fun ActionButtons(
     wide: Boolean,
     backdropState: State<BackdropValues>,
     selections: List<String>,

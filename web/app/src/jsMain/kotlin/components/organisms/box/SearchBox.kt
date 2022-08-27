@@ -27,7 +27,7 @@ fun SearchBox(
         )
     }
 
-    LaunchedEffect(onChange) {
+    LaunchedEffect(type, onChange) {
         snapshotFlow { params.value }
             .onEach(onChange)
             .launchIn(this)

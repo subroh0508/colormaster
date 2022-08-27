@@ -5,7 +5,7 @@ import components.atoms.backdrop.Backdrop
 import components.atoms.backdrop.BackdropValues
 import components.atoms.backdrop.rememberBackdropState
 import components.templates.search.BackLayer
-import components.templates.search.FrontLayer
+import components.templates.search.frontlayer.FrontLayer
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.presentation.common.LoadState
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
@@ -29,7 +29,7 @@ fun SearchIdolPage(
             BackLayer(variant, setParams)
         },
         frontLayerContent = {
-            FrontLayer(backdropState, idolLoadState)
+            FrontLayer(backdropState, params, idolLoadState)
         },
     )
 }

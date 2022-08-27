@@ -33,6 +33,7 @@ external interface I18nextOptions {
     var debug: Boolean?
     var resources: I18nextResources
     var partialBundledLanguages: Boolean?
+    var nsSeparator: Boolean?
 }
 
 external interface I18nextResources
@@ -58,6 +59,7 @@ fun i18nextInit() = i18next.
             resources("ja", require("locale/ja"))
             lng = "ja"
             fallbackLng("ja")
+            nsSeparator = false
             partialBundledLanguages = true
             backend {
                 loadPath = "/locale/{{lng}}.json"
