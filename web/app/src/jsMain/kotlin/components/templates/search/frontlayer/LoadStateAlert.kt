@@ -25,16 +25,11 @@ fun LoadStateAlert(
 private fun alertType(
     params: SearchParams?,
     loadState: LoadState,
-): AlertType {
-    if (params?.isEmpty() != false) {
-        return AlertType.Info
-    }
-
-    return when (loadState) {
-        is LoadState.Loaded<*> -> AlertType.Success
-        is LoadState.Error -> AlertType.Error
-        else -> AlertType.Warning
-    }
+)= when {
+    loadState is LoadState.Loading -> AlertType.Warning
+    loadState is LoadState.Error -> AlertType.Error
+    loadState is LoadState.Loaded<*> && params?.isEmpty() == false -> AlertType.Success
+    else -> AlertType.Info
 }
 
 @Composable

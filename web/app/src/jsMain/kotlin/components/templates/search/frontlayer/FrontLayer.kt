@@ -37,5 +37,8 @@ fun FrontLayer(
                 )
             }
         },
+        errorContent = {
+            ErrorDetail(it)
+        }
     )
 }

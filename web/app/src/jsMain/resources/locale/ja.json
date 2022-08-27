@@ -69,6 +69,9 @@
       "error": "エラー",
       "success": "検索結果: {{count}}人",
       "successPlural": "検索結果: {{count}}人"
+    },
+    "errors": {
+      "unknown": "予期せぬエラーが発生しました。リロードしてください。"
     }
   },
   "myPage": {

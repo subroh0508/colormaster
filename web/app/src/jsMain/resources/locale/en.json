@@ -69,6 +69,9 @@
       "error": "Error",
       "success": "Result: {{count}} idol",
       "successPlural": "Result: {{count}} idols"
+    },
+    "error": {
+      "unknown": "An unexpected error has occurred. Please reload."
     }
   },
   "myPage": {
