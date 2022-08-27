@@ -50,6 +50,7 @@ fun SearchBox(
                 onTypeChecked = { type, checked -> onParamsChange(params.change(type, checked)) },
             )
         }
+        else -> Unit
     }
 }
 

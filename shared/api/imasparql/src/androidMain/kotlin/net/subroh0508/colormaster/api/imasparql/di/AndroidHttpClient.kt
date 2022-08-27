@@ -2,9 +2,7 @@ package net.subroh0508.colormaster.api.imasparql.di
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.features.defaultRequest
-import io.ktor.client.features.json.Json
-import io.ktor.client.features.json.serializer.KotlinxSerializer
+import io.ktor.client.plugins.*
 import io.ktor.client.request.accept
 import io.ktor.http.URLProtocol
 import io.ktor.http.userAgent
@@ -36,8 +34,5 @@ internal actual fun httpClient(json: Json) = HttpClient(OkHttp) {
         accept(ContentType.Application.SparqlJson)
         userAgent(UserAgent)
     }
-    Json {
-        acceptContentTypes = listOf(ContentType.Application.SparqlJson)
-        serializer = KotlinxSerializer(json)
-    }
+    Json(json) {}
 }

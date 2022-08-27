@@ -2,7 +2,7 @@ package components.templates.search.frontlayer
 
 import MaterialTheme
 import androidx.compose.runtime.Composable
-import io.ktor.client.features.*
+import io.ktor.client.plugins.*
 import material.components.*
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
 import org.jetbrains.compose.web.css.*

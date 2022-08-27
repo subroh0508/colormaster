@@ -68,6 +68,7 @@ fun Home(
                     snackbarHostState,
                     launchPreviewScreen,
                 )
+                else -> Unit
             }
         },
         bottomBarHeight = 52.dp,

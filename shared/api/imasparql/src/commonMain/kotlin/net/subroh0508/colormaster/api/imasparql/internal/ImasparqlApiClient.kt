@@ -2,8 +2,7 @@ package net.subroh0508.colormaster.api.imasparql.internal
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.readText
+import io.ktor.client.statement.*
 import io.ktor.utils.io.charsets.Charset
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
@@ -18,11 +17,11 @@ internal class ImasparqlApiClient(
         query: String,
         serializer: KSerializer<T>,
     ): Response<T> {
-        val response = httpClient.get<HttpResponse>(query)
+        val response = httpClient.get(query)
 
         return json.decodeFromString(
             Response.serializer(serializer),
-            response.readText(Charset.forName("UTF-8"))
+            response.bodyAsText(Charset.forName("UTF-8"))
         )
     }
 }
