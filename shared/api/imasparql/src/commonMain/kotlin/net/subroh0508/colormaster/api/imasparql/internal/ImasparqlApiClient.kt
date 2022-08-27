@@ -11,20 +11,24 @@ import net.subroh0508.colormaster.api.imasparql.ImasparqlClient
 import net.subroh0508.colormaster.api.imasparql.serializer.Response
 
 internal class ImasparqlApiClient(
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
 ) : ImasparqlClient {
+    private val json by lazy {
+        Json {
+            isLenient = true
+            ignoreUnknownKeys = true
+            allowSpecialFloatingPointValues = true
+            useArrayPolymorphism = true
+        }
+    }
+
     override suspend fun <T> search(
         query: String,
         serializer: KSerializer<T>,
     ): Response<T> {
         val response = httpClient.get<HttpResponse>(query)
 
-        return Json {
-            isLenient = true
-            ignoreUnknownKeys = true
-            allowSpecialFloatingPointValues = true
-            useArrayPolymorphism = true
-        }.decodeFromString(
+        return json.decodeFromString(
             Response.serializer(serializer),
             response.readText(Charset.forName("UTF-8"))
         )
