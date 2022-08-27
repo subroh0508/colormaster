@@ -2,6 +2,7 @@ package material.components
 
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.attributes.AttrsScope
+import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.css.marginRight
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Button
@@ -13,12 +14,13 @@ import org.w3c.dom.HTMLSpanElement
 fun Chip(
     label: String,
     selected: Boolean = false,
+    disabled: Boolean = false,
     leadingIcon: String? = null,
     attrsScope: (AttrsScope<HTMLSpanElement>.() -> Unit)? = null,
     onClick: () -> Unit = {},
 ) {
     Span({
-        classes(*chipClasses(selected))
+        classes(*chipClasses(selected, disabled))
         attrsScope?.invoke(this)
     }) {
         Span({
@@ -26,6 +28,7 @@ fun Chip(
         }) {
             Button({
                 classes("mdc-evolution-chip__action", "mdc-evolution-chip__action--primary")
+                if (disabled) disabled()
                 onClick { onClick() }
             }) {
                 Span({ classes("mdc-evolution-chip__ripple", "mdc-evolution-chip__ripple--primary") })
@@ -49,7 +52,11 @@ fun Chip(
     }
 }
 
-private fun chipClasses(selected: Boolean) = listOfNotNull(
+private fun chipClasses(
+    selected: Boolean,
+    disabled: Boolean,
+) = listOfNotNull(
     "mdc-evolution-chip",
     if (selected) "mdc-evolution-chip--activated" else null,
+    if (disabled) "mdc-evolution-chip--disabled" else null,
 ).toTypedArray()

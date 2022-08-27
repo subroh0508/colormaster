@@ -32,6 +32,8 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         val textSuccess = Color("var(--${Name.textSuccess})")
         val textWarning = Color("var(--${Name.textWarning})")
         val textError = Color("var(--${Name.textError})")
+        val textHint = Color("var(--${Name.textHint})")
+        val textDisabled = Color("var(--${Name.textDisabled})")
 
         val ripple = Color("var(--${Name.ripple})")
     }
@@ -90,7 +92,7 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
             variable(Name.textPrimary, palette.textPrimary.alpha(if (dark) 1 else 0.87))
             variable(Name.textSecondary, palette.textSecondary.alpha(if (dark) 0.70 else 0.60))
             variable(Name.textHint, palette.textPrimary.alpha(if (dark) 0.50 else 0.38))
-            variable(Name.textDisabled, palette.textPrimary.alpha(if (dark) 0.50 else 0.38))
+            variable(Name.textDisabled, palette.textPrimary.alpha(0.38))
             variable(Name.textLink, palette.textLink)
 
             variable(Name.info, alert.info)

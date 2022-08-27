@@ -9,13 +9,16 @@ import components.atoms.alert.Alert
 import components.atoms.alert.AlertType
 import components.atoms.backdrop.BackdropFrontHeader
 import components.atoms.backdrop.BackdropValues
+import components.atoms.chip.OutlinedChip
 import components.organisms.list.SearchResultList
 import material.components.Chip
 import material.components.IconButton
 import material.components.Tooltip
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
 import material.utilities.rememberMediaQuery
+import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.common.LoadState
+import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import utilities.LocalI18n
@@ -31,16 +34,23 @@ fun FrontLayer(
 
     console.log(loadState)
 
-    BackdropFrontHeader(backdropState) {
-        ActionButtonsForWide(wide)
-        Alert(
-            AlertType.Info,
-            t("searchPanel.messages.defaultByName"),
-        )
-    }
-
-    SearchResultList(loadState)
-    ActionButtonsForNarrow(wide, backdropState)
+    SearchResultList(
+        loadState,
+        header = { selections, setSelectionsAll ->
+            BackdropFrontHeader(backdropState) {
+                ActionButtons(
+                    wide,
+                    backdropState,
+                    selections,
+                    onSelectAllClick = setSelectionsAll,
+                )
+                Alert(
+                    AlertType.Info,
+                    t("searchPanel.messages.defaultByName"),
+                )
+            }
+        },
+    )
 }
 
 private const val ICON_PREVIEW = "palette"
@@ -54,71 +64,99 @@ private const val BUTTON_ALL_SELECT = "button-all-select"
 private const val BUTTON_ALL_DESELECT = "button-all-deselect"
 
 @Composable
-private fun ActionButtonsForWide(wide: Boolean) {
-    if (!wide) {
+private fun ActionButtons(
+    wide: Boolean,
+    backdropState: State<BackdropValues>,
+    selections: List<String>,
+    onSelectAllClick: (Boolean) -> Unit,
+) {
+    if (!wide && backdropState.value == BackdropValues.Concealed) {
         return
     }
+
     val t = LocalI18n() ?: return
+    val (selectId, selectKey, selectIcon) =
+        if (selections.isNotEmpty())
+            Triple(BUTTON_ALL_DESELECT, "actions.clear", ICON_ALL_DESELECT)
+        else
+            Triple(BUTTON_ALL_SELECT, "actions.all", ICON_ALL_SELECT)
 
     Style(ActionButtonsStyle)
 
     Div({ classes(ActionButtonsStyle.content) }) {
-        IconButton(ICON_PREVIEW, applyAttrs = { attr("aria-describedby", BUTTON_PREVIEW) })
+        if (!wide) {
+            OutlinedChip(
+                t("actions.preview"),
+                disabled = selections.isEmpty(),
+                leadingIcon = ICON_PREVIEW,
+            )
+            OutlinedChip(
+                t("actions.penlight"),
+                disabled = selections.isEmpty(),
+                leadingIcon = ICON_PENLIGHT,
+            )
+            OutlinedChip(
+                t(selectKey),
+                leadingIcon = selectIcon,
+                onClick = { onSelectAllClick(selections.isEmpty()) },
+            )
+
+            return@Div
+        }
+
+        IconButton(ICON_PREVIEW, applyAttrs = {
+            attr("aria-describedby", BUTTON_PREVIEW)
+            if (selections.isEmpty()) disabled()
+        })
         Tooltip(BUTTON_PREVIEW, t("actions.preview"))
 
-        IconButton(ICON_PENLIGHT, applyAttrs = { attr("aria-describedby", BUTTON_PENLIGHT) })
+        IconButton(ICON_PENLIGHT, applyAttrs = {
+            attr("aria-describedby", BUTTON_PENLIGHT)
+            if (selections.isEmpty()) disabled()
+        })
         Tooltip(BUTTON_PENLIGHT, t("actions.penlight"))
 
-        IconButton(ICON_ALL_SELECT, applyAttrs = { attr("aria-describedby", BUTTON_ALL_SELECT) })
-        Tooltip(BUTTON_ALL_SELECT, t("actions.all"))
-    }
-}
-
-@Composable
-private fun ActionButtonsForNarrow(wide: Boolean, backdropState: State<BackdropValues>) {
-    if (wide || backdropState.value == BackdropValues.Concealed) {
-        return
-    }
-    val t = LocalI18n() ?: return
-
-    Style(ActionButtonsStyle)
-
-    Div({ classes(ActionButtonsStyle.content) }) {
-        Chip(t("actions.preview"), leadingIcon = ICON_PREVIEW)
-        Chip(t("actions.penlight"), leadingIcon = ICON_PENLIGHT)
-        Chip(t("actions.all"), leadingIcon = ICON_ALL_SELECT)
+        IconButton(selectIcon, applyAttrs = {
+            attr("aria-describedby", selectId)
+            onClick { onSelectAllClick(selections.isEmpty()) }
+        })
+        Tooltip(selectId, t(selectKey))
     }
 }
 
 private object ActionButtonsStyle : StyleSheet() {
     val content by style {
         display(DisplayStyle.Flex)
-        position(Position.Absolute)
+        position(Position.Fixed)
         justifyContent(JustifyContent.FlexEnd)
         bottom(0.px)
         left(0.px)
         right(0.px)
-        paddingTop(8.px)
+        property("z-index", 6)
+        padding(8.px, 4.px, 0.px, 0.px)
         backgroundColor(MaterialTheme.Var.surface)
         property("border-top", "1px solid ${MaterialTheme.Var.divider}")
 
         desc(self, className("mdc-evolution-chip")) style {
-            margin(0.px, 8.px, 8.px, 0.px)
-
-            desc(self, className("material-icons")) style {
-                color(MaterialTheme.Var.onSurface)
-            }
+            margin(0.px, 4.px, 8.px, 0.px)
         }
 
         media(MEDIA_QUERY_TABLET_SMALL) {
             self style {
                 justifyContent(JustifyContent.FlexStart)
                 position(Position.Static)
-                paddingTop(0.px)
+                padding(0.px)
                 marginBottom(8.px)
-                color(MaterialTheme.Var.onSurface)
                 backgroundColor(Color.transparent)
                 property("border-top", "none")
+
+                desc(self, className("mdc-icon-button")) style {
+                    color(MaterialTheme.Var.onSurface)
+
+                    (self + disabled) style {
+                        color(MaterialTheme.Var.textDisabled)
+                    }
+                }
             }
         }
     }

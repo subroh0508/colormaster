@@ -15,10 +15,15 @@ private const val GRID_MARGIN_HORIZONTAL = 8
 @Composable
 fun SearchResultList(
     loadState: LoadState,
+    header: @Composable (List<String>, (Boolean) -> Unit) -> Unit,
 ) {
     val items: List<IdolColor> = loadState.getValueOrNull() ?: return
 
     val (selections, setSelections) = remember(loadState) { mutableStateOf<List<String>>(listOf()) }
+
+    header(selections) { all ->
+        setSelections(if (all) items.map { it.id } else listOf())
+    }
 
     AutoGridList(
         gridMinWidth = GRID_MIN_WIDTH,
