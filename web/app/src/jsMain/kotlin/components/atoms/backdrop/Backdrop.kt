@@ -11,6 +11,7 @@ import org.jetbrains.compose.web.dom.Div
 
 const val WIDE_BACK_LAYER_WIDTH = 408
 const val TOP_APP_BAR_HEIGHT = 64
+const val BACKDROP_FRONT_HEADER_HEIGHT = 68
 
 enum class BackdropValues { Concealed, Revealed }
 
@@ -26,10 +27,8 @@ fun Backdrop(
     Style(BackdropStyleSheet)
 
     Div({ classes(BackdropStyleSheet.content) }) {
-        Div({ style { width(100.percent) } }) {
-            appBar()
-            backLayerContent()
-        }
+        appBar()
+        backLayerContent()
 
         if (!wide) {
             OverlayFrontLayer(backdropState, frontLayerContent)
@@ -97,6 +96,7 @@ private object BackdropStyleSheet : StyleSheet() {
     val content by style {
         display(DisplayStyle.Flex)
         height(100.vh)
+        overflowY("hidden")
     }
 
     val frontLayer by style {

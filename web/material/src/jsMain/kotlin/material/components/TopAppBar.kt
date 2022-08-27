@@ -3,6 +3,7 @@ package material.components
 import androidx.compose.runtime.*
 import androidx.compose.web.events.SyntheticMouseEvent
 import material.externals.MDCTopAppBar
+import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLElement
 
@@ -40,7 +41,7 @@ fun TopAppBar(
         }
     }
 
-    mainContent?.let { TopAppBarMainContent(variant, it) }
+    mainContent?.let { TopAppBarMainContent(variant, content = it) }
 }
 
 @Composable
@@ -67,8 +68,12 @@ fun TopAppTitle(
 @Composable
 fun TopAppBarMainContent(
     variant: String? = null,
+    attrsScope: (AttrsScope<HTMLElement>.() -> Unit)? = null,
     content: @Composable () -> Unit,
-) = Main({ classes(topAppBarMainClass(variant)) }) { content() }
+) = Main({
+    classes(topAppBarMainClass(variant))
+    attrsScope?.invoke(this)
+}) { content() }
 
 @Composable
 fun TopAppActionIcon(
