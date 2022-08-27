@@ -12,7 +12,8 @@ class SearchByNameQuery(
             imas:Brand ?brand.
           OPTIONAL { ?s schema:name ?realName. FILTER(lang(?realName) = '$lang') }
           OPTIONAL { ?s schema:alternateName ?altName. FILTER(lang(?altName) = '$lang') }  
-          BIND (COALESCE(?altName, ?realName) as ?name)
+          OPTIONAL { ?s schema:givenName ?givenName. FILTER(lang(?givenName) = '$lang') }  
+          BIND (COALESCE(?altName, ?realName, ?givenName) as ?name)
           OPTIONAL { ?s imas:Division ?division }
           OPTIONAL { ?s imas:Type ?type }
           OPTIONAL { ?s imas:Category ?category }
