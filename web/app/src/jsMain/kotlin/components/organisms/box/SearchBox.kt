@@ -5,6 +5,7 @@ import components.atoms.textfield.DebouncedTextForm
 import components.atoms.textfield.OutlinedTextField
 import components.organisms.box.form.BrandForm
 import components.organisms.box.form.TypeForm
+import components.organisms.box.suggestions.LiveSuggestList
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.IdolName
@@ -77,10 +78,18 @@ private fun ByLive(state: MutableState<SearchParams>) {
     val t = LocalI18n() ?: return
     val params = state.value as? SearchParams.ByLive ?: return
 
-    OutlinedTextField(
-        LABEL_BY_LIVE,
-        t("searchBox.attributes.liveName"),
-        params.liveName?.value,
-        { style { padding(8.px, 16.px) } },
-    ) { state.value = params.change(it.value) }
+    DebouncedTextForm(
+        params.query,
+        DEBOUNCE_TIME_MILLIS,
+        onDebouncedChange = { state.value = params.change(it) },
+    ) { textState ->
+        OutlinedTextField(
+            LABEL_BY_LIVE,
+            t("searchBox.attributes.liveName"),
+            textState.value,
+            { style { padding(8.px, 16.px) } },
+        ) { textState.value = it.value.takeIf(String::isNotBlank) }
+    }
+
+    LiveSuggestList(state) { println(it) }
 }
