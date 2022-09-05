@@ -13,10 +13,11 @@ fun <T> ChipGroup(
     selected: T?,
     attrsScope: (AttrsScope<HTMLDivElement>.() -> Unit)? = null,
     onClick: (T?) -> Unit,
-)= Div({
+) = Div({
     style {
         display(DisplayStyle.Flex)
         flexWrap(FlexWrap.Wrap)
+        gap(8.px, 8.px)
     }
     attrsScope?.invoke(this)
 }) {
@@ -24,7 +25,6 @@ fun <T> ChipGroup(
         Chip(
             it.toString(),
             it == selected,
-            attrsScope = { style { margin(0.px, 8.px, 8.px, 0.px) } },
         ) { onClick(if (it != selected) it else null) }
     }
 }
