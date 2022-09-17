@@ -18,6 +18,7 @@ fun OutlinedTextField(
     attrs: (AttrsScope<HTMLDivElement>.() -> Unit)? = null,
     disabled: Boolean = false,
     onChange: (SyntheticInputEvent<String, HTMLTextAreaElement>) -> Unit,
+    trailing: (@Composable () -> Unit)? = null,
 ) = Div(attrs) {
     OutlinedTextArea(
         label,
@@ -26,5 +27,6 @@ fun OutlinedTextField(
         { style { width(100.percent) } },
         disabled,
         onChange,
+        trailing = trailing,
     )
 }

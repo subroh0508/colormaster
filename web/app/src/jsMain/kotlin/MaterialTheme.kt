@@ -18,6 +18,7 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         val onPrimary = Color("var(--${Name.onPrimary})")
         val onSecondary = Color("var(--${Name.onSecondary})")
         val onSurface = Color("var(--${Name.onSurface})")
+        val textPrimary = Color("var(--${Name.textPrimary})")
         val textLink = Color("var(--${Name.textLink})")
 
         val info = Color("var(--${Name.info})")

@@ -1,5 +1,6 @@
 package components.organisms.box
 
+import MaterialTheme
 import androidx.compose.runtime.*
 import components.atoms.textfield.DebouncedTextForm
 import components.atoms.textfield.OutlinedTextField
@@ -8,6 +9,7 @@ import components.organisms.box.form.TypeForm
 import components.organisms.box.suggestions.LiveSuggestList
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import material.components.TrailingTextFieldIcon
 import net.subroh0508.colormaster.model.IdolName
 import net.subroh0508.colormaster.presentation.search.model.LiveNameQuery
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
@@ -62,7 +64,8 @@ private fun ByName(state: MutableState<SearchParams>) {
             t("searchBox.attributes.idolName"),
             textState.value,
             { style { padding(8.px, 16.px) } },
-        ) { textState.value = it.value.takeIf(String::isNotBlank) }
+            onChange = { textState.value = it.value.takeIf(String::isNotBlank) },
+        )
     }
 
     BrandForm(params.brands) { brand ->
@@ -90,12 +93,31 @@ private fun ByLive(state: MutableState<SearchParams>) {
             textState.value,
             { style { padding(8.px, 16.px) } },
             disabled = liveNameQuery.value.isSettled,
-        ) { textState.value = it.value.takeIf(String::isNotBlank) }
+            onChange = { textState.value = it.value.takeIf(String::isNotBlank) },
+            trailing =
+                if (liveNameQuery.value.isSettled) {
+                    { ClearIcon(liveNameQuery) }
+                } else
+                    null,
+        )
     }
 
     LiveSuggestList(liveNameQuery) { liveName ->
         liveNameQuery.value = liveNameQuery.value.let {
-            if (liveName == null) it.unsettle() else it.settle(liveName)
+            if (liveName == null) it.clear() else it.settle(liveName)
         }
     }
+}
+
+@Composable
+private fun ClearIcon(query: MutableState<LiveNameQuery>) {
+    TrailingTextFieldIcon(
+        "highlight_off",
+        {
+            style {
+                color(MaterialTheme.Var.textPrimary)
+                property("pointer-events", "auto")
+            }
+        },
+    ) { query.value = query.value.clear() }
 }
