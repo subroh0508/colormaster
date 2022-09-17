@@ -2,7 +2,9 @@ package usecase
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
+import net.subroh0508.colormaster.model.LiveName
 import net.subroh0508.colormaster.presentation.common.LoadState
+import net.subroh0508.colormaster.presentation.search.model.LiveNameQuery
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.repository.LiveRepository
 import org.koin.core.KoinApplication
@@ -10,7 +12,7 @@ import utilities.CurrentLocalKoinApp
 
 @Composable
 fun rememberSearchLiveUseCase(
-    params: SearchParams.ByLive?,
+    liveNameQuery: LiveNameQuery,
     koinApp: KoinApplication = CurrentLocalKoinApp(),
 ): State<LoadState> {
     val scope = rememberCoroutineScope()
@@ -18,19 +20,25 @@ fun rememberSearchLiveUseCase(
 
     return produceState<LoadState>(
         initialValue = LoadState.Initialize,
-        params,
+        liveNameQuery,
     ) {
-        if (params == null) {
+        val (query, isSettled) = liveNameQuery
+
+        if (query == null) {
             value = LoadState.Initialize
             return@produceState
         }
-        val (_, query, date) = params
+
+        if (isSettled) {
+            value = LoadState.Loaded(listOf<LiveName>())
+            return@produceState
+        }
 
         val job = scope.launch {
             runCatching {
                 when {
-                    date != null -> date.range()?.let { repository.suggest(it) }
-                    query != null -> repository.suggest(query)
+                    liveNameQuery.isNumber() -> liveNameQuery.toDateNum()?.range()?.let { repository.suggest(it) }
+                    liveNameQuery.query != null -> repository.suggest(liveNameQuery.query)
                     else -> null
                 } ?: listOf()
             }

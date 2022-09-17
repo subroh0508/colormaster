@@ -46,6 +46,7 @@ fun OutlinedTextArea(
     value: String? = null,
     id: String = LABEL_ID,
     attrs: (AttrsScope<HTMLLabelElement>.() -> Unit)? = null,
+    disabled: Boolean = false,
     onChange: (SyntheticInputEvent<String, HTMLTextAreaElement>) -> Unit,
 ) {
     val textField = mutableStateOf<MDCTextField?>(null)
@@ -54,6 +55,7 @@ fun OutlinedTextArea(
         TextFieldVariant.Outlined,
         textField,
         textarea = true,
+        disabled = disabled,
         attrs = attrs,
     ) {
         NotchedOutline(id, label)
@@ -66,10 +68,11 @@ private fun TextFieldLabel(
     variant: String,
     state: MutableState<MDCTextField?>,
     textarea: Boolean = false,
+    disabled: Boolean = false,
     attrs: (AttrsScope<HTMLLabelElement>.() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) = Label(attrs = {
-    classes(*labelClasses(variant, textarea))
+    classes(*labelClasses(variant, textarea, disabled))
     attrs?.invoke(this)
     ref {
         state.value = MDCTextField(it)
@@ -117,8 +120,13 @@ private fun ResizerTextArea(
     }
 }
 
-private fun labelClasses(variant: String, textarea: Boolean = false) = listOfNotNull(
+private fun labelClasses(
+    variant: String,
+    textarea: Boolean = false,
+    disabled: Boolean = false,
+) = listOfNotNull(
     "mdc-text-field",
     "mdc-text-field--$variant",
     if (textarea) "mdc-text-field--textarea" else null,
+    if (disabled) "mdc-text-field--disabled" else null,
 ).toTypedArray()

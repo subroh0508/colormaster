@@ -70,6 +70,7 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
         const val ripple = "mdc-ripple-color"
         const val chipSurface = "mdc-chip-surface-color"
         const val chipSurfaceActivated = "mdc-chip-surface-activated-color"
+        const val textFieldDisabledOutline = "mdc-textfield-disabled-outline-color"
     }
 
     init {
@@ -91,8 +92,8 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
             variable(Name.onSurface, palette.onSurface.alpha(if (dark) 1 else 0.87))
             variable(Name.textPrimary, palette.textPrimary.alpha(if (dark) 1 else 0.87))
             variable(Name.textSecondary, palette.textSecondary.alpha(if (dark) 0.70 else 0.60))
-            variable(Name.textHint, palette.textPrimary.alpha(if (dark) 0.50 else 0.38))
-            variable(Name.textDisabled, palette.textPrimary.alpha(0.38))
+            variable(Name.textHint, palette.textPrimary.alpha(if (dark) 0.38 else 0.50))
+            variable(Name.textDisabled, palette.textPrimary.alpha(if (dark) 0.38 else 0.50))
             variable(Name.textLink, palette.textLink)
 
             variable(Name.info, alert.info)
@@ -112,6 +113,7 @@ class MaterialTheme(private val palette: Palette) : StyleSheet() {
             variable(Name.ripple, if (dark) Color.white else Color.black)
             variable(Name.chipSurface, (if (dark) Color.white else Color.black).alpha(0.12))
             variable(Name.chipSurfaceActivated, palette.primary.alpha(0.12))
+            variable(Name.textFieldDisabledOutline, palette.textPrimary.alpha(0.06))
         }
 
         type("html") style  {

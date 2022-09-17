@@ -84,6 +84,11 @@
     @include textfield.ink-color(var(--mdc-theme-text-primary));
     @include textfield.outline-color(var(--mdc-theme-text-hint));
     @include textfield.hover-outline-color(var(--mdc-theme-text-primary));
+
+    @include textfield.disabled-label-color(var(--mdc-theme-text-disabled));
+
+    @include textfield.disabled-ink-color(var(--mdc-theme-text-disabled));
+    @include textfield.disabled-outline-color(var(--mdc-textfield-disabled-outline-color));
   }
 
   &--focused {

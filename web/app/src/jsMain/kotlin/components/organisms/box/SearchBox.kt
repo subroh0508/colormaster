@@ -9,6 +9,7 @@ import components.organisms.box.suggestions.LiveSuggestList
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.model.IdolName
+import net.subroh0508.colormaster.presentation.search.model.LiveNameQuery
 import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import org.jetbrains.compose.web.css.*
@@ -76,20 +77,25 @@ private fun ByName(state: MutableState<SearchParams>) {
 @Composable
 private fun ByLive(state: MutableState<SearchParams>) {
     val t = LocalI18n() ?: return
-    val params = state.value as? SearchParams.ByLive ?: return
+    val liveNameQuery = remember { mutableStateOf(LiveNameQuery()) }
 
     DebouncedTextForm(
-        params.query,
+        liveNameQuery.value.query,
         DEBOUNCE_TIME_MILLIS,
-        onDebouncedChange = { state.value = params.change(it) },
+        onDebouncedChange = { liveNameQuery.value = liveNameQuery.value.change(it) },
     ) { textState ->
         OutlinedTextField(
             LABEL_BY_LIVE,
             t("searchBox.attributes.liveName"),
             textState.value,
             { style { padding(8.px, 16.px) } },
+            disabled = liveNameQuery.value.isSettled,
         ) { textState.value = it.value.takeIf(String::isNotBlank) }
     }
 
-    LiveSuggestList(state) { println(it) }
+    LiveSuggestList(liveNameQuery) { liveName ->
+        liveNameQuery.value = liveNameQuery.value.let {
+            if (liveName == null) it.unsettle() else it.settle(liveName)
+        }
+    }
 }

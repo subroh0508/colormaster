@@ -16,6 +16,7 @@ fun OutlinedTextField(
     label: String,
     value: String?,
     attrs: (AttrsScope<HTMLDivElement>.() -> Unit)? = null,
+    disabled: Boolean = false,
     onChange: (SyntheticInputEvent<String, HTMLTextAreaElement>) -> Unit,
 ) = Div(attrs) {
     OutlinedTextArea(
@@ -23,6 +24,7 @@ fun OutlinedTextField(
         value,
         id,
         { style { width(100.percent) } },
+        disabled,
         onChange,
     )
 }
