@@ -38,9 +38,10 @@ fun SearchBox(
             .launchIn(this)
     }
 
-    when (type) {
-        SearchByTab.BY_NAME -> ByName(params)
-        SearchByTab.BY_LIVE -> ByLive(params)
+    when (params.value) {
+        is SearchParams.ByName -> @Suppress("UNCHECKED_CAST") ByName(params as MutableState<SearchParams.ByName>)
+        is SearchParams.ByLive -> @Suppress("UNCHECKED_CAST") ByLive(params as MutableState<SearchParams.ByLive>)
+        else -> Unit
     }
 }
 
@@ -50,9 +51,9 @@ private const val LABEL_BY_NAME = "search-by-name"
 private const val LABEL_BY_LIVE = "search-by-live"
 
 @Composable
-private fun ByName(state: MutableState<SearchParams>) {
+private fun ByName(state: MutableState<SearchParams.ByName>) {
     val t = LocalI18n() ?: return
-    val params = state.value as? SearchParams.ByName ?: return
+    val params = state.value
 
     DebouncedTextForm(
         params.idolName?.value,
@@ -78,9 +79,19 @@ private fun ByName(state: MutableState<SearchParams>) {
 }
 
 @Composable
-private fun ByLive(state: MutableState<SearchParams>) {
+private fun ByLive(state: MutableState<SearchParams.ByLive>) {
     val t = LocalI18n() ?: return
     val liveNameQuery = remember { mutableStateOf(LiveNameQuery()) }
+
+    LaunchedEffect(state) {
+        snapshotFlow { liveNameQuery.value.toLiveName() }
+            .onEach { liveName ->
+                state.value = state.value.let {
+                    if (liveName == null) it.clear() else it.select(liveName)
+                }
+            }
+            .launchIn(this)
+    }
 
     DebouncedTextForm(
         liveNameQuery.value.query,
@@ -110,14 +121,14 @@ private fun ByLive(state: MutableState<SearchParams>) {
 }
 
 @Composable
-private fun ClearIcon(query: MutableState<LiveNameQuery>) {
-    TrailingTextFieldIcon(
-        "highlight_off",
-        {
-            style {
-                color(MaterialTheme.Var.textPrimary)
-                property("pointer-events", "auto")
-            }
-        },
-    ) { query.value = query.value.clear() }
-}
+private fun ClearIcon(
+    query: MutableState<LiveNameQuery>
+) = TrailingTextFieldIcon(
+    "highlight_off",
+    {
+        style {
+            color(MaterialTheme.Var.textPrimary)
+            property("pointer-events", "auto")
+        }
+    },
+) { query.value = query.value.clear() }

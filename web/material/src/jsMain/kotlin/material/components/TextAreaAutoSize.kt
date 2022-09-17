@@ -13,6 +13,8 @@ import org.w3c.dom.HTMLTextAreaElement
 fun TextAreaAutoSize(
     label: String,
     value: String?,
+    hasLeading: Boolean = false,
+    hasTrailing: Boolean = false,
     onChange: (SyntheticInputEvent<String, HTMLTextAreaElement>) -> Unit = {},
     applyAttrs: (AttrsScope<HTMLTextAreaElement>.() -> Unit)? = null,
 ) {
@@ -27,7 +29,7 @@ fun TextAreaAutoSize(
             property("resize", "none")
         }
     }
-    ShadowTextArea(label, textAreaHeight, dummyText.value, classNames.value)
+    ShadowTextArea(label, textAreaHeight, dummyText.value, classNames.value, hasLeading, hasTrailing)
 }
 
 @Composable
@@ -61,10 +63,12 @@ private fun ShadowTextArea(
     textAreaHeight: MutableState<Int>,
     value: String?,
     classNames: Array<String>,
+    hasLeading: Boolean = false,
+    hasTrailing: Boolean = false,
 ) {
     var element by remember { mutableStateOf<HTMLTextAreaElement?>(null) }
 
-    LaunchedEffect(label, value) {
+    LaunchedEffect(label, value, hasLeading, hasTrailing) {
         element?.value = (value ?: label)
         textAreaHeight.value = element?.scrollHeight ?: 0
     }
@@ -79,6 +83,16 @@ private fun ShadowTextArea(
             top(0.px)
             left(0.px)
             transform { translateZ(0.px) }
+
+            val width = listOf(
+                hasLeading,
+                hasTrailing,
+            ).fold<Boolean, CSSNumeric>(100.percent) { acc, b ->
+                if (!b) return@fold acc
+
+                acc - 48.px
+            }
+            width(width)
         }
         readOnly()
 

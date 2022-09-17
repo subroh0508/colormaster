@@ -16,5 +16,6 @@ data class LiveNameQuery(
     fun clear() = LiveNameQuery()
 
     fun isNumber() = query?.let { DATE_NUMBER_PATTERN.toRegex().matches(it) } ?: false
-    fun toDateNum() = query?.toIntOrNull()?.let { DateNum(it) }
+    fun toDateNum() = query?.toIntOrNull()?.let(::DateNum)
+    fun toLiveName() = takeIf { isSettled }?.query?.let(::LiveName)
 }

@@ -151,7 +151,13 @@ private fun ResizerTextArea(
     }
 }) {
     leading?.invoke()
-    TextAreaAutoSize(label, value, onChange) {
+    TextAreaAutoSize(
+        label,
+        value,
+        hasLeading = leading != null,
+        hasTrailing = trailing != null,
+        onChange = onChange,
+    ) {
         classes("mdc-text-field__input")
         attr("aria-labelledby", id)
         attr("rows", "1")
