@@ -1,6 +1,7 @@
 package components.organisms.drawer
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import components.atoms.button.SignInWithGoogle
 import components.atoms.drawer.DrawerListItem
 import components.atoms.list.ListGroupSubHeader
@@ -8,17 +9,31 @@ import components.atoms.tooltip.Tooltip
 import material.components.Divider
 import material.components.DrawerContent as MaterialDrawerContent
 import material.externals.MDCDrawer
+import net.subroh0508.colormaster.model.authentication.CurrentUser
+import net.subroh0508.colormaster.presentation.common.LoadState
 import org.jetbrains.compose.web.css.*
+import usecase.rememberSignInUseCase
+import usecase.rememberSignOutUseCase
 import utilities.LocalI18n
 import utilities.invoke
 
 @Composable
-fun DrawerContent(drawer: MDCDrawer?) = MaterialDrawerContent {
+fun DrawerContent(
+    drawer: MDCDrawer?,
+    isMobile: Boolean,
+    currentUserLoadState: MutableState<LoadState>,
+) = MaterialDrawerContent {
+    val (currentUser, setCurrentUserLoadState) = currentUserLoadState
+
     SearchMenu()
     Divider()
     AboutMenu()
     Divider()
-    SignInMenu()
+    SignInMenu(
+        isMobile,
+        currentUser.getValueOrNull(),
+        setCurrentUserLoadState,
+    )
     Divider()
     LinkMenu()
 }
@@ -45,8 +60,14 @@ private fun AboutMenu() {
 }
 
 @Composable
-private fun SignInMenu() {
+private fun SignInMenu(
+    isMobile: Boolean,
+    currentUser: CurrentUser?,
+    setCurrentUserLoadState: (LoadState) -> Unit,
+) {
     val t = LocalI18n() ?: return
+    val signIn = rememberSignInUseCase(isMobile, setCurrentUserLoadState)
+    val signOut = rememberSignOutUseCase(setCurrentUserLoadState)
 
     ListGroupSubHeader(
         "sign-in",
@@ -58,10 +79,19 @@ private fun SignInMenu() {
             )
         },
     )
-    SignInWithGoogle {
-        style {
-            margin(8.px, 8.px, 8.px, 16.px)
+    if (currentUser?.isAnonymous != false) {
+        SignInWithGoogle {
+            style {
+                margin(8.px, 8.px, 8.px, 16.px)
+            }
+            onClick { signIn() }
         }
+
+        return
+    }
+
+    DrawerListItem(t("appMenu.account.signOut")) {
+        onClick { signOut() }
     }
 }
 

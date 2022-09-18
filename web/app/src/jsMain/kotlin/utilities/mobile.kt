@@ -2,4 +2,4 @@ package utilities
 
 import kotlinx.browser.window
 
-val isMobile: Boolean get() = window.navigator.userAgent.matches("""(iPhone|iPad|Android)""")
+val isMobile: Boolean get() = """(iPhone|iPad|Android)""".toRegex().matches(window.navigator.userAgent)
