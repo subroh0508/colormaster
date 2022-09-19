@@ -8,6 +8,8 @@ import material.components.Divider
 import material.components.DrawerContent as MaterialDrawerContent
 import material.externals.MDCDrawer
 import material.externals.close
+import routes.CurrentLocalRouter
+import routes.Router
 import utilities.LocalI18n
 import utilities.invoke
 
@@ -17,8 +19,11 @@ fun DrawerContent(
     isMobile: Boolean,
     isSignedOut: Boolean,
 ) = MaterialDrawerContent {
+    val router = CurrentLocalRouter() ?: return@MaterialDrawerContent
+
     SearchMenu(
         drawer,
+        router,
     )
     MyPage(
         drawer,
@@ -26,6 +31,7 @@ fun DrawerContent(
     )
     AboutMenu(
         drawer,
+        router,
     )
     SignInMenu(
         drawer,
@@ -59,6 +65,7 @@ private fun MyPage(
 @Composable
 private fun SearchMenu(
     drawer: MDCDrawer?,
+    router: Router,
 ) {
     val t = LocalI18n() ?: return
 
@@ -66,7 +73,10 @@ private fun SearchMenu(
     DrawerListItem(t("appMenu.search.attributes")) {
         attr("aria-current", "page")
         attr("tabindex", "0")
-        onClick { drawer?.close() }
+        onClick {
+            router.toSearch()
+            drawer?.close()
+        }
     }
     Divider()
 }
@@ -74,12 +84,16 @@ private fun SearchMenu(
 @Composable
 private fun AboutMenu(
     drawer: MDCDrawer?,
+    router: Router,
 ) {
     val t = LocalI18n() ?: return
 
     ListGroupSubHeader(t("appMenu.about.label"))
     DrawerListItem(t("appMenu.about.howToUse")) {
-        onClick { drawer?.close() }
+        onClick {
+            router.toHowToUse()
+            drawer?.close()
+        }
     }
     DrawerListItem(t("appMenu.about.development")) {
         onClick { drawer?.close() }

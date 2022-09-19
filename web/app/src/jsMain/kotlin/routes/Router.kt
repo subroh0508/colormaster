@@ -1,20 +1,38 @@
 package routes
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.webhistory.DefaultWebHistoryController
 import com.arkivanov.decompose.router.stack.webhistory.WebHistoryController
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
+import org.w3c.dom.Window
+
+val LocalRouter = compositionLocalOf<Router?> { null }
+
+@Composable
+fun CurrentLocalRouter() = LocalRouter.current
 
 @OptIn(ExperimentalDecomposeApi::class)
 class Router(
     context: ComponentContext,
-    private val pathname: String?,
-    private val search: String?,
+    private val pathname: String? = null,
+    private val search: String? = null,
     historyController: WebHistoryController = DefaultWebHistoryController(),
 ) : ComponentContext by context {
+    constructor(
+        context: ComponentContext,
+        window: Window,
+    ) : this(
+        context,
+        window.location.pathname.takeIf(String::isNotBlank),
+        window.location.search.takeIf(String::isNotBlank),
+    )
+
     private val navigation = StackNavigation<Page>()
 
     val stack = childStack(
@@ -31,6 +49,9 @@ class Router(
             getConfiguration = ::getConfiguration,
         )
     }
+
+    fun toSearch() = navigation.bringToFront(Search(SearchParams.ByName.EMPTY))
+    fun toHowToUse() = navigation.bringToFront(HowToUse)
 
     private fun getInitialStack() = listOf(
         pathname?.let {

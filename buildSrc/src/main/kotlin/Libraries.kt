@@ -77,8 +77,12 @@ object Libraries {
         const val util = "org.jetbrains.compose.ui:ui-util"
     }
 
-    private const val decomposeVersion = "1.0.0-alpha-04"
-    const val decompose = "com.arkivanov.decompose:decompose:$decomposeVersion"
+    object Decompose {
+        private const val decomposeVersion = "1.0.0-alpha-04"
+
+        const val core = "com.arkivanov.decompose:decompose:$decomposeVersion"
+        const val composejb = "com.arkivanov.decompose:extensions-compose-jetbrains:$decomposeVersion"
+    }
 
     object Firebase {
         private const val bomVersion = "28.4.1"

@@ -2,10 +2,15 @@ package components.templates
 
 import LocalKoinApp
 import androidx.compose.runtime.*
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import kotlinx.browser.window
 import net.subroh0508.colormaster.components.core.AppModule
 import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import org.koin.core.KoinApplication
+import routes.LocalRouter
+import routes.Router
 import utilities.*
 import utilities.AppPreferenceModule
 import utilities.BrowserAppPreference
@@ -20,6 +25,8 @@ fun RootCompose(
 ) {
     val appState = remember(i18n) { mutableStateOf(BrowserAppPreference.State(i18n = i18n)) }
     val preference = remember(koinApp) { mutableStateOf<AppPreference?>(null) }
+    val lifecycle = remember(koinApp) { LifecycleRegistry() }
+    val router = remember(koinApp) { Router(DefaultComponentContext(lifecycle), window) }
 
     SideEffect {
         koinApp.modules(AppModule + AppPreferenceModule(lang, i18n) { appState.value = it })
@@ -30,5 +37,6 @@ fun RootCompose(
     CompositionLocalProvider(
         LocalKoinApp provides koinApp,
         LocalBrowserApp provides appState.value,
+        LocalRouter provides router,
     ) { preference.value?.let { content(it) } }
 }
