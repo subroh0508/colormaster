@@ -10,38 +10,28 @@ import utilities.CurrentLocalKoinApp
 
 class SignInUseCase(
     private val isMobile: Boolean,
-    private val setCurrentUserLoadState: (LoadState) -> Unit,
     private val repository: AuthenticationRepository,
     private val scope: CoroutineScope,
 ) {
     operator fun invoke() {
-        if (isMobile) {
-            scope.launch {
-                runCatching { repository.signInWithGoogleForMobile() }
+        scope.launch {
+            runCatching {
+                if (isMobile)
+                    repository.signInWithGoogleForMobile()
+                else
+                    repository.signInWithGoogle()
             }
-
-            return
         }
-
-        val job = scope.launch {
-            runCatching { repository.signInWithGoogle() }
-                .onSuccess { setCurrentUserLoadState(LoadState.Loaded(it)) }
-                .onFailure { setCurrentUserLoadState(LoadState.Error(it)) }
-        }
-
-        setCurrentUserLoadState(LoadState.Loading)
-        job.start()
     }
 }
 
 @Composable
 fun rememberSignInUseCase(
     isMobile: Boolean,
-    setCurrentUserLoadState: (LoadState) -> Unit,
     koinApp: KoinApplication = CurrentLocalKoinApp(),
 ): SignInUseCase {
     val scope = rememberCoroutineScope()
     val repository: AuthenticationRepository by remember(koinApp) { mutableStateOf(koinApp.koin.get()) }
 
-    return SignInUseCase(isMobile, setCurrentUserLoadState, repository, scope)
+    return SignInUseCase(isMobile, repository, scope)
 }

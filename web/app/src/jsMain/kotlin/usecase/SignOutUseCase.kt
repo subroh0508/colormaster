@@ -11,29 +11,22 @@ import org.koin.core.KoinApplication
 import utilities.CurrentLocalKoinApp
 
 class SignOutUseCase(
-    private val setCurrentUserLoadState: (LoadState) -> Unit,
     private val repository: AuthenticationRepository,
     private val scope: CoroutineScope,
 ) {
     operator fun invoke() {
-        val job = scope.launch(start = CoroutineStart.LAZY) {
+        scope.launch {
             runCatching { repository.signOut() }
-                .onSuccess { setCurrentUserLoadState(LoadState.Loaded<CurrentUser?>(null)) }
-                .onFailure { setCurrentUserLoadState(LoadState.Error(it)) }
         }
-
-        setCurrentUserLoadState(LoadState.Loading)
-        job.start()
     }
 }
 
 @Composable
 fun rememberSignOutUseCase(
-    setCurrentUserLoadState: (LoadState) -> Unit,
     koinApp: KoinApplication = CurrentLocalKoinApp(),
 ): SignOutUseCase {
     val scope = rememberCoroutineScope()
     val repository: AuthenticationRepository by remember(koinApp) { mutableStateOf(koinApp.koin.get()) }
 
-    return SignOutUseCase(setCurrentUserLoadState, repository, scope)
+    return SignOutUseCase(repository, scope)
 }

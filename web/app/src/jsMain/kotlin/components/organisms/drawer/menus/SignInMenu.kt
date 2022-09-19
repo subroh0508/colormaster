@@ -21,11 +21,10 @@ fun SignInMenu(
     drawer: MDCDrawer?,
     isMobile: Boolean,
     isSignedOut: Boolean,
-    setCurrentUserLoadState: (LoadState) -> Unit,
 ) {
     val t = LocalI18n() ?: return
-    val signIn = rememberSignInUseCase(isMobile, setCurrentUserLoadState)
-    val signOut = rememberSignOutUseCase(setCurrentUserLoadState)
+    val signIn = rememberSignInUseCase(isMobile)
+    val signOut = rememberSignOutUseCase()
 
     ListGroupSubHeader(
         "sign-in",

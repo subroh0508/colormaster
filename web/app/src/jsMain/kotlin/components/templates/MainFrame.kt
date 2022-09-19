@@ -1,8 +1,7 @@
 package components.templates
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import components.atoms.menu.MenuButton
 import components.atoms.tooltip.Tooltip
 import components.atoms.topappbar.TopAppActionIcon
@@ -14,21 +13,20 @@ import material.components.TopAppBarVariant
 import material.externals.MDCDrawer
 import material.externals.open
 import net.subroh0508.colormaster.model.Languages
-import net.subroh0508.colormaster.model.authentication.CurrentUser
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import net.subroh0508.colormaster.model.ui.commons.ThemeType
-import net.subroh0508.colormaster.presentation.common.LoadState
 import page.SearchIdolPage
+import usecase.rememberSubscribeCurrentUserUseCase
 import utilities.*
 import material.components.ModalDrawer as MaterialModalDrawer
 
 @Composable
 fun MainFrame(preference: AppPreference) {
-    val currentUserLoadState = remember { mutableStateOf<LoadState>(LoadState.Initialize) }
+    val currentUser by rememberSubscribeCurrentUserUseCase()
 
     MaterialModalDrawer(
         headerContent = { DrawerHeader() },
-        drawerContent = { DrawerContent(it, isMobile, currentUserLoadState) },
+        drawerContent = { DrawerContent(it, isMobile, currentUser) },
         mainContent = { DrawerMain(it, preference) },
     )
 }
