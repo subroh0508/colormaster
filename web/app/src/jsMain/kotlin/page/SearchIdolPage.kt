@@ -17,7 +17,7 @@ fun SearchIdolPage(
 ) {
     val backdropState = rememberBackdropState(BackdropValues.Concealed)
     val (params, setParams) = remember { mutableStateOf<SearchParams?>(null) }
-    val idolLoadState by rememberSearchIdolsUseCase(params)
+    val idolColorListLoadState by rememberSearchIdolsUseCase(isSignedIn, params)
 
     Backdrop(
         backdropState,
@@ -26,7 +26,7 @@ fun SearchIdolPage(
             BackLayer(variant, setParams)
         },
         frontLayerContent = {
-            FrontLayer(backdropState, isSignedIn, params, idolLoadState)
+            FrontLayer(backdropState, isSignedIn, params, idolColorListLoadState)
         },
     )
 }

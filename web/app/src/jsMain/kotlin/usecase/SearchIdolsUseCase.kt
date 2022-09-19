@@ -3,6 +3,7 @@ package usecase
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.presentation.common.LoadState
+import net.subroh0508.colormaster.presentation.search.model.IdolColorList
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.koin.core.KoinApplication
@@ -10,11 +11,27 @@ import utilities.CurrentLocalKoinApp
 
 @Composable
 fun rememberSearchIdolsUseCase(
+    isSignedIn: Boolean,
     params: SearchParams?,
     koinApp: KoinApplication = CurrentLocalKoinApp(),
 ): State<LoadState> {
     val scope = rememberCoroutineScope()
     val repository: IdolColorsRepository by remember(koinApp) { mutableStateOf(koinApp.koin.get()) }
+
+    var inCharges by remember(koinApp) { mutableStateOf(listOf<String>()) }
+    var favorites by remember(koinApp) { mutableStateOf(listOf<String>()) }
+
+    LaunchedEffect(isSignedIn) {
+        if (!isSignedIn) {
+            inCharges = listOf()
+            favorites = listOf()
+
+            return@LaunchedEffect
+        }
+
+        inCharges = repository.getInChargeOfIdolIds()
+        favorites = repository.getFavoriteIdolIds()
+    }
 
     return produceState<LoadState>(
         initialValue = LoadState.Initialize,
@@ -22,15 +39,7 @@ fun rememberSearchIdolsUseCase(
     ) {
         val job = scope.launch {
             runCatching {
-                when (params) {
-                    is SearchParams.ByName -> params.takeUnless { it.isEmpty() }?.let {
-                        repository.search(it.idolName, it.brands, it.types)
-                    } ?: repository.rand(10)
-                    is SearchParams.ByLive -> params.liveName?.let {
-                        repository.search(it)
-                    } ?: listOf()
-                    else -> listOf()
-                }
+                IdolColorList(repository.search(params), inCharges, favorites)
             }
                 .onSuccess { value = LoadState.Loaded(it) }
                 .onFailure { value = LoadState.Error(it) }
@@ -39,4 +48,16 @@ fun rememberSearchIdolsUseCase(
         value = LoadState.Loading
         job.start()
     }
+}
+
+private suspend fun IdolColorsRepository.search(
+    params: SearchParams?,
+) = when (params) {
+    is SearchParams.ByName -> params.takeUnless { it.isEmpty() }?.let {
+        search(it.idolName, it.brands, it.types)
+    } ?: rand(10)
+    is SearchParams.ByLive -> params.liveName?.let {
+        search(it)
+    } ?: listOf()
+    else -> listOf()
 }

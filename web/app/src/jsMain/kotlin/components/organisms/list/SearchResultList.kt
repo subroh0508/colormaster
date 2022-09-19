@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import components.atoms.list.AutoGridList
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.common.LoadState
+import net.subroh0508.colormaster.presentation.search.model.IdolColorList
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 
@@ -17,27 +18,27 @@ fun SearchResultList(
     loadState: LoadState,
     isSignedIn: Boolean,
     header: @Composable (List<String>, (Boolean) -> Unit) -> Unit,
-    errorContent: @Composable (Throwable) -> Unit
+    errorContent: @Composable (Throwable) -> Unit,
 ) {
-    val items: List<IdolColor> = loadState.getValueOrNull() ?: listOf()
+    val list: IdolColorList = loadState.getValueOrNull() ?: IdolColorList()
     val error: Throwable? = loadState.getErrorOrNull()
 
     val (selections, setSelections) = remember(loadState) { mutableStateOf<List<String>>(listOf()) }
 
     header(selections) { all ->
-        setSelections(if (all) items.map { it.id } else listOf())
+        setSelections(if (all) list.map { it.id } else listOf())
     }
 
     when {
         error != null -> errorContent(error)
-        items.isNotEmpty() -> List(isSignedIn, items, selections, setSelections)
+        list.isNotEmpty() -> List(isSignedIn, list, selections, setSelections)
     }
 }
 
 @Composable
 private fun List(
     isActionIconsVisible: Boolean,
-    items: List<IdolColor>,
+    list: IdolColorList,
     selections: List<String>,
     setSelections: (List<String>) -> Unit,
 ) = AutoGridList(
@@ -58,13 +59,13 @@ private fun List(
             flexFlow(FlexDirection.Row, FlexWrap.Wrap)
         }
     }) {
-        items.forEach { item ->
+        list.forEach { item ->
             IdolCard(
                 item,
                 isActionIconsVisible = isActionIconsVisible,
                 selected = selections.contains(item.id),
-                inCharge = false,
-                favorite = false,
+                inCharge = list.inCharge(item.id),
+                favorite = list.favorite(item.id),
                 onClick = { (id), selected ->
                     setSelections(buildSelections(selections, id, selected))
                 },
