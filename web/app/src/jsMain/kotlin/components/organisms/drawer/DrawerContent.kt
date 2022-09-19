@@ -8,7 +8,6 @@ import material.components.Divider
 import material.components.DrawerContent as MaterialDrawerContent
 import material.externals.MDCDrawer
 import material.externals.close
-import net.subroh0508.colormaster.model.authentication.CurrentUser
 import utilities.LocalI18n
 import utilities.invoke
 
@@ -16,14 +15,14 @@ import utilities.invoke
 fun DrawerContent(
     drawer: MDCDrawer?,
     isMobile: Boolean,
-    currentUser: CurrentUser?,
+    isSignedOut: Boolean,
 ) = MaterialDrawerContent {
     SearchMenu(
         drawer,
     )
     MyPage(
         drawer,
-        currentUser.isSignedOut,
+        isSignedOut,
     )
     AboutMenu(
         drawer,
@@ -31,7 +30,7 @@ fun DrawerContent(
     SignInMenu(
         drawer,
         isMobile,
-        currentUser.isSignedOut,
+        isSignedOut,
     )
     LinkMenu(
         drawer,
@@ -106,5 +105,3 @@ private fun LinkMenu(
         "https://twitter.com/subroh_0508",
     ) { onClick { drawer?.close() } }
 }
-
-private val CurrentUser?.isSignedOut get() = this?.isAnonymous != false

@@ -15,6 +15,7 @@ private const val GRID_MARGIN_HORIZONTAL = 8
 @Composable
 fun SearchResultList(
     loadState: LoadState,
+    isSignedIn: Boolean,
     header: @Composable (List<String>, (Boolean) -> Unit) -> Unit,
     errorContent: @Composable (Throwable) -> Unit
 ) {
@@ -29,12 +30,13 @@ fun SearchResultList(
 
     when {
         error != null -> errorContent(error)
-        items.isNotEmpty() -> List(items, selections, setSelections)
+        items.isNotEmpty() -> List(isSignedIn, items, selections, setSelections)
     }
 }
 
 @Composable
 private fun List(
+    isActionIconsVisible: Boolean,
     items: List<IdolColor>,
     selections: List<String>,
     setSelections: (List<String>) -> Unit,
@@ -59,7 +61,7 @@ private fun List(
         items.forEach { item ->
             IdolCard(
                 item,
-                isActionIconsVisible = false,
+                isActionIconsVisible = isActionIconsVisible,
                 selected = selections.contains(item.id),
                 inCharge = false,
                 favorite = false,

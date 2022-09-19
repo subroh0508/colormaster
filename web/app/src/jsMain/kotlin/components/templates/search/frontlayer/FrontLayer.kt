@@ -14,6 +14,7 @@ import net.subroh0508.colormaster.presentation.search.model.SearchParams
 @Composable
 fun FrontLayer(
     backdropState: MutableState<BackdropValues>,
+    isSignedIn: Boolean,
     params: SearchParams?,
     loadState: LoadState,
 ) {
@@ -23,6 +24,7 @@ fun FrontLayer(
 
     SearchResultList(
         loadState,
+        isSignedIn,
         header = { selections, setSelectionsAll ->
             BackdropFrontHeader(backdropState) {
                 ActionButtons(

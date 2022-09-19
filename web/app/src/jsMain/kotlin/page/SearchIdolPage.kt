@@ -12,6 +12,7 @@ import usecase.rememberSearchIdolsUseCase
 @Composable
 fun SearchIdolPage(
     variant: String,
+    isSignedIn: Boolean,
     appBar: @Composable (String) -> Unit,
 ) {
     val backdropState = rememberBackdropState(BackdropValues.Concealed)
@@ -25,7 +26,7 @@ fun SearchIdolPage(
             BackLayer(variant, setParams)
         },
         frontLayerContent = {
-            FrontLayer(backdropState, params, idolLoadState)
+            FrontLayer(backdropState, isSignedIn, params, idolLoadState)
         },
     )
 }

@@ -13,9 +13,12 @@ import material.components.TopAppBarVariant
 import material.externals.MDCDrawer
 import material.externals.open
 import net.subroh0508.colormaster.model.Languages
+import net.subroh0508.colormaster.model.authentication.CurrentUser
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import net.subroh0508.colormaster.model.ui.commons.ThemeType
 import page.SearchIdolPage
+import usecase.isSignedIn
+import usecase.isSignedOut
 import usecase.rememberSubscribeCurrentUserUseCase
 import utilities.*
 import material.components.ModalDrawer as MaterialModalDrawer
@@ -26,8 +29,8 @@ fun MainFrame(preference: AppPreference) {
 
     MaterialModalDrawer(
         headerContent = { DrawerHeader() },
-        drawerContent = { DrawerContent(it, isMobile, currentUser) },
-        mainContent = { DrawerMain(it, preference) },
+        drawerContent = { DrawerContent(it, isMobile, currentUser.isSignedOut) },
+        mainContent = { DrawerMain(it, preference, currentUser) },
     )
 }
 
@@ -35,8 +38,10 @@ fun MainFrame(preference: AppPreference) {
 private fun DrawerMain(
     drawer: MDCDrawer?,
     preference: AppPreference,
+    currentUser: CurrentUser?,
 ) = SearchIdolPage(
     TopAppBarVariant.Fixed,
+    currentUser.isSignedIn,
     appBar = { TopAppBar(it, drawer, preference) },
 )
 

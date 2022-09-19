@@ -23,3 +23,6 @@ fun rememberSubscribeCurrentUserUseCase(
         }.launchIn(scope)
     }
 }
+
+val CurrentUser?.isSignedOut get() = this?.isAnonymous != false
+val CurrentUser?.isSignedIn get() = !isSignedOut
