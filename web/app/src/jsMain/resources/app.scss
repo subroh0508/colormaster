@@ -73,6 +73,10 @@
 
 @include list.deprecated-core-styles;
 
+.mdc-deprecated-list-divider {
+  border-bottom-color: var(--mdc-theme-divider);
+}
+
 @include form-field.core-styles;
 
 @include textfield.core-styles;

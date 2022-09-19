@@ -8,6 +8,7 @@ import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.HTMLAnchorElement
 import org.w3c.dom.HTMLElement
 import material.components.DrawerListItem as MaterialDrawerListItem
 
@@ -29,7 +30,11 @@ fun DrawerListItem(
 }, activated, content)
 
 @Composable
-fun DrawerListItem(label: String, href: String) {
+fun DrawerListItem(
+    label: String,
+    href: String,
+    applyAttrs: (AttrsScope<HTMLAnchorElement>.() -> Unit)? = null,
+) {
     Style(DrawerListItemAnchorStyle)
 
     A(href, {
@@ -37,6 +42,7 @@ fun DrawerListItem(label: String, href: String) {
         style {
             color(MaterialTheme.Var.textLink)
         }
+        applyAttrs?.invoke(this)
     }) {
         Icon("launch", applyAttrs = {
             style {

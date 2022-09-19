@@ -114,6 +114,7 @@ private object SignInWithGoogleStyle : TextButtonStyle() {
         border(1.px, LineStyle.Solid, Color("#4285FA"))
         borderRadius(2.px)
         backgroundColor(Color("#4285FA"))
+        attr("cursor", "pointer")
 
         className("mdc-button__label") style {
             color(Color.white)
