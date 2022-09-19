@@ -59,6 +59,7 @@ kotlin {
                 implementation(Libraries.JsWrappers.extensions)
 
                 implementation(Libraries.Koin.core)
+                implementation(Libraries.decompose)
 
                 implementation(npm(Libraries.Npm.I18next.core, Libraries.Npm.I18next.version))
                 implementation(npm(Libraries.Npm.I18next.httpBackend, Libraries.Npm.I18next.httpBackendVersion))
