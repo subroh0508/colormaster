@@ -8,23 +8,23 @@ import components.atoms.backdrop.BackdropValues
 import components.organisms.list.SearchResultList
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
 import material.utilities.rememberMediaQuery
-import net.subroh0508.colormaster.presentation.common.LoadState
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
+import usecase.rememberSearchIdolsUseCase
 
 @Composable
 fun FrontLayer(
     backdropState: MutableState<BackdropValues>,
     isSignedIn: Boolean,
     params: SearchParams?,
-    loadState: LoadState,
 ) {
     val wide by rememberMediaQuery(MEDIA_QUERY_TABLET_SMALL)
+    val idolColorLoadState by rememberSearchIdolsUseCase(params)
 
-    console.log(loadState)
+    console.log(idolColorLoadState)
 
     SearchResultList(
-        loadState,
         isSignedIn,
+        idolColorLoadState,
         header = { selections, setSelectionsAll ->
             BackdropFrontHeader(backdropState) {
                 ActionButtons(
@@ -35,7 +35,7 @@ fun FrontLayer(
                 )
                 LoadStateAlert(
                     params,
-                    loadState,
+                    idolColorLoadState,
                 )
             }
         },

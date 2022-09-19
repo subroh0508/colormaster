@@ -3,6 +3,7 @@ package components.organisms.list
 import MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.web.events.SyntheticMouseEvent
 import components.molecules.icon.ActionIcons
 import material.components.Checkbox
 import material.components.Icon
@@ -35,15 +36,14 @@ fun IdolCard(
         fontWeight("bold")
         margin(4.px)
         color(if (item.isBrighter) Color.black else Color.white)
-        cursor("pointer")
     }
-    onClick { onClick(item, !selected) }
-    onDoubleClick { onDoubleClick(item) }
     attrsScope?.invoke(this)
 }) {
     Content(
         item,
         isActionIconsVisible,
+        onClick = { onClick(item, !selected) },
+        onDoubleClick = { onDoubleClick(item) },
         leading = { className ->
             Checkbox(
                 id = "checkbox-${item.id}",
@@ -69,13 +69,20 @@ fun IdolCard(
 private fun Content(
     item: IdolColor,
     isActionIconsVisible: Boolean,
+    onClick: (SyntheticMouseEvent) -> Unit,
+    onDoubleClick: (SyntheticMouseEvent) -> Unit,
     leading: @Composable (String) -> Unit,
 ) {
     val style = remember(item, isActionIconsVisible) { IdolCardContentStyle(item, isActionIconsVisible) }
 
     Style(style)
 
-    Div({ classes(style.content) }) {
+    Div({
+        classes(style.content)
+        style { cursor("pointer") }
+        onClick(onClick)
+        onDoubleClick(onDoubleClick)
+    }) {
         leading(style.checkbox)
         Div({ classes(style.text) }) {
             Text(item.name)
@@ -109,8 +116,14 @@ private fun ActionIconsBar(
         leading = {},
         trailing = {
             if (isActionIconsVisible) {
-                Icon(inChargeIcon) { onClick { onInChargeClick(item, !inCharge) } }
-                Icon(inFavoriteIcon) { onClick { onFavoriteClick(item, !favorite) } }
+                Icon(inChargeIcon) {
+                    style { cursor("pointer") }
+                    onClick { onInChargeClick(item, !inCharge) }
+                }
+                Icon(inFavoriteIcon) {
+                    style { cursor("pointer") }
+                    onClick { onFavoriteClick(item, !favorite) }
+                }
             }
         },
     )

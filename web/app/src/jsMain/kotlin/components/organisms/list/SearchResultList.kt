@@ -6,41 +6,58 @@ import androidx.compose.runtime.remember
 import components.atoms.list.AutoGridList
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.common.LoadState
-import net.subroh0508.colormaster.presentation.search.model.IdolColorList
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import usecase.rememberAddIdolToFavoriteUseCase
+import usecase.rememberAddIdolToInChargeUseCase
 
 private const val GRID_MIN_WIDTH = 216
 private const val GRID_MARGIN_HORIZONTAL = 8
 
 @Composable
 fun SearchResultList(
-    loadState: LoadState,
     isSignedIn: Boolean,
+    loadState: LoadState,
     header: @Composable (List<String>, (Boolean) -> Unit) -> Unit,
     errorContent: @Composable (Throwable) -> Unit,
 ) {
-    val list: IdolColorList = loadState.getValueOrNull() ?: IdolColorList()
+    val items: List<IdolColor> = loadState.getValueOrNull() ?: listOf()
     val error: Throwable? = loadState.getErrorOrNull()
+
+    val favorites = rememberAddIdolToFavoriteUseCase(isSignedIn)
+    val inCharges = rememberAddIdolToInChargeUseCase(isSignedIn)
 
     val (selections, setSelections) = remember(loadState) { mutableStateOf<List<String>>(listOf()) }
 
     header(selections) { all ->
-        setSelections(if (all) list.map { it.id } else listOf())
+        setSelections(if (all) items.map { it.id } else listOf())
     }
 
     when {
         error != null -> errorContent(error)
-        list.isNotEmpty() -> List(isSignedIn, list, selections, setSelections)
+        items.isNotEmpty() -> List(
+            isSignedIn,
+            items,
+            selections,
+            favorites.value,
+            inCharges.value,
+            setSelections,
+            addFavorite = { id, favorite -> favorites.add(id, favorite) },
+            addInCharge = { id, inCharge -> inCharges.add(id, inCharge) },
+        )
     }
 }
 
 @Composable
 private fun List(
     isActionIconsVisible: Boolean,
-    list: IdolColorList,
+    items: List<IdolColor>,
     selections: List<String>,
+    favorites: List<String>,
+    inCharges: List<String>,
     setSelections: (List<String>) -> Unit,
+    addFavorite: (String, Boolean) -> Unit,
+    addInCharge: (String, Boolean) -> Unit,
 ) = AutoGridList(
     gridMinWidth = GRID_MIN_WIDTH,
     marginHorizontal = GRID_MARGIN_HORIZONTAL,
@@ -59,19 +76,19 @@ private fun List(
             flexFlow(FlexDirection.Row, FlexWrap.Wrap)
         }
     }) {
-        list.forEach { item ->
+        items.forEach { item ->
             IdolCard(
                 item,
                 isActionIconsVisible = isActionIconsVisible,
                 selected = selections.contains(item.id),
-                inCharge = list.inCharge(item.id),
-                favorite = list.favorite(item.id),
+                inCharge = inCharges.contains(item.id),
+                favorite = favorites.contains(item.id),
                 onClick = { (id), selected ->
                     setSelections(buildSelections(selections, id, selected))
                 },
                 onDoubleClick = { _ -> },
-                onInChargeClick = { _, _ -> },
-                onFavoriteClick = { _, _ -> },
+                onInChargeClick = { (id), inCharge -> addInCharge(id, inCharge) },
+                onFavoriteClick = { (id), favorite -> addFavorite(id, favorite) },
             ) { style { width(width.px) } }
         }
     }

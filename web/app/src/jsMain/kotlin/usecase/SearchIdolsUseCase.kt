@@ -11,36 +11,18 @@ import utilities.CurrentLocalKoinApp
 
 @Composable
 fun rememberSearchIdolsUseCase(
-    isSignedIn: Boolean,
     params: SearchParams?,
     koinApp: KoinApplication = CurrentLocalKoinApp(),
 ): State<LoadState> {
     val scope = rememberCoroutineScope()
     val repository: IdolColorsRepository by remember(koinApp) { mutableStateOf(koinApp.koin.get()) }
 
-    var inCharges by remember(koinApp) { mutableStateOf(listOf<String>()) }
-    var favorites by remember(koinApp) { mutableStateOf(listOf<String>()) }
-
-    LaunchedEffect(isSignedIn) {
-        if (!isSignedIn) {
-            inCharges = listOf()
-            favorites = listOf()
-
-            return@LaunchedEffect
-        }
-
-        inCharges = repository.getInChargeOfIdolIds()
-        favorites = repository.getFavoriteIdolIds()
-    }
-
     return produceState<LoadState>(
         initialValue = LoadState.Initialize,
         params,
     ) {
         val job = scope.launch {
-            runCatching {
-                IdolColorList(repository.search(params), inCharges, favorites)
-            }
+            runCatching { repository.search(params) }
                 .onSuccess { value = LoadState.Loaded(it) }
                 .onFailure { value = LoadState.Error(it) }
         }
