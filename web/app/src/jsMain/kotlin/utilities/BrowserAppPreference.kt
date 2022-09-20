@@ -43,11 +43,6 @@ internal class BrowserAppPreference(
 
     private var themeType by localStorage
 
-    private val Languages.basename get() = when (this) {
-        Languages.JAPANESE -> ""
-        Languages.ENGLISH -> "/en"
-    }
-
     data class State(
         override val lang: Languages = Languages.JAPANESE,
         override val theme: ThemeType = ThemeType.DAY,
@@ -61,6 +56,11 @@ internal class BrowserAppPreference(
 
         val dark = theme == ThemeType.NIGHT
     }
+}
+
+internal val Languages.basename get() = when (this) {
+    Languages.JAPANESE -> ""
+    Languages.ENGLISH -> "/en"
 }
 
 private operator fun Storage.getValue(

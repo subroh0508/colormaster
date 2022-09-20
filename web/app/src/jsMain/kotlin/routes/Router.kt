@@ -9,8 +9,10 @@ import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.webhistory.DefaultWebHistoryController
 import com.arkivanov.decompose.router.stack.webhistory.WebHistoryController
+import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import org.w3c.dom.Window
+import utilities.basename
 
 val LocalRouter = compositionLocalOf<Router?> { null }
 
@@ -22,15 +24,18 @@ class Router(
     context: ComponentContext,
     private val pathname: String? = null,
     private val search: String? = null,
+    private val lang: Languages = Languages.JAPANESE,
     historyController: WebHistoryController = DefaultWebHistoryController(),
 ) : ComponentContext by context {
     constructor(
         context: ComponentContext,
         window: Window,
+        lang: Languages,
     ) : this(
         context,
         window.location.pathname.takeIf(String::isNotBlank),
         window.location.search.takeIf(String::isNotBlank),
+        lang,
     )
 
     private val navigation = StackNavigation<Page>()
@@ -56,36 +61,26 @@ class Router(
     fun toTerms() = navigation.bringToFront(Terms)
 
     private fun getInitialStack() = listOf(
-        pathname?.let {
-            when {
-                it.endsWith(PATH_PREVIEW) -> Preview(listOf())
-                it.endsWith(PATH_PENLIGHT) -> Penlight(listOf())
-                it.endsWith(PATH_MY_IDOLS) -> MyIdols
-                it.endsWith(PATH_HOW_TO_USE) -> HowToUse
-                it.endsWith(PATH_DEVELOPMENT) -> Development
-                it.endsWith(PATH_TERMS) -> Terms
-                else -> null
-            }
-        } ?: Search(SearchParams.ByName.EMPTY),
+        pathname?.let(::getConfiguration) ?: Search(SearchParams.ByName.EMPTY),
     )
 
     private fun getPath(page: Page) = when (page) {
-        is Search -> "/"
-        is Preview -> "/$PATH_PREVIEW"
-        is Penlight -> "/$PATH_PENLIGHT"
-        is MyIdols -> "/$PATH_MY_IDOLS"
-        is HowToUse -> "/$PATH_HOW_TO_USE"
-        is Development -> "/$PATH_DEVELOPMENT"
-        is Terms -> "/$PATH_TERMS"
+        is Search -> "${lang.basename}/"
+        is Preview -> "${lang.basename}/$PATH_PREVIEW"
+        is Penlight -> "${lang.basename}/$PATH_PENLIGHT"
+        is MyIdols -> "${lang.basename}/$PATH_MY_IDOLS"
+        is HowToUse -> "${lang.basename}/$PATH_HOW_TO_USE"
+        is Development -> "${lang.basename}/$PATH_DEVELOPMENT"
+        is Terms -> "${lang.basename}/$PATH_TERMS"
     }
 
-    private fun getConfiguration(path: String) = when (path.removePrefix("/")) {
-        PATH_PREVIEW -> Preview(listOf())
-        PATH_PENLIGHT -> Penlight(listOf())
-        PATH_MY_IDOLS -> MyIdols
-        PATH_HOW_TO_USE -> HowToUse
-        PATH_DEVELOPMENT -> Development
-        PATH_TERMS -> Terms
+    private fun getConfiguration(path: String) = when {
+        path.endsWith(PATH_PREVIEW) -> Preview(listOf())
+        path.endsWith(PATH_PENLIGHT) -> Penlight(listOf())
+        path.endsWith(PATH_MY_IDOLS) -> MyIdols
+        path.endsWith(PATH_HOW_TO_USE) -> HowToUse
+        path.endsWith(PATH_DEVELOPMENT) -> Development
+        path.endsWith(PATH_TERMS) -> Terms
         else -> Search(SearchParams.ByName.EMPTY)
     }
 

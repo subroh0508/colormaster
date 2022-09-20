@@ -26,7 +26,7 @@ fun RootCompose(
     val appState = remember(i18n) { mutableStateOf(BrowserAppPreference.State(i18n = i18n)) }
     val preference = remember(koinApp) { mutableStateOf<AppPreference?>(null) }
     val lifecycle = remember(koinApp) { LifecycleRegistry() }
-    val router = remember(koinApp) { Router(DefaultComponentContext(lifecycle), window) }
+    val router = remember(lang) { Router(DefaultComponentContext(lifecycle), window, lang) }
 
     SideEffect {
         koinApp.modules(AppModule + AppPreferenceModule(lang, i18n) { appState.value = it })
