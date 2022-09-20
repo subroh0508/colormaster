@@ -16,11 +16,6 @@ import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.authentication.CurrentUser
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import net.subroh0508.colormaster.model.ui.commons.ThemeType
-import page.HowToUsePage
-import page.SearchIdolPage
-import routes.CurrentLocalRouter
-import routes.HowToUse
-import routes.Search
 import usecase.isSignedIn
 import usecase.isSignedOut
 import usecase.rememberSubscribeCurrentUserUseCase
@@ -43,19 +38,10 @@ private fun DrawerMain(
     drawer: MDCDrawer?,
     preference: AppPreference,
     currentUser: CurrentUser?,
+    variant: String = TopAppBarVariant.Fixed,
 ) {
-    val router = CurrentLocalRouter() ?: return
-    val routerState by router.stack.subscribeAsState()
-
-    when (routerState.active.instance) {
-        is Search -> SearchIdolPage(
-            TopAppBarVariant.Fixed,
-            currentUser.isSignedIn,
-            appBar = { TopAppBar(it, drawer, preference) },
-        )
-        is HowToUse -> HowToUsePage()
-        else -> Unit
-    }
+    TopAppBar(variant, drawer, preference)
+    Routing(variant, currentUser.isSignedIn)
 }
 
 @Composable

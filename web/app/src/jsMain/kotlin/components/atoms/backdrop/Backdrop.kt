@@ -18,7 +18,6 @@ enum class BackdropValues { Concealed, Revealed }
 @Composable
 fun Backdrop(
     backdropState: MutableState<BackdropValues> = rememberBackdropState(),
-    appBar: @Composable () -> Unit,
     backLayerContent: @Composable () -> Unit,
     frontLayerContent: @Composable () -> Unit,
 ) {
@@ -27,7 +26,6 @@ fun Backdrop(
     Style(BackdropStyleSheet)
 
     Div({ classes(BackdropStyleSheet.content) }) {
-        appBar()
         backLayerContent()
 
         if (!wide) {

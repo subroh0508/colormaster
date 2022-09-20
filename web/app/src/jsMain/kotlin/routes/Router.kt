@@ -52,6 +52,8 @@ class Router(
 
     fun toSearch() = navigation.bringToFront(Search(SearchParams.ByName.EMPTY))
     fun toHowToUse() = navigation.bringToFront(HowToUse)
+    fun toDevelopment() = navigation.bringToFront(Development)
+    fun toTerms() = navigation.bringToFront(Terms)
 
     private fun getInitialStack() = listOf(
         pathname?.let {

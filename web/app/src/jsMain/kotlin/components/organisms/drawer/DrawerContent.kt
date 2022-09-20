@@ -96,10 +96,16 @@ private fun AboutMenu(
         }
     }
     DrawerListItem(t("appMenu.about.development")) {
-        onClick { drawer?.close() }
+        onClick {
+            router.toDevelopment()
+            drawer?.close()
+        }
     }
     DrawerListItem(t("appMenu.about.terms")) {
-        onClick { drawer?.close() }
+        onClick {
+            router.toTerms()
+            drawer?.close()
+        }
     }
     Divider()
 }
