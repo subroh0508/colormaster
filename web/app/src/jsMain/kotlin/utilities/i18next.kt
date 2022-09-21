@@ -17,6 +17,8 @@ external interface I18next {
     fun changeLanguage(lng: String): Promise<I18nextText>
     fun t(vararg arg: Any): String
 
+    fun on(event: String, callback: dynamic)
+
     val languages: Array<String>
     val language: String
 }
@@ -48,28 +50,39 @@ fun I18nextOptions.backend(options: I18nextBackendOptions.() -> Unit) { this.asD
 fun I18nextResources.ja(res: dynamic) { this.asDynamic()["ja.translation"] = res }
 operator fun I18nextResources.set(code: String, res: dynamic) { this.asDynamic()[code] = js("{ translation: res }") }
 
-fun I18next.init(options: I18nextOptions.() -> Unit) = init(jso(options), undefined)
+fun I18next.init(options: I18nextOptions.() -> Unit, callback: (Error, I18nextText) -> Unit) = init(jso(options), callback)
 operator fun I18nextText.invoke(key: String): String = asDynamic()(key) as String
 operator fun I18nextText.invoke(key: String, args: Any): String = asDynamic()(key, args) as String
 
-fun i18nextInit() = i18next.
-    use(httpBackend).
-    apply {
-        init {
-            resources("ja", require("locale/ja"))
-            lng = "ja"
-            fallbackLng("ja")
-            nsSeparator = false
-            partialBundledLanguages = true
-            backend {
-                loadPath = "/locale/{{lng}}.json"
-            }
+fun i18nextInit(
+    window: Window,
+    func: (Error, I18nextText, Languages) -> Unit,
+): I18next {
+    val language = window.language
+
+    return i18next
+        .use(httpBackend)
+        .apply {
+            init(options = {
+                    resources(language.code, require("locale/${language.code}"))
+                    lng = language.code
+                    fallbackLng("ja")
+                    nsSeparator = false
+                    partialBundledLanguages = true
+                    backend {
+                        loadPath = "/locale/{{lng}}.json"
+                    }
+                },
+                callback = { e, t -> func(e, t, language) },
+            )
         }
-    }
-
-fun I18next.changeLanguage(window: Window): Promise<I18nextText> {
-    val code = window.location.pathname.split("/")[1].takeIf(String::isNotBlank)
-    val language = code?.let { Languages.valueOfCode(it) } ?: Languages.JAPANESE
-
-    return changeLanguage(language.code)
 }
+
+fun I18next.onLanguageChanged(func: (Languages?) -> Unit) = apply {
+    on("languageChanged") { code: String -> func(Languages.valueOfCode(code)) }
+}
+
+internal val Window.language
+    get() = window.location.pathname.split("/")[1].takeIf(String::isNotBlank)?.let { code ->
+        Languages.valueOfCode(code)
+    } ?: Languages.JAPANESE

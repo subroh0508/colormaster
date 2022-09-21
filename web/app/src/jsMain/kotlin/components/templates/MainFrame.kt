@@ -16,6 +16,7 @@ import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.authentication.CurrentUser
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import net.subroh0508.colormaster.model.ui.commons.ThemeType
+import routes.CurrentLocalRouter
 import usecase.isSignedIn
 import usecase.isSignedOut
 import usecase.rememberSubscribeCurrentUserUseCase
@@ -58,6 +59,7 @@ private fun TopAppBar(
 @Composable
 private fun DrawerActionContent(preference: AppPreference) {
     val (lang, theme, t) = LocalBrowserApp.current
+    val router = CurrentLocalRouter() ?: return
     t ?: return
 
     MenuButton(
@@ -67,10 +69,10 @@ private fun DrawerActionContent(preference: AppPreference) {
         tooltip = { Tooltip(it, t("appBar.changeLanguage")) },
     ) {
         MenuItem("日本語", activated = lang == Languages.JAPANESE) {
-            preference.setLanguage(Languages.JAPANESE)
+            router.changeLanguage(Languages.JAPANESE)
         }
         MenuItem("English", activated = lang == Languages.ENGLISH) {
-            preference.setLanguage(Languages.ENGLISH)
+            router.changeLanguage(Languages.ENGLISH)
         }
     }
 

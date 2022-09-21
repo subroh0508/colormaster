@@ -4,14 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.bringToFront
-import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.router.stack.webhistory.DefaultWebHistoryController
 import com.arkivanov.decompose.router.stack.webhistory.WebHistoryController
 import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import org.w3c.dom.Window
+import utilities.I18next
 import utilities.basename
 
 val LocalRouter = compositionLocalOf<Router?> { null }
@@ -24,21 +23,22 @@ class Router(
     context: ComponentContext,
     private val pathname: String? = null,
     private val search: String? = null,
-    private val lang: Languages = Languages.JAPANESE,
+    private val i18next: I18next,
     historyController: WebHistoryController = DefaultWebHistoryController(),
 ) : ComponentContext by context {
     constructor(
         context: ComponentContext,
         window: Window,
-        lang: Languages,
+        i18next: I18next,
     ) : this(
         context,
         window.location.pathname.takeIf(String::isNotBlank),
         window.location.search.takeIf(String::isNotBlank),
-        lang,
+        i18next,
     )
 
     private val navigation = StackNavigation<Page>()
+    private val basename get() = Languages.valueOfCode(i18next.language)?.basename ?: ""
 
     val stack = childStack(
         source = navigation,
@@ -54,6 +54,7 @@ class Router(
             getConfiguration = ::getConfiguration,
         )
     }
+    fun changeLanguage(lang: Languages) { i18next.changeLanguage(lang.code) }
 
     fun toSearch() = navigation.bringToFront(Search(SearchParams.ByName.EMPTY))
     fun toHowToUse() = navigation.bringToFront(HowToUse)
@@ -65,13 +66,13 @@ class Router(
     )
 
     private fun getPath(page: Page) = when (page) {
-        is Search -> "${lang.basename}/"
-        is Preview -> "${lang.basename}/$PATH_PREVIEW"
-        is Penlight -> "${lang.basename}/$PATH_PENLIGHT"
-        is MyIdols -> "${lang.basename}/$PATH_MY_IDOLS"
-        is HowToUse -> "${lang.basename}/$PATH_HOW_TO_USE"
-        is Development -> "${lang.basename}/$PATH_DEVELOPMENT"
-        is Terms -> "${lang.basename}/$PATH_TERMS"
+        is Search -> "$basename/"
+        is Preview -> "$basename/$PATH_PREVIEW"
+        is Penlight -> "$basename/$PATH_PENLIGHT"
+        is MyIdols -> "$basename/$PATH_MY_IDOLS"
+        is HowToUse -> "$basename/$PATH_HOW_TO_USE"
+        is Development -> "$basename/$PATH_DEVELOPMENT"
+        is Terms -> "$basename/$PATH_TERMS"
     }
 
     private fun getConfiguration(path: String) = when {

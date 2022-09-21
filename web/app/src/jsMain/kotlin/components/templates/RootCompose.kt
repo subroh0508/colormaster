@@ -19,24 +19,47 @@ import utilities.LocalBrowserApp
 @Composable
 fun RootCompose(
     koinApp: KoinApplication,
-    lang: Languages,
-    i18n: I18nextText,
     content: @Composable (AppPreference) -> Unit,
-) {
-    val appState = remember(i18n) { mutableStateOf(BrowserAppPreference.State(i18n = i18n)) }
-    val preference = remember(koinApp) { mutableStateOf<AppPreference?>(null) }
+) = I18nextCompose(koinApp) { preference, appState, i18next ->
     val lifecycle = remember(koinApp) { LifecycleRegistry() }
-    val router = remember(lang) { Router(DefaultComponentContext(lifecycle), window, lang) }
-
-    SideEffect {
-        koinApp.modules(AppModule + AppPreferenceModule(lang, i18n) { appState.value = it })
-
-        preference.value = koinApp.koin.get()
-    }
+    val router = remember(koinApp) { Router(DefaultComponentContext(lifecycle), window, i18next) }
 
     CompositionLocalProvider(
         LocalKoinApp provides koinApp,
-        LocalBrowserApp provides appState.value,
+        LocalBrowserApp provides appState,
         LocalRouter provides router,
-    ) { preference.value?.let { content(it) } }
+    ) { preference?.let { content(it) } }
+}
+
+@Composable
+private fun I18nextCompose(
+    koinApp: KoinApplication,
+    content: @Composable (AppPreference?, BrowserAppPreference.State, I18next) -> Unit,
+) {
+    val appState = remember { mutableStateOf(BrowserAppPreference.State()) }
+    val preference = remember(koinApp) { mutableStateOf<AppPreference?>(null) }
+    val i18next = remember(koinApp) { mutableStateOf<I18next?>(null) }
+
+    SideEffect {
+        if (appState.value.i18n != null) {
+            return@SideEffect
+        }
+
+        i18next.value = i18nextInit(window) { _, i18n, language ->
+            appState.value = appState.value.copy(lang = language, i18n = i18n)
+
+            koinApp.modules(AppModule + AppPreferenceModule(language, i18n) { appState.value = it })
+            preference.value = koinApp.koin.get()
+        }.onLanguageChanged {
+            if (it == null || it == appState.value.lang) {
+                return@onLanguageChanged
+            }
+
+            val path = window.location.pathname.replace(appState.value.lang.basename, "")
+
+            window.location.replace(it.basename + path)
+        }
+    }
+
+    i18next.value?.let { content(preference.value, appState.value, it) }
 }
