@@ -108,15 +108,15 @@
     "development": {
       "imasparql": {
         "title": "Where do you get idol's image colors from?",
-        "description": "<0>All the data is getting from <0>im@sparql</0>.</0><1>If you find an error in the data, please report it on <0>im@sparql's issue page</0>.</1>"
+        "description": "<p>All the data is getting from <a href=\"https://sparql.crssnky.xyz/imas/\" target=\"_blank\">im@sparql</a>.</p><p>If you find an error in the data, please report it on <a href=\"https://github.com/imas/imasparql/issues/\" target=\"_blank\">im@sparql's issue page</a>.</p>"
       },
       "frontend": {
         "title": "How is the front-end implemented?",
-        "description": "<0>This web app is implemented using <0>Kotlin Multiplatform</0>. The percentage of Kotlin in the source code is <strong>over 95%</strong>.</0><1>In other words, this web app is <strong>almost identical to Kotori Otonashi</strong>, the clerk of 765 Productions.</1><2>Also, <0>Material-UI</0> is used as a UI framework.</2>"
+        "description": "<p>This web app is implemented using <a href=\"https://www.jetbrains.com/lp/compose-mpp/\" target=\"_blank\">Compose for Web</a>. The percentage of Kotlin in the source code is <strong>over 95%</strong>.</p><p>In other words, this web app is <strong>almost identical to Kotori Otonashi</strong>, the clerk of 765 Productions.</p>"
       },
       "requests": {
         "title": "Found a bug! Want them to add features!",
-        "description": "<0>Please report to <0>COLOR M@STER's issue page</0>!</0><1>St@r and Pull Requests are also welcome. I'll be happy to cry if you throw money at me in addition.</1><2><0>Wishlist: <0>Link</0></0></2>"
+        "description": "<p>Please report to <a href=\"https://github.com/subroh0508/colormaster/issues\" target=\"_blank\">COLOR M@STER's issue page</a>!</p><p>St@r and Pull Requests are also welcome. I'll be happy to cry if you throw money at me in addition.</p><ul><li>Wishlist: <a href=\"https://www.amazon.jp/hz/wishlist/ls/34TBOXPWOUD8W?ref_=wl_share\" target=\"_blank\">Link</a></li></ul>"
       }
     },
     "terms": {

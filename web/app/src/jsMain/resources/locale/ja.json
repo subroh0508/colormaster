@@ -108,15 +108,15 @@
     "development": {
       "imasparql": {
         "title": "イメージカラーはどこから取ってきてるの？",
-        "description": "<0>必要なデータは全て<0>im@sparql</0>から取得しています。</0><1>データに間違いを見つけた場合は、<0>im@sparqlのIssueページ</0>にご報告ください。</1>"
+        "description": "<p>必要なデータは全て<a href=\"https://sparql.crssnky.xyz/imas/\" target=\"_blank\">im@sparql</a>から取得しています。</p><p>データに間違いを見つけた場合は、<a href=\"https://github.com/imas/imasparql/issues/\" target=\"_blank\">im@sparqlのIssueページ</a>にご報告ください。</p>"
       },
       "frontend": {
         "title": "フロントエンドの実装はどうなっているの？",
-        "description": "<0>このWebアプリは、<0>Kotlin Multiplatform</0>を使って実装しています。ソースコードに占めるKotlinの割合は<strong>5%を超えています。</strong></0><1>つまり、このWebアプリは765プロダクション事務員である<strong>音無小鳥さんとほぼ同じ存在です。</strong>ここテストに出ます。覚えておきましょう。</1><2>また、UIフレームワークとして<0>Material-UI</0>も利用しています。</2>"
+        "description": "<p>このWebアプリは、<a href=\"https://www.jetbrains.com/ja-jp/lp/compose-mpp/\" target=\"_blank\">Compose for Web</a>を使って実装しています。ソースコードに占めるKotlinの割合は<strong>95%を超えています。</strong></p><p>つまり、このWebアプリは765プロダクション事務員である<strong>音無小鳥さんとほぼ同じ存在です。</strong>ここテストに出ます。覚えておきましょう。</p>"
       },
       "requests": {
         "title": "バグを見つけた！機能追加して欲しい！",
-        "description": "<0><0>COLOR M@STERのIssueページ</0>に報告ください。</0><1>St@r・Pull Requestも大歓迎です。ついでに投げ銭とかしてくれると泣いて喜びます。</1><2><0>ほしいものリスト: <0>Link</0></0></2>"
+        "description": "<p><a href=\"https://github.com/subroh0508/colormaster/issues\" target=\"_blank\">COLOR M@STERのIssueページ</a>に報告ください。</p><p>St@r・Pull Requestも大歓迎です。ついでに投げ銭とかしてくれると泣いて喜びます。</p><ul><li>ほしいものリスト: <a href=\"https://www.amazon.jp/hz/wishlist/ls/34TBOXPWOUD8W?ref_=wl_share\" target=\"_blank\">Link</a></li></ul>"
       }
     },
     "terms": {

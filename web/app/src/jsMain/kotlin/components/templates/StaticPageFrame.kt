@@ -1,5 +1,6 @@
 package components.templates
 
+import MaterialTheme
 import androidx.compose.runtime.Composable
 import material.components.TopAppBarMainContent
 import material.utilities.MEDIA_QUERY_LAPTOP
@@ -47,6 +48,15 @@ private object StaticPageFrameStyle : StyleSheet() {
 
         child(self, className("mdc-card")) style  {
             marginBottom(32.px)
+        }
+
+        desc(self, type("a")) style {
+            color(MaterialTheme.Var.textLink)
+            textDecoration("none")
+
+            hover(self) style  {
+                textDecoration("underline")
+            }
         }
     }
 }
