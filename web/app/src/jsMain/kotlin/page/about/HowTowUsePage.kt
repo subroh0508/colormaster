@@ -2,13 +2,13 @@ package page.about
 
 import androidx.compose.runtime.Composable
 import components.atoms.card.OutlinedCard
+import components.atoms.card.RawHtml
 import components.templates.StaticPageFrame
 import components.templates.Strong
 import material.components.Icon
 import material.components.TypographySubtitle1
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.display
-import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 import utilities.LocalI18n
 import utilities.invoke
@@ -20,14 +20,8 @@ fun HowToUsePage(
     val t = LocalI18n() ?: return@StaticPageFrame
 
     OutlinedCard(
-        header = { Text(t("about.howToUse.introduction.title")) },
-        contentAttrsScope = {
-            ref {
-                it.innerHTML = t("about.howToUse.introduction.description")
-
-                onDispose { it.innerHTML = "" }
-            }
-        },
+        header = t("about.howToUse.introduction.title"),
+        rawHtml = t("about.howToUse.introduction.description"),
     )
 
     OutlinedCard(
@@ -43,13 +37,7 @@ fun HowToUsePage(
                 Strong { Text(t("about.howToUse.features.preview.title")) }
             }
 
-            Div(attrs = {
-                ref {
-                    it.innerHTML = t("about.howToUse.features.preview.description")
-
-                    onDispose { it.innerHTML = "" }
-                }
-            })
+            RawHtml(t("about.howToUse.features.preview.description"))
 
             TypographySubtitle1(applyAttrs = {
                 style {
@@ -61,24 +49,12 @@ fun HowToUsePage(
                 Strong { Text(t("about.howToUse.features.penlight.title")) }
             }
 
-            Div(attrs = {
-                ref {
-                    it.innerHTML = t("about.howToUse.features.penlight.description")
-
-                    onDispose { it.innerHTML = "" }
-                }
-            })
+            RawHtml(t("about.howToUse.features.penlight.description"))
         },
     )
 
     OutlinedCard(
-        header = { Text(t("about.howToUse.howToUse.title")) },
-        contentAttrsScope = {
-            ref {
-                it.innerHTML = t("about.howToUse.howToUse.description")
-
-                onDispose { it.innerHTML = "" }
-            }
-        },
+        header = t("about.howToUse.howToUse.title"),
+        rawHtml = t("about.howToUse.howToUse.description"),
     )
 }
