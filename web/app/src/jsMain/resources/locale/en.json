@@ -102,8 +102,7 @@
       },
       "howToUse": {
         "title": "How To Use",
-        "description": "<0><0>Search for an idol on the search screen</0><1>Select the idols you want to preview</1><2>Tap the <strong>\"Preview\"</strong> or <strong>\"Penlight\"</strong> button</2></0>",
-        "descriptionMore": "<p>You can also <strong>\"double-tap\" the idol</strong> you want to preview to <strong>activate the penlight mode as a shortcut.</strong></p><p>Then there's the sober <0>dark theme support</0>, and you can switch themes from the <1>brightness_4_icon</1> / <2>brightness_7_icon</2> the top right corner. If you'd like to use it, you're welcome to try it out🙏</p>"
+        "description": "<ol><li>Search for an idol on the search screen</li><li>Select the idols you want to preview</li><li>Tap the <strong>\"Preview\"</strong> or <strong>\"Penlight\"</strong> button</li></ol><p>You can also <strong>\"double-tap\" the idol</strong> you want to preview to <strong>activate the penlight mode as a shortcut.</strong></p><p>Then there's the sober <strong>dark theme support</strong>, and you can switch themes from the <i class=\"material-icons\">brightness_4</i> / <i class=\"material-icons\">brightness_7</i> the top right corner. If you'd like to use it, you're welcome to try it out\uD83D\uDE4F</p>"
       }
     },
     "development": {

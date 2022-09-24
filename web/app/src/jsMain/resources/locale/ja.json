@@ -102,8 +102,7 @@
       },
       "howToUse": {
         "title": "使い方",
-        "description": "<0><0>検索画面でアイドルを検索する</0><1>プレビューしたいアイドルを選択する</1><2><strong>「プレビュー」</strong>、または<strong>「ペンライト」</strong>ボタンをタップする</2></0>",
-        "descriptionMore": "<p>また、<strong>「プレビューしたいアイドルをダブルタップ」</strong>することで、<strong>ペンライトモードをショートカット起動</strong>させることができます。</p><p>それから、地味に<0>ダークテーマ対応</0>しており、右上の<1>brightness_4_icon</1> / <2>brightness_7_icon</2>からテーマ切り替えができます。使ってみたい人は是非🙏</p>"
+        "description": "<ol><li>検索画面でアイドルを検索する</li><li>プレビューしたいアイドルを選択する</li><li><strong>「プレビュー」</strong>、または<strong>「ペンライト」</strong>ボタンをタップする</li></ol><p>また、<strong>「プレビューしたいアイドルをダブルタップ」</strong>することで、<strong>ペンライトモードをショートカット起動</strong>させることができます。</p><p>それから、地味に<strong>ダークテーマ対応</strong>しており、右上の<i class=\"material-icons\">brightness_4</i> / <i class=\"material-icons\">brightness_7</i>からテーマ切り替えができます。使ってみたい人は是非\uD83D\uDE4F</p>"
       }
     },
     "development": {
