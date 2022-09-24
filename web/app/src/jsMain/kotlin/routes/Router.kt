@@ -55,6 +55,7 @@ class Router(
     fun changeLanguage(lang: Languages) { i18next.changeLanguage(lang.code) }
 
     fun toSearch(initParams: SearchParams = SearchParams.ByName.EMPTY) = navigation.bringToFront(Search(initParams))
+    fun toMyIdols() = navigation.bringToFront(MyIdols)
     fun toPreview(ids: List<String>) = navigation.bringToFront(Preview(ids))
     fun toPenlight(ids: List<String>) = navigation.bringToFront(Penlight(ids))
     fun toPenlight(id: String) = toPenlight(listOf(id))

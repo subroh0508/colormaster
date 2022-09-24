@@ -12,9 +12,6 @@ import routes.Penlight
 import usecase.rememberAddIdolToFavoriteUseCase
 import usecase.rememberAddIdolToInChargeUseCase
 
-private const val GRID_MIN_WIDTH = 216
-private const val GRID_MARGIN_HORIZONTAL = 8
-
 @Composable
 fun SearchResultList(
     isSignedIn: Boolean,
@@ -85,21 +82,15 @@ private fun List(
                 item,
                 isActionIconsVisible = isActionIconsVisible,
                 selected = selections.contains(item.id),
-                inCharge = inCharges.contains(item.id),
-                favorite = favorites.contains(item.id),
                 onClick = { (id), selected ->
                     setSelections(buildSelections(selections, id, selected))
                 },
                 onDoubleClick = { (id) -> openPenlight(id) },
+                inCharge = inCharges.contains(item.id),
+                favorite = favorites.contains(item.id),
                 onInChargeClick = { (id), inCharge -> addInCharge(id, inCharge) },
                 onFavoriteClick = { (id), favorite -> addFavorite(id, favorite) },
             ) { style { width(width.px) } }
         }
     }
 }
-
-private fun buildSelections(
-    selections: List<String>,
-    id: String,
-    selected: Boolean,
-) = if (selected) selections + id else selections - id

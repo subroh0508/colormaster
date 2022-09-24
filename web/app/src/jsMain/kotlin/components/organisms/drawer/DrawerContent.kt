@@ -27,6 +27,7 @@ fun DrawerContent(
     )
     MyPage(
         drawer,
+        router,
         isSignedOut,
     )
     AboutMenu(
@@ -46,6 +47,7 @@ fun DrawerContent(
 @Composable
 private fun MyPage(
     drawer: MDCDrawer?,
+    router: Router,
     isSignedOut: Boolean,
 ) {
     val t = LocalI18n() ?: return
@@ -57,7 +59,10 @@ private fun MyPage(
     DrawerListItem(t("appMenu.myPage.myIdols")) {
         attr("aria-current", "page")
         attr("tabindex", "0")
-        onClick { drawer?.close() }
+        onClick {
+            router.toMyIdols()
+            drawer?.close()
+        }
     }
     Divider()
 }

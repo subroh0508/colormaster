@@ -21,12 +21,12 @@ fun IdolCard(
     item: IdolColor,
     selected: Boolean,
     isActionIconsVisible: Boolean,
-    inCharge: Boolean,
-    favorite: Boolean,
     onClick: (IdolColor, Boolean) -> Unit,
     onDoubleClick: (IdolColor) -> Unit,
-    onInChargeClick: (IdolColor, Boolean) -> Unit,
-    onFavoriteClick: (IdolColor, Boolean) -> Unit,
+    inCharge: Boolean = false,
+    favorite: Boolean = false,
+    onInChargeClick: (IdolColor, Boolean) -> Unit = { _, _ -> },
+    onFavoriteClick: (IdolColor, Boolean) -> Unit = { _, _ -> },
     attrsScope: (AttrsScope<HTMLDivElement>.() -> Unit)? = null,
 ) = Div({
     classes("mdc-typography--body2")

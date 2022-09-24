@@ -2,6 +2,7 @@ package components.templates
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import page.MyIdolsPage
 import page.PenlightPage
 import page.PreviewPage
 import page.about.HowToUsePage
@@ -22,6 +23,7 @@ fun Routing(
     routerState.active.instance.let {
         when (it) {
             is Search -> SearchIdolPage(topAppBarVariant, isSignedIn, it.initParams)
+            is MyIdols -> MyIdolsPage(topAppBarVariant, isSignedIn)
             is Preview -> PreviewPage(topAppBarVariant, it.ids)
             is Penlight -> PenlightPage(topAppBarVariant, it.ids)
             is HowToUse -> HowToUsePage(topAppBarVariant)

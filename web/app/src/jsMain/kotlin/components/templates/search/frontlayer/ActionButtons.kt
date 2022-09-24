@@ -26,6 +26,7 @@ private const val BUTTON_ALL_DESELECT = "button-all-deselect"
 @Composable
 fun ActionButtons(
     wide: Boolean,
+    isSelectAllEnabled: Boolean,
     backdropState: State<BackdropValues>,
     selections: List<String>,
     onSelectAllClick: (Boolean) -> Unit,
@@ -36,58 +37,103 @@ fun ActionButtons(
         return
     }
 
+    Style(ActionButtonsStyle)
+
+    Div({ classes(ActionButtonsStyle.content) }) {
+        if (!wide) {
+            OutlinedChipActionButtons(
+                selections,
+                isSelectAllEnabled,
+                onSelectAllClick,
+                onOpenPreviewClick,
+                onOpenPenlightClick,
+            )
+
+            return@Div
+        }
+
+        IconActionButtons(
+            selections,
+            isSelectAllEnabled,
+            onSelectAllClick,
+            onOpenPreviewClick,
+            onOpenPenlightClick,
+        )
+    }
+}
+
+@Composable
+fun OutlinedChipActionButtons(
+    selections: List<String>,
+    isSelectAllEnabled: Boolean,
+    onSelectAllClick: (Boolean) -> Unit,
+    onOpenPreviewClick: () -> Unit,
+    onOpenPenlightClick: () -> Unit,
+) {
     val t = LocalI18n() ?: return
+
+    val (selectKey, selectIcon) =
+        if (selections.isNotEmpty())
+            "actions.clear" to ICON_ALL_DESELECT
+        else
+            "actions.all" to ICON_ALL_SELECT
+
+    OutlinedChip(
+        t("actions.preview"),
+        disabled = selections.isEmpty(),
+        leadingIcon = ICON_PREVIEW,
+        onClick = { onOpenPreviewClick() },
+    )
+    OutlinedChip(
+        t("actions.penlight"),
+        disabled = selections.isEmpty(),
+        leadingIcon = ICON_PENLIGHT,
+        onClick = { onOpenPenlightClick() },
+    )
+    OutlinedChip(
+        t(selectKey),
+        disabled = !isSelectAllEnabled,
+        leadingIcon = selectIcon,
+        onClick = { onSelectAllClick(selections.isEmpty()) },
+    )
+}
+
+@Composable
+fun IconActionButtons(
+    selections: List<String>,
+    isSelectAllEnabled: Boolean,
+    onSelectAllClick: (Boolean) -> Unit,
+    onOpenPreviewClick: () -> Unit,
+    onOpenPenlightClick: () -> Unit,
+) {
+    val t = LocalI18n() ?: return
+
     val (selectId, selectKey, selectIcon) =
         if (selections.isNotEmpty())
             Triple(BUTTON_ALL_DESELECT, "actions.clear", ICON_ALL_DESELECT)
         else
             Triple(BUTTON_ALL_SELECT, "actions.all", ICON_ALL_SELECT)
 
-    Style(ActionButtonsStyle)
+    IconButton(ICON_PREVIEW, applyAttrs = {
+        attr("aria-describedby", BUTTON_PREVIEW)
+        if (selections.isEmpty()) disabled()
+        onClick { onOpenPreviewClick() }
+    })
+    Tooltip(BUTTON_PREVIEW, t("actions.preview"))
 
-    Div({ classes(ActionButtonsStyle.content) }) {
-        if (!wide) {
-            OutlinedChip(
-                t("actions.preview"),
-                disabled = selections.isEmpty(),
-                leadingIcon = ICON_PREVIEW,
-                onClick = { onOpenPreviewClick() },
-            )
-            OutlinedChip(
-                t("actions.penlight"),
-                disabled = selections.isEmpty(),
-                leadingIcon = ICON_PENLIGHT,
-                onClick = { onOpenPenlightClick() },
-            )
-            OutlinedChip(
-                t(selectKey),
-                leadingIcon = selectIcon,
-                onClick = { onSelectAllClick(selections.isEmpty()) },
-            )
+    IconButton(ICON_PENLIGHT, applyAttrs = {
+        attr("aria-describedby", BUTTON_PENLIGHT)
+        if (selections.isEmpty()) disabled()
+        onClick { onOpenPenlightClick() }
+    })
+    Tooltip(BUTTON_PENLIGHT, t("actions.penlight"))
 
-            return@Div
-        }
-
-        IconButton(ICON_PREVIEW, applyAttrs = {
-            attr("aria-describedby", BUTTON_PREVIEW)
-            if (selections.isEmpty()) disabled()
-            onClick { onOpenPreviewClick() }
-        })
-        Tooltip(BUTTON_PREVIEW, t("actions.preview"))
-
-        IconButton(ICON_PENLIGHT, applyAttrs = {
-            attr("aria-describedby", BUTTON_PENLIGHT)
-            if (selections.isEmpty()) disabled()
-            onClick { onOpenPenlightClick() }
-        })
-        Tooltip(BUTTON_PENLIGHT, t("actions.penlight"))
-
-        IconButton(selectIcon, applyAttrs = {
-            attr("aria-describedby", selectId)
-            onClick { onSelectAllClick(selections.isEmpty()) }
-        })
-        Tooltip(selectId, t(selectKey))
-    }
+    IconButton(selectIcon, applyAttrs = {
+        attr("aria-describedby", selectId)
+        if (!isSelectAllEnabled) disabled()
+        onClick { onSelectAllClick(selections.isEmpty()) }
+    })
+    Tooltip(selectId, t(selectKey))
 }
 
 private object ActionButtonsStyle : StyleSheet() {
