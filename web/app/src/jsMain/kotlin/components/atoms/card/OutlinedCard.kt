@@ -6,7 +6,9 @@ import material.components.CardContent
 import material.components.CardHeader
 import material.components.TypographyHeadline5
 import org.jetbrains.compose.web.attributes.AttrsScope
+import org.jetbrains.compose.web.css.borderRadius
 import org.jetbrains.compose.web.css.color
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.TagElement
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLDivElement
@@ -16,16 +18,23 @@ import material.components.OutlinedCard as MaterialOutlinedCard
 @Composable
 fun OutlinedCard(
     attrsScope: ((AttrsScope<HTMLDivElement>).() -> Unit)? = null,
+    content: @Composable () -> Unit,
+) = MaterialOutlinedCard({
+    style {
+        borderRadius(16.px)
+        property("border-color", MaterialTheme.Var.divider)
+    }
+    attrsScope?.invoke(this)
+}) { content() }
+
+@Composable
+fun OutlinedCard(
+    attrsScope: ((AttrsScope<HTMLDivElement>).() -> Unit)? = null,
     headerAttrsScope: ((AttrsScope<HTMLDivElement>).() -> Unit)? = null,
     header: (@Composable () -> Unit)? = null,
     contentAttrsScope: ((AttrsScope<HTMLDivElement>).() -> Unit)? = null,
     content: (@Composable () -> Unit)? = null,
-) = MaterialOutlinedCard({
-    style {
-        property("border-color", MaterialTheme.Var.divider)
-    }
-    attrsScope?.invoke(this)
-}) {
+) = OutlinedCard(attrsScope) {
     CardHeader(attrsScope = {
         style { color(MaterialTheme.Var.onSurface) }
         headerAttrsScope?.invoke(this)
@@ -46,11 +55,7 @@ fun OutlinedCard(
 fun OutlinedCard(
     header: String,
     rawHtml: String,
-) = MaterialOutlinedCard({
-    style {
-        property("border-color", MaterialTheme.Var.divider)
-    }
-}) {
+) = OutlinedCard {
     CardHeader(attrsScope = {
         style { color(MaterialTheme.Var.onSurface) }
     }) {

@@ -24,8 +24,6 @@ fun FrontLayer(
     val wide by rememberMediaQuery(MEDIA_QUERY_TABLET_SMALL)
     val idolColorLoadState by rememberSearchIdolsUseCase(params)
 
-
-
     SearchResultList(
         isSignedIn,
         idolColorLoadState,

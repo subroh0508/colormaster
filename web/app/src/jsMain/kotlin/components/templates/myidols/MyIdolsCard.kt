@@ -2,12 +2,12 @@ package components.templates.myidols
 
 import MaterialTheme
 import androidx.compose.runtime.Composable
+import components.atoms.card.OutlinedCard
 import components.organisms.list.FavoriteIdolsList
 import components.organisms.list.InChargeIdolsList
 import components.templates.search.frontlayer.*
 import material.components.CardHeader
 import material.components.Icon
-import material.components.OutlinedCard
 import material.components.TypographyHeadline5
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -48,9 +48,7 @@ private fun MyIdolsCard(
 ) {
     val t = LocalI18n() ?: return
 
-    OutlinedCard({
-        style { property("border-color", MaterialTheme.Var.divider) }
-    }) {
+    OutlinedCard {
         header(t)
         content(t)
     }
