@@ -7,7 +7,25 @@ import net.subroh0508.colormaster.presentation.search.model.SearchParams
 sealed interface Page : Parcelable
 
 @Parcelize
-data class Search(val initParams: SearchParams) : Page
+data class Search(val initParams: SearchParams) : Page {
+    val query get() = when (initParams) {
+        is SearchParams.ByName -> ""
+        is SearchParams.ByLive -> "?by=live"
+        else -> ""
+    }
+
+    constructor(query: String) : this(
+        query.split("&").let { params ->
+            val by = params.find { it.startsWith("by=") }?.replace("by=", "")
+
+            if (by == "live") {
+                return@let SearchParams.ByLive.EMPTY
+            }
+
+            SearchParams.ByName.EMPTY
+        }
+    )
+}
 @Parcelize
 data class Preview(val ids: List<String>) : Page {
     val query get() = ids.takeIf(List<String>::isNotEmpty)?.let { ids ->

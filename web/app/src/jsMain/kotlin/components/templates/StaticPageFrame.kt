@@ -28,6 +28,7 @@ fun Strong(
 private object StaticPageFrameStyle : StyleSheet() {
     val frame by style {
         paddingTop(16.px)
+        paddingBottom(32.px)
         paddingLeft(16.px)
         paddingRight(16.px)
         property("margin-left", "auto")

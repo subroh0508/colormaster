@@ -14,15 +14,17 @@ import net.subroh0508.colormaster.presentation.search.model.SearchByTab
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import routes.CurrentLocalRouter
 import utilities.LocalI18n
 import utilities.invoke
 
 @Composable
 fun BackLayer(
     topAppBarVariant: String,
+    tab: SearchByTab,
     onChange: (SearchParams) -> Unit,
 ) {
-    val (tab, setTab) = remember { mutableStateOf(SearchByTab.BY_NAME) }
+    val router = CurrentLocalRouter() ?: return
 
     Style(BackLayerStyle)
 
@@ -30,7 +32,14 @@ fun BackLayer(
         topAppBarVariant,
         attrsScope = { classes(BackLayerStyle.main) },
     ) {
-        SearchTabs(setTab)
+        SearchTabs(tab) {
+            router.toSearch(
+                when (it) {
+                    SearchByTab.BY_NAME -> SearchParams.ByName.EMPTY
+                    SearchByTab.BY_LIVE -> SearchParams.ByLive.EMPTY
+                }
+            )
+        }
 
         Div({ classes(BackLayerStyle.content) }) {
             SearchBox(tab, onChange)
@@ -39,11 +48,11 @@ fun BackLayer(
 }
 
 @Composable
-private fun SearchTabs(onChange: (SearchByTab) -> Unit) {
+private fun SearchTabs(activeTab: SearchByTab, onChange: (SearchByTab) -> Unit) {
     val t = LocalI18n() ?: return
 
     TabBar(
-        0,
+        SearchByTab.values().indexOf(activeTab),
         SearchByTab.values().map { tab ->
             TabContent(t(tab.labelKey)) { onChange(tab) }
         },

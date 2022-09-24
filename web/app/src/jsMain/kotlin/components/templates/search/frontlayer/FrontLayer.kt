@@ -16,7 +16,7 @@ import usecase.rememberSearchIdolsUseCase
 fun FrontLayer(
     backdropState: MutableState<BackdropValues>,
     isSignedIn: Boolean,
-    params: SearchParams?,
+    params: SearchParams,
 ) {
     val router = CurrentLocalRouter() ?: return
     val wide by rememberMediaQuery(MEDIA_QUERY_TABLET_SMALL)

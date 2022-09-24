@@ -14,7 +14,7 @@ import utilities.invoke
 
 @Composable
 fun LoadStateAlert(
-    params: SearchParams?,
+    params: SearchParams,
     loadState: LoadState,
 ) {
     val t = LocalI18n() ?: return
@@ -23,19 +23,19 @@ fun LoadStateAlert(
 }
 
 private fun alertType(
-    params: SearchParams?,
+    params: SearchParams,
     loadState: LoadState,
 )= when {
     loadState is LoadState.Loading -> AlertType.Warning
     loadState is LoadState.Error -> AlertType.Error
-    loadState is LoadState.Loaded<*> && params?.isEmpty() == false -> AlertType.Success
+    loadState is LoadState.Loaded<*> && !params.isEmpty() -> AlertType.Success
     else -> AlertType.Info
 }
 
 @Composable
 private fun label(
     t: I18nextText,
-    params: SearchParams?,
+    params: SearchParams,
     loadState: LoadState,
 ): String {
     if (loadState is LoadState.Loading) {

@@ -57,7 +57,10 @@ private fun I18nextCompose(
                 return@onLanguageChanged
             }
 
-            val path = window.location.pathname.replace(appState.value.lang.basename, "")
+            val path = window.location.pathname.replace(
+                appState.value.lang.basename,
+                "",
+            ) + window.location.search
 
             window.location.replace(it.basename + path)
         }

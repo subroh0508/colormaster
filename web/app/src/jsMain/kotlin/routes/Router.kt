@@ -54,7 +54,7 @@ class Router(
     }
     fun changeLanguage(lang: Languages) { i18next.changeLanguage(lang.code) }
 
-    fun toSearch() = navigation.bringToFront(Search(SearchParams.ByName.EMPTY))
+    fun toSearch(initParams: SearchParams = SearchParams.ByName.EMPTY) = navigation.bringToFront(Search(initParams))
     fun toPreview(ids: List<String>) = navigation.bringToFront(Preview(ids))
     fun toPenlight(ids: List<String>) = navigation.bringToFront(Penlight(ids))
     fun toPenlight(id: String) = toPenlight(listOf(id))
@@ -67,7 +67,7 @@ class Router(
     )
 
     private fun getPath(page: Page) = when (page) {
-        is Search -> "$basename/"
+        is Search -> "$basename/${page.query}"
         is Preview -> "$basename/$PATH_PREVIEW${page.query}"
         is Penlight -> "$basename/$PATH_PENLIGHT${page.query}"
         is MyIdols -> "$basename/$PATH_MY_IDOLS"
@@ -87,7 +87,7 @@ class Router(
             pathname.endsWith(PATH_HOW_TO_USE) -> HowToUse
             pathname.endsWith(PATH_DEVELOPMENT) -> Development
             pathname.endsWith(PATH_TERMS) -> Terms
-            else -> Search(SearchParams.ByName.EMPTY)
+            else -> Search(query)
         }
     }
 

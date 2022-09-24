@@ -21,7 +21,7 @@ fun Routing(
 
     routerState.active.instance.let {
         when (it) {
-            is Search -> SearchIdolPage(topAppBarVariant, isSignedIn)
+            is Search -> SearchIdolPage(topAppBarVariant, isSignedIn, it.initParams)
             is Preview -> PreviewPage(topAppBarVariant, it.ids)
             is Penlight -> PenlightPage(topAppBarVariant, it.ids)
             is HowToUse -> HowToUsePage(topAppBarVariant)

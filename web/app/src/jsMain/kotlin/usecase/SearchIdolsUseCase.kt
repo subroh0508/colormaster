@@ -10,7 +10,7 @@ import utilities.CurrentLocalKoinApp
 
 @Composable
 fun rememberSearchIdolsUseCase(
-    params: SearchParams?,
+    params: SearchParams,
     koinApp: KoinApplication = CurrentLocalKoinApp(),
 ): State<LoadState> {
     val scope = rememberCoroutineScope()
