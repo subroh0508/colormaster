@@ -15,23 +15,27 @@ import material.components.OutlinedCard as MaterialOutlinedCard
 
 @Composable
 fun OutlinedCard(
-    header: @Composable () -> Unit,
+    attrsScope: ((AttrsScope<HTMLDivElement>).() -> Unit)? = null,
+    headerAttrsScope: ((AttrsScope<HTMLDivElement>).() -> Unit)? = null,
+    header: (@Composable () -> Unit)? = null,
     contentAttrsScope: ((AttrsScope<HTMLDivElement>).() -> Unit)? = null,
     content: (@Composable () -> Unit)? = null,
 ) = MaterialOutlinedCard({
     style {
         property("border-color", MaterialTheme.Var.divider)
     }
+    attrsScope?.invoke(this)
 }) {
     CardHeader(attrsScope = {
-        style { color(MaterialTheme.Var.textPrimary) }
+        style { color(MaterialTheme.Var.onSurface) }
+        headerAttrsScope?.invoke(this)
     }) {
-        TypographyHeadline5 { header() }
+        TypographyHeadline5 { header?.invoke() }
     }
 
     CardContent(attrsScope = {
         classes("mdc-typography--body2")
-        style { color(MaterialTheme.Var.textPrimary) }
+        style { color(MaterialTheme.Var.onSurface) }
         contentAttrsScope?.invoke(this)
     }) {
         content?.invoke()
@@ -48,7 +52,7 @@ fun OutlinedCard(
     }
 }) {
     CardHeader(attrsScope = {
-        style { color(MaterialTheme.Var.textPrimary) }
+        style { color(MaterialTheme.Var.onSurface) }
     }) {
         TypographyHeadline5 { Text(header) }
     }
@@ -91,7 +95,7 @@ private fun RawHtmlCardContent(
 
     CardContent(attrsScope = {
         classes("mdc-typography--body2")
-        style { color(MaterialTheme.Var.textPrimary) }
+        style { color(MaterialTheme.Var.onSurface) }
         ref {
             element.value = it
             onDispose { element.value = null }

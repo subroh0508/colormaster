@@ -2,6 +2,8 @@ package components.templates
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import page.PenlightPage
+import page.PreviewPage
 import page.about.HowToUsePage
 import page.SearchIdolPage
 import page.about.DevelopmentPage
@@ -17,11 +19,15 @@ fun Routing(
     val router = CurrentLocalRouter() ?: return
     val routerState by router.stack.subscribeAsState()
 
-    when (routerState.active.instance) {
-        is Search -> SearchIdolPage(topAppBarVariant, isSignedIn)
-        is HowToUse -> HowToUsePage(topAppBarVariant)
-        is Development -> DevelopmentPage(topAppBarVariant)
-        is Terms -> TermsPage(topAppBarVariant)
-        else -> Unit
+    routerState.active.instance.let {
+        when (it) {
+            is Search -> SearchIdolPage(topAppBarVariant, isSignedIn)
+            is Preview -> PreviewPage(topAppBarVariant, it.ids)
+            is Penlight -> PenlightPage(topAppBarVariant, it.ids)
+            is HowToUse -> HowToUsePage(topAppBarVariant)
+            is Development -> DevelopmentPage(topAppBarVariant)
+            is Terms -> TermsPage(topAppBarVariant)
+            else -> Unit
+        }
     }
 }

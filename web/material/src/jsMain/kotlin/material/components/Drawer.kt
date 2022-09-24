@@ -4,12 +4,14 @@ import androidx.compose.runtime.*
 import material.externals.MDCDrawer
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.dom.*
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
 @Composable
 fun ModalDrawer(
     headerContent: (@Composable () -> Unit)? = null,
     drawerContent: @Composable (MDCDrawer?) -> Unit,
+    mainContentAttrs: AttrBuilderContext<HTMLDivElement>? = null,
     mainContent: @Composable (MDCDrawer?) -> Unit,
 ) {
     var element by remember { mutableStateOf<HTMLElement?>(null) }
@@ -32,7 +34,7 @@ fun ModalDrawer(
     }
 
     Div({ classes("mdc-drawer-scrim") })
-    Div { mainContent(drawer) }
+    Div({ mainContentAttrs?.invoke(this) }) { mainContent(drawer) }
 }
 
 @Composable

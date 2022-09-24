@@ -9,6 +9,7 @@ import components.organisms.list.SearchResultList
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
 import material.utilities.rememberMediaQuery
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
+import routes.CurrentLocalRouter
 import usecase.rememberSearchIdolsUseCase
 
 @Composable
@@ -17,6 +18,7 @@ fun FrontLayer(
     isSignedIn: Boolean,
     params: SearchParams?,
 ) {
+    val router = CurrentLocalRouter() ?: return
     val wide by rememberMediaQuery(MEDIA_QUERY_TABLET_SMALL)
     val idolColorLoadState by rememberSearchIdolsUseCase(params)
 
@@ -25,6 +27,7 @@ fun FrontLayer(
     SearchResultList(
         isSignedIn,
         idolColorLoadState,
+        openPenlight = router::toPenlight,
         header = { selections, setSelectionsAll ->
             BackdropFrontHeader(backdropState) {
                 ActionButtons(
@@ -32,6 +35,8 @@ fun FrontLayer(
                     backdropState,
                     selections,
                     onSelectAllClick = setSelectionsAll,
+                    onOpenPreviewClick = { router.toPreview(selections) },
+                    onOpenPenlightClick = { router.toPenlight(selections) },
                 )
                 LoadStateAlert(
                     params,

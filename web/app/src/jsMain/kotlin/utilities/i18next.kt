@@ -72,7 +72,6 @@ fun i18nextInit(
                     backend {
                         loadPath = "/locale/{{lng}}.json"
                     }
-                    debug = true
                 },
                 callback = { e, t -> func(e, t, language) },
             )

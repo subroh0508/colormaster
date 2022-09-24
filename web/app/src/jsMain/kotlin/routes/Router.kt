@@ -21,8 +21,7 @@ fun CurrentLocalRouter() = LocalRouter.current
 @OptIn(ExperimentalDecomposeApi::class)
 class Router(
     context: ComponentContext,
-    private val pathname: String? = null,
-    private val search: String? = null,
+    private val path: String? = null,
     private val i18next: I18next,
     historyController: WebHistoryController = DefaultWebHistoryController(),
 ) : ComponentContext by context {
@@ -32,8 +31,7 @@ class Router(
         i18next: I18next,
     ) : this(
         context,
-        window.location.pathname.takeIf(String::isNotBlank),
-        window.location.search.takeIf(String::isNotBlank),
+        (window.location.pathname + window.location.search).takeIf(String::isNotBlank),
         i18next,
     )
 
@@ -57,32 +55,40 @@ class Router(
     fun changeLanguage(lang: Languages) { i18next.changeLanguage(lang.code) }
 
     fun toSearch() = navigation.bringToFront(Search(SearchParams.ByName.EMPTY))
+    fun toPreview(ids: List<String>) = navigation.bringToFront(Preview(ids))
+    fun toPenlight(ids: List<String>) = navigation.bringToFront(Penlight(ids))
+    fun toPenlight(id: String) = toPenlight(listOf(id))
     fun toHowToUse() = navigation.bringToFront(HowToUse)
     fun toDevelopment() = navigation.bringToFront(Development)
     fun toTerms() = navigation.bringToFront(Terms)
 
     private fun getInitialStack() = listOf(
-        pathname?.let(::getConfiguration) ?: Search(SearchParams.ByName.EMPTY),
+        path?.let(::getConfiguration) ?: Search(SearchParams.ByName.EMPTY),
     )
 
     private fun getPath(page: Page) = when (page) {
         is Search -> "$basename/"
-        is Preview -> "$basename/$PATH_PREVIEW"
-        is Penlight -> "$basename/$PATH_PENLIGHT"
+        is Preview -> "$basename/$PATH_PREVIEW${page.query}"
+        is Penlight -> "$basename/$PATH_PENLIGHT${page.query}"
         is MyIdols -> "$basename/$PATH_MY_IDOLS"
         is HowToUse -> "$basename/$PATH_HOW_TO_USE"
         is Development -> "$basename/$PATH_DEVELOPMENT"
         is Terms -> "$basename/$PATH_TERMS"
     }
 
-    private fun getConfiguration(path: String) = when {
-        path.endsWith(PATH_PREVIEW) -> Preview(listOf())
-        path.endsWith(PATH_PENLIGHT) -> Penlight(listOf())
-        path.endsWith(PATH_MY_IDOLS) -> MyIdols
-        path.endsWith(PATH_HOW_TO_USE) -> HowToUse
-        path.endsWith(PATH_DEVELOPMENT) -> Development
-        path.endsWith(PATH_TERMS) -> Terms
-        else -> Search(SearchParams.ByName.EMPTY)
+    private fun getConfiguration(path: String): Page {
+        val pathname = path.split("?").firstOrNull() ?: ""
+        val query = path.split("?").getOrNull(1) ?: ""
+
+        return when {
+            pathname.endsWith(PATH_PREVIEW) -> Preview(query)
+            pathname.endsWith(PATH_PENLIGHT) -> Penlight(query)
+            pathname.endsWith(PATH_MY_IDOLS) -> MyIdols
+            pathname.endsWith(PATH_HOW_TO_USE) -> HowToUse
+            pathname.endsWith(PATH_DEVELOPMENT) -> Development
+            pathname.endsWith(PATH_TERMS) -> Terms
+            else -> Search(SearchParams.ByName.EMPTY)
+        }
     }
 
     companion object {

@@ -29,6 +29,8 @@ fun ActionButtons(
     backdropState: State<BackdropValues>,
     selections: List<String>,
     onSelectAllClick: (Boolean) -> Unit,
+    onOpenPreviewClick: () -> Unit,
+    onOpenPenlightClick: () -> Unit,
 ) {
     if (!wide && backdropState.value == BackdropValues.Concealed) {
         return
@@ -49,11 +51,13 @@ fun ActionButtons(
                 t("actions.preview"),
                 disabled = selections.isEmpty(),
                 leadingIcon = ICON_PREVIEW,
+                onClick = { onOpenPreviewClick() },
             )
             OutlinedChip(
                 t("actions.penlight"),
                 disabled = selections.isEmpty(),
                 leadingIcon = ICON_PENLIGHT,
+                onClick = { onOpenPenlightClick() },
             )
             OutlinedChip(
                 t(selectKey),
@@ -67,12 +71,14 @@ fun ActionButtons(
         IconButton(ICON_PREVIEW, applyAttrs = {
             attr("aria-describedby", BUTTON_PREVIEW)
             if (selections.isEmpty()) disabled()
+            onClick { onOpenPreviewClick() }
         })
         Tooltip(BUTTON_PREVIEW, t("actions.preview"))
 
         IconButton(ICON_PENLIGHT, applyAttrs = {
             attr("aria-describedby", BUTTON_PENLIGHT)
             if (selections.isEmpty()) disabled()
+            onClick { onOpenPenlightClick() }
         })
         Tooltip(BUTTON_PENLIGHT, t("actions.penlight"))
 

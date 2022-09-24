@@ -8,6 +8,7 @@ import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.presentation.common.LoadState
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import routes.Penlight
 import usecase.rememberAddIdolToFavoriteUseCase
 import usecase.rememberAddIdolToInChargeUseCase
 
@@ -18,6 +19,7 @@ private const val GRID_MARGIN_HORIZONTAL = 8
 fun SearchResultList(
     isSignedIn: Boolean,
     loadState: LoadState,
+    openPenlight: (String) -> Unit,
     header: @Composable (List<String>, (Boolean) -> Unit) -> Unit,
     errorContent: @Composable (Throwable) -> Unit,
 ) {
@@ -44,6 +46,7 @@ fun SearchResultList(
             setSelections,
             addFavorite = { id, favorite -> favorites.add(id, favorite) },
             addInCharge = { id, inCharge -> inCharges.add(id, inCharge) },
+            openPenlight = openPenlight,
         )
     }
 }
@@ -58,6 +61,7 @@ private fun List(
     setSelections: (List<String>) -> Unit,
     addFavorite: (String, Boolean) -> Unit,
     addInCharge: (String, Boolean) -> Unit,
+    openPenlight: (String) -> Unit,
 ) = AutoGridList(
     gridMinWidth = GRID_MIN_WIDTH,
     marginHorizontal = GRID_MARGIN_HORIZONTAL,
@@ -86,7 +90,7 @@ private fun List(
                 onClick = { (id), selected ->
                     setSelections(buildSelections(selections, id, selected))
                 },
-                onDoubleClick = { _ -> },
+                onDoubleClick = { (id) -> openPenlight(id) },
                 onInChargeClick = { (id), inCharge -> addInCharge(id, inCharge) },
                 onFavoriteClick = { (id), favorite -> addFavorite(id, favorite) },
             ) { style { width(width.px) } }

@@ -69,11 +69,6 @@
       "error": "Error",
       "success": "Result: {{count}} idol",
       "successPlural": "Result: {{count}} idols"
-    },
-    "error": {
-      "4xx": "There is an error in your request. Please contact the developer.",
-      "5xx": "An error has occurred on the server. Please try again in a few minutes or contact the developer.",
-      "unknown": "An unexpected error has occurred. Please reload."
     }
   },
   "myPage": {
@@ -133,5 +128,10 @@
         "description": "<p>In order to improve the Application, I use Google Analytics, a service provided by Google,inc to collect browsing information from users.</p><p>When you use your browser to access a website, these services use cookies and The data collected and processed by this service will be used for the collection and processing of data. The data collected and processed by this service does not contain any information that identifies individual users.</p><p>In addition, by using the Application, you give your permission for such data processing by Google,inc.</p>"
       }
     }
+  },
+  "error": {
+    "4xx": "There is an error in your request. Please contact the developer.",
+    "5xx": "An error has occurred on the server. Please try again in a few minutes or contact the developer.",
+    "unknown": "An unexpected error has occurred. Please reload."
   }
 }

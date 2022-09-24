@@ -16,6 +16,8 @@ import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.authentication.CurrentUser
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import net.subroh0508.colormaster.model.ui.commons.ThemeType
+import org.jetbrains.compose.web.css.height
+import org.jetbrains.compose.web.css.vh
 import routes.CurrentLocalRouter
 import usecase.isSignedIn
 import usecase.isSignedOut
@@ -30,6 +32,7 @@ fun MainFrame(preference: AppPreference) {
     MaterialModalDrawer(
         headerContent = { DrawerHeader() },
         drawerContent = { DrawerContent(it, isMobile, currentUser.isSignedOut) },
+        mainContentAttrs = { style { height(100.vh) } },
         mainContent = { DrawerMain(it, preference, currentUser) },
     )
 }

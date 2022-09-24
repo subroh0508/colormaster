@@ -9,9 +9,29 @@ sealed interface Page : Parcelable
 @Parcelize
 data class Search(val initParams: SearchParams) : Page
 @Parcelize
-data class Preview(val ids: List<String>) : Page
+data class Preview(val ids: List<String>) : Page {
+    val query get() = ids.takeIf(List<String>::isNotEmpty)?.let { ids ->
+        "?${ids.joinToString("&") { "id=$it" }}"
+    } ?: ""
+
+    constructor(query: String) : this(
+        query.split("&").mapNotNull {
+            it.replace("id=", "").takeIf(String::isNotBlank)
+        }
+    )
+}
 @Parcelize
-data class Penlight(val ids: List<String>) : Page
+data class Penlight(val ids: List<String>) : Page {
+    val query get() = ids.takeIf(List<String>::isNotEmpty)?.let { ids ->
+        "?${ids.joinToString("&") { "id=$it" }}"
+    } ?: ""
+
+    constructor(query: String) : this(
+        query.split("&").mapNotNull {
+            it.replace("id=", "").takeIf(String::isNotBlank)
+        }
+    )
+}
 @Parcelize
 object MyIdols : Page
 @Parcelize
