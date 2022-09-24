@@ -9,7 +9,7 @@ internal class AndroidAppPreference : AppPreference {
     override val lang get() = _lang
     override val theme get() = _themeType
 
-    override fun setLanguage(lang: Languages) { _lang = lang }
+    fun setLanguage(lang: Languages) { _lang = lang }
     override fun setThemeType(type: ThemeType) { _themeType = type }
 
     private var _lang: Languages = Languages.JAPANESE

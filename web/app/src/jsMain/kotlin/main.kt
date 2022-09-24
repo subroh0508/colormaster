@@ -26,8 +26,8 @@ fun main() {
     ))
 
     renderComposable(rootElementId = "root") {
-        RootCompose(koinApp) { preference ->
-            Style(MaterialTheme(preference.theme == ThemeType.NIGHT))
+        RootCompose(koinApp) { preference, theme ->
+            Style(MaterialTheme(theme == ThemeType.NIGHT))
 
             MainFrame(preference)
         }

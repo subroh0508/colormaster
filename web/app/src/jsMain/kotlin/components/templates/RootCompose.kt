@@ -4,10 +4,12 @@ import LocalKoinApp
 import androidx.compose.runtime.*
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import net.subroh0508.colormaster.components.core.AppModule
 import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.ui.commons.AppPreference
+import net.subroh0508.colormaster.model.ui.commons.ThemeType
 import org.koin.core.KoinApplication
 import routes.LocalRouter
 import routes.Router
@@ -19,7 +21,7 @@ import utilities.LocalBrowserApp
 @Composable
 fun RootCompose(
     koinApp: KoinApplication,
-    content: @Composable (AppPreference) -> Unit,
+    content: @Composable (AppPreference, ThemeType) -> Unit,
 ) = I18nextCompose(koinApp) { preference, appState, i18next ->
     val lifecycle = remember(koinApp) { LifecycleRegistry() }
     val router = remember(koinApp) { Router(DefaultComponentContext(lifecycle), window, i18next) }
@@ -28,7 +30,7 @@ fun RootCompose(
         LocalKoinApp provides koinApp,
         LocalBrowserApp provides appState,
         LocalRouter provides router,
-    ) { preference?.let { content(it) } }
+    ) { preference?.let { content(it, appState.theme) } }
 }
 
 @Composable
@@ -36,7 +38,7 @@ private fun I18nextCompose(
     koinApp: KoinApplication,
     content: @Composable (AppPreference?, BrowserAppPreference.State, I18next) -> Unit,
 ) {
-    val appState = remember { mutableStateOf(BrowserAppPreference.State()) }
+    val appState = remember { mutableStateOf(BrowserAppPreference.State(localStorage)) }
     val preference = remember(koinApp) { mutableStateOf<AppPreference?>(null) }
     val i18next = remember(koinApp) { mutableStateOf<I18next?>(null) }
 
@@ -48,7 +50,7 @@ private fun I18nextCompose(
         i18next.value = i18nextInit(window) { _, i18n, language ->
             appState.value = appState.value.copy(lang = language, i18n = i18n)
 
-            koinApp.modules(AppModule + AppPreferenceModule(language, i18n) { appState.value = it })
+            koinApp.modules(AppModule + AppPreferenceModule(appState))
             preference.value = koinApp.koin.get()
         }.onLanguageChanged {
             if (it == null || it == appState.value.lang) {
