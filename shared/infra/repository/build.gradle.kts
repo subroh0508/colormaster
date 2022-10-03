@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     `android-multiplatform`
+    id("io.kotest.multiplatform")
 }
 
 kotlinMpp {

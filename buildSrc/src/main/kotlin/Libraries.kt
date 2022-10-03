@@ -118,14 +118,13 @@ object Libraries {
     }
 
     object MockK {
-        private const val version = "1.12.0"
+        private const val version = "1.13.2"
 
-        const val core = "io.mockk:mockk-common:$version"
         const val android = "io.mockk:mockk:$version"
     }
 
     object Kotest {
-        private const val version = "4.6.3"
+        const val version = "5.4.2"
 
         const val engine = "io.kotest:kotest-framework-engine:$version"
         const val runnerJunit5 = "io.kotest:kotest-runner-junit5:$version"

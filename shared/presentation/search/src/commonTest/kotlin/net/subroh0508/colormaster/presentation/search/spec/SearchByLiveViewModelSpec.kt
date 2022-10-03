@@ -28,8 +28,8 @@ class SearchByLiveViewModelSpec : FunSpec() {
 
     lateinit var viewModel: SearchByLiveViewModel
 
-    override fun beforeTest(testCase: TestCase) {
-        super.beforeTest(testCase)
+    override suspend fun beforeEach(testCase: TestCase) {
+        super.beforeEach(testCase)
 
         viewModel = SearchByLiveViewModel(
             liveRepository,

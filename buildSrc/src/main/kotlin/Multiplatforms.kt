@@ -1,5 +1,6 @@
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.getting
 import org.gradle.kotlin.dsl.invoke
@@ -16,7 +17,6 @@ fun Project.kotlinMpp(configure: KotlinMultiplatformExtension.() -> Unit) =
                 dependencies {
                     implementation(project(":shared:test"))
 
-                    implementation(Libraries.MockK.core)
                     implementation(Libraries.Kotest.engine)
                     implementation(Libraries.Kotest.assertion)
                 }
@@ -25,12 +25,17 @@ fun Project.kotlinMpp(configure: KotlinMultiplatformExtension.() -> Unit) =
             val androidTest by getting {
                 dependencies {
                     implementation(Libraries.Coroutines.test)
-                    implementation(Libraries.MockK.android)
                     implementation(Libraries.Kotest.runnerJunit5)
+                    implementation(Libraries.MockK.android)
                 }
             }
             val jsMain by getting
-            val jsTest by getting
+            val jsTest by getting {
+                dependencies {
+                    implementation(enforcedPlatform(kotlinWrappersBom))
+                    implementation(Libraries.JsWrappers.extensions)
+                }
+            }
         }
 
         configure()
