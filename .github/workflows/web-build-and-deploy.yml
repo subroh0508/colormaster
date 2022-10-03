@@ -20,7 +20,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Build for production with Gradle
-        run: ./gradlew :web:app:browserProductionWebpack --stacktrace
+        run: ./gradlew :web:app:jsBrowserProductionWebpack --stacktrace
       - name: Archive production artifacts
         uses: actions/upload-artifact@master
         with:
