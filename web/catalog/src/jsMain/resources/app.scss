@@ -1,0 +1,94 @@
+$color-primary: #e65100;
+$color-secondary: #fff09f;
+$color-background: #fafafa;
+
+@use '@material/theme' with (
+  $primary: $color-primary,
+  $secondary: $color-secondary,
+  $background: $color-background,
+);
+
+@use '@material/theme/mdc-theme';
+
+@use '@material/button/styles' as mdc-button;
+
+@use '@material/checkbox';
+@use '@material/form-field';
+
+@use '@material/card';
+
+@use '@material/chips/styles' as mdc-chips;
+
+@use '@material/drawer';
+
+@use '@material/list';
+
+@use '@material/menu-surface/mdc-menu-surface';
+@use '@material/menu/mdc-menu';
+
+@use '@material/tab-bar/mdc-tab-bar';
+@use '@material/tab-scroller/mdc-tab-scroller';
+@use '@material/tab-indicator/mdc-tab-indicator';
+@use '@material/tab/mdc-tab';
+
+@use '@material/floating-label/mdc-floating-label';
+@use '@material/notched-outline/mdc-notched-outline';
+@use '@material/textfield';
+
+@use '@material/tooltip/styles' as mdc-tooltip;
+
+@use '@material/icon-button/icon-button';
+@use '@material/top-app-bar/mdc-top-app-bar';
+
+@use '@material/ripple';
+
+@use '@material/typography/mdc-typography';
+
+@include card.core-styles;
+
+@include checkbox.core-styles;
+.mdc-checkbox {
+  @include checkbox.container-colors(
+    $unmarked-stroke-color: $color-primary,
+    $unmarked-fill-color: transparent
+  );
+  @include checkbox.ink-color(white);
+}
+
+.mdc-evolution-chip {
+  border: 1px rgba(0, 0, 0, 0.12) solid;
+  background-color: var(--mdc-theme-background);
+
+  &--activated {
+    background-color: rgba(var(--mdc-theme-primary-rgb), 0.12);
+  }
+
+  &--activated &__text-label {
+    color: var(--mdc-theme-primary);
+  }
+}
+
+@include drawer.core-styles;
+@include drawer.modal-core-styles;
+
+@include list.deprecated-core-styles;
+
+@include form-field.core-styles;
+
+@include textfield.core-styles;
+
+@include icon-button.core-styles;
+
+.mdc-card__header {
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+  }
+}
+
+.mdc-theme-text-primary {
+  color: var(--mdc-theme-text-primary) !important;
+}
+
+.mdc-theme-text-secondary {
+  color: var(--mdc-theme-text-secondary) !important;
+}

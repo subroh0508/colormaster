@@ -28,7 +28,8 @@ kotlinMpp {
             dependencies {
                 implementation(project(":shared:api:jsfirebaseapp"))
 
-                implementation(Libraries.JsWrappers(kotlinVersion).extensions)
+                implementation(enforcedPlatform(kotlinWrappersBom))
+                implementation(Libraries.JsWrappers.extensions)
             }
         }
     }

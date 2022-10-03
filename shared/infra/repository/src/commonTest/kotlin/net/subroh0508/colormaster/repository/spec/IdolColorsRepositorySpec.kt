@@ -20,10 +20,9 @@ class IdolColorsRepositorySpec : FunSpec() {
         block: () -> HttpClient,
     ): IdolColorsRepository = koinApplication {
         val appPreference: AppPreference = object : AppPreference {
-            override val themeType: ThemeType? = null
+            override val theme: ThemeType = ThemeType.DAY
             override val lang = languages
             override fun setThemeType(type: ThemeType) = Unit
-            override fun setLanguage(lang: Languages) = Unit
         }
 
         modules(

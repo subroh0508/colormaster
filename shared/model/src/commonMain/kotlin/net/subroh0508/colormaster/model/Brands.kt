@@ -12,6 +12,8 @@ enum class Brands(
     _315("315 STARS", "SideM"),
     _876("876PRO", "DearlyStars");
 
+    override fun toString() = displayName
+
     operator fun component1() = displayName
     operator fun component2() = queryStr
 }

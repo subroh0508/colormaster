@@ -24,8 +24,8 @@ class PreviewViewModelSpec : ViewModelSpec() {
 
     lateinit var viewModel: PreviewViewModel
 
-    override fun beforeTest(testCase: TestCase) {
-        super.beforeTest(testCase)
+    override suspend fun beforeEach(testCase: TestCase) {
+        super.beforeEach(testCase)
 
         viewModel = PreviewViewModel(repository, TestScope()/* for JS Runtime */)
         observedUiModels.clear()

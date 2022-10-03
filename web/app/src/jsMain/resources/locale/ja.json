@@ -1,0 +1,138 @@
+{
+  "title": "COLOR M@STER",
+  "version": "v2022.06.22",
+  "appBar": {
+    "changeLanguage": "言語の切り替え",
+    "darkTheme": "ダークテーマ",
+    "lightTheme": "ライトテーマ"
+  },
+  "appMenu": {
+    "search": {
+      "label": "検索",
+      "attributes": "名前・属性検索"
+    },
+    "myPage": {
+      "label": "マイページ",
+      "myIdols": "担当・推し"
+    },
+    "about": {
+      "label": "このアプリについて",
+      "howToUse": "使い方",
+      "development": "仕組み",
+      "terms": "利用規約"
+    },
+    "account": {
+      "label": "連携アカウント",
+      "description": "外部アカウントと連携することで、担当・推しアイドルの登録および閲覧ができるようになります",
+      "signInWithGoogle": "Googleでログイン",
+      "signOut": "ログアウト"
+    },
+    "links": {
+      "github": "GitHub",
+      "twitter": "開発者Twitter"
+    }
+  },
+  "actions": {
+    "preview": "プレビュー",
+    "penlight": "ペンライト",
+    "all": "すべて",
+    "clear": "選択解除"
+  },
+  "searchBox": {
+    "tabs": {
+      "name": "アイドル名",
+      "live": "公演名"
+    },
+    "attributes": {
+      "idolName": "アイドル名",
+      "brands": "ブランド",
+      "type": {
+        "label": "属性",
+        "cu": "キュート",
+        "co": "クール",
+        "pa": "パッション",
+        "princess": "プリンセス",
+        "fairy": "フェアリー",
+        "angel": "エンジェル",
+        "physical": "フィジカル",
+        "intelligent": "インテリ",
+        "mental": "メンタル"
+      },
+      "liveName": "公演名または公演日"
+    }
+  },
+  "searchPanel": {
+    "messages": {
+      "defaultByName": "ランダムに10人表示中",
+      "defaultByLive": "公演名を指定してください",
+      "searching": "検索中...",
+      "error": "エラー",
+      "success": "検索結果: {{count}}人",
+      "successPlural": "検索結果: {{count}}人"
+    }
+  },
+  "myPage": {
+    "myIdols": {
+      "inCharges": "担当アイドル一覧",
+      "favorites": "推しアイドル一覧",
+      "groups": "マイグループ"
+    }
+  },
+  "about": {
+    "howToUse": {
+      "introduction": {
+        "title": "何ができるの？",
+        "description": "<p>THE IDOLM@STERシリーズに登場するアイドルを検索し、PC・スマホ端末上でイメージカラーのプレビューを表示することができます。</p>"
+      },
+      "features": {
+        "title": "どんな機能があるの？",
+        "preview": {
+          "title": "プレビューモード",
+          "description": "<p>「イメージカラー」「アイドル名」「カラーコード」を画面いっぱいに表示します。</p><p>買い物中に目についた、<strong>担当カラーっぽいTシャツ・食器・文房具etc.の色を瞬時にスマホで確認することができます！</strong>最高ですね👍</p>"
+        },
+        "penlight": {
+          "title": "ペンライトモード",
+          "description": "<p>「イメージカラー」のみを画面いっぱいに表示します。</p><p>アニクラやDJバーで突如流れ出す担当曲！だけど今日はペンライトを持ってきていない😭</p><p>こんな悲劇とはもうおさらば、<strong>あなたのスマホが瞬時にペンライトに生まれ変わります！</strong>優勝間違いなし🏆</p>"
+        }
+      },
+      "howToUse": {
+        "title": "使い方",
+        "description": "<ol><li>検索画面でアイドルを検索する</li><li>プレビューしたいアイドルを選択する</li><li><strong>「プレビュー」</strong>、または<strong>「ペンライト」</strong>ボタンをタップする</li></ol><p>また、<strong>「プレビューしたいアイドルをダブルタップ」</strong>することで、<strong>ペンライトモードをショートカット起動</strong>させることができます。</p><p>それから、地味に<strong>ダークテーマ対応</strong>しており、右上の<i class=\"material-icons\">brightness_4</i> / <i class=\"material-icons\">brightness_7</i>からテーマ切り替えができます。使ってみたい人は是非\uD83D\uDE4F</p>"
+      }
+    },
+    "development": {
+      "imasparql": {
+        "title": "イメージカラーはどこから取ってきてるの？",
+        "description": "<p>必要なデータは全て<a href=\"https://sparql.crssnky.xyz/imas/\" target=\"_blank\">im@sparql</a>から取得しています。</p><p>データに間違いを見つけた場合は、<a href=\"https://github.com/imas/imasparql/issues/\" target=\"_blank\">im@sparqlのIssueページ</a>にご報告ください。</p>"
+      },
+      "frontend": {
+        "title": "フロントエンドの実装はどうなっているの？",
+        "description": "<p>このWebアプリは、<a href=\"https://www.jetbrains.com/ja-jp/lp/compose-mpp/\" target=\"_blank\">Compose for Web</a>を使って実装しています。ソースコードに占めるKotlinの割合は<strong>95%を超えています。</strong></p><p>つまり、このWebアプリは765プロダクション事務員である<strong>音無小鳥さんとほぼ同じ存在です。</strong>ここテストに出ます。覚えておきましょう。</p>"
+      },
+      "requests": {
+        "title": "バグを見つけた！機能追加して欲しい！",
+        "description": "<p><a href=\"https://github.com/subroh0508/colormaster/issues\" target=\"_blank\">COLOR M@STERのIssueページ</a>に報告ください。</p><p>St@r・Pull Requestも大歓迎です。ついでに投げ銭とかしてくれると泣いて喜びます。</p><ul><li>ほしいものリスト: <a href=\"https://www.amazon.jp/hz/wishlist/ls/34TBOXPWOUD8W?ref_=wl_share\" target=\"_blank\">Link</a></li></ul>"
+      }
+    },
+    "terms": {
+      "top": {
+        "title": "利用規約",
+        "description": "<p>この利用規約は、<a href=\"https://twitter.com/subroh_0508\" target=\"_blank\">にしこりさぶろ〜</a>(以下「開発者」という)が、COLOR M@STER(以下「当アプリ」という)で提供するサービスの利用条件を定めるものです。</p><p>利用者の皆様(以下「利用者」という)が当アプリを利用する場合、この規約(以下「本規約」という)に定める事項を承諾したものとみなします。</p>"
+      },
+      "disclaimer": {
+        "title": "1. 免責事項",
+        "description": "<p>開発者は当アプリにおける情報の正確性、特定の目的への適合性，セキュリティなどに関する欠陥，エラーやバグ等がないことを保証しておりません。</p><p>また、当アプリを利用したことで生じたあらゆる損害・不利益等に対して、開発者はいかなる責任も負いません。</p>"
+      },
+      "cookie": {
+        "title": "2. Cookieの利用について",
+        "description": "<p>当アプリでは、当アプリの改善を図るため、Google社のサービスであるGoogle Analyticsを利用し、利用者の閲覧情報を収集しています。</p><p>利用者がブラウザを利用してウェブサイトにアクセスすると、これらサービスがCookieを利用してデータの収集、処理をおこないます。このサービスが収集、処理するデータに、利用者個人を特定する情報は含まれておりません。</p><p>また、利用者は、当アプリを利用することで、Google社が行うこうしたデータ処理に対し許可を与えたものとみなします。</p>"
+      }
+    }
+  },
+  "errors": {
+    "4xx": "リクエストに誤りがあります。開発者にお問い合わせください。",
+    "5xx": "サーバーでエラーが発生しました。時間をおいて再度お試しいただくか、開発者にお問い合わせください。",
+    "unknown": "予期せぬエラーが発生しました。リロードしてください。"
+  },
+  "loading": "読み込んでいます..."
+}

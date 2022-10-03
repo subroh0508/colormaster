@@ -1,6 +1,9 @@
+import org.jetbrains.compose.compose
+
 plugins {
     `android-application`
     kotlin("android")
+    id("org.jetbrains.compose")
     id("com.google.gms.google-services") apply false
 }
 
@@ -18,10 +21,10 @@ dependencies {
     implementation(Libraries.Jetpack.activity)
     implementation(Libraries.Jetpack.activityCompose)
     implementation(Libraries.Jetpack.material)
-    implementation(Libraries.Jetpack.Compose.ui)
-    implementation(Libraries.Jetpack.Compose.material)
-    implementation(Libraries.Jetpack.Compose.uiTooling)
-    implementation(Libraries.Jetpack.Compose.util)
+    implementation(compose.ui)
+    implementation(compose.material)
+    implementation(compose.uiTooling)
+    implementation(compose(Libraries.Compose.util))
     implementation(Libraries.Jetpack.Lifecycle.viewModel)
 
     implementation(Libraries.Koin.android)

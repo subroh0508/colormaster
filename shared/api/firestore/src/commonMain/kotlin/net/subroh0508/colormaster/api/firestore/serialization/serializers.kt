@@ -37,7 +37,6 @@ class FirebaseMapSerializer : KSerializer<Map<String, Any?>> {
         override fun isElementOptional(index: Int) = false
     }
 
-    @InternalSerializationApi
     @Suppress("UNCHECKED_CAST")
     override fun serialize(encoder: Encoder, value: Map<String, Any?>) {
         map = value
@@ -82,7 +81,6 @@ class FirebaseListSerializer : KSerializer<Iterable<Any?>> {
         override fun isElementOptional(index: Int) = false
     }
 
-    @InternalSerializationApi
     @Suppress("UNCHECKED_CAST")
     override fun serialize(encoder: Encoder, value: Iterable<Any?>) {
         list = value.toList()

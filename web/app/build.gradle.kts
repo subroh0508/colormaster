@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
-    kotlin("js")
-    id("kotlinx-serialization")
+    kotlin("multiplatform")
+    id("org.jetbrains.compose")
 }
 
 kotlin {
@@ -20,7 +20,7 @@ kotlin {
                 sourceMaps = true
                 devServer = KotlinWebpackConfig.DevServer(
                     port = 8088,
-                    contentBase = mutableListOf("${projectDir.path}/src/main/resources")
+                    contentBase = mutableListOf("${projectDir.path}/src/jsMain/resources")
                 )
             }
             webpackTask {
@@ -30,7 +30,7 @@ kotlin {
     }
 
     sourceSets {
-        val main by getting {
+        named("jsMain") {
             dependencies {
                 implementation(project(":shared:components:core"))
                 implementation(project(":shared:model"))
@@ -41,6 +41,12 @@ kotlin {
                 implementation(project(":shared:presentation:search"))
                 implementation(project(":shared:presentation:preview"))
 
+                implementation(project(":web:material"))
+
+                implementation(compose.web.core)
+                implementation(compose.web.svg)
+                implementation(compose.runtime)
+
                 implementation(Libraries.Coroutines.js)
 
                 implementation(Libraries.Ktor.clientJs)
@@ -49,32 +55,30 @@ kotlin {
 
                 implementation(Libraries.Serialization.core)
 
-                implementation(Libraries.Html.js)
-                implementation(Libraries.Css(kotlinVersion).js)
-
-                implementation(Libraries.JsWrappers(kotlinVersion).react)
-                implementation(Libraries.JsWrappers(kotlinVersion).reactDom)
-                implementation(Libraries.JsWrappers(kotlinVersion).reactRouterDom)
-                implementation(Libraries.JsWrappers(kotlinVersion).styled)
-                implementation(Libraries.JsWrappers(kotlinVersion).extensions)
-                implementation(Libraries.JsWrappers.MaterialUi.core)
+                implementation(enforcedPlatform(kotlinWrappersBom))
+                implementation(Libraries.JsWrappers.extensions)
 
                 implementation(Libraries.Koin.core)
+                implementation(Libraries.Decompose.core)
 
-                implementation(npm(Libraries.Npm.reactAutoSuggest, Libraries.Npm.reactAutoSuggestVersion))
                 implementation(npm(Libraries.Npm.I18next.core, Libraries.Npm.I18next.version))
                 implementation(npm(Libraries.Npm.I18next.httpBackend, Libraries.Npm.I18next.httpBackendVersion))
-                implementation(npm(Libraries.Npm.I18next.react, Libraries.Npm.I18next.reactVersion))
 
                 implementation(devNpm("html-webpack-plugin", "^5.3.1"))
                 implementation(devNpm("webpack-cdn-plugin", "^3.3.1"))
+
+                implementation(devNpm("sass", "^1.51.0"))
+                implementation(devNpm("sass-loader", "^12.6.0"))
+                implementation(devNpm("extract-loader", "^5.1.0"))
+                implementation(devNpm("file-loader", "^6.2.0"))
+                implementation(devNpm("autoprefixer", "^10.4.7"))
+                implementation(devNpm("postcss-loader", "^6.2.1"))
             }
         }
     }
 }
 
-
-val browserWebpack = tasks.getByName("browserProductionWebpack")
+val jsBrowserWebpack = tasks.getByName("jsBrowserProductionWebpack")
 
 val copyDistributions by tasks.registering {
     doLast {
@@ -90,4 +94,4 @@ val copyDistributions by tasks.registering {
     }
 }
 
-browserWebpack.finalizedBy(copyDistributions)
+jsBrowserWebpack.finalizedBy(copyDistributions)

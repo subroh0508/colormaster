@@ -1,0 +1,132 @@
+@use '@material/theme/mdc-theme';
+
+@use '@material/button/styles' as mdc-button;
+
+@use '@material/checkbox';
+@use '@material/form-field';
+
+@use '@material/card';
+
+@use '@material/chips/styles' as mdc-chips;
+
+@use '@material/drawer';
+
+@use '@material/list';
+
+@use '@material/menu-surface/mdc-menu-surface';
+@use '@material/menu/mdc-menu';
+
+@use '@material/tab-bar/mdc-tab-bar';
+@use '@material/tab-scroller/mdc-tab-scroller';
+@use '@material/tab-indicator/mdc-tab-indicator';
+@use '@material/tab/mdc-tab';
+
+@use '@material/floating-label/mdc-floating-label';
+@use '@material/notched-outline/mdc-notched-outline';
+@use '@material/textfield';
+
+@use '@material/tooltip/styles' as mdc-tooltip;
+
+@use '@material/icon-button/icon-button';
+@use '@material/top-app-bar/mdc-top-app-bar';
+
+@use '@material/ripple';
+
+@use '@material/typography/mdc-typography';
+
+@include card.core-styles;
+
+@include checkbox.core-styles;
+.mdc-checkbox {
+  @include checkbox.container-colors(
+    $marked-stroke-color: var(--mdc-theme-primary),
+    $marked-fill-color: var(--mdc-theme-primary),
+    $unmarked-stroke-color: var(--mdc-theme-primary),
+    $unmarked-fill-color: transparent
+  );
+  @include checkbox.ink-color(var(--mdc-theme-on-primary));
+}
+.mdc-form-field {
+  label {
+    color: var(--mdc-theme-text-primary);
+  }
+}
+
+.mdc-evolution-chip {
+  background-color: var(--mdc-chip-surface-color);
+
+  & &__text-label {
+    color: var(--mdc-theme-text-primary);
+  }
+
+  &--activated {
+    background-color: var(--mdc-chip-surface-activated-color);
+  }
+
+  &--activated &__text-label {
+    color: var(--mdc-theme-primary);
+  }
+}
+
+@include drawer.core-styles;
+@include drawer.modal-core-styles;
+
+@include list.deprecated-core-styles;
+
+.mdc-deprecated-list-divider {
+  border-bottom-color: var(--mdc-theme-divider);
+}
+
+@include form-field.core-styles;
+
+@include textfield.core-styles;
+
+.mdc-text-field {
+  &--outlined {
+    @include textfield.label-color(var(--mdc-theme-text-secondary));
+
+    @include textfield.ink-color(var(--mdc-theme-text-primary));
+    @include textfield.outline-color(var(--mdc-theme-text-hint));
+    @include textfield.hover-outline-color(var(--mdc-theme-text-primary));
+
+    @include textfield.disabled-label-color(var(--mdc-theme-text-disabled));
+
+    @include textfield.disabled-ink-color(var(--mdc-theme-text-disabled));
+    @include textfield.disabled-outline-color(var(--mdc-textfield-disabled-outline-color));
+  }
+
+  &--focused {
+    @include textfield.label-color(var(--mdc-theme-primary));
+  }
+}
+
+.mdc-top-app-bar {
+  background-color: var(--mdc-theme-background);
+
+  .mdc-top-app-bar__action-item {
+    color: var(--mdc-theme-on-surface);
+  }
+  .mdc-top-app-bar__navigation-icon {
+    color: var(--mdc-theme-on-surface);
+  }
+}
+
+@include icon-button.core-styles;
+
+.mdc-card__header {
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+  }
+}
+
+.mdc-tooltip__surface {
+  background-color: rgba(97, 97, 97, 0.92);
+}
+
+.mdc-theme-text-primary {
+  color: var(--mdc-theme-text-primary) !important;
+}
+
+.mdc-theme-text-secondary {
+  color: var(--mdc-theme-text-secondary) !important;
+}
