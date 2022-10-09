@@ -26,7 +26,6 @@ include(
     ":shared:api:firestore",
     ":shared:api:jsfirebaseapp",
     ":shared:infra:repository",
-    ":shared:infra:db",
     ":shared:presentation:common",
     ":shared:presentation:home",
     ":shared:presentation:search",
