@@ -17,15 +17,15 @@ fun Project.kotlinMpp(configure: KotlinMultiplatformExtension.() -> Unit) =
                 dependencies {
                     implementation(project(":shared:test"))
 
-                    implementation(Libraries.Kotest.engine)
-                    implementation(Libraries.Kotest.assertion)
+                    implementation(kotestEngine)
+                    implementation(kotestAssertion)
                 }
             }
             val androidMain by getting
             val androidTest by getting {
                 dependencies {
                     implementation(Libraries.Coroutines.test)
-                    implementation(Libraries.Kotest.runnerJunit5)
+                    implementation(kotestRunnerJunit5)
                     implementation(Libraries.MockK.android)
                 }
             }

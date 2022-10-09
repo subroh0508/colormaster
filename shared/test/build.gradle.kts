@@ -9,8 +9,8 @@ kotlinMpp {
             dependencies {
                 implementation(Libraries.Ktor.client)
                 implementation(Libraries.Ktor.clientMock)
-                implementation(Libraries.Kotest.engine)
-                implementation(Libraries.Kotest.assertion)
+                implementation(kotestEngine)
+                implementation(kotestAssertion)
             }
         }
         val androidMain by getting {
