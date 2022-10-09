@@ -1,9 +1,8 @@
 plugins {
-    kotlin("multiplatform")
-    `android-multiplatform`
+    shared
 }
 
-kotlinMpp {
+kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -19,6 +18,5 @@ kotlinMpp {
                 implementation(Libraries.Coroutines.test)
             }
         }
-        val jsMain by getting
     }
 }

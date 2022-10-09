@@ -1,12 +1,10 @@
 plugins {
-    kotlin("multiplatform")
-    `android-multiplatform`
-    kotlin("plugin.serialization")
+    shared
     id("org.jetbrains.compose")
     id("io.kotest.multiplatform")
 }
 
-kotlinMpp {
+kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {

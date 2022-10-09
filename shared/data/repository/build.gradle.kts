@@ -1,5 +1,5 @@
 plugins {
-    `shared-infra`
+    `shared-repository`
     id("io.kotest.multiplatform")
 }
 
