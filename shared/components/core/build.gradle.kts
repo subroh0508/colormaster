@@ -1,9 +1,8 @@
 plugins {
-    kotlin("multiplatform")
-    `android-multiplatform`
+    shared
 }
 
-kotlinMpp {
+kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -11,7 +10,6 @@ kotlinMpp {
                 implementation(project(":shared:api:authentication"))
                 implementation(project(":shared:api:firestore"))
                 implementation(project(":shared:infra:repository"))
-                implementation(project(":shared:infra:db"))
                 implementation(project(":shared:model"))
 
                 implementation(Libraries.Coroutines.core)
@@ -23,7 +21,6 @@ kotlinMpp {
                 implementation(Libraries.Koin.core)
             }
         }
-        val androidMain by getting
         val jsMain by getting {
             dependencies {
                 implementation(project(":shared:api:jsfirebaseapp"))

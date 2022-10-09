@@ -1,9 +1,8 @@
 plugins {
-    kotlin("multiplatform")
-    `android-multiplatform`
+    shared
 }
 
-kotlinMpp {
+kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {

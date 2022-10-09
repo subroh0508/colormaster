@@ -1,10 +1,9 @@
 plugins {
-    kotlin("multiplatform")
-    `android-multiplatform`
+    `shared-api`
     kotlin("plugin.serialization")
 }
 
-kotlinMpp {
+kotlin {
     sourceSets {
         all {
             languageSettings.apply {
@@ -15,14 +14,6 @@ kotlinMpp {
             }
         }
 
-        val commonMain by getting {
-            dependencies {
-                implementation(Libraries.Coroutines.core)
-                implementation(Libraries.Serialization.core)
-
-                implementation(Libraries.Koin.core)
-            }
-        }
         val androidMain by getting {
             dependencies {
                 implementation(Libraries.Coroutines.playServices)

@@ -1,10 +1,9 @@
 plugins {
-    kotlin("multiplatform")
-    `android-multiplatform`
+    `shared-infra`
     id("io.kotest.multiplatform")
 }
 
-kotlinMpp {
+kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -13,10 +12,7 @@ kotlinMpp {
                 implementation(project(":shared:api:firestore"))
                 implementation(project(":shared:model"))
 
-                implementation(Libraries.Coroutines.core)
                 implementation(Libraries.Serialization.core)
-
-                implementation(Libraries.Koin.core)
             }
         }
         val commonTest by getting {
@@ -25,8 +21,6 @@ kotlinMpp {
                 implementation(Libraries.Ktor.clientMock)
             }
         }
-        val androidMain by getting
-        val jsMain by getting
     }
 }
 

@@ -1,22 +1,15 @@
 plugins {
-    kotlin("multiplatform")
-    `android-multiplatform`
+    `shared-api`
     kotlin("plugin.serialization")
 }
 
-kotlinMpp {
+kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(Libraries.Coroutines.core)
-
-                implementation(Libraries.Serialization.core)
-
                 implementation(Libraries.Ktor.client)
                 implementation(Libraries.Ktor.json)
                 implementation(Libraries.Ktor.serialization)
-
-                implementation(Libraries.Koin.core)
             }
         }
         val androidMain by getting {
@@ -26,6 +19,5 @@ kotlinMpp {
                 implementation(Libraries.Okhttp3.loggingIntercerptor)
             }
         }
-        val jsMain by getting
     }
 }
