@@ -7,11 +7,11 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.router.stack.webhistory.DefaultWebHistoryController
 import com.arkivanov.decompose.router.stack.webhistory.WebHistoryController
-import net.subroh0508.colormaster.model.Languages
+import net.subroh0508.colormaster.presentation.common.external.I18next
+import net.subroh0508.colormaster.presentation.common.ui.Languages
+import net.subroh0508.colormaster.presentation.common.ui.basename
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import org.w3c.dom.Window
-import utilities.I18next
-import utilities.basename
 
 val LocalRouter = compositionLocalOf<Router?> { null }
 

@@ -8,10 +8,10 @@ import material.components.Divider
 import material.components.DrawerContent as MaterialDrawerContent
 import material.externals.MDCDrawer
 import material.externals.close
+import net.subroh0508.colormaster.presentation.common.external.invoke
+import net.subroh0508.colormaster.presentation.common.ui.LocalI18n
 import routes.CurrentLocalRouter
 import routes.Router
-import utilities.LocalI18n
-import utilities.invoke
 
 @Composable
 fun DrawerContent(

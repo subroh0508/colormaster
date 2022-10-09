@@ -13,7 +13,6 @@ import net.subroh0508.colormaster.api.imasparql.query.SearchByLiveQuery
 import net.subroh0508.colormaster.api.imasparql.query.SearchByNameQuery
 import net.subroh0508.colormaster.api.imasparql.serializer.Response
 import net.subroh0508.colormaster.model.*
-import net.subroh0508.colormaster.model.ui.commons.AppPreference
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 
 internal class IdolColorsRepositoryImpl(

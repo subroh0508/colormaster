@@ -3,8 +3,8 @@ package page.about
 import androidx.compose.runtime.Composable
 import components.atoms.card.OutlinedCard
 import components.templates.StaticPageFrame
-import utilities.LocalI18n
-import utilities.invoke
+import net.subroh0508.colormaster.presentation.common.external.invoke
+import net.subroh0508.colormaster.presentation.common.ui.LocalI18n
 
 @Composable
 fun TermsPage(

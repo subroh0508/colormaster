@@ -1,14 +1,15 @@
 @file:Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
 
-package utilities
+package net.subroh0508.colormaster.presentation.common.external
 
 import kotlinx.js.jso
 import kotlin.js.Promise
 import kotlinext.js.require
-import net.subroh0508.colormaster.model.Languages
+import net.subroh0508.colormaster.presentation.common.ui.Languages
 import org.w3c.dom.Window
 
 @JsModule("i18next/i18next")
+@JsNonModule
 private external val i18next: I18next
 
 external interface I18next {
@@ -24,6 +25,7 @@ external interface I18next {
 }
 
 @JsModule("i18next-http-backend")
+@JsNonModule
 private external val httpBackendModule: dynamic
 
 private val httpBackend = if (httpBackendModule.default != undefined) httpBackendModule.default else httpBackendModule
@@ -82,7 +84,7 @@ fun I18next.onLanguageChanged(func: (Languages?) -> Unit) = apply {
     on("languageChanged") { code: String -> func(Languages.valueOfCode(code)) }
 }
 
-internal val Window.language
+val Window.language
     get() = window.location.pathname.split("/")[1].takeIf(String::isNotBlank)?.let { code ->
         Languages.valueOfCode(code)
     } ?: Languages.JAPANESE

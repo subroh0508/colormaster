@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.model
+package net.subroh0508.colormaster.presentation.common.ui
 
 enum class Languages(val code: String, val label: String) {
     JAPANESE("ja", "日本語"),

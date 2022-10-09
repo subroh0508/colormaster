@@ -12,10 +12,13 @@ import material.components.MenuItem
 import material.components.TopAppBarVariant
 import material.externals.MDCDrawer
 import material.externals.open
-import net.subroh0508.colormaster.model.Languages
 import net.subroh0508.colormaster.model.authentication.CurrentUser
-import net.subroh0508.colormaster.model.ui.commons.AppPreference
-import net.subroh0508.colormaster.model.ui.commons.ThemeType
+import net.subroh0508.colormaster.presentation.common.external.I18nextText
+import net.subroh0508.colormaster.presentation.common.external.invoke
+import net.subroh0508.colormaster.presentation.common.ui.AppPreference
+import net.subroh0508.colormaster.presentation.common.ui.Languages
+import net.subroh0508.colormaster.presentation.common.ui.LocalApp
+import net.subroh0508.colormaster.presentation.common.ui.ThemeType
 import org.jetbrains.compose.web.css.height
 import org.jetbrains.compose.web.css.vh
 import routes.CurrentLocalRouter
@@ -61,7 +64,7 @@ private fun TopAppBar(
 
 @Composable
 private fun DrawerActionContent(preference: AppPreference) {
-    val (lang, theme, t) = LocalBrowserApp.current
+    val (lang, theme, t) = LocalApp.current
     val router = CurrentLocalRouter() ?: return
     t ?: return
 
