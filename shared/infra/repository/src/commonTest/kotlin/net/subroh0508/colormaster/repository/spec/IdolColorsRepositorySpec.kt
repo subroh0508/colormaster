@@ -79,13 +79,13 @@ class IdolColorsRepositorySpec : FunSpec() {
 
             test("#search(by brand and types): when lang = '$lang' it should return idols") {
                 val repository = mockApi {
-                    mockSearchByName(lang, brands = Brands._765, types = setOf(Types.MILLION_LIVE.PRINCESS), res = expectsByBrandAndTypes(lang).toTypedArray())
+                    mockSearchByName(lang, brands = Brands._765, types = setOf(Types.MillionLive.PRINCESS), res = expectsByBrandAndTypes(lang).toTypedArray())
                 }
 
                 repository.search(
                     name = null,
                     brands = Brands._765,
-                    types = setOf(Types.MILLION_LIVE.PRINCESS),
+                    types = setOf(Types.MillionLive.PRINCESS),
                     lang = lang,
                 ) should containExactlyInAnyOrder(expectsByBrandAndTypes(lang))
             }

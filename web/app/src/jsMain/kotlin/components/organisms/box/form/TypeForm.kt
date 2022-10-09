@@ -51,15 +51,15 @@ private data class LabeledType(
 }
 
 private fun Brands.getTypes(t: I18nextText) = when (this) {
-    Brands._765, Brands._ML -> Types.MILLION_LIVE.values()
-    Brands._CG -> Types.CINDERELLA_GIRLS.values()
-    Brands._315 -> Types.SIDE_M.values()
+    Brands._765, Brands._ML -> Types.MillionLive.values()
+    Brands._CG -> Types.CinderellaGirls.values()
+    Brands._315 -> Types.SideM.values()
     else -> null
 }?.map { it.name.lowercase() to LabeledType(it, t) }
 
 private val Types.labelKey get() = "searchBox.attributes.type." + when (this) {
-    is Types.CINDERELLA_GIRLS -> name
-    is Types.MILLION_LIVE -> name
-    is Types.SIDE_M -> name
+    is Types.CinderellaGirls -> name
+    is Types.MillionLive -> name
+    is Types.SideM -> name
     else -> ""
 }.lowercase()

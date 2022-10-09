@@ -63,7 +63,7 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
         IdolColor("Akizuki_Ryo_876", "秋月涼", HexColor("B2D468")),
     )
     
-    private val byBrandAndType = Brands._765 to Types.MILLION_LIVE.PRINCESS
+    private val byBrandAndType = Brands._765 to Types.MillionLive.PRINCESS
     private val byBrandAndTypeIdols = listOf(
         IdolColor("Amami_Haruka", "天海春香", HexColor("E22B30")),
         IdolColor("Ganaha_Hibiki", "我那覇響", HexColor("01ADB9")),
