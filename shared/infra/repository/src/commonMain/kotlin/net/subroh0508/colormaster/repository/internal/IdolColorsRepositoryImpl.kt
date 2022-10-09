@@ -109,6 +109,12 @@ internal class IdolColorsRepositoryImpl(
         val name = nameMap["value"] ?: return@mapNotNull null
         val color = colorMap["value"] ?: return@mapNotNull null
 
-        IdolColor(id, name, HexColor(color))
+        val intColor = Triple(
+            color.substring(0, 2).toInt(16),
+            color.substring(2, 4).toInt(16),
+            color.substring(4, 6).toInt(16),
+        )
+
+        IdolColor(id, name, intColor)
     }
 }

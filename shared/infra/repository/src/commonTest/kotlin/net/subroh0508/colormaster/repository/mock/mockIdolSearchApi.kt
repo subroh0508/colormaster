@@ -54,20 +54,20 @@ fun mockSearchById(
 }
 
 fun getRandomIdols(lang: String) = listOf(
-    IdolColor("Shimabara_Elena", if (lang == "ja") "島原エレナ" else "Elena Shimabara", HexColor("9BCE92")),
-    IdolColor("Abe_nana", if (lang == "ja") "安部菜々" else "Nana Abe", HexColor("E64A79")),
-    IdolColor("Kohinata_Miho", if (lang == "ja") "小日向美穂" else "Miho Kohinata", HexColor("C64796")),
-    IdolColor("Sakuma_Mayu", if (lang == "ja") "佐久間まゆ" else "Mayu Sakuma", HexColor("D1197B")),
-    IdolColor("Hidaka_Ai", if (lang == "ja") "日高愛" else "Ai Hidaka", HexColor("E85786")),
-    IdolColor("Nakatani_Iku", if (lang == "ja") "中谷育" else "Iku Nakatani", HexColor("F7E78E")),
-    IdolColor("Taiga_Takeru", if (lang == "ja") "大河タケル" else "Takeru Taiga", HexColor("0E0C9F")),
-    IdolColor("Kuzunoha_Amehiko", if (lang == "ja") "葛之葉雨彦" else "Amehiko Kuzunoha", HexColor("111721")),
-    IdolColor("Suou_Momoko", if (lang == "ja") "周防桃子" else "Momoko Suou", HexColor("EFB864")),
-    IdolColor("Ichikawa_Hinana", if (lang == "ja") "市川雛菜" else "Hinana Ichikawa", HexColor("FFC639")),
+    IdolColor("Shimabara_Elena", if (lang == "ja") "島原エレナ" else "Elena Shimabara", Triple(155, 206, 146)),
+    IdolColor("Abe_nana", if (lang == "ja") "安部菜々" else "Nana Abe", Triple(230, 74, 121)),
+    IdolColor("Kohinata_Miho", if (lang == "ja") "小日向美穂" else "Miho Kohinata", Triple(198, 71, 150)),
+    IdolColor("Sakuma_Mayu", if (lang == "ja") "佐久間まゆ" else "Mayu Sakuma", Triple(209, 25, 123)),
+    IdolColor("Hidaka_Ai", if (lang == "ja") "日高愛" else "Ai Hidaka", Triple(232, 87, 134)),
+    IdolColor("Nakatani_Iku", if (lang == "ja") "中谷育" else "Iku Nakatani", Triple(247, 231, 142)),
+    IdolColor("Taiga_Takeru", if (lang == "ja") "大河タケル" else "Takeru Taiga", Triple(14, 12, 159)),
+    IdolColor("Kuzunoha_Amehiko", if (lang == "ja") "葛之葉雨彦" else "Amehiko Kuzunoha", Triple(17, 23, 33)),
+    IdolColor("Suou_Momoko", if (lang == "ja") "周防桃子" else "Momoko Suou", Triple(239, 184, 100)),
+    IdolColor("Ichikawa_Hinana", if (lang == "ja") "市川雛菜" else "Hinana Ichikawa", Triple(255, 198, 57)),
 )
 
 private fun toJson(lang: String, res: List<IdolColor>) = resultJson {
-    res.joinToString(",") { (id, name, hexColor) ->
-        jsonIdolColor(lang, id, name, hexColor.value)
+    res.joinToString(",") {
+        jsonIdolColor(lang, it.id, it.name, it.color.replace("#", ""))
     }
 }

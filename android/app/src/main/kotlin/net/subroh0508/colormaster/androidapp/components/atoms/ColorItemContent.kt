@@ -10,15 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import net.subroh0508.colormaster.model.HexColor
+import net.subroh0508.colormaster.model.IntColor
+import net.subroh0508.colormaster.model.isBrighter
+import net.subroh0508.colormaster.model.toHex
 
 @Composable
 fun ColorItemContent(
     label: String,
-    color: HexColor,
+    intColor: IntColor,
     modifier: Modifier = Modifier,
 ) {
-    val textColor = if (color.isBrighter) Color.Black else Color.White
+    val textColor = if (intColor.isBrighter) Color.Black else Color.White
 
     Column(modifier) {
         Text(
@@ -29,7 +31,7 @@ fun ColorItemContent(
                 .padding(top = 8.dp, start = 24.dp, end = 24.dp),
         )
         Text(
-            "#${color.value}",
+            intColor.toHex(),
             color = textColor,
             style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Medium),
             modifier = Modifier.align(Alignment.CenterHorizontally)

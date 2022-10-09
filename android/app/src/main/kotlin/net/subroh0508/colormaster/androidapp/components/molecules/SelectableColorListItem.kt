@@ -23,15 +23,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.components.atoms.ColorItemContent
 import net.subroh0508.colormaster.androidapp.themes.darkBackground
-import net.subroh0508.colormaster.androidapp.themes.hexToColor
 import net.subroh0508.colormaster.androidapp.themes.lightBackground
-import net.subroh0508.colormaster.model.HexColor
+import net.subroh0508.colormaster.model.IntColor
+import net.subroh0508.colormaster.model.isBrighter
+import net.subroh0508.colormaster.presentation.common.extensions.toColor
 
 @ExperimentalFoundationApi
 @Composable
 fun SelectableColorListItem(
     label: String,
-    color: HexColor,
+    intColor: IntColor,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     favorited: Boolean = false,
@@ -41,7 +42,7 @@ fun SelectableColorListItem(
 ) {
     Card(
         elevation = 4.dp,
-        backgroundColor = color.hexToColor(),
+        backgroundColor = intColor.toColor(),
         modifier = modifier.combinedClickable(
             onClick = onClick,
             onLongClick = onLongClick,
@@ -52,14 +53,14 @@ fun SelectableColorListItem(
                 Icon(
                     Icons.Outlined.CheckCircle,
                     contentDescription = null,
-                    tint = if (color.isBrighter) Color.Black else Color.White,
+                    tint = if (intColor.isBrighter) Color.Black else Color.White,
                     modifier = Modifier.size(36.dp)
                         .align(Alignment.CenterStart),
                 )
             }
 
             ColorItemContent(
-                label, color,
+                label, intColor,
                 modifier = Modifier.fillMaxWidth()
                     .align(Alignment.Center),
             )
@@ -67,7 +68,7 @@ fun SelectableColorListItem(
             Icon(
                 if (favorited) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,
                 contentDescription = null,
-                tint = if (color.isBrighter) Color.Black else Color.White,
+                tint = if (intColor.isBrighter) Color.Black else Color.White,
                 modifier = Modifier.align(Alignment.BottomEnd)
                     .clickable { onClickFavorite() }
                     .padding(4.dp),
@@ -81,10 +82,10 @@ fun SelectableColorListItem(
 @Composable
 fun PreviewColorListItem() {
     val items = listOf(
-        "三峰結華" to HexColor("3B91C4"),
-        "八宮めぐる" to HexColor("FFE012"),
-        "樋口円香" to HexColor("BE1E3E"),
-        "有栖川夏葉" to HexColor("90E677"),
+        "三峰結華" to Triple(59, 145, 196),
+        "八宮めぐる" to Triple(255, 224, 18),
+        "樋口円香" to Triple(190, 30, 62),
+        "有栖川夏葉" to Triple(144, 230, 119),
     )
 
     var selected by remember { mutableStateOf(listOf("樋口円香", "有栖川夏葉")) }

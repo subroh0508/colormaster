@@ -34,8 +34,8 @@ class IdolColorsRepositorySpec : FunSpec() {
 
             fun param(lang: String) = IdolName(if (lang == "ja") "久川" else "Hisakawa")
             fun expectsByName(lang: String) = listOf(
-                IdolColor("Hisakawa_Nagi", if (lang == "ja") "久川凪" else "Nagi Hisakawa", HexColor("F7A1BA")),
-                IdolColor("Hisakawa_Hayate", if (lang == "ja") "久川颯" else "Hayate Hisakawa", HexColor("7ADAD6")),
+                IdolColor("Hisakawa_Nagi", if (lang == "ja") "久川凪" else "Nagi Hisakawa", Triple(247, 161, 186)),
+                IdolColor("Hisakawa_Hayate", if (lang == "ja") "久川颯" else "Hayate Hisakawa", Triple(122, 218, 214)),
             )
 
             test("#search(by name): when lang = '$lang' it should return idols") {
@@ -52,9 +52,9 @@ class IdolColorsRepositorySpec : FunSpec() {
             }
 
             fun expectsByBrand(lang: String) = listOf(
-                IdolColor("Hidaka_Ai", if (lang == "ja") "日高愛" else "Ai Hidaka", HexColor("E85786")),
-                IdolColor("Mizutani_Eri", if (lang == "ja") "水谷絵理" else "Eri Mizutani", HexColor("00ADB9")),
-                IdolColor("Akizuki_Ryo_876", if (lang == "ja") "秋月涼" else "Ryo Akizuki", HexColor("B2D468")),
+                IdolColor("Hidaka_Ai", if (lang == "ja") "日高愛" else "Ai Hidaka", Triple(232, 87, 134)),
+                IdolColor("Mizutani_Eri", if (lang == "ja") "水谷絵理" else "Eri Mizutani", Triple(0, 173, 185)),
+                IdolColor("Akizuki_Ryo_876", if (lang == "ja") "秋月涼" else "Ryo Akizuki", Triple(178, 212, 104)),
             )
 
             test("#search(by brand): when lang = '$lang' it should return idols") {
@@ -71,10 +71,10 @@ class IdolColorsRepositorySpec : FunSpec() {
             }
 
             fun expectsByBrandAndTypes(lang: String) = listOf(
-                IdolColor("Amami_Haruka", if (lang == "ja") "天海春香" else "Haruka Amami", HexColor("E22B30")),
-                IdolColor("Ganaha_Hibiki", if (lang == "ja") "我那覇響" else "Ganaha Hibiki", HexColor("01ADB9")),
-                IdolColor("Kikuchi_Makoto", if (lang == "ja") "菊地真" else "Kikuchi Makoto", HexColor("515558")),
-                IdolColor("Hagiwara_Yukiho", if (lang == "ja") "萩原雪歩" else "Hagiwara Yukiho", HexColor("D3DDE9")),
+                IdolColor("Amami_Haruka", if (lang == "ja") "天海春香" else "Haruka Amami", Triple(226, 43, 48)),
+                IdolColor("Ganaha_Hibiki", if (lang == "ja") "我那覇響" else "Ganaha Hibiki", Triple(1, 173, 185)),
+                IdolColor("Kikuchi_Makoto", if (lang == "ja") "菊地真" else "Kikuchi Makoto", Triple(81, 85, 88)),
+                IdolColor("Hagiwara_Yukiho", if (lang == "ja") "萩原雪歩" else "Hagiwara Yukiho", Triple(211, 221, 233)),
             )
 
             test("#search(by brand and types): when lang = '$lang' it should return idols") {
@@ -91,9 +91,9 @@ class IdolColorsRepositorySpec : FunSpec() {
             }
 
             fun expectsByLive(lang: String) = listOf(
-                IdolColor("Sakuragi_Mano", if (lang == "ja") "櫻木真乃" else "Mano Sakuragi", HexColor("FFBAD6")),
-                IdolColor("Kazano_Hiori", if (lang == "ja") "風野灯織" else "Hirori Kazano", HexColor("144384")),
-                IdolColor("Hachimiya_Meguru", if (lang == "ja") "八宮めぐる" else "Meguru Hachimiya", HexColor("FFE012")),
+                IdolColor("Sakuragi_Mano", if (lang == "ja") "櫻木真乃" else "Mano Sakuragi", Triple(255, 186, 214)),
+                IdolColor("Kazano_Hiori", if (lang == "ja") "風野灯織" else "Hirori Kazano", Triple(20, 67, 132)),
+                IdolColor("Hachimiya_Meguru", if (lang == "ja") "八宮めぐる" else "Meguru Hachimiya", Triple(255, 224, 18)),
             )
 
             test("#search(by live): when lang = '$lang' it should return idols") {
@@ -106,8 +106,8 @@ class IdolColorsRepositorySpec : FunSpec() {
             }
 
             fun expectsById(lang: String) = listOf(
-                IdolColor("Mitsumine_Yuika", if (lang == "ja") "三峰結華" else "Yuika Mitsumine", HexColor("3B91C4")),
-                IdolColor("Hayami_Kanade", if (lang == "ja") "速水奏" else "Kanade Hayami", HexColor("0D386D")),
+                IdolColor("Mitsumine_Yuika", if (lang == "ja") "三峰結華" else "Yuika Mitsumine", Triple(59, 145, 196)),
+                IdolColor("Hayami_Kanade", if (lang == "ja") "速水奏" else "Kanade Hayami", Triple(13, 56, 109)),
             )
 
             test("#search(by id): when lang = '$lang' it should return idols") {

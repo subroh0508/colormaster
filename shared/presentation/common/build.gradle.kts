@@ -19,10 +19,14 @@ kotlinMpp {
         val androidMain by getting {
             dependencies {
                 implementation(Libraries.Jetpack.Lifecycle.viewModel)
+
+                implementation(compose.ui)
             }
         }
         val jsMain by getting {
             dependencies {
+                implementation(compose.web.core)
+
                 implementation(enforcedPlatform(kotlinWrappersBom))
                 implementation(Libraries.JsWrappers.extensions)
 
