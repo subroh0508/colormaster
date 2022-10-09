@@ -6,6 +6,6 @@ import org.koin.dsl.module
 
 object IdolColorsRepositories {
     val Module get() = module {
-        single<IdolColorsRepository> { IdolColorsRepositoryImpl(get(), get(), get(), get()) }
+        single<IdolColorsRepository> { IdolColorsRepositoryImpl(get(), get(), get()) }
     }
 }

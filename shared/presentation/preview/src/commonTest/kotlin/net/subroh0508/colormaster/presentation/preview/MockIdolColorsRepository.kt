@@ -13,10 +13,10 @@ class MockIdolColorsRepository : IdolColorsRepository {
     override suspend fun unfavorite(id: String) = Unit
     override suspend fun getInChargeOfIdolIds(): List<String> = listOf()
     override suspend fun getFavoriteIdolIds(): List<String> = listOf()
-    override suspend fun rand(limit: Int): List<IdolColor> = listOf()
-    override suspend fun search(ids: List<String>): List<IdolColor> = if (expectedIds == ids) everySearch(ids) else listOf()
-    override suspend fun search(name: IdolName?, brands: Brands?, types: Set<Types>): List<IdolColor> = listOf()
-    override suspend fun search(liveName: LiveName): List<IdolColor> = listOf()
+    override suspend fun rand(limit: Int, lang: String): List<IdolColor> = listOf()
+    override suspend fun search(ids: List<String>, lang: String): List<IdolColor> = if (expectedIds == ids) everySearch(ids) else listOf()
+    override suspend fun search(name: IdolName?, brands: Brands?, types: Set<Types>, lang: String): List<IdolColor> = listOf()
+    override suspend fun search(liveName: LiveName, lang: String): List<IdolColor> = listOf()
 }
 
 fun MockIdolColorsRepository.mockSearch(expectIds: List<String>, block: (List<String>) -> List<IdolColor>) {

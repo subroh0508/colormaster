@@ -37,6 +37,7 @@ class MyIdolsViewModel(
         viewModelScope.launch {
             inCharges.value = idolColorsRepository.search(
                 idolColorsRepository.getInChargeOfIdolIds(),
+                "ja",
             )
         }
     }
@@ -44,6 +45,7 @@ class MyIdolsViewModel(
         viewModelScope.launch {
             favorites.value = idolColorsRepository.search(
                 idolColorsRepository.getFavoriteIdolIds(),
+                "ja",
             )
         }
     }

@@ -34,12 +34,12 @@ class SearchByNameViewModel(
             super.search()
 
     override suspend fun search(params: SearchParams.ByName) = idolColorsRepository.search(
-        params.idolName, params.brands, params.types,
+        params.idolName, params.brands, params.types, "ja",
     )
 
     private fun loadRandom() {
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-            runCatching { idolColorsRepository.rand(10) }
+            runCatching { idolColorsRepository.rand(10, "ja") }
                 .onSuccess { idolsLoadState.value = LoadState.Loaded(it) }
                 .onFailure { idolsLoadState.value = LoadState.Error(it) }
         }

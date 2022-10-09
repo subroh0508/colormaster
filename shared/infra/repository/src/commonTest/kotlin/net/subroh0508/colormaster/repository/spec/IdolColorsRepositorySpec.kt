@@ -39,7 +39,7 @@ class IdolColorsRepositorySpec : FunSpec() {
             test("#rand: when lang = '${lang.code}' it should return idols at random") {
                 val repository = mockApi(lang) { mockRandom(lang, 10) }
 
-                repository.rand(10) should containExactlyInAnyOrder(getRandomIdols(lang))
+                repository.rand(10, lang.code) should containExactlyInAnyOrder(getRandomIdols(lang))
             }
 
             fun param(lang: Languages) = IdolName(if (lang == Languages.JAPANESE) "久川" else "Hisakawa")
@@ -57,6 +57,7 @@ class IdolColorsRepositorySpec : FunSpec() {
                     name = param(lang),
                     brands = null,
                     types = setOf(),
+                    lang = lang.code,
                 ) should containExactlyInAnyOrder(expectsByName(lang))
             }
 
@@ -75,6 +76,7 @@ class IdolColorsRepositorySpec : FunSpec() {
                     name = null,
                     brands = Brands._876,
                     types = setOf(),
+                    lang = lang.code,
                 ) should containExactlyInAnyOrder(expectsByBrand(lang))
             }
 
@@ -94,6 +96,7 @@ class IdolColorsRepositorySpec : FunSpec() {
                     name = null,
                     brands = Brands._765,
                     types = setOf(Types.MILLION_LIVE.PRINCESS),
+                    lang = lang.code,
                 ) should containExactlyInAnyOrder(expectsByBrandAndTypes(lang))
             }
 
@@ -109,7 +112,7 @@ class IdolColorsRepositorySpec : FunSpec() {
                     mockSearchByLive(lang, LiveName("THE IDOLM@STER SHINY COLORS MUSIC DAWN Day1"), res = expectsByLive(lang).toTypedArray())
                 }
 
-                repository.search(live) should containExactlyInAnyOrder(expectsByLive(lang))
+                repository.search(live, lang.code) should containExactlyInAnyOrder(expectsByLive(lang))
             }
 
             fun expectsById(lang: Languages) = listOf(
@@ -123,7 +126,7 @@ class IdolColorsRepositorySpec : FunSpec() {
                     mockSearchById(lang, ids = ids, res = expectsById(lang).toTypedArray())
                 }
 
-                repository.search(ids = ids) should containExactlyInAnyOrder(expectsById(lang))
+                repository.search(ids = ids, lang = lang.code) should containExactlyInAnyOrder(expectsById(lang))
             }
         }
     }

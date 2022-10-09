@@ -58,8 +58,8 @@ private fun MainContent() {
         Chip("Chip Two", selected = true) { console.log("click!") }
     }
     Div({ style { padding(16.px) } }) {
-        OutlinedTextField("名前を入力") {}
-        OutlinedTextArea("名前を入力(複数行)") {}
+        OutlinedTextField("名前を入力", onChange = {})
+        OutlinedTextArea("名前を入力(複数行)", onChange = {})
     }
     Div({ style { padding(16.px) } }) {
         Menu(
@@ -80,8 +80,8 @@ private fun MainContent() {
         Tooltip("menu-id", "言語切り替え")
     }
     Div({ style { padding(16.px) } }) {
-        Checkbox("チェックボックス 1")
-        Checkbox("チェックボックス 2", value = true)
+        Checkbox(label = "チェックボックス 1")
+        Checkbox(label = "チェックボックス 2", value = true)
     }
     Div({ style { padding(16.px) } }) {
         ButtonGroup {

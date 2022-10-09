@@ -19,6 +19,9 @@ internal val LocalBrowserApp = compositionLocalOf { BrowserAppPreference.State()
 internal fun CurrentLocalDarkTheme() = LocalBrowserApp.current.dark
 
 @Composable
+internal fun CurrentLocalLanguage() = LocalBrowserApp.current.lang
+
+@Composable
 internal fun LocalI18n() = LocalBrowserApp.current.i18n
 
 internal class BrowserAppPreference(

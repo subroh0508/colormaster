@@ -20,32 +20,31 @@ internal class IdolColorsRepositoryImpl(
     private val imasparqlClient: ImasparqlClient,
     private val firestoreClient: FirestoreClient,
     private val authenticationClient: AuthenticationClient,
-    private val appPreference: AppPreference,
 ) : IdolColorsRepository {
-    override suspend fun rand(limit: Int) =
+    override suspend fun rand(limit: Int, lang: String) =
         imasparqlClient.search(
-            RandomQuery(appPreference.lang.code, limit).build(),
+            RandomQuery(lang, limit).build(),
             IdolColorJson.serializer(),
         ).toIdolColors()
 
-    override suspend fun search(name: IdolName?, brands: Brands?, types: Set<Types>) =
+    override suspend fun search(name: IdolName?, brands: Brands?, types: Set<Types>, lang: String) =
         imasparqlClient.search(
-            SearchByNameQuery(appPreference.lang.code, name?.value, brands?.queryStr, types.map(Types::queryStr)).build(),
+            SearchByNameQuery(lang, name?.value, brands?.queryStr, types.map(Types::queryStr)).build(),
             IdolColorJson.serializer(),
         ).toIdolColors()
 
-    override suspend fun search(liveName: LiveName) =
+    override suspend fun search(liveName: LiveName, lang: String) =
         imasparqlClient.search(
-            SearchByLiveQuery(appPreference.lang.code, liveName.value).build(),
+            SearchByLiveQuery(lang, liveName.value).build(),
             IdolColorJson.serializer(),
         ).toIdolColors()
 
-    override suspend fun search(ids: List<String>) =
+    override suspend fun search(ids: List<String>, lang: String) =
         if (ids.isEmpty())
             listOf()
         else
             imasparqlClient.search(
-                SearchByIdQuery(appPreference.lang.code, ids).build(),
+                SearchByIdQuery(lang, ids).build(),
                 IdolColorJson.serializer(),
             ).toIdolColors()
 
