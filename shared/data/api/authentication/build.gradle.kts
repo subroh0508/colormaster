@@ -19,7 +19,7 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                implementation(project(":shared:api:jsfirebaseapp"))
+                implementation(project(":shared:data:api:jsfirebaseapp"))
             }
         }
     }

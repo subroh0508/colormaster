@@ -33,8 +33,8 @@ kotlin {
         named("jsMain") {
             dependencies {
                 implementation(project(":shared:components:core"))
-                implementation(project(":shared:model"))
-                implementation(project(":shared:infra:repository"))
+                implementation(project(":shared:data:model"))
+                implementation(project(":shared:data:repository"))
                 implementation(project(":shared:presentation:common"))
                 implementation(project(":shared:presentation:home"))
                 implementation(project(":shared:presentation:myidols"))
