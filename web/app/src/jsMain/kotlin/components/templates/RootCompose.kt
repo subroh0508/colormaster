@@ -1,19 +1,19 @@
 package components.templates
 
-import LocalKoinApp
 import androidx.compose.runtime.*
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import net.subroh0508.colormaster.components.core.AppModule
-import net.subroh0508.colormaster.presentation.common.external.I18next
-import net.subroh0508.colormaster.presentation.common.external.i18nextInit
-import net.subroh0508.colormaster.presentation.common.external.onLanguageChanged
-import net.subroh0508.colormaster.presentation.common.ui.AppPreference
-import net.subroh0508.colormaster.presentation.common.ui.LocalApp
-import net.subroh0508.colormaster.presentation.common.ui.ThemeType
-import net.subroh0508.colormaster.presentation.common.ui.basename
+import net.subroh0508.colormaster.components.core.LocalKoinApp
+import net.subroh0508.colormaster.components.core.external.I18next
+import net.subroh0508.colormaster.components.core.external.i18nextInit
+import net.subroh0508.colormaster.components.core.external.onLanguageChanged
+import net.subroh0508.colormaster.components.core.ui.AppPreference
+import net.subroh0508.colormaster.components.core.ui.LocalApp
+import net.subroh0508.colormaster.components.core.ui.ThemeType
+import net.subroh0508.colormaster.components.core.ui.basename
 import org.koin.core.KoinApplication
 import routes.LocalRouter
 import routes.Router

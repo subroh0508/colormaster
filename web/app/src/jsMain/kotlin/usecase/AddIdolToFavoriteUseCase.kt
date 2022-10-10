@@ -3,9 +3,9 @@ package usecase
 import androidx.compose.runtime.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import net.subroh0508.colormaster.components.core.CurrentLocalKoinApp
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.koin.core.KoinApplication
-import utilities.CurrentLocalKoinApp
 
 class AddIdolToFavoriteUseCase(
     private val repository: IdolColorsRepository,

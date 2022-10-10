@@ -1,8 +1,8 @@
 package utilities
 
 import io.ktor.client.plugins.*
-import net.subroh0508.colormaster.presentation.common.external.I18nextText
-import net.subroh0508.colormaster.presentation.common.external.invoke
+import net.subroh0508.colormaster.components.core.external.I18nextText
+import net.subroh0508.colormaster.components.core.external.invoke
 
 fun buildErrorHeader(error: Throwable) = when (error) {
     is ResponseException -> "${error.response.status.value}: ${error.response.status.description}"

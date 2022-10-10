@@ -2,13 +2,12 @@ package usecase
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
+import net.subroh0508.colormaster.components.core.CurrentLocalKoinApp
+import net.subroh0508.colormaster.components.core.model.LoadState
 import net.subroh0508.colormaster.model.LiveName
-import net.subroh0508.colormaster.presentation.common.LoadState
 import net.subroh0508.colormaster.presentation.search.model.LiveNameQuery
-import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.repository.LiveRepository
 import org.koin.core.KoinApplication
-import utilities.CurrentLocalKoinApp
 
 @Composable
 fun rememberSearchLiveUseCase(
