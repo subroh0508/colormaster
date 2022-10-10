@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.presentation.common.extensions
+package net.subroh0508.colormaster.base.extensions
 
 import kotlin.js.Date
 
