@@ -5,11 +5,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.components.atoms.ColorItemContent
-import net.subroh0508.colormaster.androidapp.themes.hexToColor
-import net.subroh0508.colormaster.model.HexColor
 import net.subroh0508.colormaster.model.IdolColor
+import net.subroh0508.colormaster.model.IntColor
+import net.subroh0508.colormaster.presentation.common.extensions.toColor
 
 @Composable
 fun StaticColorLists(
@@ -17,8 +18,8 @@ fun StaticColorLists(
     items: List<IdolColor>,
 ) {
     Column(Modifier.fillMaxSize()) {
-        items.forEach { (_, name, hexColor) ->
-            StaticColorListItem(type, name, hexColor)
+        items.forEach { (_, name, intColor) ->
+            StaticColorListItem(type, name, intColor)
         }
     }
 }
@@ -27,11 +28,11 @@ fun StaticColorLists(
 private fun ColumnScope.StaticColorListItem(
     type: ScreenType,
     label: String,
-    color: HexColor,
+    intColor: IntColor,
 ) {
     val boxModifier = Modifier.fillMaxWidth()
         .weight(1.0F, true)
-        .background(color = color.hexToColor())
+        .background(color = intColor.toColor())
 
     if (type == ScreenType.Penlight) {
         Box(modifier = boxModifier)
@@ -40,7 +41,7 @@ private fun ColumnScope.StaticColorListItem(
 
     Box(modifier = boxModifier) {
         ColorItemContent(
-            label, color,
+            label, intColor,
             modifier = Modifier.fillMaxWidth()
                 .align(Alignment.Center),
         )

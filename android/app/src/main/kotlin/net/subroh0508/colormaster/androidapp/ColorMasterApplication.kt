@@ -14,7 +14,7 @@ class ColorMasterApplication : Application() {
         super.onCreate()
 
         startKoin {
-            modules(AppModule + AppPreferenceModule + module {
+            modules(AppModule + module {
                 single<Application> { this@ColorMasterApplication }
                 viewModel { SearchByNameViewModel(get()) }
                 viewModel { FavoritesViewModel(get()) }

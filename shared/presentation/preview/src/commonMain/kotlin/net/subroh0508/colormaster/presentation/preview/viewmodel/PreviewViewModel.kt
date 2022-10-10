@@ -26,7 +26,7 @@ class PreviewViewModel(
 
     fun fetch(ids: List<String>) {
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
-            runCatching { repository.search(ids) }
+            runCatching { repository.search(ids, "ja") }
                 .onSuccess { _idolsLoadState.value = LoadState.Loaded(it) }
                 .onFailure { _idolsLoadState.value = LoadState.Error(it) }
         }

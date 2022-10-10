@@ -122,13 +122,5 @@ object Libraries {
 
         const val android = "io.mockk:mockk:$version"
     }
-
-    object Kotest {
-        const val version = "5.4.2"
-
-        const val engine = "io.kotest:kotest-framework-engine:$version"
-        const val runnerJunit5 = "io.kotest:kotest-runner-junit5:$version"
-        const val assertion = "io.kotest:kotest-assertions-core:$version"
-    }
 }
 

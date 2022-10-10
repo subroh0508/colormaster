@@ -8,9 +8,9 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":shared:model"))
+    implementation(project(":shared:data:model"))
     implementation(project(":shared:components:core"))
-    implementation(project(":shared:infra:repository"))
+    implementation(project(":shared:data:repository"))
     implementation(project(":shared:presentation:common"))
     implementation(project(":shared:presentation:search"))
     implementation(project(":shared:presentation:preview"))

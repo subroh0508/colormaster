@@ -73,11 +73,11 @@ fun ColorLists(
             contentPadding = PaddingValues(top = 4.dp, bottom = 4.dp)
         ) {
             items(items.size, { items[it].id }) { index ->
-                val (id, name, hexColor, selected, favorited) = items[index]
-                val idolColor = IdolColor(id, name.value, hexColor)
+                val (id, name, intColor, selected, favorited) = items[index]
+                val idolColor = IdolColor(id, name.value, intColor)
 
                 SelectableColorListItem(
-                    name.value, hexColor,
+                    name.value, intColor,
                     selected = selected,
                     favorited = favorited,
                     onClick = { handleOnClick(idolColor) },

@@ -33,8 +33,8 @@ kotlin {
         named("jsMain") {
             dependencies {
                 implementation(project(":shared:components:core"))
-                implementation(project(":shared:model"))
-                implementation(project(":shared:infra:repository"))
+                implementation(project(":shared:data:model"))
+                implementation(project(":shared:data:repository"))
                 implementation(project(":shared:presentation:common"))
                 implementation(project(":shared:presentation:home"))
                 implementation(project(":shared:presentation:myidols"))
@@ -60,9 +60,6 @@ kotlin {
 
                 implementation(Libraries.Koin.core)
                 implementation(Libraries.Decompose.core)
-
-                implementation(npm(Libraries.Npm.I18next.core, Libraries.Npm.I18next.version))
-                implementation(npm(Libraries.Npm.I18next.httpBackend, Libraries.Npm.I18next.httpBackendVersion))
 
                 implementation(devNpm("html-webpack-plugin", "^5.3.1"))
                 implementation(devNpm("webpack-cdn-plugin", "^3.3.1"))

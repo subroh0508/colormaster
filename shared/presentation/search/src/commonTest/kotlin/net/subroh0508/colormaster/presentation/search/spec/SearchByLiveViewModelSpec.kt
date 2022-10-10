@@ -9,7 +9,6 @@ import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import net.subroh0508.colormaster.model.HexColor
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.LiveName
 import net.subroh0508.colormaster.presentation.search.*
@@ -58,9 +57,9 @@ class SearchByLiveViewModelSpec : FunSpec() {
 
     private val byLive = LiveName("THE IDOLM@STER SHINY COLORS MUSIC DAWN Day1")
     private val byLiveIdols = listOf(
-        IdolColor("Sakuragi_Mano", "櫻木真乃", HexColor("FFBAD6")),
-        IdolColor("Kazano_Hiori", "風野灯織", HexColor("144384")),
-        IdolColor("Hachimiya_Meguru", "八宮めぐる", HexColor("FFE012")),
+        IdolColor("Sakuragi_Mano", "櫻木真乃", Triple(255, 186, 214)),
+        IdolColor("Kazano_Hiori", "風野灯織", Triple(20, 67, 132)),
+        IdolColor("Hachimiya_Meguru", "八宮めぐる", Triple(255, 224, 18)),
     )
 
     private fun subject(block: () -> Unit): List<SearchUiModel> {

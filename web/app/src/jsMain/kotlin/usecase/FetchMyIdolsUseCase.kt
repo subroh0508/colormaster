@@ -4,6 +4,8 @@ import androidx.compose.runtime.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.presentation.common.LoadState
+import net.subroh0508.colormaster.presentation.common.ui.CurrentLocalLanguage
+import net.subroh0508.colormaster.presentation.common.ui.Languages
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.koin.core.KoinApplication
 import utilities.CurrentLocalKoinApp
@@ -11,18 +13,21 @@ import utilities.CurrentLocalKoinApp
 @Composable
 fun rememberFetchInChargeIdolsUseCase(
     isSignedIn: Boolean,
+    language: Languages = CurrentLocalLanguage(),
     koinApp: KoinApplication = CurrentLocalKoinApp(),
-) = rememberFetchMyIdolsUseCase(isSignedIn, koinApp, fetchIds = IdolColorsRepository::getInChargeOfIdolIds)
+) = rememberFetchMyIdolsUseCase(isSignedIn, language, koinApp, fetchIds = IdolColorsRepository::getInChargeOfIdolIds)
 
 @Composable
 fun rememberFetchFavoriteIdolsUseCase(
     isSignedIn: Boolean,
+    language: Languages = CurrentLocalLanguage(),
     koinApp: KoinApplication = CurrentLocalKoinApp(),
-) = rememberFetchMyIdolsUseCase(isSignedIn, koinApp, fetchIds = IdolColorsRepository::getFavoriteIdolIds)
+) = rememberFetchMyIdolsUseCase(isSignedIn, language, koinApp, fetchIds = IdolColorsRepository::getFavoriteIdolIds)
 
 @Composable
 private fun rememberFetchMyIdolsUseCase(
     isSignedIn: Boolean,
+    language: Languages,
     koinApp: KoinApplication,
     fetchIds: suspend IdolColorsRepository.() -> List<String>,
 ): State<LoadState> {
@@ -37,7 +42,7 @@ private fun rememberFetchMyIdolsUseCase(
 
         val job = launch(start = CoroutineStart.LAZY) {
             runCatching {
-                repository.search(repository.fetchIds())
+                repository.search(repository.fetchIds(), language.code)
             }
                 .onSuccess { loadState.value = LoadState.Loaded(it) }
                 .onFailure { loadState.value = LoadState.Error(it) }

@@ -24,15 +24,15 @@ sealed class SearchParams {
         fun change(unitName: UnitName?) = if (brands != Brands._876) copy(unitName = unitName) else this
 
         private fun addTypes(type: Types) = when {
-            (brands == Brands._ML || brands == Brands._765) && type is Types.MILLION_LIVE -> types + type
-            brands == Brands._CG && type is Types.CINDERELLA_GIRLS -> types + type
-            brands == Brands._315 && type is Types.SIDE_M -> types + type
+            (brands == Brands._ML || brands == Brands._765) && type is Types.MillionLive -> types + type
+            brands == Brands._CG && type is Types.CinderellaGirls -> types + type
+            brands == Brands._315 && type is Types.SideM -> types + type
             else -> types
         }
         private fun removeTypes(type: Types) = when {
-            (brands == Brands._ML || brands == Brands._765) && type is Types.MILLION_LIVE -> types - type
-            brands == Brands._CG && type is Types.CINDERELLA_GIRLS -> types - type
-            brands == Brands._315 && type is Types.SIDE_M -> types - type
+            (brands == Brands._ML || brands == Brands._765) && type is Types.MillionLive -> types - type
+            brands == Brands._CG && type is Types.CinderellaGirls -> types - type
+            brands == Brands._315 && type is Types.SideM -> types - type
             else -> types
         }
 

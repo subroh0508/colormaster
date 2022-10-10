@@ -30,7 +30,7 @@ class FavoritesViewModel(
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
             runCatching {
                 val ids = idolColorsRepository.getFavoriteIdolIds()
-                ids to idolColorsRepository.search(ids)
+                ids to idolColorsRepository.search(ids, "ja")
             }
                 .onSuccess { (favoriteIds, idols) ->
                     favorites.value = favoriteIds

@@ -88,9 +88,9 @@ private fun TypeChips(
     onTypeChecked: (Types, Boolean) -> Unit,
 ) {
     val types = when (selectedBrand) {
-        Brands._765, Brands._ML -> Types.MILLION_LIVE.values()
-        Brands._CG -> Types.CINDERELLA_GIRLS.values()
-        Brands._315 -> Types.SIDE_M.values()
+        Brands._765, Brands._ML -> Types.MillionLive.values()
+        Brands._CG -> Types.CinderellaGirls.values()
+        Brands._315 -> Types.SideM.values()
         else -> arrayOf()
     }
 
@@ -120,15 +120,15 @@ private fun TypeChips(
 
 @Composable
 private fun Types.label(): String = when (this) {
-    Types.MILLION_LIVE.PRINCESS -> stringResource(R.string.type_million_princess)
-    Types.MILLION_LIVE.FAIRY -> stringResource(R.string.type_million_fairy)
-    Types.MILLION_LIVE.ANGEL -> stringResource(R.string.type_million_angel)
-    Types.CINDERELLA_GIRLS.CU -> stringResource(R.string.type_cinderella_cu)
-    Types.CINDERELLA_GIRLS.CO -> stringResource(R.string.type_cinderella_co)
-    Types.CINDERELLA_GIRLS.PA -> stringResource(R.string.type_cinderella_pa)
-    Types.SIDE_M.MENTAL -> stringResource(R.string.type_side_m_mental)
-    Types.SIDE_M.INTELLIGENT -> stringResource(R.string.type_side_m_intelligent)
-    Types.SIDE_M.PHYSICAL -> stringResource(R.string.type_side_m_physical)
+    Types.MillionLive.PRINCESS -> stringResource(R.string.type_million_princess)
+    Types.MillionLive.FAIRY -> stringResource(R.string.type_million_fairy)
+    Types.MillionLive.ANGEL -> stringResource(R.string.type_million_angel)
+    Types.CinderellaGirls.CU -> stringResource(R.string.type_cinderella_cu)
+    Types.CinderellaGirls.CO -> stringResource(R.string.type_cinderella_co)
+    Types.CinderellaGirls.PA -> stringResource(R.string.type_cinderella_pa)
+    Types.SideM.MENTAL -> stringResource(R.string.type_side_m_mental)
+    Types.SideM.INTELLIGENT -> stringResource(R.string.type_side_m_intelligent)
+    Types.SideM.PHYSICAL -> stringResource(R.string.type_side_m_physical)
     else -> ""
 }
 
@@ -141,7 +141,7 @@ fun SearchBoxPreview_Light() {
             SearchParams.ByName(
                 null,
                 Brands._ML,
-                setOf(Types.MILLION_LIVE.PRINCESS, Types.MILLION_LIVE.FAIRY),
+                setOf(Types.MillionLive.PRINCESS, Types.MillionLive.FAIRY),
                 null,
             ) as SearchParams
         )

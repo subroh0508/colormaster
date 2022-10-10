@@ -41,8 +41,8 @@ class PreviewViewModelSpec : ViewModelSpec() {
 
     init {
         val idols = listOf(
-            IdolColor("Mitsumine_Yuika", "三峰結華", HexColor("3B91C4")),
-            IdolColor("Hayami_Kanade", "速水奏", HexColor("0D386D")),
+            IdolColor("Mitsumine_Yuika", "三峰結華", Triple(59, 145, 196)),
+            IdolColor("Hayami_Kanade", "速水奏", Triple(13, 56, 109)),
         )
 
         test("#fetch: when repository#search returns idols colors it should post FullscreenPreviewUiModel with filled list") {

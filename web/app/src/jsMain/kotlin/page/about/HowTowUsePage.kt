@@ -7,11 +7,11 @@ import components.templates.StaticPageFrame
 import components.templates.Strong
 import material.components.Icon
 import material.components.TypographySubtitle1
+import net.subroh0508.colormaster.presentation.common.external.invoke
+import net.subroh0508.colormaster.presentation.common.ui.LocalI18n
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.display
 import org.jetbrains.compose.web.dom.Text
-import utilities.LocalI18n
-import utilities.invoke
 
 @Composable
 fun HowToUsePage(

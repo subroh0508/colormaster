@@ -1,5 +1,6 @@
 plugins {
     `node-convensions`
+    `ci-report-all-tests`
 }
 
 buildscript {
@@ -25,6 +26,3 @@ allprojects {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
-
-testDebugUnitTestReport()
-jsNodeTestReport()

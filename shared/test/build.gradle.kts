@@ -1,16 +1,15 @@
 plugins {
-    kotlin("multiplatform")
-    `android-multiplatform`
+    shared
 }
 
-kotlinMpp {
+kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(Libraries.Ktor.client)
                 implementation(Libraries.Ktor.clientMock)
-                implementation(Libraries.Kotest.engine)
-                implementation(Libraries.Kotest.assertion)
+                implementation(kotestEngine)
+                implementation(kotestAssertion)
             }
         }
         val androidMain by getting {
@@ -19,6 +18,5 @@ kotlinMpp {
                 implementation(Libraries.Coroutines.test)
             }
         }
-        val jsMain by getting
     }
 }

@@ -19,7 +19,7 @@ sealed class SearchUiModel {
 
     val selectedItems: List<IdolColor>
         get() = items.filter(IdolColorListItem::selected)
-            .map { (id, name, hexColor) -> IdolColor(id, name.value, hexColor) }
+            .map { (id, name, intColor) -> IdolColor(id, name.value, intColor) }
 
     companion object {
         operator fun invoke(

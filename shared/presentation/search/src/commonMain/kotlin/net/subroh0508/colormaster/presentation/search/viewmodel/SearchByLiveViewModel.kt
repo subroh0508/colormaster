@@ -56,7 +56,7 @@ class SearchByLiveViewModel(
     }
 
     override suspend fun search(params: SearchParams.ByLive) = params.liveName?.let {
-        idolColorsRepository.search(it)
+        idolColorsRepository.search(it, "ja")
     } ?: listOf()
 
     private fun fetchLiveNameSuggests() {

@@ -4,10 +4,10 @@ import MaterialTheme
 import androidx.compose.runtime.Composable
 import material.components.*
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
+import net.subroh0508.colormaster.presentation.common.ui.LocalI18n
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Text
 import utilities.*
-import utilities.LocalI18n
 
 @Composable
 fun ErrorDetail(error: Throwable) {

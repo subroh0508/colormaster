@@ -9,13 +9,13 @@ import components.templates.search.frontlayer.*
 import material.components.CardHeader
 import material.components.Icon
 import material.components.TypographyHeadline5
+import net.subroh0508.colormaster.presentation.common.external.I18nextText
+import net.subroh0508.colormaster.presentation.common.external.invoke
+import net.subroh0508.colormaster.presentation.common.ui.LocalI18n
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 import routes.CurrentLocalRouter
-import utilities.I18nextText
-import utilities.LocalI18n
-import utilities.invoke
 
 @Composable
 fun InChargeIdolsCard(isSignedIn: Boolean) = MyIdolsCard(

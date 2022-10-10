@@ -3,6 +3,8 @@ package usecase
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.presentation.common.LoadState
+import net.subroh0508.colormaster.presentation.common.ui.CurrentLocalLanguage
+import net.subroh0508.colormaster.presentation.common.ui.Languages
 import net.subroh0508.colormaster.presentation.search.model.SearchParams
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.koin.core.KoinApplication
@@ -11,6 +13,7 @@ import utilities.CurrentLocalKoinApp
 @Composable
 fun rememberSearchIdolsUseCase(
     params: SearchParams,
+    language: Languages = CurrentLocalLanguage(),
     koinApp: KoinApplication = CurrentLocalKoinApp(),
 ): State<LoadState> {
     val scope = rememberCoroutineScope()
@@ -21,7 +24,7 @@ fun rememberSearchIdolsUseCase(
         params,
     ) {
         val job = scope.launch {
-            runCatching { repository.search(params) }
+            runCatching { repository.search(params, language) }
                 .onSuccess { value = LoadState.Loaded(it) }
                 .onFailure { value = LoadState.Error(it) }
         }
@@ -33,12 +36,13 @@ fun rememberSearchIdolsUseCase(
 
 private suspend fun IdolColorsRepository.search(
     params: SearchParams?,
+    language: Languages,
 ) = when (params) {
     is SearchParams.ByName -> params.takeUnless { it.isEmpty() }?.let {
-        search(it.idolName, it.brands, it.types)
-    } ?: rand(10)
+        search(it.idolName, it.brands, it.types, language.code)
+    } ?: rand(10, language.code)
     is SearchParams.ByLive -> params.liveName?.let {
-        search(it)
+        search(it, language.code)
     } ?: listOf()
     else -> listOf()
 }

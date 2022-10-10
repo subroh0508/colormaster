@@ -4,7 +4,7 @@ import components.templates.RootCompose
 import utilities.*
 import net.subroh0508.colormaster.components.core.FirebaseOptions
 import net.subroh0508.colormaster.components.core.initializeApp
-import net.subroh0508.colormaster.model.ui.commons.ThemeType
+import net.subroh0508.colormaster.presentation.common.ui.ThemeType
 import org.jetbrains.compose.web.css.Style
 import org.jetbrains.compose.web.renderComposable
 import org.koin.dsl.koinApplication

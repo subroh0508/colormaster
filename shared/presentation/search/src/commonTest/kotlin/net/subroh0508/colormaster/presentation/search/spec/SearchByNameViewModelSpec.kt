@@ -38,37 +38,37 @@ class SearchByNameViewModelSpec : ViewModelSpec() {
     }
 
     private val randomIdols = listOf(
-        IdolColor("Shimabara_Elena", "島原エレナ", HexColor("9BCE92")),
-        IdolColor("Abe_nana", "安部菜々", HexColor("E64A79")),
-        IdolColor("Kohinata_Miho", "小日向美穂", HexColor("C64796")),
-        IdolColor("Sakuma_Mayu", "佐久間まゆ", HexColor("D1197B")),
-        IdolColor("Hidaka_Ai", "日高愛", HexColor("E85786")),
-        IdolColor("Nakatani_Iku", "中谷育", HexColor("F7E78E")),
-        IdolColor("Taiga_Takeru", "大河タケル", HexColor("0E0C9F")),
-        IdolColor("Kuzunoha_Amehiko", "葛之葉雨彦", HexColor("111721")),
-        IdolColor("Suou_Momoko", "周防桃子", HexColor("EFB864")),
-        IdolColor("Ichikawa_Hinana", "市川雛菜", HexColor("FFC639")),
+        IdolColor("Shimabara_Elena", "島原エレナ", Triple(155, 206, 146)),
+        IdolColor("Abe_nana", "安部菜々", Triple(230, 74, 121)),
+        IdolColor("Kohinata_Miho", "小日向美穂", Triple(198, 71, 150)),
+        IdolColor("Sakuma_Mayu", "佐久間まゆ", Triple(209, 25, 123)),
+        IdolColor("Hidaka_Ai", "日高愛", Triple(232, 87, 134)),
+        IdolColor("Nakatani_Iku", "中谷育", Triple(247, 231, 142)),
+        IdolColor("Taiga_Takeru", "大河タケル", Triple(14, 12, 159)),
+        IdolColor("Kuzunoha_Amehiko", "葛之葉雨彦", Triple(17, 23, 33)),
+        IdolColor("Suou_Momoko", "周防桃子", Triple(239, 184, 100)),
+        IdolColor("Ichikawa_Hinana", "市川雛菜", Triple(255, 198, 57)),
     )
 
     private val byName = IdolName("久川")
     private val byNameIdols = listOf(
-        IdolColor("Hisakawa_Nagi", "久川凪", HexColor("F7A1BA")),
-        IdolColor("Hisakawa_Hayate", "久川颯", HexColor("7ADAD6")),
+        IdolColor("Hisakawa_Nagi", "久川凪", Triple(247, 161, 186)),
+        IdolColor("Hisakawa_Hayate", "久川颯", Triple(122, 218, 214)),
     )
 
     private val byBrand = Brands._876
     private val byBrandIdols = listOf(
-        IdolColor("Hidaka_Ai", "日高愛", HexColor("E85786")),
-        IdolColor("Mizutani_Eri", "水谷絵理", HexColor("00ADB9")),
-        IdolColor("Akizuki_Ryo_876", "秋月涼", HexColor("B2D468")),
+        IdolColor("Hidaka_Ai", "日高愛", Triple(232, 87, 134)),
+        IdolColor("Mizutani_Eri", "水谷絵理", Triple(0, 173, 185)),
+        IdolColor("Akizuki_Ryo_876", "秋月涼", Triple(178, 212, 104)),
     )
     
-    private val byBrandAndType = Brands._765 to Types.MILLION_LIVE.PRINCESS
+    private val byBrandAndType = Brands._765 to Types.MillionLive.PRINCESS
     private val byBrandAndTypeIdols = listOf(
-        IdolColor("Amami_Haruka", "天海春香", HexColor("E22B30")),
-        IdolColor("Ganaha_Hibiki", "我那覇響", HexColor("01ADB9")),
-        IdolColor("Kikuchi_Makoto", "菊地真", HexColor("515558")),
-        IdolColor("Hagiwara_Yukiho", "萩原雪歩", HexColor("D3DDE9")),
+        IdolColor("Amami_Haruka", "天海春香", Triple(226, 43, 48)),
+        IdolColor("Ganaha_Hibiki", "我那覇響", Triple(1, 173, 185)),
+        IdolColor("Kikuchi_Makoto", "菊地真", Triple(81, 85, 88)),
+        IdolColor("Hagiwara_Yukiho", "萩原雪歩", Triple(211, 221, 233)),
     )
 
     private fun subject(block: () -> Unit): List<SearchUiModel> {
