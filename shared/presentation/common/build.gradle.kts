@@ -8,7 +8,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":shared:base"))
                 implementation(Libraries.Coroutines.core)
 
                 implementation(compose.runtime)

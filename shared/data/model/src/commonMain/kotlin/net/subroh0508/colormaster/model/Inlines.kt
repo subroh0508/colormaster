@@ -1,6 +1,6 @@
 package net.subroh0508.colormaster.model
 
-import net.subroh0508.colormaster.base.JvmInline
+import kotlin.jvm.JvmInline
 
 @JvmInline
 value class IdolName(val value: String)

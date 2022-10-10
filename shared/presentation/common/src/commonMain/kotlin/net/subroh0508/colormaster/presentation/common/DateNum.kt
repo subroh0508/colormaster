@@ -1,6 +1,6 @@
 package net.subroh0508.colormaster.presentation.common
 
-import net.subroh0508.colormaster.base.JvmInline
+import kotlin.jvm.JvmInline
 import kotlin.math.log10
 
 @JvmInline

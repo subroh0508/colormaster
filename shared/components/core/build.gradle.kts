@@ -14,6 +14,7 @@ kotlin {
                 implementation(project(":shared:data:model"))
 
                 implementation(compose.runtime)
+                implementation(compose.ui)
 
                 implementation(Libraries.Coroutines.core)
 

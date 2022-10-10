@@ -1,6 +1,6 @@
 package net.subroh0508.colormaster.components.core.model
 
-import net.subroh0508.colormaster.base.JvmInline
+import kotlin.jvm.JvmInline
 import kotlin.math.log10
 
 @JvmInline
