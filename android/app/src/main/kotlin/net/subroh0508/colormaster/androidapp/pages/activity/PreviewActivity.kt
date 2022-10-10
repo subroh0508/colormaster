@@ -2,10 +2,9 @@ package net.subroh0508.colormaster.androidapp.pages.activity
 
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -13,28 +12,22 @@ import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.pages.Preview
 import net.subroh0508.colormaster.androidapp.previewIdolIds
 import net.subroh0508.colormaster.androidapp.screenType
-import net.subroh0508.colormaster.presentation.preview.viewmodel.PreviewViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import net.subroh0508.colormaster.components.core.LocalKoinApp
+import net.subroh0508.colormaster.components.core.koinApp
 
-class PreviewActivity : AppCompatActivity() {
-    private val viewModel: PreviewViewModel by viewModel()
-
-    @ExperimentalMaterialApi
-    @ExperimentalLayoutApi
+class PreviewActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent { Preview(intent.screenType, viewModel, ::finish) }
+        setContent {
+            CompositionLocalProvider(
+                LocalKoinApp provides koinApp,
+            ) { Preview(intent.screenType, intent.previewIdolIds, ::finish) }
+        }
 
         if (intent.screenType == ScreenType.Penlight) {
             lifecycle.addObserver(penlightController)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        viewModel.fetch(intent.previewIdolIds)
     }
 
     private val penlightController = object : LifecycleObserver {

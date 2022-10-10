@@ -2,11 +2,11 @@ package net.subroh0508.colormaster.androidapp
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import net.subroh0508.colormaster.androidapp.pages.activity.PreviewActivity
 import kotlin.reflect.KClass
 
-fun <T: AppCompatActivity> Context.intentTo(kClass: KClass<T>) = Intent().also {
+fun <T: ComponentActivity> Context.intentTo(kClass: KClass<T>) = Intent().also {
     it.setClass(this, kClass.java)
 }
 
