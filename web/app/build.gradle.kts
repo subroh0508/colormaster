@@ -36,7 +36,7 @@ kotlin {
                 implementation(project(":shared:data:model"))
                 implementation(project(":shared:data:repository"))
                 implementation(project(":shared:features:preview"))
-                implementation(project(":shared:presentation:home"))
+                implementation(project(":shared:features:home"))
                 implementation(project(":shared:presentation:myidols"))
                 implementation(project(":shared:presentation:search"))
                 //implementation(project(":shared:presentation:preview"))

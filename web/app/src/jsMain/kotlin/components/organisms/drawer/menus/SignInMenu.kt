@@ -10,10 +10,10 @@ import material.externals.MDCDrawer
 import material.externals.close
 import net.subroh0508.colormaster.components.core.external.invoke
 import net.subroh0508.colormaster.components.core.ui.LocalI18n
+import net.subroh0508.colormaster.features.home.rememberSignInUseCase
+import net.subroh0508.colormaster.features.home.rememberSignOutUseCase
 import org.jetbrains.compose.web.css.margin
 import org.jetbrains.compose.web.css.px
-import usecase.rememberSignInUseCase
-import usecase.rememberSignOutUseCase
 
 @Composable
 fun SignInMenu(
@@ -22,7 +22,7 @@ fun SignInMenu(
     isSignedOut: Boolean,
 ) {
     val t = LocalI18n() ?: return
-    val signIn = rememberSignInUseCase(isMobile)
+    val signIn = rememberSignInUseCase()
     val signOut = rememberSignOutUseCase()
 
     ListGroupSubHeader(
