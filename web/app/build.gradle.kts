@@ -37,8 +37,8 @@ kotlin {
                 implementation(project(":shared:data:repository"))
                 implementation(project(":shared:features:preview"))
                 implementation(project(":shared:features:home"))
+                implementation(project(":shared:features:search"))
                 implementation(project(":shared:presentation:myidols"))
-                implementation(project(":shared:presentation:search"))
                 //implementation(project(":shared:presentation:preview"))
 
                 implementation(project(":web:material"))

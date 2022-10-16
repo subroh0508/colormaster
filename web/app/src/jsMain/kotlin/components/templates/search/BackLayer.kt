@@ -10,8 +10,8 @@ import material.components.TopAppBarMainContent
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
 import net.subroh0508.colormaster.components.core.external.invoke
 import net.subroh0508.colormaster.components.core.ui.LocalI18n
-import net.subroh0508.colormaster.presentation.search.model.SearchByTab
-import net.subroh0508.colormaster.presentation.search.model.SearchParams
+import net.subroh0508.colormaster.features.search.model.SearchByTab
+import net.subroh0508.colormaster.features.search.model.SearchParams
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import routes.CurrentLocalRouter

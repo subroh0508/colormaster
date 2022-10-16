@@ -28,8 +28,8 @@ include(
     ":shared:data:api:jsfirebaseapp",
     ":shared:features:home",
     ":shared:features:preview",
+    ":shared:features:search",
     ":shared:presentation:common",
-    ":shared:presentation:search",
     ":shared:presentation:myidols",
     ":shared:test"
 )

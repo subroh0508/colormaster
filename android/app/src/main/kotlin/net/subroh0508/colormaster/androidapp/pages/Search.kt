@@ -24,11 +24,10 @@ import net.subroh0508.colormaster.androidapp.components.atoms.WarningAlert
 import net.subroh0508.colormaster.androidapp.components.organisms.ColorLists
 import net.subroh0508.colormaster.androidapp.components.organisms.HomeTopBar
 import net.subroh0508.colormaster.androidapp.components.organisms.SearchBox
+import net.subroh0508.colormaster.components.core.model.LoadState
+import net.subroh0508.colormaster.features.search.model.SearchParams
+import net.subroh0508.colormaster.features.search.rememberSearchIdolsUseCase
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.presentation.search.model.SearchParams
-import net.subroh0508.colormaster.presentation.search.model.SearchState
-import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
-import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
 
 private val HEADER_HEIGHT = 56.dp
 
@@ -37,7 +36,6 @@ private val HEADER_HEIGHT = 56.dp
 @ExperimentalMaterialApi
 @Composable
 fun Search(
-    viewModel: SearchByNameViewModel,
     drawerState: DrawerState,
     drawerScope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
@@ -46,10 +44,12 @@ fun Search(
     val backdropScaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
     val pageScope = rememberCoroutineScope()
 
+    val (params, setParams) = remember { mutableStateOf<SearchParams>(SearchParams.ByName.EMPTY) }
+
     SideEffect {
-        viewModel.search()
-        viewModel.loadInCharges()
-        viewModel.loadFavorites()
+        //viewModel.search()
+        //viewModel.loadInCharges()
+        //viewModel.loadFavorites()
     }
 
     BackdropScaffold(
@@ -57,14 +57,11 @@ fun Search(
         scaffoldState = backdropScaffoldState,
         appBar = { HomeTopBar(drawerState, drawerScope, stringArrayResource(R.array.main_tabs)) },
         backLayerContent = {
-            BackLayerContent(
-                viewModel,
-                viewModel::setSearchParams,
-            )
+            BackLayerContent(params, setParams)
         },
         frontLayerContent = {
             FrontLayerContent(
-                viewModel,
+                params,
                 pageScope,
                 backdropScaffoldState,
                 snackbarHostState,
@@ -79,32 +76,33 @@ fun Search(
 @ExperimentalMaterialApi
 @ExperimentalLayoutApi
 private fun BackLayerContent(
-    viewModel: SearchByNameViewModel,
+    params: SearchParams,
     onParamsChange: (SearchParams) -> Unit,
-) {
-    val uiModel by viewModel.uiModel.collectAsState(initial = SearchUiModel.ByName.INITIALIZED)
-
-    SearchBox(
-        uiModel.params,
-        onParamsChange = onParamsChange,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .background(MaterialTheme.colors.background),
-    )
-}
+) = SearchBox(
+    params,
+    onParamsChange = onParamsChange,
+    modifier = Modifier
+        .fillMaxSize()
+        .padding(horizontal = 16.dp, vertical = 8.dp)
+        .background(MaterialTheme.colors.background),
+)
 
 @ExperimentalFoundationApi
 @Composable
 @ExperimentalMaterialApi
 private fun FrontLayerContent(
-    viewModel: SearchByNameViewModel,
+    params: SearchParams,
     coroutineScope: CoroutineScope,
     backdropScaffoldState: BackdropScaffoldState,
     snackbarHostState: SnackbarHostState,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
-    val uiModel by viewModel.uiModel.collectAsState(initial = SearchUiModel.ByName.INITIALIZED)
+    val idolColorLoadState by rememberSearchIdolsUseCase(params)
+
+    val items: List<IdolColor> = idolColorLoadState.getValueOrNull() ?: listOf()
+    val error: Throwable? = idolColorLoadState.getErrorOrNull()
+
+    val (selections, setSelections) = remember(idolColorLoadState) { mutableStateOf<List<String>>(listOf()) }
 
     fun showSnackbar(message: String) {
         coroutineScope.launch { snackbarHostState.showSnackbar(message) }
@@ -112,7 +110,8 @@ private fun FrontLayerContent(
 
     Column {
         SearchStateLabel(
-            uiModel,
+            params,
+            idolColorLoadState,
             if (backdropScaffoldState.isConcealed)
                 Icons.Default.KeyboardArrowDown
             else
@@ -135,10 +134,13 @@ private fun FrontLayerContent(
             stringResource(R.string.search_success_favorite) to stringResource(R.string.search_success_unfavorite)
 
         ColorLists(
-            uiModel.items,
-            onSelect = viewModel::select,
+            items,
+            selections,
+            onSelect = { item, selected ->
+                setSelections(if (selected) selections + listOf(item.id) else selections - listOf(item.id))
+            },
             onClickFavorite = { (id), favorite ->
-                viewModel.favorite(id, favorite)
+                // viewModel.favorite(id, favorite)
                 showSnackbar(
                     if (favorite)
                         messageFavorite
@@ -150,16 +152,18 @@ private fun FrontLayerContent(
             onPreviewClick = {
                 launchPreviewScreen(
                     ScreenType.Preview,
-                    uiModel.selectedItems.map(IdolColor::id)
+                    selections,
                 )
             },
             onPenlightClick = {
                 launchPreviewScreen(
                     ScreenType.Penlight,
-                    uiModel.selectedItems.map(IdolColor::id)
+                    selections,
                 )
             },
-            onAllClick = viewModel::selectAll,
+            onAllClick = { selected ->
+                setSelections(if (selected) items.map(IdolColor::id) else listOf())
+            },
             modifier = Modifier.fillMaxSize(),
         )
     }
@@ -167,13 +171,14 @@ private fun FrontLayerContent(
 
 @Composable
 private fun SearchStateLabel(
-    uiModel: SearchUiModel,
+    params: SearchParams,
+    loadState: LoadState,
     endAsset: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier,
-) = when (uiModel.searchState) {
-    SearchState.RANDOM -> InfoAlert(stringResource(R.string.search_state_label_random), modifier, endAsset, onClick)
-    SearchState.WAITING -> WarningAlert(stringResource(R.string.search_state_label_waiting), modifier, endAsset, onClick)
-    SearchState.SEARCHED -> SuccessAlert(stringResource(R.string.search_state_label_searched, uiModel.items.size), modifier, endAsset, onClick)
-    SearchState.ERROR -> ErrorAlert(stringResource(R.string.search_state_label_error, uiModel.error?.message ?: ""), modifier, endAsset, onClick)
+) = when  {
+    loadState is LoadState.Loading -> WarningAlert(stringResource(R.string.search_state_label_waiting), modifier, endAsset, onClick)
+    loadState is LoadState.Error -> ErrorAlert(stringResource(R.string.search_state_label_error, loadState.error.message ?: ""), modifier, endAsset, onClick)
+    loadState is LoadState.Loaded<*> && !params.isEmpty() -> SuccessAlert(stringResource(R.string.search_state_label_searched, loadState.getValueOrNull<List<IdolColor>>()?.size ?: 0), modifier, endAsset, onClick)
+    else -> InfoAlert(stringResource(R.string.search_state_label_random), modifier, endAsset, onClick)
 }

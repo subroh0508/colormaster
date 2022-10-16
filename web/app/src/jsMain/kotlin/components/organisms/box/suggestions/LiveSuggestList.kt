@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.MutableState
 import material.components.Chip
+import net.subroh0508.colormaster.features.search.model.LiveNameQuery
+import net.subroh0508.colormaster.features.search.rememberSearchLiveUseCase
 import net.subroh0508.colormaster.model.LiveName
-import net.subroh0508.colormaster.presentation.search.model.LiveNameQuery
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.dom.Div
-import usecase.rememberSearchLiveUseCase
 
 @Composable
 fun LiveSuggestList(

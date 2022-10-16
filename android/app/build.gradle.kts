@@ -12,8 +12,8 @@ dependencies {
     implementation(project(":shared:components:core"))
     implementation(project(":shared:data:repository"))
     implementation(project(":shared:features:preview"))
+    implementation(project(":shared:features:search"))
     implementation(project(":shared:presentation:common"))
-    implementation(project(":shared:presentation:search"))
 
     implementation(Libraries.Coroutines.android)
 

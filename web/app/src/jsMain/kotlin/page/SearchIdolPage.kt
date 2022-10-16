@@ -6,11 +6,8 @@ import components.atoms.backdrop.BackdropValues
 import components.atoms.backdrop.rememberBackdropState
 import components.templates.search.BackLayer
 import components.templates.search.frontlayer.FrontLayer
-import material.components.TopAppBarVariant
-import net.subroh0508.colormaster.presentation.search.model.SearchByTab
-import net.subroh0508.colormaster.presentation.search.model.SearchParams
-import routes.Search
-import usecase.rememberSearchIdolsUseCase
+import net.subroh0508.colormaster.features.search.model.SearchByTab
+import net.subroh0508.colormaster.features.search.model.SearchParams
 
 @Composable
 fun SearchIdolPage(

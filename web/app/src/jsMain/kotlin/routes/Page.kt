@@ -2,7 +2,7 @@ package routes
 
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
-import net.subroh0508.colormaster.presentation.search.model.SearchParams
+import net.subroh0508.colormaster.features.search.model.SearchParams
 
 sealed interface Page : Parcelable
 

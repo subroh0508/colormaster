@@ -12,13 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.components.atoms.OutlinedButton
 import net.subroh0508.colormaster.androidapp.components.molecules.SelectableColorListItem
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.presentation.search.model.IdolColorListItem
 
 private enum class UiState {
     Preview, Select
@@ -27,7 +25,8 @@ private enum class UiState {
 @ExperimentalFoundationApi
 @Composable
 fun ColorLists(
-    items: List<IdolColorListItem>,
+    items: List<IdolColor>,
+    selections: List<String>,
     modifier: Modifier = Modifier,
     onSelect: (IdolColor, Boolean) -> Unit = { _, _ -> },
     onClick: (IdolColor) -> Unit = {},
@@ -37,20 +36,19 @@ fun ColorLists(
     onAllClick: (Boolean) -> Unit = {},
 ) {
     var uiState by remember { mutableStateOf(UiState.Preview) }
-    val selectedIds = items.filter(IdolColorListItem::selected).map(IdolColorListItem::id)
 
-    LaunchedEffect(items.map(IdolColorListItem::id)) {
+    LaunchedEffect(items.map(IdolColor::id)) {
         uiState = UiState.Preview
     }
 
     fun handleOnLongClick(item: IdolColor) {
-        onSelect(item, !selectedIds.contains(item.id))
-        if (uiState == UiState.Select && (selectedIds - listOf(item.id)).isEmpty()) {
+        onSelect(item, !selections.contains(item.id))
+        if (uiState == UiState.Select && (selections - listOf(item.id)).isEmpty()) {
             uiState = UiState.Preview
             return
         }
 
-        if (uiState == UiState.Preview && selectedIds.isEmpty()) {
+        if (uiState == UiState.Preview && selections.isEmpty()) {
             uiState = UiState.Select
             return
         }
@@ -73,15 +71,15 @@ fun ColorLists(
             contentPadding = PaddingValues(top = 4.dp, bottom = 4.dp)
         ) {
             items(items.size, { items[it].id }) { index ->
-                val (id, name, intColor, selected, favorited) = items[index]
-                val idolColor = IdolColor(id, name.value, intColor)
+                val (id, name, intColor/*, selected, favorited*/) = items[index]
+                val idolColor = IdolColor(id, name, intColor)
 
                 SelectableColorListItem(
-                    name.value, intColor,
-                    selected = selected,
-                    favorited = favorited,
+                    name, intColor,
+                    selected = /* selected */ false,
+                    favorited = /* favorited */ false,
                     onClick = { handleOnClick(idolColor) },
-                    onClickFavorite = { onClickFavorite(idolColor, !favorited) },
+                    onClickFavorite = { onClickFavorite(idolColor, /* !favorited */ false) },
                     onLongClick = { handleOnLongClick(idolColor) },
                     modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
                 )
@@ -89,7 +87,7 @@ fun ColorLists(
         }
 
         BottomButtons(
-            isEmpty = selectedIds.isEmpty(),
+            isEmpty = selections.isEmpty(),
             onPreviewClick = onPreviewClick,
             onPenlightClick = onPenlightClick,
             onAllClick = onAllClick,
