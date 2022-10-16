@@ -25,6 +25,8 @@ import net.subroh0508.colormaster.androidapp.components.organisms.ColorLists
 import net.subroh0508.colormaster.androidapp.components.organisms.HomeTopBar
 import net.subroh0508.colormaster.androidapp.components.organisms.SearchBox
 import net.subroh0508.colormaster.components.core.model.LoadState
+import net.subroh0508.colormaster.features.myidols.rememberAddIdolToFavoriteUseCase
+import net.subroh0508.colormaster.features.myidols.rememberAddIdolToInChargeUseCase
 import net.subroh0508.colormaster.features.search.model.SearchParams
 import net.subroh0508.colormaster.features.search.rememberSearchIdolsUseCase
 import net.subroh0508.colormaster.model.IdolColor
@@ -100,9 +102,11 @@ private fun FrontLayerContent(
     val idolColorLoadState by rememberSearchIdolsUseCase(params)
 
     val items: List<IdolColor> = idolColorLoadState.getValueOrNull() ?: listOf()
-    val error: Throwable? = idolColorLoadState.getErrorOrNull()
 
     val (selections, setSelections) = remember(idolColorLoadState) { mutableStateOf<List<String>>(listOf()) }
+
+    val favorites = rememberAddIdolToFavoriteUseCase(isSignedIn = false)
+    val inCharges = rememberAddIdolToInChargeUseCase(isSignedIn = false)
 
     fun showSnackbar(message: String) {
         coroutineScope.launch { snackbarHostState.showSnackbar(message) }
@@ -140,7 +144,7 @@ private fun FrontLayerContent(
                 setSelections(if (selected) selections + listOf(item.id) else selections - listOf(item.id))
             },
             onClickFavorite = { (id), favorite ->
-                // viewModel.favorite(id, favorite)
+                favorites.add(id, favorite)
                 showSnackbar(
                     if (favorite)
                         messageFavorite

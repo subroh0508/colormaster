@@ -29,7 +29,6 @@ include(
     ":shared:features:home",
     ":shared:features:preview",
     ":shared:features:search",
-    ":shared:presentation:common",
-    ":shared:presentation:myidols",
+    ":shared:features:myidols",
     ":shared:test"
 )

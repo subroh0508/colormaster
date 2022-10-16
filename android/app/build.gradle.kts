@@ -13,7 +13,7 @@ dependencies {
     implementation(project(":shared:data:repository"))
     implementation(project(":shared:features:preview"))
     implementation(project(":shared:features:search"))
-    implementation(project(":shared:presentation:common"))
+    implementation(project(":shared:features:myidols"))
 
     implementation(Libraries.Coroutines.android)
 

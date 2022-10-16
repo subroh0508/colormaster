@@ -5,12 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.components.atoms.ColorItemContent
+import net.subroh0508.colormaster.components.core.extensions.toColor
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.IntColor
-import net.subroh0508.colormaster.presentation.common.extensions.toColor
 
 @Composable
 fun StaticColorLists(
