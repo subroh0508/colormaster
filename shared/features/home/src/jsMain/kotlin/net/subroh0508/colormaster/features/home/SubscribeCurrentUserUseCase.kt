@@ -1,4 +1,4 @@
-package usecase
+package net.subroh0508.colormaster.features.home
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.flow.launchIn

@@ -31,6 +31,9 @@ kotlin {
 
                 implementation(enforcedPlatform(kotlinWrappersBom))
                 implementation(Libraries.JsWrappers.extensions)
+
+                implementation(npm(Libraries.Npm.I18next.core, Libraries.Npm.I18next.version))
+                implementation(npm(Libraries.Npm.I18next.httpBackend, Libraries.Npm.I18next.httpBackendVersion))
             }
         }
     }
