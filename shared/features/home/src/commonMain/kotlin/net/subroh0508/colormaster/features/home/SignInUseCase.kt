@@ -6,8 +6,11 @@ import org.koin.core.KoinApplication
 
 expect class SignInUseCase
 
+// @see: https://youtrack.jetbrains.com/issue/KT-49563
 @Composable
 expect fun rememberSignInUseCase(
-    koinApp: KoinApplication = CurrentLocalKoinApp(),
+    koinApp: KoinApplication /* = CurrentLocalKoinApp() */,
 ): SignInUseCase
 
+@Composable
+fun rememberSignInUseCase() = rememberSignInUseCase(CurrentLocalKoinApp())
