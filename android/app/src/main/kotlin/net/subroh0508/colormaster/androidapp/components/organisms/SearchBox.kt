@@ -18,10 +18,10 @@ import net.subroh0508.colormaster.androidapp.components.atoms.FlexRow
 import net.subroh0508.colormaster.androidapp.components.atoms.DebounceTextField
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 import net.subroh0508.colormaster.androidapp.themes.lightBackground
+import net.subroh0508.colormaster.features.search.model.SearchParams
 import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
 import net.subroh0508.colormaster.model.toIdolName
-import net.subroh0508.colormaster.presentation.search.model.SearchParams
 
 @Composable
 @ExperimentalLayoutApi

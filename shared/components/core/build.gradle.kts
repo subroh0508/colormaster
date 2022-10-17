@@ -1,5 +1,6 @@
 plugins {
     shared
+    id("org.jetbrains.compose")
 }
 
 kotlin {
@@ -11,6 +12,9 @@ kotlin {
                 implementation(project(":shared:data:api:firestore"))
                 implementation(project(":shared:data:repository"))
                 implementation(project(":shared:data:model"))
+
+                implementation(compose.runtime)
+                implementation(compose.ui)
 
                 implementation(Libraries.Coroutines.core)
 
@@ -27,6 +31,9 @@ kotlin {
 
                 implementation(enforcedPlatform(kotlinWrappersBom))
                 implementation(Libraries.JsWrappers.extensions)
+
+                implementation(npm(Libraries.Npm.I18next.core, Libraries.Npm.I18next.version))
+                implementation(npm(Libraries.Npm.I18next.httpBackend, Libraries.Npm.I18next.httpBackendVersion))
             }
         }
     }

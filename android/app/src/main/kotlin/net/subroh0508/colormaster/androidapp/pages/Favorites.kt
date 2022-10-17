@@ -13,14 +13,13 @@ import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.components.organisms.ColorLists
 import net.subroh0508.colormaster.androidapp.components.organisms.HomeTopBar
+import net.subroh0508.colormaster.features.myidols.rememberAddIdolToFavoriteUseCase
+import net.subroh0508.colormaster.features.myidols.rememberFetchFavoriteIdolsUseCase
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.presentation.search.model.SearchUiModel
-import net.subroh0508.colormaster.presentation.search.viewmodel.FavoritesViewModel
 
 @ExperimentalFoundationApi
 @Composable
 fun Favorites(
-    viewModel: FavoritesViewModel,
     drawerState: DrawerState,
     drawerScope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
@@ -28,23 +27,24 @@ fun Favorites(
 ) {
     val pageScope = rememberCoroutineScope()
 
-    SideEffect(viewModel::search)
-
     Column {
         HomeTopBar(drawerState, drawerScope, stringResource(R.string.app_menu_favorites))
-        Content(viewModel, pageScope, snackbarHostState, launchPreviewScreen)
+        Content(pageScope, snackbarHostState, launchPreviewScreen)
     }
 }
 
 @ExperimentalFoundationApi
 @Composable
 private fun Content(
-    viewModel: FavoritesViewModel,
     coroutineScope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
-    val uiModel by viewModel.uiModel.collectAsState(initial = SearchUiModel.Favorites.INITIALIZED)
+    val loadState by rememberFetchFavoriteIdolsUseCase(isSignedIn = false)
+
+    val items: List<IdolColor> = loadState.getValueOrNull() ?: listOf()
+
+    val (selections, setSelections) = remember(loadState) { mutableStateOf<List<String>>(listOf()) }
 
     val (messageFavorite, messageUnfavorite) =
         stringResource(R.string.search_success_favorite) to stringResource(R.string.search_success_unfavorite)
@@ -58,27 +58,28 @@ private fun Content(
     }
 
     ColorLists(
-        uiModel.items,
-        onSelect = viewModel::select,
-        onClickFavorite = { (id), favorite ->
-            viewModel.favorite(id, favorite)
-            viewModel.search()
-            showSnackbar(favorite)
+        items,
+        selections,
+        onSelect = { item, selected ->
+            setSelections(if (selected) selections + listOf(item.id) else selections - listOf(item.id))
         },
+        onClickFavorite = { _, _ -> },
         onClick = { launchPreviewScreen(ScreenType.Penlight, listOf(it.id)) },
         onPreviewClick = {
             launchPreviewScreen(
                 ScreenType.Preview,
-                uiModel.selectedItems.map(IdolColor::id)
+                selections,
             )
         },
         onPenlightClick = {
             launchPreviewScreen(
                 ScreenType.Penlight,
-                uiModel.selectedItems.map(IdolColor::id)
+                selections,
             )
         },
-        onAllClick = viewModel::selectAll,
+        onAllClick = { selected ->
+            setSelections(if (selected) items.map(IdolColor::id) else listOf())
+        },
         modifier = Modifier.fillMaxSize(),
     )
 }

@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.ScreenType
@@ -20,8 +19,7 @@ import net.subroh0508.colormaster.androidapp.components.atoms.*
 import net.subroh0508.colormaster.androidapp.components.molecules.DrawerMenuList
 import net.subroh0508.colormaster.androidapp.components.molecules.MenuListLabel
 import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawerScaffold
-import net.subroh0508.colormaster.presentation.search.viewmodel.FavoritesViewModel
-import net.subroh0508.colormaster.presentation.search.viewmodel.SearchByNameViewModel
+import net.subroh0508.colormaster.components.core.CurrentLocalKoinApp
 
 private enum class Page(@StringRes override val resId: Int) : MenuListLabel {
     SEARCH(R.string.app_menu_search_attributes),
@@ -36,10 +34,10 @@ private enum class Page(@StringRes override val resId: Int) : MenuListLabel {
 @ExperimentalLayoutApi
 @Composable
 fun Home(
-    searchByNameViewModel: SearchByNameViewModel,
-    favoritesViewModel: FavoritesViewModel,
     launchPreviewScreen: (ScreenType, List<String>) -> Unit,
 ) {
+    val koinApp = CurrentLocalKoinApp()
+
     val page = remember { mutableStateOf(Page.SEARCH) }
     val drawerScope = rememberCoroutineScope()
 
@@ -55,14 +53,12 @@ fun Home(
         bodyContent = { drawerState, snackbarHostState ->
             when (page.value) {
                 Page.SEARCH -> Search(
-                    searchByNameViewModel,
                     drawerState,
                     drawerScope,
                     snackbarHostState,
                     launchPreviewScreen,
                 )
                 Page.FAVORITES -> Favorites(
-                    favoritesViewModel,
                     drawerState,
                     drawerScope,
                     snackbarHostState,

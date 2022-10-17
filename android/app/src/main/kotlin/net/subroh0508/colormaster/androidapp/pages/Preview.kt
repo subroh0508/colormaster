@@ -12,20 +12,25 @@ import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.components.organisms.StaticColorLists
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
-import net.subroh0508.colormaster.presentation.preview.model.FullscreenPreviewUiModel
-import net.subroh0508.colormaster.presentation.preview.viewmodel.PreviewViewModel
+import net.subroh0508.colormaster.features.preview.rememberFetchIdolsUseCase
+import net.subroh0508.colormaster.model.IdolColor
 
 @Composable
-fun Preview(type: ScreenType, viewModel: PreviewViewModel, finish: () -> Unit) {
-    ColorMasterTheme {
-        val uiModel by viewModel.uiModel.collectAsState(initial = FullscreenPreviewUiModel.INITIALIZED)
-        val (items, error, isLoading) = uiModel
+fun Preview(
+    type: ScreenType,
+    ids: List<String>,
+    finish: () -> Unit,
+) = ColorMasterTheme {
+    val idolColorLoadState by rememberFetchIdolsUseCase(ids)
 
-        when {
-            isLoading -> LoadingDialog(finish)
-            error != null -> ErrorDialog(error, finish)
-            else -> StaticColorLists(type, items)
-        }
+    val items: List<IdolColor> = idolColorLoadState.getValueOrNull() ?: listOf()
+    val isLoading = idolColorLoadState.isLoading
+    val error = idolColorLoadState.getErrorOrNull()
+
+    when {
+        isLoading -> LoadingDialog(finish)
+        error != null -> ErrorDialog(error, finish)
+        else -> StaticColorLists(type, items)
     }
 }
 

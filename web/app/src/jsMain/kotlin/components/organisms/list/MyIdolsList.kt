@@ -5,12 +5,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import components.atoms.list.AutoGridList
+import net.subroh0508.colormaster.components.core.model.LoadState
+import net.subroh0508.colormaster.features.myidols.rememberFetchFavoriteIdolsUseCase
+import net.subroh0508.colormaster.features.myidols.rememberFetchInChargeIdolsUseCase
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.presentation.common.LoadState
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
-import usecase.rememberFetchFavoriteIdolsUseCase
-import usecase.rememberFetchInChargeIdolsUseCase
 
 @Composable
 fun InChargeIdolsList(

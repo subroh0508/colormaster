@@ -26,10 +26,9 @@ include(
     ":shared:data:api:authentication",
     ":shared:data:api:firestore",
     ":shared:data:api:jsfirebaseapp",
-    ":shared:presentation:common",
-    ":shared:presentation:home",
-    ":shared:presentation:search",
-    ":shared:presentation:preview",
-    ":shared:presentation:myidols",
+    ":shared:features:home",
+    ":shared:features:preview",
+    ":shared:features:search",
+    ":shared:features:myidols",
     ":shared:test"
 )

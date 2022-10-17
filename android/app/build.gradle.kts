@@ -11,9 +11,9 @@ dependencies {
     implementation(project(":shared:data:model"))
     implementation(project(":shared:components:core"))
     implementation(project(":shared:data:repository"))
-    implementation(project(":shared:presentation:common"))
-    implementation(project(":shared:presentation:search"))
-    implementation(project(":shared:presentation:preview"))
+    implementation(project(":shared:features:preview"))
+    implementation(project(":shared:features:search"))
+    implementation(project(":shared:features:myidols"))
 
     implementation(Libraries.Coroutines.android)
 
