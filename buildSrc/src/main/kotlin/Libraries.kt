@@ -78,7 +78,7 @@ object Libraries {
     }
 
     object Decompose {
-        private const val decomposeVersion = "1.0.0-alpha-04"
+        private const val decomposeVersion = "1.0.0-alpha-07"
 
         const val core = "com.arkivanov.decompose:decompose:$decomposeVersion"
         const val composejb = "com.arkivanov.decompose:extensions-compose-jetbrains:$decomposeVersion"
