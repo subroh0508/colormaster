@@ -2,10 +2,10 @@
 
 package net.subroh0508.colormaster.api.jsfirebaseapp
 
-@JsModule("firebase/compat/auth")
+@JsModule("firebase/auth")
 @JsNonModule
 external object auth
 
-@JsModule("firebase/compat/firestore")
+@JsModule("firebase/firestore")
 @JsNonModule
 external object firestore
