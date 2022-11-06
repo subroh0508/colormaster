@@ -8,7 +8,7 @@ import kotlinext.js.require
 import net.subroh0508.colormaster.components.core.ui.Languages
 import org.w3c.dom.Window
 
-@JsModule("i18next/i18next")
+@JsModule("i18next")
 @JsNonModule
 private external val i18next: I18next
 

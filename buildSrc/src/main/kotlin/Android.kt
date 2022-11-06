@@ -20,9 +20,9 @@ object Android {
     const val versionName = "0.0.1"
 
     object Versions {
-        const val compileSdk = 31
+        const val compileSdk = 32
         const val minSdk = 23
-        const val targetSdk = 31
+        const val targetSdk = 32
     }
 }
 
@@ -68,17 +68,6 @@ internal fun Project.androidBaseExt() = androidExt {
 
     sourceSets.forEach {
         it.java.setSrcDirs(files("src/${it.name}/kotlin"))
-    }
-
-    configurations {
-        // Workaround
-        // @see https://youtrack.jetbrains.com/issue/KT-43944
-        create("androidTestApi")
-        create("androidTestDebugApi")
-        create("androidTestReleaseApi")
-        create("testApi")
-        create("testDebugApi")
-        create("testReleaseApi")
     }
 }
 
