@@ -1,4 +1,4 @@
-@file:JsModule("firebase/app")
+@file:JsModule("firebase/compat/app")
 @file:JsNonModule
 
 package net.subroh0508.colormaster.api.jsfirebaseapp

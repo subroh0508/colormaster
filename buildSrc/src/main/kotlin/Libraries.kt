@@ -103,7 +103,7 @@ object Libraries {
     }
 
     object Npm {
-        const val firebaseVersion = "8.7.1"
+        const val firebaseVersion = "9.7.0"
         const val firebase = "firebase"
 
         const val materialComponentWeb = "^14.0.0"
