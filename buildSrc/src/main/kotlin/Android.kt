@@ -69,17 +69,6 @@ internal fun Project.androidBaseExt() = androidExt {
     sourceSets.forEach {
         it.java.setSrcDirs(files("src/${it.name}/kotlin"))
     }
-
-    configurations {
-        // Workaround
-        // @see https://youtrack.jetbrains.com/issue/KT-43944
-        create("androidTestApi")
-        create("androidTestDebugApi")
-        create("androidTestReleaseApi")
-        create("testApi")
-        create("testDebugApi")
-        create("testReleaseApi")
-    }
 }
 
 private fun DependencyHandler.implementation(dependencyNotation: Any): Dependency? = add("implementation", dependencyNotation)
