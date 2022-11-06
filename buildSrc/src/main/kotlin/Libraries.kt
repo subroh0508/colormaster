@@ -109,10 +109,10 @@ object Libraries {
         const val materialComponentWeb = "^14.0.0"
 
         object I18next {
-            const val version = "^19.4.5"
+            const val version = "^22.0.4"
             const val core = "i18next"
 
-            const val httpBackendVersion = "^1.0.15"
+            const val httpBackendVersion = "^2.0.1"
             const val httpBackend = "i18next-http-backend"
         }
     }
