@@ -18,7 +18,6 @@ include(
     ":web:app",
     ":web:material",
     ":web:catalog",
-    ":shared:base",
     ":shared:components:core",
     ":shared:data:model",
     ":shared:data:repository",
