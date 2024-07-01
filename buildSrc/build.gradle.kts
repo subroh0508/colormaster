@@ -16,8 +16,8 @@ val props = Properties().apply {
 fun version(target: String) = props.getProperty("${target}.version")
 
 dependencies {
-    implementation("com.android.tools.build:gradle:${version("android-gradle-plugin")}")
-    implementation("com.android.tools.build:builder:${version("android-gradle-plugin")}")
-    implementation("com.android.tools.build:builder-model:${version("android-gradle-plugin")}")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${version("kotlin")}")
+    implementation(libs.android.gradle.build.tools)
+    implementation(libs.android.gradle.build.tools.builder)
+    implementation(libs.android.gradle.build.tools.builder.model)
+    implementation(libs.kotlin.gradle.plugin)
 }
