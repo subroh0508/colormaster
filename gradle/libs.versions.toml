@@ -47,6 +47,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services-plugin" }
+kotlin-js = { id = "org.jetbrains.kotlin.js", version.ref = "kotlin" }
 kotest = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 
 [libraries]
