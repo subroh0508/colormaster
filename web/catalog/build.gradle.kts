@@ -1,9 +1,8 @@
-import org.jetbrains.compose.compose
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kotlin.mpp)
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {

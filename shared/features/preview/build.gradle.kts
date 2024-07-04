@@ -1,6 +1,6 @@
 plugins {
-    `shared-features`
-    id("org.jetbrains.compose")
+    id("shared-features")
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {
@@ -12,7 +12,7 @@ kotlin {
 
                 implementation(compose.runtime)
 
-                implementation(Libraries.Koin.core)
+                implementation(libs.koin.core)
             }
         }
 

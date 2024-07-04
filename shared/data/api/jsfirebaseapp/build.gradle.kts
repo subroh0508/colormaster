@@ -1,5 +1,5 @@
 plugins {
-    kotlin("js")
+    alias(libs.plugins.kotlin.js)
 }
 
 kotlin {
@@ -7,6 +7,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(Libraries.Coroutines.core)
-    api(npm(Libraries.Npm.firebase, Libraries.Npm.firebaseVersion))
+    implementation(libs.kotlinx.coroutines.js)
+    api(npm("firebase", libs.versions.npm.firebase.get()))
 }

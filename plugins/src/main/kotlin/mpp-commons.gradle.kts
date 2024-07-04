@@ -14,23 +14,23 @@ kotlin {
             dependencies {
                 implementation(project(":shared:test"))
 
-                implementation(kotestEngine)
-                implementation(kotestAssertion)
+                implementation(libs.kotestFrameworkEngine)
+                implementation(libs.kotestAssertionsCore)
             }
         }
         val androidMain by getting
         val androidTest by getting {
             dependencies {
-                implementation(Libraries.Coroutines.test)
-                implementation(kotestRunnerJunit5)
-                implementation(Libraries.MockK.android)
+                implementation(libs.kotlinxCoroutinesTest)
+                implementation(libs.kotestRunnerJunit5)
+                implementation(libs.mockkAndroid)
             }
         }
         val jsMain by getting
         val jsTest by getting {
             dependencies {
-                implementation(enforcedPlatform(kotlinWrappersBom))
-                implementation(Libraries.JsWrappers.extensions)
+                implementation(dependencies.platform(libs.kotlinWrappersBom))
+                implementation(libs.kotlinWrappersExtensions)
             }
         }
     }

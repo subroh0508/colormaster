@@ -7,9 +7,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(Libraries.Coroutines.core)
-                implementation(Libraries.Serialization.core)
-                implementation(Libraries.Koin.core)
+                implementation(libs.kotlinxCoroutinesCore)
+                implementation(libs.koinCore)
             }
         }
     }

@@ -26,11 +26,8 @@ object Android {
     }
 }
 
-val Project.androidGradlePlugin get() = "com.android.tools.build:gradle:${version("android-gradle-plugin")}"
-val Project.googleServicesPlugin get() = "com.google.gms:google-services:${version("google-services")}"
-
 fun Project.firebaseDependencies(configuration: DependencyHandlerScope.() -> Unit) = dependencies {
-    implementation(platform(Libraries.Firebase.bom))
+    implementation(dependencies.platform(libs.firebaseBom))
     configuration()
 }
 
