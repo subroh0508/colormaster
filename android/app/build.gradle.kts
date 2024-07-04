@@ -1,10 +1,8 @@
-import org.jetbrains.compose.compose
-
 plugins {
     id("android-application")
-    kotlin("android")
-    id("org.jetbrains.compose")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.google.services)
 }
 
 dependencies {

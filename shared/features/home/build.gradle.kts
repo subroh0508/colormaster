@@ -1,6 +1,6 @@
 plugins {
     id("shared-features")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {

@@ -1,6 +1,6 @@
 plugins {
     id("shared")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {
@@ -29,7 +29,7 @@ kotlin {
             dependencies {
                 implementation(project(":shared:data:api:jsfirebaseapp"))
 
-                implementation(project.dependencies.platform(libs.kotlin.wrappers.bom))
+                implementation(dependencies.platform(libs.kotlin.wrappers.bom))
                 implementation(libs.kotlin.wrappers.extensions)
 
                 implementation(npm("i18next", libs.versions.npm.i18next.core.get()))

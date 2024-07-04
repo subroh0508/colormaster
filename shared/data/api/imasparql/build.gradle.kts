@@ -1,6 +1,6 @@
 plugins {
     id("shared-api")
-    kotlin("plugin.serialization")
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {

@@ -7,7 +7,7 @@ internal val VersionCatalog.nodeVersion get() = getVersion("node").requiredVersi
 internal val VersionCatalog.yarnVersion get() = getVersion("yarn").requiredVersion
 
 internal val VersionCatalog.kotlinxCoroutinesCore get() = getLibrary("kotlinx-coroutines-core")
-internal val VersionCatalog.kotlinxSerialization get() = getLibrary("kotlinx-serialization-json")
+internal val VersionCatalog.kotlinxSerialization get() = getLibrary("kotlinx-serialization")
 
 internal val VersionCatalog.koinCore get() = getLibrary("koin-core")
 

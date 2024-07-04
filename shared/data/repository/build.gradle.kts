@@ -1,6 +1,6 @@
 plugins {
     id("shared-repository")
-    id("io.kotest.multiplatform")
+    alias(libs.plugins.kotest)
 }
 
 kotlin {
@@ -21,9 +21,11 @@ kotlin {
                 implementation(libs.ktor.client.mock)
             }
         }
+        val androidMain by getting {
+            dependencies {
+                implementation(dependencies.platform(libs.firebase.bom))
+                implementation(libs.firebase.auth)
+            }
+        }
     }
-}
-
-firebaseDependencies {
-    implementation(libs.firebase.auth)
 }

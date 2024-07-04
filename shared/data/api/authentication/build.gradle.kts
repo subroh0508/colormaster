@@ -14,6 +14,8 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.kotlinx.coroutines.play.services)
+                implementation(dependencies.platform(libs.firebase.bom))
+                implementation(libs.firebase.auth)
                 implementation(libs.google.services.auth)
             }
         }
@@ -23,8 +25,4 @@ kotlin {
             }
         }
     }
-}
-
-firebaseDependencies {
-    implementation(libs.firebase.auth)
 }

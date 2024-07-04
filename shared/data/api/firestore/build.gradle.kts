@@ -1,6 +1,6 @@
 plugins {
     id("shared-api")
-    kotlin("plugin.serialization")
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
@@ -17,6 +17,8 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.kotlinx.coroutines.play.services)
+                implementation(dependencies.platform(libs.firebase.bom))
+                implementation(libs.firebase.firestore)
             }
         }
         val jsMain by getting {
@@ -25,8 +27,4 @@ kotlin {
             }
         }
     }
-}
-
-firebaseDependencies {
-    implementation(libs.firebase.firestore)
 }

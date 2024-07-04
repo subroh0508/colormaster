@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kotlin.mpp)
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {
@@ -54,7 +54,7 @@ kotlin {
 
                 implementation(libs.kotlinx.coroutines.core)
 
-                implementation(project.dependencies.platform(libs.kotlin.wrappers.bom))
+                implementation(dependencies.platform(libs.kotlin.wrappers.bom))
                 implementation(libs.kotlin.wrappers.extensions)
 
                 implementation(libs.koin.core)
