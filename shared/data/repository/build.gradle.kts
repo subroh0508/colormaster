@@ -1,5 +1,5 @@
 plugins {
-    `shared-repository`
+    id("shared-repository")
     id("io.kotest.multiplatform")
 }
 
@@ -12,18 +12,18 @@ kotlin {
                 implementation(project(":shared:data:api:firestore"))
                 implementation(project(":shared:data:model"))
 
-                implementation(Libraries.Serialization.core)
+                implementation(libs.kotlinx.serialization)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(Libraries.Ktor.client)
-                implementation(Libraries.Ktor.clientMock)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.mock)
             }
         }
     }
 }
 
 firebaseDependencies {
-    implementation(Libraries.Firebase.auth)
+    implementation(libs.firebase.auth)
 }

@@ -1,20 +1,20 @@
 plugins {
-    shared
+    id("shared")
 }
 
 kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(Libraries.Coroutines.core)
+                implementation(libs.kotlinx.coroutines.core)
 
-                implementation(Libraries.Koin.core)
+                implementation(libs.koin.core)
             }
         }
         val androidMain by getting {
             dependencies {
-                implementation(Libraries.Coroutines.playServices)
-                implementation(Libraries.GoogleServices.auth)
+                implementation(libs.kotlinx.coroutines.play.services)
+                implementation(libs.google.services.auth)
             }
         }
         val jsMain by getting {
@@ -26,5 +26,5 @@ kotlin {
 }
 
 firebaseDependencies {
-    implementation(Libraries.Firebase.auth)
+    implementation(libs.firebase.auth)
 }

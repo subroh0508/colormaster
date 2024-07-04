@@ -46,19 +46,19 @@ kotlin {
                 implementation(compose.web.svg)
                 implementation(compose.runtime)
 
-                implementation(Libraries.Coroutines.js)
+                implementation(libs.kotlinx.coroutines.js)
 
-                implementation(Libraries.Ktor.clientJs)
-                implementation(Libraries.Ktor.jsonJs)
-                implementation(Libraries.Ktor.serializationJs)
+                implementation(libs.ktor.client.js)
+                implementation(libs.ktor.client.json.js)
+                implementation(libs.ktor.serialization.js)
 
-                implementation(Libraries.Serialization.core)
+                implementation(libs.kotlinx.coroutines.core)
 
-                implementation(enforcedPlatform(kotlinWrappersBom))
-                implementation(Libraries.JsWrappers.extensions)
+                implementation(project.dependencies.platform(libs.kotlin.wrappers.bom))
+                implementation(libs.kotlin.wrappers.extensions)
 
-                implementation(Libraries.Koin.core)
-                implementation(Libraries.Decompose.core)
+                implementation(libs.koin.core)
+                implementation(libs.decompose.core)
 
                 implementation(devNpm("html-webpack-plugin", "^5.3.1"))
                 implementation(devNpm("webpack-cdn-plugin", "^3.3.1"))

@@ -34,14 +34,20 @@ node = "16.14.2"
 yarn = "1.22.18"
 
 npm-firebase = "8.7.1"
-npm-material-componsnt-web = "^14.0.0"
+npm-material-component-web = "^14.0.0"
 npm-i18next-core = "^22.0.4"
 npm-i18next-http-backend = "^2.0.1"
 
 [plugins]
 kotlin-mpp = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 # compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services-plugin" }
+kotest = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

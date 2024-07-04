@@ -1,10 +1,10 @@
 import org.jetbrains.compose.compose
 
 plugins {
-    `android-application`
+    id("android-application")
     kotlin("android")
     id("org.jetbrains.compose")
-    id("com.google.gms.google-services") apply false
+    id("com.google.gms.google-services")
 }
 
 dependencies {
@@ -15,22 +15,22 @@ dependencies {
     implementation(project(":shared:features:search"))
     implementation(project(":shared:features:myidols"))
 
-    implementation(Libraries.Coroutines.android)
+    implementation(libs.kotlinx.coroutines.android)
 
-    implementation(Libraries.Jetpack.core)
-    implementation(Libraries.Jetpack.activity)
-    implementation(Libraries.Jetpack.activityCompose)
-    implementation(Libraries.Jetpack.material)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.android.material)
     implementation(compose.ui)
     implementation(compose.material)
     implementation(compose.uiTooling)
-    implementation(compose(Libraries.Compose.util))
-    implementation(Libraries.Jetpack.Lifecycle.viewModel)
+    implementation(libs.compose.util)
+    implementation(libs.androidx.lifecycle.viewmodel)
 
-    implementation(Libraries.Koin.android)
+    implementation(libs.koin.android)
 
     // Workaround
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.4")
 }
 
-apply(plugin = "com.google.gms.google-services")
+//apply(plugin = "com.google.gms.google-services")

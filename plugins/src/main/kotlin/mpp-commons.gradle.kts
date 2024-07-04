@@ -29,7 +29,7 @@ kotlin {
         val jsMain by getting
         val jsTest by getting {
             dependencies {
-                implementation(enforcedPlatform(kotlinWrappersBom))
+                implementation(project.dependencies.platform(kotlinWrappersBom))
                 implementation(Libraries.JsWrappers.extensions)
             }
         }

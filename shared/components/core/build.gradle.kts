@@ -1,5 +1,5 @@
 plugins {
-    shared
+    id("shared")
     id("org.jetbrains.compose")
 }
 
@@ -16,24 +16,24 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.ui)
 
-                implementation(Libraries.Coroutines.core)
+                implementation(libs.kotlinx.coroutines.core)
 
-                implementation(Libraries.Ktor.client)
-                implementation(Libraries.Ktor.json)
-                implementation(Libraries.Ktor.serialization)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.json)
+                implementation(libs.ktor.serialization.core)
 
-                implementation(Libraries.Koin.core)
+                implementation(libs.koin.core)
             }
         }
         val jsMain by getting {
             dependencies {
                 implementation(project(":shared:data:api:jsfirebaseapp"))
 
-                implementation(enforcedPlatform(kotlinWrappersBom))
-                implementation(Libraries.JsWrappers.extensions)
+                implementation(project.dependencies.platform(libs.kotlin.wrappers.bom))
+                implementation(libs.kotlin.wrappers.extensions)
 
-                implementation(npm(Libraries.Npm.I18next.core, Libraries.Npm.I18next.version))
-                implementation(npm(Libraries.Npm.I18next.httpBackend, Libraries.Npm.I18next.httpBackendVersion))
+                implementation(npm("i18next", libs.versions.npm.i18next.core.get()))
+                implementation(npm("i18next-http-backend", libs.versions.npm.i18next.http.backend.get()))
             }
         }
     }

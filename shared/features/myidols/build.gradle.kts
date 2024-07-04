@@ -1,5 +1,5 @@
 plugins {
-    `shared-features`
+    id("shared-features")
     id("org.jetbrains.compose")
 }
 
@@ -12,7 +12,7 @@ kotlin {
 
                 implementation(compose.runtime)
 
-                implementation(Libraries.Koin.core)
+                implementation(libs.koin.core)
             }
         }
 

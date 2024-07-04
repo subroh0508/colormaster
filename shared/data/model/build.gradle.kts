@@ -1,3 +1,3 @@
 plugins {
-    `shared-model`
+    id("shared-model")
 }
