@@ -1,6 +1,3 @@
-import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.project
-
 plugins {
     id("shared")
     kotlin("multiplatform")
@@ -12,7 +9,7 @@ kotlin {
             dependencies {
                 implementation(project(":shared:components:core"))
 
-                implementation(Libraries.Coroutines.core)
+                implementation(libs.kotlinxCoroutinesCore)
             }
         }
     }
