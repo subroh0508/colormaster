@@ -2,7 +2,7 @@
 kotlin = "1.7.20"
 compose = "1.2.1"
 
-agp = "7.3.0"
+agp = "7.4.2"
 google-services-plugin = "4.3.14"
 
 kotlinx-coroutines = "1.6.4"
