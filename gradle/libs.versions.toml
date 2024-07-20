@@ -3,7 +3,7 @@ kotlin = "1.9.24"
 compose = "1.7.0-dev1686"
 
 agp = "8.6.1"
-google-services-plugin = "4.3.14"
+google-services-plugin = "4.4.2"
 
 kotlinx-coroutines = "1.6.4"
 kotlinx-serialization = "1.4.1"
