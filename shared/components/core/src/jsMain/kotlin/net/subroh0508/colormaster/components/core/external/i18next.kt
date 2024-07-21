@@ -4,7 +4,6 @@ package net.subroh0508.colormaster.components.core.external
 
 import kotlinx.js.jso
 import kotlin.js.Promise
-import kotlinext.js.require
 import net.subroh0508.colormaster.components.core.ui.Languages
 import org.w3c.dom.Window
 
