@@ -105,7 +105,7 @@ google-services-auth = { module = "com.google.android.gms:play-services-auth", v
 okhttp3-client = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
 okhttp3-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp3" }
 
-kotlin-wrappers-extensions = { module = "org.jetbrains.kotlin-wrappers:kotlin-extensions" }
+kotlin-wrappers-js = { module = "org.jetbrains.kotlin-wrappers:kotlin-js" }
 
 mockk-android = { module = "io.mockk:mockk", version.ref = "mockk" }
 
