@@ -14,7 +14,7 @@ internal val VersionCatalog.koinCore get() = getLibrary("koin-core")
 internal val VersionCatalog.firebaseBom get() = getBundle("firebase-bom")
 
 internal val VersionCatalog.kotlinWrappersBom get() = getLibrary("kotlin-wrappers-bom")
-internal val VersionCatalog.kotlinWrappersExtensions get() = getLibrary("kotlin-wrappers-extensions")
+internal val VersionCatalog.kotlinWrappersJs get() = getLibrary("kotlin-wrappers-js")
 
 internal val VersionCatalog.kotestAssertionsCore get() = getLibrary("kotest-assertions-core")
 internal val VersionCatalog.kotestFrameworkEngine get() = getLibrary("kotest-framework-engine")

@@ -55,7 +55,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
 
                 implementation(dependencies.platform(libs.kotlin.wrappers.bom))
-                implementation(libs.kotlin.wrappers.extensions)
+                implementation(libs.kotlin.wrappers.js)
 
                 implementation(libs.koin.core)
                 implementation(libs.decompose.core)

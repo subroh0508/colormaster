@@ -30,7 +30,7 @@ kotlin {
                 implementation(project(":shared:data:api:jsfirebaseapp"))
 
                 implementation(dependencies.platform(libs.kotlin.wrappers.bom))
-                implementation(libs.kotlin.wrappers.extensions)
+                implementation(libs.kotlin.wrappers.js)
 
                 implementation(npm("i18next", libs.versions.npm.i18next.core.get()))
                 implementation(npm("i18next-http-backend", libs.versions.npm.i18next.http.backend.get()))

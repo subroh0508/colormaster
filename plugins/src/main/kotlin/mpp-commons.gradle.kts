@@ -30,7 +30,7 @@ kotlin {
         val jsTest by getting {
             dependencies {
                 implementation(dependencies.platform(libs.kotlinWrappersBom))
-                implementation(libs.kotlinWrappersExtensions)
+                implementation(libs.kotlinWrappersJs)
             }
         }
     }
