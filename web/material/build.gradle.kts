@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.mpp)
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
