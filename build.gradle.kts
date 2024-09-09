@@ -8,6 +8,5 @@ plugins {
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.kotlin.js) apply false
     alias(libs.plugins.kotest) apply false
-    id("node-convensions")
     id("ci-report-all-tests")
 }

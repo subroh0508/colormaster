@@ -30,9 +30,6 @@ kotlin-wrappers = "1.0.0-pre.426"
 mockk = "1.13.2"
 kotest = "5.5.4"
 
-node = "16.14.2"
-yarn = "1.22.18"
-
 npm-firebase = "8.7.1"
 npm-material-component-web = "^14.0.0"
 npm-i18next-core = "^22.0.4"
