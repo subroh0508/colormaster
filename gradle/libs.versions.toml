@@ -1,6 +1,6 @@
 [versions]
-kotlin = "1.7.20"
-compose = "1.2.1"
+kotlin = "1.9.24"
+compose = "1.6.10"
 
 agp = "7.4.2"
 google-services-plugin = "4.3.14"

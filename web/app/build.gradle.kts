@@ -12,9 +12,11 @@ kotlin {
 
         browser {
             commonWebpackConfig {
-                cssSupport.enabled = true
+                cssSupport {
+                    enabled.set(true)
+                }
                 outputFileName = "bundle.js"
-                bundleAnalyzerReportDir = rootProject.buildDir.resolve("analyze")
+                // bundleAnalyzerReportDir = rootProject.buildDir.resolve("analyze")
             }
             runTask {
                 sourceMaps = true
