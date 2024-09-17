@@ -21,3 +21,12 @@ kotlin {
         }
     }
 }
+
+android {
+    namespace = "net.subroh0508.colormaster.api.imasparql"
+
+    buildFeatures.buildConfig = true
+    defaultConfig {
+        buildConfigField("String", "VERSION_CODE", "\"${Android.versionCode}\"")
+    }
+}

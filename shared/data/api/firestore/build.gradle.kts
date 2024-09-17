@@ -28,3 +28,5 @@ kotlin {
         }
     }
 }
+
+android { namespace = "net.subroh0508.colormaster.api.firestore" }

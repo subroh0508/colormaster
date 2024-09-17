@@ -2,7 +2,7 @@
 kotlin = "1.9.24"
 compose = "1.6.10"
 
-agp = "7.4.2"
+agp = "8.2.0"
 google-services-plugin = "4.3.14"
 
 kotlinx-coroutines = "1.6.4"
@@ -91,8 +91,6 @@ androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 android-material = { module = "com.google.android.material:material", version.ref = "material" }
-
-compose-util = { module = "androidx.compose.ui:ui-util", version.ref = "compose" }
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }

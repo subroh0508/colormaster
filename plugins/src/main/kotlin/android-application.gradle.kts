@@ -5,6 +5,9 @@ plugins {
 androidBaseExt()
 android {
     defaultConfig {
+        minSdk = Android.Versions.minSdk
+        targetSdk = Android.Versions.targetSdk
+
         applicationId = Android.applicationId
         versionCode = Android.versionCode
         versionName = Android.versionName
