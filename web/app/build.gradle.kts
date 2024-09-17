@@ -84,7 +84,7 @@ val copyDistributions by tasks.registering {
             if (!destinationDir.exists()) {
                 destinationDir.mkdir()
             }
-            val distributions = File("$buildDir/distributions/")
+            val distributions = File("$buildDir/dist/js/productionExecutable")
             from(distributions)
             into(destinationDir)
         }
