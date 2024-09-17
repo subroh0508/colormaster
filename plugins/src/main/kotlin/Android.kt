@@ -20,9 +20,9 @@ object Android {
     const val versionName = "0.0.1"
 
     object Versions {
-        const val compileSdk = 32
+        const val compileSdk = 34
         const val minSdk = 23
-        const val targetSdk = 32
+        const val targetSdk = 34
     }
 }
 
@@ -36,11 +36,6 @@ internal fun Project.androidExt(configure: BaseExtension.() -> Unit) = (this as 
 internal fun Project.androidBaseExt() = androidExt {
     compileSdkVersion(Android.Versions.compileSdk)
 
-    defaultConfig {
-        minSdk = Android.Versions.minSdk
-        targetSdk = Android.Versions.targetSdk
-    }
-
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
@@ -49,13 +44,10 @@ internal fun Project.androidBaseExt() = androidExt {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
-    tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = "1.8"
-    }
     tasks.withType<Test> {
         useJUnitPlatform()
         testLogging {

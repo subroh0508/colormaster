@@ -22,7 +22,6 @@ dependencies {
     implementation(compose.ui)
     implementation(compose.material)
     implementation(compose.uiTooling)
-    implementation(libs.compose.util)
     implementation(libs.androidx.lifecycle.viewmodel)
 
     implementation(libs.koin.android)
@@ -32,3 +31,5 @@ dependencies {
 }
 
 //apply(plugin = "com.google.gms.google-services")
+
+android { namespace = "net.subroh0508.colormaster.androidapp" }

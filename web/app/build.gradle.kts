@@ -12,9 +12,10 @@ kotlin {
 
         browser {
             commonWebpackConfig {
-                cssSupport.enabled = true
+                cssSupport {
+                    enabled.set(true)
+                }
                 outputFileName = "bundle.js"
-                bundleAnalyzerReportDir = rootProject.buildDir.resolve("analyze")
             }
             runTask {
                 sourceMaps = true
@@ -83,7 +84,7 @@ val copyDistributions by tasks.registering {
             if (!destinationDir.exists()) {
                 destinationDir.mkdir()
             }
-            val distributions = File("$buildDir/distributions/")
+            val distributions = File("$buildDir/dist/js/productionExecutable")
             from(distributions)
             into(destinationDir)
         }

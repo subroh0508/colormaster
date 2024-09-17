@@ -29,3 +29,5 @@ kotlin {
         }
     }
 }
+
+android { namespace = "net.subroh0508.colormaster.repository" }

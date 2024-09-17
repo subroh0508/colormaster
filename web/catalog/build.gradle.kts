@@ -12,7 +12,9 @@ kotlin {
 
         browser {
             commonWebpackConfig {
-                cssSupport.enabled = true
+                cssSupport {
+                    enabled.set(true)
+                }
                 outputFileName = "material.bundle.js"
             }
             runTask {

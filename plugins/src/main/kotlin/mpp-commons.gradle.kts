@@ -19,7 +19,7 @@ kotlin {
             }
         }
         val androidMain by getting
-        val androidTest by getting {
+        val androidUnitTest by getting {
             dependencies {
                 implementation(libs.kotlinxCoroutinesTest)
                 implementation(libs.kotestRunnerJunit5)
