@@ -18,7 +18,7 @@ androidx-core = "1.3.2"
 androidx-annotation = "1.8.0"
 androidx-activity = "1.4.0-alpha02"
 material = "1.3.0"
-androidx-lifecycle = "2.3.0"
+androidx-lifecycle = "2.8.6"
 
 firebase = "28.4.2"
 google-services-auth = "19.2.0"
