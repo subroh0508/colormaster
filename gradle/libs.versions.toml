@@ -21,7 +21,7 @@ material = "1.12.0"
 androidx-lifecycle = "2.8.6"
 
 firebase = "28.4.2"
-google-services-auth = "19.2.0"
+google-services-auth = "21.2.0"
 
 okhttp3 = "4.9.3"
 
