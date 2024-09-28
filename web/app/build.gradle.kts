@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 plugins {
     alias(libs.plugins.kotlin.mpp)
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -75,7 +76,7 @@ kotlin {
     }
 }
 
-val jsBrowserWebpack = tasks.getByName("jsBrowserProductionWebpack")
+val jsBrowserDistribution = tasks.getByName("jsBrowserDistribution")
 
 val copyDistributions by tasks.registering {
     doLast {
@@ -84,11 +85,12 @@ val copyDistributions by tasks.registering {
             if (!destinationDir.exists()) {
                 destinationDir.mkdir()
             }
-            val distributions = File("$buildDir/dist/js/productionExecutable")
+            val distributions =
+                File("${layout.buildDirectory.asFile.get().absoluteFile}/dist/js/productionExecutable/")
             from(distributions)
             into(destinationDir)
         }
     }
 }
 
-jsBrowserWebpack.finalizedBy(copyDistributions)
+jsBrowserDistribution.finalizedBy(copyDistributions)
