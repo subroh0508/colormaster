@@ -27,7 +27,7 @@ okhttp3 = "4.9.3"
 
 kotlin-wrappers = "1.0.0-pre.426"
 
-mockk = "1.13.2"
+mockk = "1.13.12"
 kotest = "5.9.1"
 
 npm-firebase = "8.7.1"
