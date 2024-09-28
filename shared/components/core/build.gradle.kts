@@ -1,6 +1,7 @@
 plugins {
     id("shared")
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
