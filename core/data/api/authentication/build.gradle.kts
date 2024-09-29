@@ -16,7 +16,6 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.play.services)
                 implementation(dependencies.platform(libs.firebase.bom))
                 implementation(libs.firebase.auth)
-                implementation(libs.google.services.auth)
             }
         }
         val jsMain by getting {
