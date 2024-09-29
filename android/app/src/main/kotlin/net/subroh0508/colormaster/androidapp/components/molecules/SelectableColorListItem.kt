@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import net.subroh0508.colormaster.androidapp.components.atoms.ColorItemContent
 import net.subroh0508.colormaster.androidapp.themes.darkBackground
 import net.subroh0508.colormaster.androidapp.themes.lightBackground
-import net.subroh0508.colormaster.components.core.extensions.toColor
+import net.subroh0508.colormaster.common.extensions.toColor
 import net.subroh0508.colormaster.model.IntColor
 import net.subroh0508.colormaster.model.isBrighter
 

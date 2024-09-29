@@ -19,7 +19,7 @@ import net.subroh0508.colormaster.androidapp.components.atoms.*
 import net.subroh0508.colormaster.androidapp.components.molecules.DrawerMenuList
 import net.subroh0508.colormaster.androidapp.components.molecules.MenuListLabel
 import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawerScaffold
-import net.subroh0508.colormaster.components.core.CurrentLocalKoinApp
+import net.subroh0508.colormaster.common.CurrentLocalKoinApp
 
 private enum class Page(@StringRes override val resId: Int) : MenuListLabel {
     SEARCH(R.string.app_menu_search_attributes),

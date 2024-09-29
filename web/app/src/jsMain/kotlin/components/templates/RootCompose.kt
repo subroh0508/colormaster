@@ -5,15 +5,15 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
-import net.subroh0508.colormaster.components.core.AppModule
-import net.subroh0508.colormaster.components.core.LocalKoinApp
-import net.subroh0508.colormaster.components.core.external.I18next
-import net.subroh0508.colormaster.components.core.external.i18nextInit
-import net.subroh0508.colormaster.components.core.external.onLanguageChanged
-import net.subroh0508.colormaster.components.core.ui.AppPreference
-import net.subroh0508.colormaster.components.core.ui.LocalApp
-import net.subroh0508.colormaster.components.core.ui.ThemeType
-import net.subroh0508.colormaster.components.core.ui.basename
+import net.subroh0508.colormaster.data.di.DataModule
+import net.subroh0508.colormaster.common.LocalKoinApp
+import net.subroh0508.colormaster.common.external.I18next
+import net.subroh0508.colormaster.common.external.i18nextInit
+import net.subroh0508.colormaster.common.external.onLanguageChanged
+import net.subroh0508.colormaster.common.ui.AppPreference
+import net.subroh0508.colormaster.common.ui.LocalApp
+import net.subroh0508.colormaster.common.ui.ThemeType
+import net.subroh0508.colormaster.common.ui.basename
 import org.koin.core.KoinApplication
 import routes.LocalRouter
 import routes.Router
@@ -44,7 +44,7 @@ private fun I18nextCompose(
     val preference = remember(koinApp) { AppPreference(localStorage, appState) }
 
     SideEffect {
-        koinApp.modules(AppModule)
+        koinApp.modules(DataModule)
 
         if (appState.value.i18n != null) {
             return@SideEffect

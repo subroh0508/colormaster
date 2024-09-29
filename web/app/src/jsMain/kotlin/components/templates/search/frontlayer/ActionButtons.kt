@@ -7,8 +7,8 @@ import components.atoms.chip.OutlinedChip
 import material.components.IconButton
 import material.components.Tooltip
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
-import net.subroh0508.colormaster.components.core.external.invoke
-import net.subroh0508.colormaster.components.core.ui.LocalI18n
+import net.subroh0508.colormaster.common.external.invoke
+import net.subroh0508.colormaster.common.ui.LocalI18n
 import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div

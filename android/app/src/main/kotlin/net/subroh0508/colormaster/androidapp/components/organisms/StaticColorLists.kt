@@ -7,7 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.components.atoms.ColorItemContent
-import net.subroh0508.colormaster.components.core.extensions.toColor
+import net.subroh0508.colormaster.common.extensions.toColor
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.model.IntColor
 

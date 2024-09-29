@@ -6,8 +6,8 @@ import androidx.compose.runtime.remember
 import material.components.*
 import material.utilities.MEDIA_QUERY_LAPTOP
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
-import net.subroh0508.colormaster.components.core.external.invoke
-import net.subroh0508.colormaster.components.core.ui.LocalI18n
+import net.subroh0508.colormaster.common.external.invoke
+import net.subroh0508.colormaster.common.ui.LocalI18n
 import net.subroh0508.colormaster.features.preview.EmptyIdsRequestException
 import net.subroh0508.colormaster.features.preview.rememberFetchIdolsUseCase
 import net.subroh0508.colormaster.model.IdolColor

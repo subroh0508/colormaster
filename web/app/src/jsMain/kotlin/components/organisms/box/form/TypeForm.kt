@@ -3,9 +3,9 @@ package components.organisms.box.form
 import androidx.compose.runtime.Composable
 import components.atoms.checkbox.CheckBoxGroup
 import material.components.TypographySubtitle1
-import net.subroh0508.colormaster.components.core.external.I18nextText
-import net.subroh0508.colormaster.components.core.external.invoke
-import net.subroh0508.colormaster.components.core.ui.LocalI18n
+import net.subroh0508.colormaster.common.external.I18nextText
+import net.subroh0508.colormaster.common.external.invoke
+import net.subroh0508.colormaster.common.ui.LocalI18n
 import net.subroh0508.colormaster.model.Brands
 import net.subroh0508.colormaster.model.Types
 import org.jetbrains.compose.web.css.marginLeft

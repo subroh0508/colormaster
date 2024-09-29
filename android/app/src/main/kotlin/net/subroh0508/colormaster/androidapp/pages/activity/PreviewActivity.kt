@@ -12,8 +12,8 @@ import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.pages.Preview
 import net.subroh0508.colormaster.androidapp.previewIdolIds
 import net.subroh0508.colormaster.androidapp.screenType
-import net.subroh0508.colormaster.components.core.LocalKoinApp
-import net.subroh0508.colormaster.components.core.koinApp
+import net.subroh0508.colormaster.common.LocalKoinApp
+import net.subroh0508.colormaster.common.koinApp
 
 class PreviewActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

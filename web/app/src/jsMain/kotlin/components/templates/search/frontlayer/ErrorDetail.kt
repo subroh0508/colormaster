@@ -4,7 +4,7 @@ import MaterialTheme
 import androidx.compose.runtime.Composable
 import material.components.*
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
-import net.subroh0508.colormaster.components.core.ui.LocalI18n
+import net.subroh0508.colormaster.common.ui.LocalI18n
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Text
 import utilities.*

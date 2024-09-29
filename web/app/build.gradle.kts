@@ -34,13 +34,13 @@ kotlin {
     sourceSets {
         named("jsMain") {
             dependencies {
-                implementation(project(":shared:components:core"))
-                implementation(project(":shared:data:model"))
-                implementation(project(":shared:data:repository"))
-                implementation(project(":shared:features:home"))
-                implementation(project(":shared:features:preview"))
-                implementation(project(":shared:features:search"))
-                implementation(project(":shared:features:myidols"))
+                implementation(project(":core:common"))
+                implementation(project(":core:model"))
+                implementation(project(":core:data"))
+                implementation(project(":core:features:home"))
+                implementation(project(":core:features:preview"))
+                implementation(project(":core:features:search"))
+                implementation(project(":core:features:myidols"))
 
                 implementation(project(":web:material"))
 

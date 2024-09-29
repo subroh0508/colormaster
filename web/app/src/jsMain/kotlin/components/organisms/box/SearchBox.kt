@@ -10,8 +10,8 @@ import components.organisms.box.suggestions.LiveSuggestList
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import material.components.TrailingTextFieldIcon
-import net.subroh0508.colormaster.components.core.external.invoke
-import net.subroh0508.colormaster.components.core.ui.LocalI18n
+import net.subroh0508.colormaster.common.external.invoke
+import net.subroh0508.colormaster.common.ui.LocalI18n
 import net.subroh0508.colormaster.features.search.model.LiveNameQuery
 import net.subroh0508.colormaster.features.search.model.SearchByTab
 import net.subroh0508.colormaster.features.search.model.SearchParams
