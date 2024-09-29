@@ -1,5 +1,3 @@
-import java.util.*
-
 plugins {
     `kotlin-dsl`
 }
@@ -20,6 +18,10 @@ dependencies {
 
 gradlePlugin {
     plugins {
+        register("allTestReport") {
+            id = "colormaster.primitive.test.report"
+            implementationClass = "net.subroh0508.colormaster.primitive.AllTestReportPlugin"
+        }
         register("androidLibrary") {
             id = "colormaster.primitive.android.libarary"
             implementationClass = "net.subroh0508.colormaster.primitive.android.AndroidLibraryPlugin"

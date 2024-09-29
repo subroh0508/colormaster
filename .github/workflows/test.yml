@@ -25,7 +25,7 @@ jobs:
       - name: Run test on JVM
         run: ./gradlew testDebugUnitTest --stacktrace testDebugUnitTestReport --stacktrace
       - name: Run test on JS
-        run: ./gradlew jsNodeTest --stacktrace jsNodeTestReport --stacktrace
+        run: ./gradlew jsBrowserTest --stacktrace jsBrowserTestReport --stacktrace
       - name: Archive test on JVM results artifact
         uses: actions/upload-artifact@master
         with:
@@ -35,4 +35,4 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: all-js-test-reports
-          path: ./build/reports/allTests/jsNodeTest
+          path: ./build/reports/allTests/jsBrowserTest
