@@ -1,15 +1,15 @@
 package net.subroh0508.colormaster.repository.internal
 
-import net.subroh0508.colormaster.api.authentication.AuthenticationClient
-import net.subroh0508.colormaster.api.firestore.FirestoreClient
-import net.subroh0508.colormaster.api.firestore.document.UserDocument
-import net.subroh0508.colormaster.api.imasparql.ImasparqlClient
-import net.subroh0508.colormaster.api.imasparql.json.IdolColorJson
-import net.subroh0508.colormaster.api.imasparql.query.RandomQuery
-import net.subroh0508.colormaster.api.imasparql.query.SearchByIdQuery
-import net.subroh0508.colormaster.api.imasparql.query.SearchByLiveQuery
-import net.subroh0508.colormaster.api.imasparql.query.SearchByNameQuery
-import net.subroh0508.colormaster.api.imasparql.serializer.Response
+import net.subroh0508.colormaster.network.authentication.AuthenticationClient
+import net.subroh0508.colormaster.network.firestore.FirestoreClient
+import net.subroh0508.colormaster.network.firestore.document.UserDocument
+import net.subroh0508.colormaster.network.imasparql.ImasparqlClient
+import net.subroh0508.colormaster.network.imasparql.json.IdolColorJson
+import net.subroh0508.colormaster.network.imasparql.query.RandomQuery
+import net.subroh0508.colormaster.network.imasparql.query.SearchByIdQuery
+import net.subroh0508.colormaster.network.imasparql.query.SearchByLiveQuery
+import net.subroh0508.colormaster.network.imasparql.query.SearchByNameQuery
+import net.subroh0508.colormaster.network.imasparql.serializer.Response
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 

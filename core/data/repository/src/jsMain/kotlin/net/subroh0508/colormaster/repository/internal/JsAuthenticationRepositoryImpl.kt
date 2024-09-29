@@ -1,7 +1,7 @@
 package net.subroh0508.colormaster.repository.internal
 
 import kotlinx.coroutines.flow.map
-import net.subroh0508.colormaster.api.authentication.AuthenticationClient
+import net.subroh0508.colormaster.network.authentication.AuthenticationClient
 import net.subroh0508.colormaster.repository.AuthenticationRepository
 
 internal actual class AuthenticationRepositoryImpl actual constructor(

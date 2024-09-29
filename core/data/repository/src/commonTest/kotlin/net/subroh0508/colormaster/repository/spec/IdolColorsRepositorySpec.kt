@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.should
 import io.ktor.client.*
-import net.subroh0508.colormaster.api.imasparql.di.Api
+import net.subroh0508.colormaster.network.imasparql.di.Api
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import net.subroh0508.colormaster.repository.di.IdolColorsRepositories

@@ -3,10 +3,10 @@ package net.subroh0508.colormaster.repository.mock
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import io.ktor.util.*
-import net.subroh0508.colormaster.api.imasparql.query.RandomQuery
-import net.subroh0508.colormaster.api.imasparql.query.SearchByIdQuery
-import net.subroh0508.colormaster.api.imasparql.query.SearchByLiveQuery
-import net.subroh0508.colormaster.api.imasparql.query.SearchByNameQuery
+import net.subroh0508.colormaster.network.imasparql.query.RandomQuery
+import net.subroh0508.colormaster.network.imasparql.query.SearchByIdQuery
+import net.subroh0508.colormaster.network.imasparql.query.SearchByLiveQuery
+import net.subroh0508.colormaster.network.imasparql.query.SearchByNameQuery
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.test.jsonIdolColor
 import net.subroh0508.colormaster.test.resultJson

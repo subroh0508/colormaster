@@ -7,10 +7,10 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":core:data:api:imasparql"))
-                implementation(project(":core:data:api:authentication"))
-                implementation(project(":core:data:api:firestore"))
                 implementation(project(":core:model"))
+                implementation(project(":core:network:imasparql"))
+                implementation(project(":core:network:authentication"))
+                implementation(project(":core:network:firestore"))
 
                 implementation(libs.firebase.auth)
                 implementation(libs.firebase.firestore)
