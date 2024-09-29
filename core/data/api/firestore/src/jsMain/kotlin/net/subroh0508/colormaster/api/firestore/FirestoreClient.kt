@@ -3,7 +3,7 @@ package net.subroh0508.colormaster.api.firestore
 import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.Transaction
 
-actual class FirestoreClient(val js: FirebaseFirestore) {
+actual class FirestoreClient(private val js: FirebaseFirestore) {
     actual fun collection(collectionPath: String) = js.collection(collectionPath)
 
     actual fun collectionGroup(collectionId: String) = js.collectionGroup(collectionId)

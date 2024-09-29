@@ -6,7 +6,7 @@ import net.subroh0508.colormaster.api.authentication.model.FirebaseUser
 import dev.gitlive.firebase.auth.FirebaseUser as RawFirebaseUser
 import net.subroh0508.colormaster.api.authentication.model.Provider
 
-actual class AuthenticationClient(
+actual class AuthenticationClient actual constructor(
     private val auth: FirebaseAuth,
 ) {
     actual val currentUser get() = auth.currentUser?.toDataClass()

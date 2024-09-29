@@ -15,7 +15,7 @@ import net.subroh0508.colormaster.api.authentication.model.FirebaseUser
 import net.subroh0508.colormaster.api.authentication.model.Provider
 import dev.gitlive.firebase.auth.FirebaseUser as RawFirebaseUser
 
-actual class AuthenticationClient(
+actual class AuthenticationClient actual constructor(
     private val auth: FirebaseAuth,
 ) {
     actual val currentUser get() = auth.currentUser?.toDataClass()
@@ -26,7 +26,6 @@ actual class AuthenticationClient(
 
     fun subscribeAuthState(): Flow<FirebaseUser?> = callbackFlow {
         val unsubscribe = onAuthStateChanged(auth.js) { trySend(it?.toDataClass()) }
-
 
         awaitClose { unsubscribe() }
     }
