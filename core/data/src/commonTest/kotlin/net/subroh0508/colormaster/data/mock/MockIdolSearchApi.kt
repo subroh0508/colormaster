@@ -1,8 +1,6 @@
 package net.subroh0508.colormaster.data.mock
 
 import io.ktor.client.engine.mock.*
-import io.ktor.http.*
-import io.ktor.util.*
 import net.subroh0508.colormaster.network.imasparql.query.RandomQuery
 import net.subroh0508.colormaster.network.imasparql.query.SearchByIdQuery
 import net.subroh0508.colormaster.network.imasparql.query.SearchByLiveQuery
@@ -12,42 +10,58 @@ import net.subroh0508.colormaster.test.jsonIdolColor
 import net.subroh0508.colormaster.test.resultJson
 import net.subroh0508.colormaster.test.mockApi
 
-fun mockRandom(lang: String, limit: Int) = mockApi { req ->
+fun mockRandom(
+    lang: String,
+    limit: Int,
+    res: String,
+) = mockApi { req ->
     if (req.url.parameters["query"] == RandomQuery(lang, limit).plainQuery) {
-        return@mockApi respond(toJson(lang, getRandomIdols(lang)), headers = headers)
+        return@mockApi respond(res, headers = headers)
     }
 
     return@mockApi respondBadRequest()
 }
 
 fun mockSearchByName(
-    lang: String, name: IdolName? = null, brands: Brands? = null, types: Set<Types> = setOf(),
-    vararg res: IdolColor,
+    lang: String,
+    name: IdolName? = null,
+    brands: Brands? = null,
+    types: Set<Types> = setOf(),
+    res: String,
 ) = mockApi { req ->
-    if (req.url.parameters["query"] == SearchByNameQuery(lang, name?.value, brands?.queryStr, types.map(Types::queryStr)).plainQuery) {
-        return@mockApi respond(toJson(lang, res.toList()), headers = headers)
+    val query = SearchByNameQuery(
+        lang,
+        name?.value,
+        brands?.queryStr,
+        types.map(Types::queryStr),
+    ).plainQuery
+
+    if (req.url.parameters["query"] == query) {
+        return@mockApi respond(res, headers = headers)
     }
 
     return@mockApi respondBadRequest()
 }
 
 fun mockSearchByLive(
-    lang: String, liveName: LiveName?,
-    vararg res: IdolColor,
+    lang: String,
+    liveName: LiveName?,
+    res: String,
 ) = mockApi { req ->
     if (req.url.parameters["query"] == SearchByLiveQuery(lang, liveName?.value).plainQuery) {
-        return@mockApi respond(toJson(lang, res.toList()), headers = headers)
+        return@mockApi respond(res, headers = headers)
     }
 
     return@mockApi respondBadRequest()
 }
 
 fun mockSearchById(
-    lang: String, ids: List<String>,
-    vararg res: IdolColor,
+    lang: String,
+    ids: List<String>,
+    res: String,
 ) = mockApi { req ->
     if (req.url.parameters["query"] == SearchByIdQuery(lang, ids).plainQuery) {
-        return@mockApi respond(toJson(lang, res.toList()), headers = headers)
+        return@mockApi respond(res, headers = headers)
     }
 
     return@mockApi respondBadRequest()
@@ -65,9 +79,3 @@ fun getRandomIdols(lang: String) = listOf(
     IdolColor("Suou_Momoko", if (lang == "ja") "周防桃子" else "Momoko Suou", Triple(239, 184, 100)),
     IdolColor("Ichikawa_Hinana", if (lang == "ja") "市川雛菜" else "Hinana Ichikawa", Triple(255, 198, 57)),
 )
-
-private fun toJson(lang: String, res: List<IdolColor>) = resultJson {
-    res.joinToString(",") {
-        jsonIdolColor(lang, it.id, it.name, it.color.replace("#", ""))
-    }
-}
