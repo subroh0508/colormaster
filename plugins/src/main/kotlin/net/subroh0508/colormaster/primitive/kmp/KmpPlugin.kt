@@ -17,7 +17,6 @@ class KmpPlugin : Plugin<Project> {
                 with (sourceSets) {
                     commonTest {
                         dependencies {
-                            implementation(project(":core:test"))
                             implementation(libs.library("kotlinx-coroutines-test"))
                             implementation(libs.library("kotest-framework-engine"))
                             implementation(libs.library("kotest-assertions-core"))

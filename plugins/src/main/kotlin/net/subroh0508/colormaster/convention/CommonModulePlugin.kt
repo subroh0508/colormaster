@@ -2,31 +2,35 @@ package net.subroh0508.colormaster.convention
 
 import net.subroh0508.colormaster.library
 import net.subroh0508.colormaster.libs
+import net.subroh0508.colormaster.primitive.compose.compose
 import net.subroh0508.colormaster.primitive.kmp.applyKmpPlugins
 import net.subroh0508.colormaster.primitive.kmp.kotlin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 @Suppress("unused")
-class DataModulePlugin : Plugin<Project> {
+class CommonModulePlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with (target) {
             with (pluginManager) {
                 applyKmpPlugins()
-                apply("io.kotest.multiplatform")
+                apply("org.jetbrains.compose")
+                apply("org.jetbrains.kotlin.plugin.compose")
             }
 
             kotlin {
                 with (sourceSets) {
                     commonMain {
                         dependencies {
-                            implementation(libs.library("kotlinx-coroutines-core"))
+                            implementation(compose.dependencies.runtime)
+                            implementation(compose.dependencies.ui)
                             implementation(libs.library("koin-core"))
                         }
                     }
-                    commonTest {
+                    jsMain {
                         dependencies {
-                            implementation(project(":core:test"))
+                            implementation(dependencies.platform(libs.library("kotlin-wrappers-bom")))
+                            implementation(libs.library("kotlin-wrappers-js"))
                         }
                     }
                 }

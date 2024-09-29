@@ -41,6 +41,10 @@ gradlePlugin {
             id = "colormaster.convention.api"
             implementationClass = "net.subroh0508.colormaster.convention.ApiModulePlugin"
         }
+        register("common") {
+            id = "colormaster.convention.common"
+            implementationClass = "net.subroh0508.colormaster.convention.CommonModulePlugin"
+        }
         register("data") {
             id = "colormaster.convention.data"
             implementationClass = "net.subroh0508.colormaster.convention.DataModulePlugin"
