@@ -1,6 +1,5 @@
 plugins {
-    id("shared-repository")
-    alias(libs.plugins.kotest)
+    id("colormaster.convention.data")
 }
 
 kotlin {

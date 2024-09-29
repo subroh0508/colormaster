@@ -1,9 +1,5 @@
 plugins {
-    id("android-application")
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.jetbrains.compose)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.google.services)
+    id("colormaster.convention.android")
 }
 
 dependencies {

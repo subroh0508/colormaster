@@ -48,6 +48,9 @@ kotest = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
+compose-multiplatform-gradle-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose" }
+compose-compiler-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+
 android-gradle-build-tools = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 android-gradle-build-tools-builder = { module = "com.android.tools.build:builder", version.ref = "agp" }
 android-gradle-build-tools-builder-model = { module = "com.android.tools.build:builder-model", version.ref = "agp" }

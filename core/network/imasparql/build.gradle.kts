@@ -1,6 +1,7 @@
+import net.subroh0508.colormaster.primitive.android.Android
+
 plugins {
-    id("shared-api")
-    alias(libs.plugins.kotlinx.serialization)
+    id("colormaster.convention.api")
 }
 
 kotlin {

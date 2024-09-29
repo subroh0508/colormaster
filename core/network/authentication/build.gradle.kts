@@ -1,5 +1,9 @@
+import net.subroh0508.colormaster.primitive.android.Android
+
 plugins {
-    id("shared")
+    id("colormaster.primitive.kmp")
+    id("colormaster.primitive.kmp.android")
+    id("colormaster.primitive.kmp.js")
 }
 
 kotlin {
