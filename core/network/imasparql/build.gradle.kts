@@ -1,6 +1,5 @@
 plugins {
-    id("shared-api")
-    alias(libs.plugins.kotlinx.serialization)
+    id("colormaster.convention.api")
 }
 
 kotlin {

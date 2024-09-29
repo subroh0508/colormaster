@@ -4,8 +4,6 @@ import net.subroh0508.colormaster.library
 import net.subroh0508.colormaster.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 @Suppress("unused")
 class KmpPlugin : Plugin<Project> {
@@ -30,5 +28,3 @@ class KmpPlugin : Plugin<Project> {
         }
     }
 }
-
-fun Project.kotlin(action: KotlinMultiplatformExtension.() -> Unit) = extensions.configure(action)

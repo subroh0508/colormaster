@@ -1,5 +1,6 @@
 package net.subroh0508.colormaster.convention
 
+import net.subroh0508.colormaster.primitive.kmp.applyKmpPlugins
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -8,9 +9,7 @@ class ModelModulePlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with (target) {
             with (pluginManager) {
-                apply("colormaster.primitive.kmp")
-                apply("colormaster.primitive.kmp.android")
-                apply("colormaster.primitive.kmp.js")
+                applyKmpPlugins()
             }
         }
     }

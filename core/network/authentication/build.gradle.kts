@@ -1,5 +1,7 @@
 plugins {
-    id("shared")
+    id("colormaster.primitive.kmp")
+    id("colormaster.primitive.kmp.android")
+    id("colormaster.primitive.kmp.js")
 }
 
 kotlin {
