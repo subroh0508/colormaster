@@ -1,7 +1,6 @@
 package net.subroh0508.colormaster.repository.internal
 
 import net.subroh0508.colormaster.api.authentication.AuthenticationClient
-import net.subroh0508.colormaster.api.firestore.COLLECTION_USERS
 import net.subroh0508.colormaster.api.firestore.FirestoreClient
 import net.subroh0508.colormaster.api.firestore.document.UserDocument
 import net.subroh0508.colormaster.api.imasparql.ImasparqlClient
@@ -92,16 +91,8 @@ internal class IdolColorsRepositoryImpl(
 
     private val currentUser get() = authenticationClient.currentUser
 
-    private fun getUsersCollection() = firestoreClient.collection(COLLECTION_USERS)
-    private suspend fun getUserDocument(): UserDocument {
-        val uid = currentUser?.uid ?: return UserDocument()
-
-        return getUsersCollection().document(uid)
-            .get()
-            .takeIf { it.exists }
-            ?.data(UserDocument.serializer())
-            ?: UserDocument()
-    }
+    private fun getUsersCollection() = firestoreClient.getUsersCollection()
+    private suspend fun getUserDocument() = firestoreClient.getUserDocument(currentUser?.uid)
 
     private fun Response<IdolColorJson>.toIdolColors(): List<IdolColor> = results.bindings.mapNotNull { (idMap, nameMap, colorMap) ->
         val id = idMap["value"] ?: return@mapNotNull null
