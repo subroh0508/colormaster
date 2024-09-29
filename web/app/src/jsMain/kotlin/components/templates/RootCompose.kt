@@ -5,7 +5,7 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
-import net.subroh0508.colormaster.components.core.AppModule
+import net.subroh0508.colormaster.repository.di.DataModule
 import net.subroh0508.colormaster.components.core.LocalKoinApp
 import net.subroh0508.colormaster.components.core.external.I18next
 import net.subroh0508.colormaster.components.core.external.i18nextInit
@@ -44,7 +44,7 @@ private fun I18nextCompose(
     val preference = remember(koinApp) { AppPreference(localStorage, appState) }
 
     SideEffect {
-        koinApp.modules(AppModule)
+        koinApp.modules(DataModule)
 
         if (appState.value.i18n != null) {
             return@SideEffect

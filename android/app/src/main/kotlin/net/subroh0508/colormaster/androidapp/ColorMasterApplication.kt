@@ -1,7 +1,7 @@
 package net.subroh0508.colormaster.androidapp
 
 import android.app.Application
-import net.subroh0508.colormaster.components.core.AppModule
+import net.subroh0508.colormaster.repository.di.DataModule
 import net.subroh0508.colormaster.components.core.koinApp
 import org.koin.dsl.module
 
@@ -10,7 +10,7 @@ class ColorMasterApplication : Application() {
         super.onCreate()
 
         koinApp.modules(
-            AppModule + module {
+            DataModule + module {
                 single<Application> { this@ColorMasterApplication }
             }
         )

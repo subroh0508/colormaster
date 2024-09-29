@@ -12,12 +12,12 @@ kotlin {
                 implementation(project(":core:data:api:firestore"))
                 implementation(project(":core:model"))
 
+                implementation(libs.ktor.client.core)
                 implementation(libs.kotlinx.serialization)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.mock)
             }
         }
@@ -25,6 +25,12 @@ kotlin {
             dependencies {
                 implementation(dependencies.platform(libs.firebase.bom))
                 implementation(libs.firebase.auth)
+            }
+        }
+
+        val jsMain by getting {
+            dependencies {
+                implementation(project(":core:data:api:jsfirebaseapp"))
             }
         }
     }

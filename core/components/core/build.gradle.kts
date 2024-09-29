@@ -8,28 +8,16 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":core:data:api:imasparql"))
-                implementation(project(":core:data:api:authentication"))
-                implementation(project(":core:data:api:firestore"))
-                implementation(project(":core:data:repository"))
                 implementation(project(":core:model"))
 
                 implementation(compose.runtime)
                 implementation(compose.ui)
-
-                implementation(libs.kotlinx.coroutines.core)
-
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.json)
-                implementation(libs.ktor.serialization.core)
 
                 implementation(libs.koin.core)
             }
         }
         val jsMain by getting {
             dependencies {
-                implementation(project(":core:data:api:jsfirebaseapp"))
-
                 implementation(dependencies.platform(libs.kotlin.wrappers.bom))
                 implementation(libs.kotlin.wrappers.js)
 
