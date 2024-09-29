@@ -9,7 +9,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core:model"))
-                implementation(project(":core:data:repository"))
+                implementation(project(":core:data"))
 
                 implementation(compose.runtime)
 

@@ -5,7 +5,7 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
-import net.subroh0508.colormaster.repository.di.DataModule
+import net.subroh0508.colormaster.data.di.DataModule
 import net.subroh0508.colormaster.common.LocalKoinApp
 import net.subroh0508.colormaster.common.external.I18next
 import net.subroh0508.colormaster.common.external.i18nextInit

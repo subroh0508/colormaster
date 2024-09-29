@@ -1,7 +1,7 @@
 package net.subroh0508.colormaster.androidapp
 
 import android.app.Application
-import net.subroh0508.colormaster.repository.di.DataModule
+import net.subroh0508.colormaster.data.di.DataModule
 import net.subroh0508.colormaster.common.koinApp
 import org.koin.dsl.module
 

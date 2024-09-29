@@ -23,7 +23,7 @@ include(
     ":web:catalog",
     ":core:common",
     ":core:model",
-    ":core:data:repository",
+    ":core:data",
     ":core:network:imasparql",
     ":core:network:authentication",
     ":core:network:firestore",

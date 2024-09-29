@@ -5,7 +5,7 @@ import kotlinx.browser.window
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.common.CurrentLocalKoinApp
-import net.subroh0508.colormaster.repository.AuthenticationRepository
+import net.subroh0508.colormaster.data.AuthenticationRepository
 import org.koin.core.KoinApplication
 
 actual class SignInUseCase(
