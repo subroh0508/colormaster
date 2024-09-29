@@ -10,10 +10,12 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.kotlin.gradle.plugin)
+    implementation(libs.compose.multiplatform.gradle.plugin)
+    implementation(libs.compose.compiler.gradle.plugin)
     implementation(libs.android.gradle.build.tools)
     implementation(libs.android.gradle.build.tools.builder)
     implementation(libs.android.gradle.build.tools.builder.model)
-    implementation(libs.kotlin.gradle.plugin)
 }
 
 gradlePlugin {
@@ -42,6 +44,10 @@ gradlePlugin {
         register("data") {
             id = "colormaster.convention.data"
             implementationClass = "net.subroh0508.colormaster.convention.DataModulePlugin"
+        }
+        register("feature") {
+            id = "colormaster.convention.feature"
+            implementationClass = "net.subroh0508.colormaster.convention.FeatureModulePlugin"
         }
         register("model") {
             id = "colormaster.convention.model"
