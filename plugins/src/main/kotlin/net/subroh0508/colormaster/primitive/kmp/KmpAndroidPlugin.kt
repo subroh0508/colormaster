@@ -1,8 +1,7 @@
 package net.subroh0508.colormaster.primitive.kmp
 
-import libs
 import net.subroh0508.colormaster.library
-import net.subroh0508.colormaster.primitive.android.android
+import net.subroh0508.colormaster.libs
 import net.subroh0508.colormaster.primitive.android.setupAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project

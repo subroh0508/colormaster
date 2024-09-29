@@ -1,3 +1,5 @@
+import net.subroh0508.colormaster.primitive.android.Android
+
 plugins {
     id("colormaster.convention.api")
 }

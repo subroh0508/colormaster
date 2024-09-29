@@ -1,6 +1,5 @@
 package net.subroh0508.colormaster.primitive.android
 
-import Android
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension

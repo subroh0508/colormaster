@@ -1,5 +1,7 @@
 package net.subroh0508.colormaster.convention
 
+import net.subroh0508.colormaster.koinCore
+import net.subroh0508.colormaster.kotlinxCoroutinesCore
 import net.subroh0508.colormaster.library
 import net.subroh0508.colormaster.libs
 import net.subroh0508.colormaster.primitive.compose.compose
@@ -27,8 +29,8 @@ class FeatureModulePlugin : Plugin<Project> {
                             implementation(project(":core:model"))
                             implementation(project(":core:data"))
                             implementation(compose.dependencies.runtime)
-                            implementation(libs.library("kotlinx-coroutines-core"))
-                            implementation(libs.library("koin-core"))
+                            implementation(libs.kotlinxCoroutinesCore)
+                            implementation(libs.koinCore)
                         }
                     }
 

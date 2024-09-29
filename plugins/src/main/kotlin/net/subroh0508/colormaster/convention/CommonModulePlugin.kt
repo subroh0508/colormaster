@@ -1,5 +1,6 @@
 package net.subroh0508.colormaster.convention
 
+import net.subroh0508.colormaster.koinCore
 import net.subroh0508.colormaster.library
 import net.subroh0508.colormaster.libs
 import net.subroh0508.colormaster.primitive.compose.compose
@@ -24,7 +25,7 @@ class CommonModulePlugin : Plugin<Project> {
                         dependencies {
                             implementation(compose.dependencies.runtime)
                             implementation(compose.dependencies.ui)
-                            implementation(libs.library("koin-core"))
+                            implementation(libs.koinCore)
                         }
                     }
                     jsMain {

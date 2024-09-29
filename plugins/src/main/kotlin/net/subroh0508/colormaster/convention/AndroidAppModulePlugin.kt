@@ -1,5 +1,6 @@
 package net.subroh0508.colormaster.convention
 
+import net.subroh0508.colormaster.primitive.android.Android
 import net.subroh0508.colormaster.primitive.android.androidApplication
 import net.subroh0508.colormaster.primitive.android.setupAndroid
 import org.gradle.api.Plugin

@@ -1,6 +1,8 @@
 package net.subroh0508.colormaster.convention
 
-import net.subroh0508.colormaster.library
+import net.subroh0508.colormaster.koinCore
+import net.subroh0508.colormaster.kotlinxCoroutinesCore
+import net.subroh0508.colormaster.kotlinxSerialization
 import net.subroh0508.colormaster.libs
 import net.subroh0508.colormaster.primitive.kmp.applyKmpPlugins
 import net.subroh0508.colormaster.primitive.kmp.kotlin
@@ -20,9 +22,9 @@ class ApiModulePlugin : Plugin<Project> {
                 with (sourceSets) {
                     commonMain {
                         dependencies {
-                            implementation(libs.library("kotlinx-coroutines-core"))
-                            implementation(libs.library("kotlinx-serialization"))
-                            implementation(libs.library("koin-core"))
+                            implementation(libs.kotlinxCoroutinesCore)
+                            implementation(libs.kotlinxSerialization)
+                            implementation(libs.koinCore)
                         }
                     }
                 }
