@@ -24,7 +24,7 @@ dependencies {
     implementation(libs.koin.android)
 
     // Workaround
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.8")
 }
 
 //apply(plugin = "com.google.gms.google-services")
