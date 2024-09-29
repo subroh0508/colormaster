@@ -22,7 +22,7 @@ include(
     ":web:material",
     ":web:catalog",
     ":core:components:core",
-    ":core:data:model",
+    ":core:model",
     ":core:data:repository",
     ":core:data:api:imasparql",
     ":core:data:api:authentication",

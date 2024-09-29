@@ -35,7 +35,7 @@ kotlin {
         named("jsMain") {
             dependencies {
                 implementation(project(":core:components:core"))
-                implementation(project(":core:data:model"))
+                implementation(project(":core:model"))
                 implementation(project(":core:data:repository"))
                 implementation(project(":core:features:home"))
                 implementation(project(":core:features:preview"))

@@ -10,7 +10,7 @@ kotlin {
                 implementation(project(":core:data:api:imasparql"))
                 implementation(project(":core:data:api:authentication"))
                 implementation(project(":core:data:api:firestore"))
-                implementation(project(":core:data:model"))
+                implementation(project(":core:model"))
 
                 implementation(libs.kotlinx.serialization)
             }
