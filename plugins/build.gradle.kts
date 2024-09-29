@@ -37,6 +37,10 @@ gradlePlugin {
             implementationClass = "net.subroh0508.colormaster.primitive.kmp.KmpJsPlugin"
         }
 
+        register("androidApp") {
+            id = "colormaster.convention.android"
+            implementationClass = "net.subroh0508.colormaster.convention.AndroidAppModulePlugin"
+        }
         register("api") {
             id = "colormaster.convention.api"
             implementationClass = "net.subroh0508.colormaster.convention.ApiModulePlugin"
