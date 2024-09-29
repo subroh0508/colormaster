@@ -35,13 +35,17 @@ gradlePlugin {
             implementationClass = "net.subroh0508.colormaster.primitive.kmp.KmpJsPlugin"
         }
 
-        register("model") {
-            id = "colormaster.convention.model"
-            implementationClass = "net.subroh0508.colormaster.convention.ModelModulePlugin"
-        }
         register("api") {
             id = "colormaster.convention.api"
             implementationClass = "net.subroh0508.colormaster.convention.ApiModulePlugin"
+        }
+        register("data") {
+            id = "colormaster.convention.data"
+            implementationClass = "net.subroh0508.colormaster.convention.DataModulePlugin"
+        }
+        register("model") {
+            id = "colormaster.convention.model"
+            implementationClass = "net.subroh0508.colormaster.convention.ModelModulePlugin"
         }
     }
 }
