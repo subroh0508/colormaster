@@ -7,10 +7,10 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":shared:data:api:imasparql"))
-                implementation(project(":shared:data:api:authentication"))
-                implementation(project(":shared:data:api:firestore"))
-                implementation(project(":shared:data:model"))
+                implementation(project(":core:data:api:imasparql"))
+                implementation(project(":core:data:api:authentication"))
+                implementation(project(":core:data:api:firestore"))
+                implementation(project(":core:data:model"))
 
                 implementation(libs.kotlinx.serialization)
             }

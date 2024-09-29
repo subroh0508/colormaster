@@ -12,7 +12,7 @@ kotlin {
         val commonMain by getting
         val commonTest by getting {
             dependencies {
-                implementation(project(":shared:test"))
+                implementation(project(":core:test"))
 
                 implementation(libs.kotestFrameworkEngine)
                 implementation(libs.kotestAssertionsCore)

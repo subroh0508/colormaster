@@ -8,11 +8,11 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":shared:data:api:imasparql"))
-                implementation(project(":shared:data:api:authentication"))
-                implementation(project(":shared:data:api:firestore"))
-                implementation(project(":shared:data:repository"))
-                implementation(project(":shared:data:model"))
+                implementation(project(":core:data:api:imasparql"))
+                implementation(project(":core:data:api:authentication"))
+                implementation(project(":core:data:api:firestore"))
+                implementation(project(":core:data:repository"))
+                implementation(project(":core:data:model"))
 
                 implementation(compose.runtime)
                 implementation(compose.ui)
@@ -28,7 +28,7 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                implementation(project(":shared:data:api:jsfirebaseapp"))
+                implementation(project(":core:data:api:jsfirebaseapp"))
 
                 implementation(dependencies.platform(libs.kotlin.wrappers.bom))
                 implementation(libs.kotlin.wrappers.js)

@@ -8,8 +8,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":shared:data:model"))
-                implementation(project(":shared:data:repository"))
+                implementation(project(":core:data:model"))
+                implementation(project(":core:data:repository"))
 
                 implementation(compose.runtime)
 
@@ -30,4 +30,4 @@ kotlin {
     }
 }
 
-android { namespace = "net.subroh0508.colormaster.features.home" }
+android { namespace = "net.subroh0508.colormaster.features.preview" }

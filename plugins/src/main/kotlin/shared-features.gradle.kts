@@ -7,7 +7,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":shared:components:core"))
+                implementation(project(":core:components:core"))
 
                 implementation(libs.kotlinxCoroutinesCore)
             }

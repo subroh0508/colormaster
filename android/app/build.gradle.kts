@@ -7,12 +7,12 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":shared:data:model"))
-    implementation(project(":shared:components:core"))
-    implementation(project(":shared:data:repository"))
-    implementation(project(":shared:features:preview"))
-    implementation(project(":shared:features:search"))
-    implementation(project(":shared:features:myidols"))
+    implementation(project(":core:data:model"))
+    implementation(project(":core:components:core"))
+    implementation(project(":core:data:repository"))
+    implementation(project(":core:features:preview"))
+    implementation(project(":core:features:search"))
+    implementation(project(":core:features:myidols"))
 
     implementation(libs.kotlinx.coroutines.android)
 
