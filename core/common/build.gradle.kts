@@ -11,13 +11,12 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.ui)
 
+                implementation(libs.firebase.app)
                 implementation(libs.koin.core)
             }
         }
         val jsMain by getting {
             dependencies {
-                implementation(project(":core:data:api:jsfirebaseapp"))
-
                 implementation(dependencies.platform(libs.kotlin.wrappers.bom))
                 implementation(libs.kotlin.wrappers.js)
 

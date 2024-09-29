@@ -14,16 +14,15 @@ kotlin {
             }
         }
 
-        val androidMain by getting {
+        val commonMain by getting {
             dependencies {
-                implementation(libs.kotlinx.coroutines.play.services)
-                implementation(dependencies.platform(libs.firebase.bom))
                 implementation(libs.firebase.firestore)
             }
         }
-        val jsMain by getting {
+
+        val androidMain by getting {
             dependencies {
-                implementation(project(":core:data:api:jsfirebaseapp"))
+                implementation(libs.kotlinx.coroutines.play.services)
             }
         }
     }

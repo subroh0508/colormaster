@@ -1,19 +1,25 @@
 package net.subroh0508.colormaster.common
 
-import kotlinx.js.jso
-import net.subroh0508.colormaster.api.jsfirebaseapp.firebase
+import kotlin.js.json
 
-fun initializeApp(options: FirebaseOptions) {
-    val config: firebase.Options = jso {
-        apiKey = options.apiKey
-        authDomain = options.authDomain
-        databaseURL = options.databaseURL
-        projectId = options.projectId
-        storageBucket = options.storageBucket
-        messagingSenderId = options.messagingSenderId
-        appId = options.appId
-        measurementId = options.measurementId
-    }
-
-    firebase.initializeApp(config)
+fun initializeApp(
+    apiKey: String,
+    authDomain: String,
+    databaseUrl: String,
+    projectId: String,
+    storageBucket: String,
+    messagingSenderId: String,
+    appId: String,
+    measurementId: String,
+) {
+    dev.gitlive.firebase.externals.initializeApp(json(
+        "apiKey" to apiKey,
+        "authDomain" to authDomain,
+        "databaseURL" to databaseUrl,
+        "projectId" to projectId,
+        "storageBucket" to storageBucket,
+        "messagingSenderId" to messagingSenderId,
+        "appId" to appId,
+        "measurementId" to measurementId,
+    ))
 }

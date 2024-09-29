@@ -7,6 +7,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.firebase.auth)
 
                 implementation(libs.koin.core)
             }
@@ -14,13 +15,6 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.kotlinx.coroutines.play.services)
-                implementation(dependencies.platform(libs.firebase.bom))
-                implementation(libs.firebase.auth)
-            }
-        }
-        val jsMain by getting {
-            dependencies {
-                implementation(project(":core:data:api:jsfirebaseapp"))
             }
         }
     }

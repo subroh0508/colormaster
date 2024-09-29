@@ -1,11 +1,9 @@
 package net.subroh0508.colormaster.api.authentication
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.UserInfo
-import kotlinx.coroutines.tasks.await
+import dev.gitlive.firebase.auth.FirebaseAuth
+import dev.gitlive.firebase.auth.GoogleAuthProvider
 import net.subroh0508.colormaster.api.authentication.model.FirebaseUser
-import com.google.firebase.auth.FirebaseUser as RawFirebaseUser
+import dev.gitlive.firebase.auth.FirebaseUser as RawFirebaseUser
 import net.subroh0508.colormaster.api.authentication.model.Provider
 
 actual class AuthenticationClient(
@@ -13,14 +11,14 @@ actual class AuthenticationClient(
 ) {
     actual val currentUser get() = auth.currentUser?.toDataClass()
 
-    actual suspend fun signInAnonymously() = auth.signInAnonymously().await().user?.toDataClass() ?: throw IllegalStateException()
+    actual suspend fun signInAnonymously() = auth.signInAnonymously().user?.toDataClass() ?: throw IllegalStateException()
 
     actual suspend fun signOut() = auth.signOut()
 
     suspend fun signInWithGoogle(idToken: String): FirebaseUser {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        val credential = GoogleAuthProvider.credential(idToken, null)
 
-        return auth.signInWithCredential(credential).await().user?.toDataClass() ?: throw IllegalStateException()
+        return auth.signInWithCredential(credential).user?.toDataClass() ?: throw IllegalStateException()
     }
 
     private fun getProviderData(): List<Provider> {

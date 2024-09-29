@@ -2,7 +2,6 @@ package net.subroh0508.colormaster.repository.internal
 
 import net.subroh0508.colormaster.api.authentication.AuthenticationClient
 import net.subroh0508.colormaster.api.firestore.COLLECTION_USERS
-import net.subroh0508.colormaster.api.firestore.DocumentSnapshot
 import net.subroh0508.colormaster.api.firestore.FirestoreClient
 import net.subroh0508.colormaster.api.firestore.document.UserDocument
 import net.subroh0508.colormaster.api.imasparql.ImasparqlClient
@@ -99,7 +98,7 @@ internal class IdolColorsRepositoryImpl(
 
         return getUsersCollection().document(uid)
             .get()
-            .takeIf(DocumentSnapshot::exists)
+            .takeIf { it.exists }
             ?.data(UserDocument.serializer())
             ?: UserDocument()
     }

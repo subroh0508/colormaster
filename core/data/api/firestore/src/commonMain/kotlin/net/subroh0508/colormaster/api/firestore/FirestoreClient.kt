@@ -1,5 +1,11 @@
 package net.subroh0508.colormaster.api.firestore
 
+import dev.gitlive.firebase.firestore.CollectionReference
+import dev.gitlive.firebase.firestore.DocumentReference
+import dev.gitlive.firebase.firestore.Query
+import dev.gitlive.firebase.firestore.Transaction
+import dev.gitlive.firebase.firestore.WriteBatch
+
 expect class FirestoreClient {
     fun collection(collectionPath: String): CollectionReference
     fun collectionGroup(collectionId: String): Query
