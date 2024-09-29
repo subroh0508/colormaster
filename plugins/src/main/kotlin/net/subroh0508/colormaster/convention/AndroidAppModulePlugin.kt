@@ -10,7 +10,7 @@ import org.gradle.api.Project
 class AndroidAppModulePlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with (target) {
-            with (pluginManager) {
+            with (plugins) {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.android")
                 apply("org.jetbrains.compose")

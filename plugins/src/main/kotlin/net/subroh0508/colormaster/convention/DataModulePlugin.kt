@@ -12,7 +12,7 @@ import org.gradle.api.Project
 class DataModulePlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with (target) {
-            with (pluginManager) {
+            with (plugins) {
                 applyKmpPlugins()
                 apply("io.kotest.multiplatform")
             }

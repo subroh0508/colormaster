@@ -13,10 +13,11 @@ import org.gradle.api.Project
 class CommonModulePlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with (target) {
-            with (pluginManager) {
+            with (plugins) {
                 applyKmpPlugins()
                 apply("org.jetbrains.compose")
                 apply("org.jetbrains.kotlin.plugin.compose")
+                apply("io.kotest.multiplatform")
             }
 
             kotlin {

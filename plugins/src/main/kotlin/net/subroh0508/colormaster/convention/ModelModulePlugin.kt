@@ -8,7 +8,7 @@ import org.gradle.api.Project
 class ModelModulePlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with (target) {
-            with (pluginManager) {
+            with (plugins) {
                 applyKmpPlugins()
             }
         }

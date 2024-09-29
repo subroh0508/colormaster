@@ -13,7 +13,7 @@ import org.gradle.api.Project
 class ApiModulePlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with (target) {
-            with (pluginManager) {
+            with (plugins) {
                 applyKmpPlugins()
                 apply("org.jetbrains.kotlin.plugin.serialization")
             }
