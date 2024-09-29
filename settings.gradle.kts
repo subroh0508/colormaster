@@ -27,7 +27,6 @@ include(
     ":core:data:api:imasparql",
     ":core:data:api:authentication",
     ":core:data:api:firestore",
-    ":core:data:api:jsfirebaseapp",
     ":core:features:home",
     ":core:features:preview",
     ":core:features:search",
