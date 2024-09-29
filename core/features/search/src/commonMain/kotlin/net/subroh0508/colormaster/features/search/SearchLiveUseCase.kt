@@ -2,8 +2,8 @@ package net.subroh0508.colormaster.features.search
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
-import net.subroh0508.colormaster.components.core.CurrentLocalKoinApp
-import net.subroh0508.colormaster.components.core.model.LoadState
+import net.subroh0508.colormaster.common.CurrentLocalKoinApp
+import net.subroh0508.colormaster.common.model.LoadState
 import net.subroh0508.colormaster.features.search.model.LiveNameQuery
 import net.subroh0508.colormaster.model.LiveName
 import net.subroh0508.colormaster.repository.LiveRepository

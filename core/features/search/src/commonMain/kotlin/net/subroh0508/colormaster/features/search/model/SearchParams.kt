@@ -1,6 +1,6 @@
 package net.subroh0508.colormaster.features.search.model
 
-import net.subroh0508.colormaster.components.core.model.DateNum
+import net.subroh0508.colormaster.common.model.DateNum
 import net.subroh0508.colormaster.model.*
 
 sealed class SearchParams {

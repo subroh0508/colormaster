@@ -8,7 +8,7 @@ import components.atoms.backdrop.BackdropValues
 import components.organisms.list.SearchResultList
 import material.utilities.MEDIA_QUERY_TABLET_SMALL
 import material.utilities.rememberMediaQuery
-import net.subroh0508.colormaster.components.core.model.LoadState
+import net.subroh0508.colormaster.common.model.LoadState
 import net.subroh0508.colormaster.features.search.model.SearchParams
 import net.subroh0508.colormaster.features.search.rememberSearchIdolsUseCase
 import net.subroh0508.colormaster.model.IdolColor

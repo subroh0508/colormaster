@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import components.atoms.list.AutoGridList
-import net.subroh0508.colormaster.components.core.model.LoadState
+import net.subroh0508.colormaster.common.model.LoadState
 import net.subroh0508.colormaster.features.myidols.rememberAddIdolToFavoriteUseCase
 import net.subroh0508.colormaster.features.myidols.rememberAddIdolToInChargeUseCase
 import net.subroh0508.colormaster.model.IdolColor

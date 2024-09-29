@@ -24,7 +24,7 @@ import net.subroh0508.colormaster.androidapp.components.atoms.WarningAlert
 import net.subroh0508.colormaster.androidapp.components.organisms.ColorLists
 import net.subroh0508.colormaster.androidapp.components.organisms.HomeTopBar
 import net.subroh0508.colormaster.androidapp.components.organisms.SearchBox
-import net.subroh0508.colormaster.components.core.model.LoadState
+import net.subroh0508.colormaster.common.model.LoadState
 import net.subroh0508.colormaster.features.myidols.rememberAddIdolToFavoriteUseCase
 import net.subroh0508.colormaster.features.myidols.rememberAddIdolToInChargeUseCase
 import net.subroh0508.colormaster.features.search.model.SearchParams

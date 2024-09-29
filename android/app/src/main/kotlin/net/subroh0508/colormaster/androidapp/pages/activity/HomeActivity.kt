@@ -10,8 +10,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.intentToPreview
 import net.subroh0508.colormaster.androidapp.pages.Home
-import net.subroh0508.colormaster.components.core.LocalKoinApp
-import net.subroh0508.colormaster.components.core.koinApp
+import net.subroh0508.colormaster.common.LocalKoinApp
+import net.subroh0508.colormaster.common.koinApp
 
 class HomeActivity : ComponentActivity() {
     @ExperimentalFoundationApi

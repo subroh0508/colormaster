@@ -3,7 +3,7 @@ package net.subroh0508.colormaster.features.home
 import androidx.compose.runtime.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import net.subroh0508.colormaster.components.core.CurrentLocalKoinApp
+import net.subroh0508.colormaster.common.CurrentLocalKoinApp
 import net.subroh0508.colormaster.repository.AuthenticationRepository
 import org.koin.core.KoinApplication
 

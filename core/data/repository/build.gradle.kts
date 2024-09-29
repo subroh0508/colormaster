@@ -27,12 +27,6 @@ kotlin {
                 implementation(libs.firebase.auth)
             }
         }
-
-        val jsMain by getting {
-            dependencies {
-                implementation(project(":core:data:api:jsfirebaseapp"))
-            }
-        }
     }
 }
 

@@ -34,7 +34,7 @@ kotlin {
     sourceSets {
         named("jsMain") {
             dependencies {
-                implementation(project(":core:components:core"))
+                implementation(project(":core:common"))
                 implementation(project(":core:model"))
                 implementation(project(":core:data:repository"))
                 implementation(project(":core:features:home"))

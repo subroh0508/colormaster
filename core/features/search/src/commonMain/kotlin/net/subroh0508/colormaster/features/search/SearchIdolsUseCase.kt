@@ -2,10 +2,10 @@ package net.subroh0508.colormaster.features.search
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
-import net.subroh0508.colormaster.components.core.CurrentLocalKoinApp
-import net.subroh0508.colormaster.components.core.model.LoadState
-import net.subroh0508.colormaster.components.core.ui.CurrentLocalLanguage
-import net.subroh0508.colormaster.components.core.ui.Languages
+import net.subroh0508.colormaster.common.CurrentLocalKoinApp
+import net.subroh0508.colormaster.common.model.LoadState
+import net.subroh0508.colormaster.common.ui.CurrentLocalLanguage
+import net.subroh0508.colormaster.common.ui.Languages
 import net.subroh0508.colormaster.features.search.model.SearchParams
 import net.subroh0508.colormaster.repository.IdolColorsRepository
 import org.koin.core.KoinApplication

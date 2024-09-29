@@ -7,8 +7,8 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":core:common"))
     implementation(project(":core:model"))
-    implementation(project(":core:components:core"))
     implementation(project(":core:data:repository"))
     implementation(project(":core:features:preview"))
     implementation(project(":core:features:search"))

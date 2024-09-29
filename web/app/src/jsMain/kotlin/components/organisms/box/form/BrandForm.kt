@@ -3,8 +3,8 @@ package components.organisms.box.form
 import androidx.compose.runtime.Composable
 import components.atoms.chip.ChipGroup
 import material.components.TypographySubtitle1
-import net.subroh0508.colormaster.components.core.external.invoke
-import net.subroh0508.colormaster.components.core.ui.LocalI18n
+import net.subroh0508.colormaster.common.external.invoke
+import net.subroh0508.colormaster.common.ui.LocalI18n
 import net.subroh0508.colormaster.model.Brands
 import org.jetbrains.compose.web.css.padding
 import org.jetbrains.compose.web.css.px
