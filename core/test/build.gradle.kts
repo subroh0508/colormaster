@@ -8,6 +8,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(project(":core:model"))
+                implementation(project(":core:network:auth"))
+                implementation(project(":core:network:firestore"))
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.mock)
                 implementation(libs.kotest.framework.engine)
