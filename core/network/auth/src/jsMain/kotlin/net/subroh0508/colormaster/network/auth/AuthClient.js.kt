@@ -20,18 +20,24 @@ actual class AuthClient actual constructor(
 ) {
     actual val currentUser get() = auth.currentUser?.toDataClass()
 
-    actual suspend fun signInAnonymously() = auth.signInAnonymously().user?.toDataClass() ?: throw IllegalStateException()
+    actual suspend fun signInAnonymously() {
+        auth.signInAnonymously()
+    }
 
     actual suspend fun signOut() = auth.signOut()
 
-    fun subscribeAuthState(): Flow<FirebaseUser?> = callbackFlow {
+    actual fun subscribeAuthState(): Flow<FirebaseUser?> = callbackFlow {
         val unsubscribe = onAuthStateChanged(auth.js) { trySend(it?.toDataClass()) }
 
         awaitClose { unsubscribe() }
     }
 
-    suspend fun signInWithGoogle() = signInWithPopup(auth.js, GoogleAuthProvider()).await().user.toDataClass()
-    suspend fun signInWithGoogleForMobile(): Nothing = signInWithRedirect(auth.js, GoogleAuthProvider()).await()
+    suspend fun signInWithGoogle() {
+        signInWithPopup(auth.js, GoogleAuthProvider()).await()
+    }
+    suspend fun signInWithGoogleForMobile() {
+        signInWithRedirect(auth.js, GoogleAuthProvider()).await<Nothing>()
+    }
 
     private fun getProviderData(): List<Provider> {
         val rawUser = auth.currentUser ?: return listOf()

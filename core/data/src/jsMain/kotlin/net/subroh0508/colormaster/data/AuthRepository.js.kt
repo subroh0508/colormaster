@@ -6,6 +6,6 @@ import net.subroh0508.colormaster.model.auth.CurrentUser
 actual interface AuthRepository {
     actual suspend fun signOut()
     fun subscribe(): Flow<CurrentUser?>
-    suspend fun signInWithGoogle(): CurrentUser
+    suspend fun signInWithGoogle()
     suspend fun signInWithGoogleForMobile()
 }

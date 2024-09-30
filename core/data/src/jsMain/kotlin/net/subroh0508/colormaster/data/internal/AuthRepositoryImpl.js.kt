@@ -8,7 +8,7 @@ internal actual class AuthRepositoryImpl actual constructor(
     private val client: AuthClient,
 ) : AuthRepository {
     override fun subscribe() = client.subscribeAuthState().map { it?.toEntity() }
-    override suspend fun signInWithGoogle() = client.signInWithGoogle().toEntity()
+    override suspend fun signInWithGoogle() = client.signInWithGoogle()
     override suspend fun signInWithGoogleForMobile() = client.signInWithGoogleForMobile()
     override suspend fun signOut() = client.signOut()
 }

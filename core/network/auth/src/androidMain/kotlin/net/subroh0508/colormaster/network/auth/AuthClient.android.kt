@@ -2,6 +2,9 @@ package net.subroh0508.colormaster.network.auth
 
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.GoogleAuthProvider
+import dev.gitlive.firebase.auth.android
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import net.subroh0508.colormaster.network.auth.model.FirebaseUser
 import dev.gitlive.firebase.auth.FirebaseUser as RawFirebaseUser
 import net.subroh0508.colormaster.network.auth.model.Provider
@@ -11,14 +14,18 @@ actual class AuthClient actual constructor(
 ) {
     actual val currentUser get() = auth.currentUser?.toDataClass()
 
-    actual suspend fun signInAnonymously() = auth.signInAnonymously().user?.toDataClass() ?: throw IllegalStateException()
+    actual suspend fun signInAnonymously() {
+        auth.signInAnonymously()
+    }
 
     actual suspend fun signOut() = auth.signOut()
 
-    suspend fun signInWithGoogle(idToken: String): FirebaseUser {
+    actual fun subscribeAuthState(): Flow<FirebaseUser?> = auth.authStateChanged.map { it?.toDataClass() }
+
+    suspend fun signInWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.credential(idToken, null)
 
-        return auth.signInWithCredential(credential).user?.toDataClass() ?: throw IllegalStateException()
+        auth.signInWithCredential(credential)
     }
 
     private fun getProviderData(): List<Provider> {
