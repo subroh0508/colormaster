@@ -1,6 +1,6 @@
 package net.subroh0508.colormaster.data.internal
 
-import net.subroh0508.colormaster.network.authentication.AuthenticationClient
+import net.subroh0508.colormaster.network.auth.AuthClient
 import net.subroh0508.colormaster.network.firestore.FirestoreClient
 import net.subroh0508.colormaster.network.firestore.document.UserDocument
 import net.subroh0508.colormaster.network.imasparql.ImasparqlClient
@@ -16,7 +16,7 @@ import net.subroh0508.colormaster.data.IdolColorsRepository
 internal class IdolColorsRepositoryImpl(
     private val imasparqlClient: ImasparqlClient,
     private val firestoreClient: FirestoreClient,
-    private val authenticationClient: AuthenticationClient,
+    private val authClient: AuthClient,
 ) : IdolColorsRepository {
     override suspend fun rand(limit: Int, lang: String) =
         imasparqlClient.search(
@@ -89,7 +89,7 @@ internal class IdolColorsRepositoryImpl(
         )
     }
 
-    private val currentUser get() = authenticationClient.currentUser
+    private val currentUser get() = authClient.currentUser
 
     private fun getUsersCollection() = firestoreClient.getUsersCollection()
     private suspend fun getUserDocument() = firestoreClient.getUserDocument(currentUser?.uid)

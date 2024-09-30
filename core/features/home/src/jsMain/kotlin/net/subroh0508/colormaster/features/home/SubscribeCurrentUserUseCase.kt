@@ -4,8 +4,8 @@ import androidx.compose.runtime.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.common.CurrentLocalKoinApp
-import net.subroh0508.colormaster.model.authentication.CurrentUser
-import net.subroh0508.colormaster.data.AuthenticationRepository
+import net.subroh0508.colormaster.model.auth.CurrentUser
+import net.subroh0508.colormaster.data.AuthRepository
 import org.koin.core.KoinApplication
 
 @Composable
@@ -13,7 +13,7 @@ fun rememberSubscribeCurrentUserUseCase(
     koinApp: KoinApplication = CurrentLocalKoinApp(),
 ): State<CurrentUser?> {
     val scope = rememberCoroutineScope()
-    val repository: AuthenticationRepository by remember(koinApp) { mutableStateOf(koinApp.koin.get()) }
+    val repository: AuthRepository by remember(koinApp) { mutableStateOf(koinApp.koin.get()) }
 
     return produceState<CurrentUser?>(
         initialValue = null,

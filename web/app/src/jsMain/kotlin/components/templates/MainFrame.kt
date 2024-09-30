@@ -21,7 +21,7 @@ import net.subroh0508.colormaster.common.ui.ThemeType
 import net.subroh0508.colormaster.features.home.isSignedIn
 import net.subroh0508.colormaster.features.home.isSignedOut
 import net.subroh0508.colormaster.features.home.rememberSubscribeCurrentUserUseCase
-import net.subroh0508.colormaster.model.authentication.CurrentUser
+import net.subroh0508.colormaster.model.auth.CurrentUser
 import org.jetbrains.compose.web.css.height
 import org.jetbrains.compose.web.css.vh
 import routes.CurrentLocalRouter

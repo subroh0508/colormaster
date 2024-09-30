@@ -7,9 +7,9 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core:model"))
-                implementation(project(":core:network:imasparql"))
-                implementation(project(":core:network:authentication"))
+                implementation(project(":core:network:auth"))
                 implementation(project(":core:network:firestore"))
+                implementation(project(":core:network:imasparql"))
 
                 implementation(libs.firebase.auth)
                 implementation(libs.firebase.firestore)
