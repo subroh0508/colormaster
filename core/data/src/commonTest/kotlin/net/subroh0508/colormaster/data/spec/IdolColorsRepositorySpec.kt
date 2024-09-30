@@ -146,7 +146,7 @@ private fun mockApi(
 ): IdolColorsRepository = koinApplication {
     modules(
         Api.Module(block()) + module {
-            single { MockAuthenticationClient }
+            single { MockAuthClient }
             single { MockFirestoreClient }
         } + IdolColorsRepositories.Module
     )
