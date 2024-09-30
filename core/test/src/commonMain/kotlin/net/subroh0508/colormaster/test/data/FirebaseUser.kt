@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.data.data
+package net.subroh0508.colormaster.test.data
 
 import net.subroh0508.colormaster.network.auth.model.FirebaseUser
 import net.subroh0508.colormaster.network.auth.model.Provider

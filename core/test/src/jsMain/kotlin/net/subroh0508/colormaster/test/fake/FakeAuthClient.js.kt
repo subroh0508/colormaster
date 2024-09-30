@@ -1,26 +1,26 @@
-package net.subroh0508.colormaster.data.fake
+package net.subroh0508.colormaster.test.fake
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import net.subroh0508.colormaster.data.data.anonymous
-import net.subroh0508.colormaster.data.data.fromGoogle
 import net.subroh0508.colormaster.network.auth.AuthClient
 import net.subroh0508.colormaster.network.auth.model.FirebaseUser
+import net.subroh0508.colormaster.test.data.anonymous
+import net.subroh0508.colormaster.test.data.fromGoogle
 
-class FakeAuthClient : AuthClient {
+actual class FakeAuthClient : AuthClient {
     private val currentUserStateFlow = MutableStateFlow<FirebaseUser?>(null)
 
-    override val currentUser: FirebaseUser? get() = currentUserStateFlow.value
+    actual override val currentUser: FirebaseUser? get() = currentUserStateFlow.value
 
-    override suspend fun signInAnonymously() {
+    actual override suspend fun signInAnonymously() {
         currentUserStateFlow.value = anonymous
     }
 
-    override suspend fun signOut() {
+    actual override suspend fun signOut() {
         currentUserStateFlow.value = null
     }
 
-    override fun subscribeAuthState(): Flow<FirebaseUser?> = currentUserStateFlow
+    actual override fun subscribeAuthState(): Flow<FirebaseUser?> = currentUserStateFlow
 
     override suspend fun signInWithGoogle() {
         currentUserStateFlow.value = fromGoogle

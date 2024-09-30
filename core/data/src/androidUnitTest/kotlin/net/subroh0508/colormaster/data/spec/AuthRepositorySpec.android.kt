@@ -1,44 +1,34 @@
 package net.subroh0508.colormaster.data.spec
 
-import io.kotest.common.runBlocking
-import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
 import net.subroh0508.colormaster.data.AuthRepository
-import net.subroh0508.colormaster.data.data.fromGoogle
 import net.subroh0508.colormaster.data.di.AuthRepositories
-import net.subroh0508.colormaster.data.fake.FakeAuthClient
-import net.subroh0508.colormaster.model.auth.CredentialProvider
-import net.subroh0508.colormaster.model.auth.CurrentUser
 import net.subroh0508.colormaster.network.auth.AuthClient
 import net.subroh0508.colormaster.test.extension.flowToList
+import net.subroh0508.colormaster.test.fake.FakeAuthClient
+import net.subroh0508.colormaster.test.model.GoogleUser
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
-class AuthRepositorySpec : DescribeSpec({
-    val currentUser = CurrentUser(
-        fromGoogle.uid,
-        listOf(CredentialProvider.Google(fromGoogle.providers.first().email ?: "")),
-    )
-
-    it("#currentUser: it should return current user") {
+class AuthRepositorySpec : FunSpec({
+    test("#currentUser: it should return current user") {
         val repository = buildRepository()
 
         val (instances, _) = flowToList(repository.currentUser())
 
-        runBlocking {
-            repository.signInWithGoogle("idToken")
-            repository.signOut()
+        repository.signInWithGoogle("idToken")
+        repository.signOut()
 
-            instances.let {
-                it should haveSize(3)
-                it should containExactly(
-                    null,
-                    currentUser,
-                    null,
-                )
-            }
+        instances.let {
+            it should haveSize(3)
+            it should containExactly(
+                null,
+                GoogleUser,
+                null,
+            )
         }
     }
 })
