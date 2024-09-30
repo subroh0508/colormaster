@@ -4,7 +4,11 @@ import dev.gitlive.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import net.subroh0508.colormaster.network.auth.model.FirebaseUser
 
-expect class AuthClient(auth: FirebaseAuth) {
+expect interface AuthClient {
+    companion object {
+        internal operator fun invoke(auth: FirebaseAuth): AuthClient
+    }
+
     val currentUser: FirebaseUser?
 
     suspend fun signInAnonymously()
