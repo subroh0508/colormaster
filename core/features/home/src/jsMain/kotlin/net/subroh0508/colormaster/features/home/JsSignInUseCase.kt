@@ -4,13 +4,12 @@ import androidx.compose.runtime.*
 import kotlinx.browser.window
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import net.subroh0508.colormaster.common.CurrentLocalKoinApp
-import net.subroh0508.colormaster.data.AuthenticationRepository
+import net.subroh0508.colormaster.data.AuthRepository
 import org.koin.core.KoinApplication
 
 actual class SignInUseCase(
     private val isMobile: Boolean,
-    private val repository: AuthenticationRepository,
+    private val repository: AuthRepository,
     private val scope: CoroutineScope,
 ) {
     operator fun invoke() {
@@ -30,7 +29,7 @@ actual fun rememberSignInUseCase(
     koinApp: KoinApplication,
 ): SignInUseCase {
     val scope = rememberCoroutineScope()
-    val repository: AuthenticationRepository by remember(koinApp) { mutableStateOf(koinApp.koin.get()) }
+    val repository: AuthRepository by remember(koinApp) { mutableStateOf(koinApp.koin.get()) }
 
     return remember(koinApp) { SignInUseCase(isMobile, repository, scope) }
 }

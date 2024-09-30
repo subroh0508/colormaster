@@ -3,13 +3,13 @@ package net.subroh0508.colormaster.data.internal
 import net.subroh0508.colormaster.network.auth.AuthClient
 import net.subroh0508.colormaster.network.auth.model.FirebaseUser
 import net.subroh0508.colormaster.network.auth.model.Provider
-import net.subroh0508.colormaster.model.authentication.CredentialProvider
-import net.subroh0508.colormaster.model.authentication.CurrentUser
-import net.subroh0508.colormaster.data.AuthenticationRepository
+import net.subroh0508.colormaster.model.auth.CredentialProvider
+import net.subroh0508.colormaster.model.auth.CurrentUser
+import net.subroh0508.colormaster.data.AuthRepository
 
-internal expect class AuthenticationRepositoryImpl(
+internal expect class AuthRepositoryImpl(
     client: AuthClient,
-): AuthenticationRepository
+): AuthRepository
 
 internal fun FirebaseUser.toEntity() = CurrentUser(
     uid,

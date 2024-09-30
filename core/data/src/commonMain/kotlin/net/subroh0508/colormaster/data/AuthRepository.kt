@@ -1,5 +1,5 @@
 package net.subroh0508.colormaster.data
 
-expect interface AuthenticationRepository {
+expect interface AuthRepository {
     suspend fun signOut()
 }

@@ -1,11 +1,11 @@
 package net.subroh0508.colormaster.data.internal
 
 import net.subroh0508.colormaster.network.auth.AuthClient
-import net.subroh0508.colormaster.data.AuthenticationRepository
+import net.subroh0508.colormaster.data.AuthRepository
 
-internal actual class AuthenticationRepositoryImpl actual constructor(
+internal actual class AuthRepositoryImpl actual constructor(
     private val client: AuthClient,
-) : AuthenticationRepository {
+) : AuthRepository {
     override suspend fun fetchCurrentUser() = client.currentUser?.toEntity()
     override suspend fun signInWithGoogle(idToken: String) = client.signInWithGoogle(idToken).toEntity()
     override suspend fun signOut() = client.signOut()

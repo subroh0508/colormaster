@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.model.authentication
+package net.subroh0508.colormaster.model.auth
 
 data class CurrentUser(
     val id: String,
