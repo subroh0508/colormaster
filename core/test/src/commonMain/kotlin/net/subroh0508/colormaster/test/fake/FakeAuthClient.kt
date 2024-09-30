@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import net.subroh0508.colormaster.network.auth.AuthClient
 import net.subroh0508.colormaster.network.auth.model.FirebaseUser
 
-expect class FakeAuthClient : AuthClient {
+expect class FakeAuthClient() : AuthClient {
     override val currentUser: FirebaseUser?
 
     override suspend fun signInAnonymously()
