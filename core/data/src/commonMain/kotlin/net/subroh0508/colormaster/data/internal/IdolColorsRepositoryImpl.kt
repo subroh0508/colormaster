@@ -1,5 +1,12 @@
 package net.subroh0508.colormaster.data.internal
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onStart
 import net.subroh0508.colormaster.network.auth.AuthClient
 import net.subroh0508.colormaster.network.firestore.FirestoreClient
 import net.subroh0508.colormaster.network.firestore.document.UserDocument
@@ -18,36 +25,86 @@ internal class IdolColorsRepositoryImpl(
     private val firestoreClient: FirestoreClient,
     private val authClient: AuthClient,
 ) : IdolColorsRepository {
-    override suspend fun rand(limit: Int, lang: String) =
-        imasparqlClient.search(
-            RandomQuery(lang, limit).build(),
-            IdolColorJson.serializer(),
-        ).toIdolColors()
+    private val idolsStateFlow = MutableStateFlow<List<IdolColor>>(listOf())
+    private val inChargeOfIdolIdsStateFlow = MutableStateFlow<List<String>>(listOf())
+    private val favoriteIdolIdsStateFlow = MutableStateFlow<List<String>>(listOf())
 
-    override suspend fun search(name: IdolName?, brands: Brands?, types: Set<Types>, lang: String) =
-        imasparqlClient.search(
-            SearchByNameQuery(lang, name?.value, brands?.queryStr, types.map(Types::queryStr)).build(),
-            IdolColorJson.serializer(),
-        ).toIdolColors()
+    override fun idols(limit: Int, lang: String): Flow<List<IdolColor>> {
+        return idolsStateFlow.onStart {
+            rand(limit, lang)
+        }
+    }
 
-    override suspend fun search(liveName: LiveName, lang: String) =
-        imasparqlClient.search(
-            SearchByLiveQuery(lang, liveName.value).build(),
-            IdolColorJson.serializer(),
-        ).toIdolColors()
+    override fun inChargeOfIdolIds(): Flow<List<String>> {
+        return inChargeOfIdolIdsStateFlow.onStart {
+            getInChargeOfIdolIds()
+        }
+    }
 
-    override suspend fun search(ids: List<String>, lang: String) =
-        if (ids.isEmpty())
-            listOf()
-        else
-            imasparqlClient.search(
-                SearchByIdQuery(lang, ids).build(),
-                IdolColorJson.serializer(),
-            ).toIdolColors()
+    override fun favoriteIdolIds(): Flow<List<String>> {
+        return favoriteIdolIdsStateFlow.onStart {
+            getFavoriteIdolIds()
+        }
+    }
 
-    override suspend fun getInChargeOfIdolIds() = getUserDocument().inCharges
+    override suspend fun rand(
+        limit: Int,
+        lang: String,
+    ) = imasparqlClient.search(
+        RandomQuery(lang, limit).build(),
+        IdolColorJson.serializer(),
+    ).toIdolColors().also {
+        idolsStateFlow.value = it
+    }
 
-    override suspend fun getFavoriteIdolIds() = getUserDocument().favorites
+
+    override suspend fun search(
+        name: IdolName?,
+        brands: Brands?,
+        types: Set<Types>,
+        lang: String,
+    ) = imasparqlClient.search(
+        SearchByNameQuery(lang, name?.value, brands?.queryStr, types.map(Types::queryStr)).build(),
+        IdolColorJson.serializer(),
+    ).toIdolColors().also {
+        idolsStateFlow.value = it
+    }
+
+    override suspend fun search(
+        liveName: LiveName,
+        lang: String,
+    ) = imasparqlClient.search(
+        SearchByLiveQuery(lang, liveName.value).build(),
+        IdolColorJson.serializer(),
+    ).toIdolColors().also {
+        idolsStateFlow.value = it
+    }
+
+    override suspend fun search(
+        ids: List<String>,
+        lang: String,
+    ): List<IdolColor> {
+        val idols =
+            if (ids.isEmpty())
+                listOf()
+            else
+                imasparqlClient.search(
+                    SearchByIdQuery(lang, ids).build(),
+                    IdolColorJson.serializer(),
+                ).toIdolColors()
+
+        return idols.also {
+            idolsStateFlow.value = it
+        }
+    }
+
+    override suspend fun getInChargeOfIdolIds() = getUserDocument().inCharges.also {
+        inChargeOfIdolIdsStateFlow.value = it
+    }
+
+    override suspend fun getFavoriteIdolIds() = getUserDocument().favorites.also {
+        favoriteIdolIdsStateFlow.value = it
+    }
 
     override suspend fun registerInChargeOf(id: String) {
         val uid = currentUser?.uid ?: return
@@ -56,6 +113,8 @@ internal class IdolColorsRepositoryImpl(
             uid,
             getUserDocument().copy(inCharges = getInChargeOfIdolIds() + id),
         )
+
+        getInChargeOfIdolIds()
     }
 
     override suspend fun unregisterInChargeOf(id: String) {
@@ -65,6 +124,8 @@ internal class IdolColorsRepositoryImpl(
             uid,
             getUserDocument().copy(inCharges = getInChargeOfIdolIds() - id),
         )
+
+        getInChargeOfIdolIds()
     }
 
     override suspend fun favorite(id: String) {
@@ -74,6 +135,8 @@ internal class IdolColorsRepositoryImpl(
             uid,
             getUserDocument().copy(favorites = getFavoriteIdolIds() + id),
         )
+
+        getFavoriteIdolIds()
     }
 
     override suspend fun unfavorite(id: String) {
@@ -83,6 +146,8 @@ internal class IdolColorsRepositoryImpl(
             uid,
             getUserDocument().copy(favorites = getFavoriteIdolIds() - id),
         )
+
+        getFavoriteIdolIds()
     }
 
     private val currentUser get() = authClient.currentUser
