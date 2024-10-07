@@ -1,5 +1,16 @@
 package net.subroh0508.colormaster.data
 
+val IdolColorEmpty = """
+    {
+      "head": {
+        "vars": ["id", "name", "color"]
+      },
+      "results": {
+        "bindings": []
+      }
+    }
+""".trim()
+
 val IdolColorRandomJA = """
     {
       "head": {
