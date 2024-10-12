@@ -4,8 +4,8 @@ import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.request.*
 
-fun mockApi(
-    handler: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData,
+fun mockHttpClient(
+    handler: MockRequestHandler = { respondOk() },
 ) = HttpClient(MockEngine) {
     engine { addHandler(handler) }
 }

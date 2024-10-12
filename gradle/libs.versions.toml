@@ -26,7 +26,6 @@ okhttp3 = "4.9.3"
 
 kotlin-wrappers = "1.0.0-pre.426"
 
-mockk = "1.13.12"
 kotest = "5.9.1"
 
 npm-material-component-web = "^14.0.0"
@@ -101,8 +100,6 @@ okhttp3-client = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp
 okhttp3-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp3" }
 
 kotlin-wrappers-js = { module = "org.jetbrains.kotlin-wrappers:kotlin-js" }
-
-mockk-android = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }

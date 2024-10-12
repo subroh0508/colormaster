@@ -7,7 +7,7 @@ import net.subroh0508.colormaster.test.fake.FakeAuthClient
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
-fun buildAuthRepository(): AuthRepository = koinApplication {
+internal fun buildAuthRepository(): AuthRepository = koinApplication {
     modules(
         module {
             single<AuthClient> { FakeAuthClient() }

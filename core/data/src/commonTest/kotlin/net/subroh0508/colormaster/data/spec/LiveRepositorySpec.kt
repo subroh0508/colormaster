@@ -16,7 +16,7 @@ import org.koin.dsl.koinApplication
 class LiveRepositorySpec : FunSpec({
     test("#suggest(by dateRange): it should return live names") {
         val range = "2020-01-01" to "2020-12-31"
-        val repository = mockApi {
+        val repository = buildRepository {
             mockSuggestLiveName(range, LiveNameDateRange)
         }
 
@@ -30,7 +30,7 @@ class LiveRepositorySpec : FunSpec({
 
     test("#suggest(by name): it should return live names") {
         val name = "SHINY COLORS"
-        val repository = mockApi {
+        val repository = buildRepository {
             mockSuggestLiveName(name, LiveNameTitle)
         }
 
@@ -44,7 +44,7 @@ class LiveRepositorySpec : FunSpec({
     }
 })
 
-private fun mockApi(
+private fun buildRepository(
     block: () -> HttpClient,
 ): LiveRepository = koinApplication {
     modules(
