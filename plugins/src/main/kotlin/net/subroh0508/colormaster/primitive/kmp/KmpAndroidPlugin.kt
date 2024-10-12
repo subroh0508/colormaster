@@ -21,7 +21,6 @@ class KmpAndroidPlugin : Plugin<Project> {
                     getByName("androidUnitTest") {
                         dependencies {
                             implementation(libs.library("kotest-runner-junit5"))
-                            implementation(libs.library("mockk-android"))
                         }
                     }
                 }
