@@ -1,4 +1,4 @@
-name: "[JVM/Web] Unit Test"
+name: "Unit Test"
 
 on:
   push:
