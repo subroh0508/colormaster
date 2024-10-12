@@ -5,22 +5,12 @@ import net.subroh0508.colormaster.network.imasparql.query.SuggestLiveQuery
 import net.subroh0508.colormaster.test.mockHttpClient
 
 fun mockSuggestLiveName(
-    range: Pair<String, String>,
-    res: String,
+    vararg arg: Pair<SuggestLiveQuery, String>,
 ) = mockHttpClient { req ->
-    if (req.url.parameters["query"] == SuggestLiveQuery(dateRange = range).plainQuery) {
-        return@mockHttpClient respond(res, headers = headers)
-    }
-
-    return@mockHttpClient respondBadRequest()
-}
-
-fun mockSuggestLiveName(
-    name: String?,
-    res: String,
-) = mockHttpClient { req ->
-    if (req.url.parameters["query"] == SuggestLiveQuery(name = name).plainQuery) {
-        return@mockHttpClient respond(res, headers = headers)
+    arg.forEach { (query, res) ->
+        if (req.url.parameters["query"] == query.plainQuery) {
+            return@mockHttpClient respond(res, headers = headers)
+        }
     }
 
     return@mockHttpClient respondBadRequest()

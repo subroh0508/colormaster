@@ -5,31 +5,58 @@ import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
-import io.ktor.client.*
 import net.subroh0508.colormaster.data.*
-import net.subroh0508.colormaster.network.imasparql.di.Api
 import net.subroh0508.colormaster.model.*
-import net.subroh0508.colormaster.data.IdolColorsRepository
-import net.subroh0508.colormaster.data.di.IdolColorsRepositories
 import net.subroh0508.colormaster.data.mock.*
 import net.subroh0508.colormaster.data.module.buildIdolColorsRepository
-import net.subroh0508.colormaster.network.auth.AuthClient
-import net.subroh0508.colormaster.network.firestore.FirestoreClient
+import net.subroh0508.colormaster.network.imasparql.query.RandomQuery
+import net.subroh0508.colormaster.network.imasparql.query.SearchByIdQuery
+import net.subroh0508.colormaster.network.imasparql.query.SearchByLiveQuery
+import net.subroh0508.colormaster.network.imasparql.query.SearchByNameQuery
 import net.subroh0508.colormaster.test.extension.flowToList
-import net.subroh0508.colormaster.test.fake.FakeAuthClient
-import net.subroh0508.colormaster.test.fake.FakeFirestoreClient
 import net.subroh0508.colormaster.test.mockHttpClient
-import org.koin.dsl.koinApplication
-import org.koin.dsl.module
 
 class IdolColorsRepositorySpec : FunSpec({
+    fun randomQuery(lang: String) = RandomQuery(
+        lang,
+        limit = 10,
+    ) to (if (lang == "ja") IdolColorRandomJA else IdolColorRandomEN)
+
+    fun searchQuery(
+        lang: String,
+        name: IdolName? = null,
+        brands: Brands? = null,
+        types: Set<Types> = setOf(),
+        ja: String,
+        en: String,
+    ) = SearchByNameQuery(
+        lang,
+        name?.value,
+        brands?.queryStr,
+        types.map(Types::queryStr),
+    ) to (if (lang == "ja") ja else en)
+
+    fun searchQuery(
+        lang: String,
+        name: LiveName,
+    ) = SearchByLiveQuery(
+        lang,
+        name.value,
+    ) to (if (lang == "ja") IdolColorLiveNameJA else IdolColorLiveNameEN)
+
+    fun idsQuery(
+        lang: String,
+        ids: List<String>,
+    ) = SearchByIdQuery(
+        lang,
+        ids,
+    ) to (if (lang == "ja") IdolColorIdsJA else IdolColorIdsEN)
+
     listOf("ja", "en").forEach { lang ->
         test("#idols: when lang = '$lang' it should return idols at random") {
             val (repository, _, _) = buildIdolColorsRepository {
-                mockRandom(
-                    lang,
-                    10,
-                    if (lang == "ja") IdolColorRandomJA else IdolColorRandomEN,
+                mockIdolSearch(
+                    randomQuery(lang),
                 )
             }
 
@@ -56,11 +83,14 @@ class IdolColorsRepositorySpec : FunSpec({
             val params = IdolName(if (lang == "ja") "久川" else "Hisakawa")
 
             val (repository, _, _) = buildIdolColorsRepository {
-                mockSearchByName(
-                    lang,
-                    10,
-                    params,
-                    res = if (lang == "ja") IdolColorNameJA else IdolColorNameEN,
+                mockIdolSearch(
+                    randomQuery(lang),
+                    searchQuery(
+                        lang,
+                        name = params,
+                        ja = IdolColorNameJA,
+                        en = IdolColorNameEN,
+                    ),
                 )
             }
 
@@ -84,11 +114,14 @@ class IdolColorsRepositorySpec : FunSpec({
 
         test("#search(by brand): when lang = '$lang' it should return idols") {
             val (repository, _, _) = buildIdolColorsRepository {
-                mockSearchByName(
-                    lang,
-                    10,
-                    brands = Brands._876,
-                    res = if (lang == "ja") IdolColorBrandJA else IdolColorBrandEN,
+                mockIdolSearch(
+                    randomQuery(lang),
+                    searchQuery(
+                        lang,
+                        brands = Brands._876,
+                        ja = IdolColorBrandJA,
+                        en = IdolColorBrandEN,
+                    ),
                 )
             }
 
@@ -113,12 +146,15 @@ class IdolColorsRepositorySpec : FunSpec({
 
         test("#search(by brand and types): when lang = '$lang' it should return idols") {
             val (repository, _, _) = buildIdolColorsRepository {
-                mockSearchByName(
-                    lang,
-                    10,
-                    brands = Brands._765,
-                    types = setOf(Types.MillionLive.PRINCESS),
-                    res = if (lang == "ja") IdolColorBrandAndTypeJA else IdolColorBrandAndTypeEN,
+                mockIdolSearch(
+                    randomQuery(lang),
+                    searchQuery(
+                        lang,
+                        brands = Brands._765,
+                        types = setOf(Types.MillionLive.PRINCESS),
+                        ja = IdolColorBrandAndTypeJA,
+                        en = IdolColorBrandAndTypeEN,
+                    ),
                 )
             }
 
@@ -145,11 +181,9 @@ class IdolColorsRepositorySpec : FunSpec({
         test("#search(by live): when lang = '$lang' it should return idols") {
             val liveName = LiveName("ラジオdeアイマSHOW! 公開録音EVENT ～今、田舎村で落ち合おう！TORICO de 2006 Autumn～")
             val (repository, _, _) = buildIdolColorsRepository {
-                mockSearchByLive(
-                    lang,
-                    10,
-                    liveName,
-                    res = if (lang == "ja") IdolColorLiveNameJA else IdolColorLiveNameEN,
+                mockIdolSearch(
+                    randomQuery(lang),
+                    searchQuery(lang, liveName),
                 )
             }
 
@@ -169,11 +203,9 @@ class IdolColorsRepositorySpec : FunSpec({
         test("#search(by id): when lang = '$lang' it should return idols") {
             val ids = listOf("Tsukimura_Temari", "Mitsumine_Yuika")
             val (repository, _, _) = buildIdolColorsRepository {
-                mockSearchById(
-                    lang,
-                    10,
-                    ids = ids,
-                    res = if (lang == "ja") IdolColorIdsJA else IdolColorIdsEN,
+                mockIdolSearch(
+                    randomQuery(lang),
+                    idsQuery(lang, ids),
                 )
             }
 

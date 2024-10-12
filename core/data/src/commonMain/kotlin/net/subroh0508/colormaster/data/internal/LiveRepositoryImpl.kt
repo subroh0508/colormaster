@@ -1,21 +1,38 @@
 package net.subroh0508.colormaster.data.internal
 
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onStart
 import net.subroh0508.colormaster.network.imasparql.ImasparqlClient
 import net.subroh0508.colormaster.network.imasparql.json.LiveNameJson
 import net.subroh0508.colormaster.network.imasparql.query.SuggestLiveQuery
 import net.subroh0508.colormaster.model.LiveName
 import net.subroh0508.colormaster.data.LiveRepository
+import net.subroh0508.colormaster.network.imasparql.serializer.Response
 
 internal class LiveRepositoryImpl(
     private val imasparqlClient: ImasparqlClient,
 ) : LiveRepository {
-    override suspend fun suggest(dateRange: Pair<String, String>) = imasparqlClient.search(
+    private val names: MutableStateFlow<List<LiveName>> = MutableStateFlow(listOf())
+
+    override fun names() = names.onStart {
+        names.value = listOf()
+    }
+
+    override suspend fun suggest(
+        dateRange: Pair<String, String>,
+    ) = imasparqlClient.search(
         SuggestLiveQuery(dateRange = dateRange).build(),
         LiveNameJson.serializer(),
-    ).results.bindings.mapNotNull { (nameMap) -> LiveName(nameMap["value"] ?: return@mapNotNull null) }
+    ).toLiveNames().also { names.value = it }
 
-    override suspend fun suggest(name: String?) = imasparqlClient.search(
+    override suspend fun suggest(
+        name: String?,
+    ) = imasparqlClient.search(
         SuggestLiveQuery(name = name).build(),
         LiveNameJson.serializer(),
-    ).results.bindings.mapNotNull { (nameMap) -> LiveName(nameMap["value"] ?: return@mapNotNull null) }
+    ).toLiveNames().also { names.value = it }
+
+    private fun Response<LiveNameJson>.toLiveNames() = results
+        .bindings
+        .mapNotNull { (liveNameMap) -> liveNameMap["value"]?.let { LiveName(it) } }
 }
