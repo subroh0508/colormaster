@@ -10,6 +10,10 @@ import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.data.IdolColorsRepository
 import net.subroh0508.colormaster.data.di.IdolColorsRepositories
 import net.subroh0508.colormaster.data.mock.*
+import net.subroh0508.colormaster.network.auth.AuthClient
+import net.subroh0508.colormaster.network.firestore.FirestoreClient
+import net.subroh0508.colormaster.test.fake.FakeAuthClient
+import net.subroh0508.colormaster.test.fake.FakeFirestoreClient
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -146,8 +150,8 @@ private fun mockApi(
 ): IdolColorsRepository = koinApplication {
     modules(
         Api.Module(block()) + module {
-            single { MockAuthClient }
-            single { MockFirestoreClient }
+            single<AuthClient> { FakeAuthClient() }
+            single<FirestoreClient> { FakeFirestoreClient() }
         } + IdolColorsRepositories.Module
     )
 }.koin.get(IdolColorsRepository::class)

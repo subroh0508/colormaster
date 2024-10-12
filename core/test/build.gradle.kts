@@ -13,6 +13,7 @@ kotlin {
                 implementation(project(":core:network:firestore"))
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.mock)
+                implementation(libs.firebase.firestore)
                 implementation(libs.kotest.framework.engine)
                 implementation(libs.kotest.assertions.core)
             }
