@@ -25,3 +25,15 @@ fun mockSuggestLiveName(
 
     return@mockHttpClient respondBadRequest()
 }
+
+fun mockSuggestLiveName(
+    vararg arg: Pair<SuggestLiveQuery, String>,
+) = mockHttpClient { req ->
+    arg.forEach { (query, res) ->
+        if (req.url.parameters["query"] == query.plainQuery) {
+            return@mockHttpClient respond(res, headers = headers)
+        }
+    }
+
+    return@mockHttpClient respondBadRequest()
+}
