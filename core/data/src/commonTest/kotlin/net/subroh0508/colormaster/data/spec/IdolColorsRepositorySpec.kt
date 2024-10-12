@@ -1,6 +1,7 @@
 package net.subroh0508.colormaster.data.spec
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
@@ -11,18 +12,20 @@ import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.data.IdolColorsRepository
 import net.subroh0508.colormaster.data.di.IdolColorsRepositories
 import net.subroh0508.colormaster.data.mock.*
+import net.subroh0508.colormaster.data.module.buildIdolColorsRepository
 import net.subroh0508.colormaster.network.auth.AuthClient
 import net.subroh0508.colormaster.network.firestore.FirestoreClient
 import net.subroh0508.colormaster.test.extension.flowToList
 import net.subroh0508.colormaster.test.fake.FakeAuthClient
 import net.subroh0508.colormaster.test.fake.FakeFirestoreClient
+import net.subroh0508.colormaster.test.mockHttpClient
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
 class IdolColorsRepositorySpec : FunSpec({
     listOf("ja", "en").forEach { lang ->
         test("#idols: when lang = '$lang' it should return idols at random") {
-            val repository = mockApi {
+            val (repository, _, _) = buildIdolColorsRepository {
                 mockRandom(
                     lang,
                     10,
@@ -52,7 +55,7 @@ class IdolColorsRepositorySpec : FunSpec({
         test("#search(by name): when lang = '$lang' it should return idols") {
             val params = IdolName(if (lang == "ja") "久川" else "Hisakawa")
 
-            val repository = mockApi {
+            val (repository, _, _) = buildIdolColorsRepository {
                 mockSearchByName(
                     lang,
                     10,
@@ -80,7 +83,7 @@ class IdolColorsRepositorySpec : FunSpec({
         }
 
         test("#search(by brand): when lang = '$lang' it should return idols") {
-            val repository = mockApi {
+            val (repository, _, _) = buildIdolColorsRepository {
                 mockSearchByName(
                     lang,
                     10,
@@ -109,7 +112,7 @@ class IdolColorsRepositorySpec : FunSpec({
         }
 
         test("#search(by brand and types): when lang = '$lang' it should return idols") {
-            val repository = mockApi {
+            val (repository, _, _) = buildIdolColorsRepository {
                 mockSearchByName(
                     lang,
                     10,
@@ -141,7 +144,7 @@ class IdolColorsRepositorySpec : FunSpec({
 
         test("#search(by live): when lang = '$lang' it should return idols") {
             val liveName = LiveName("ラジオdeアイマSHOW! 公開録音EVENT ～今、田舎村で落ち合おう！TORICO de 2006 Autumn～")
-            val repository = mockApi {
+            val (repository, _, _) = buildIdolColorsRepository {
                 mockSearchByLive(
                     lang,
                     10,
@@ -165,7 +168,7 @@ class IdolColorsRepositorySpec : FunSpec({
 
         test("#search(by id): when lang = '$lang' it should return idols") {
             val ids = listOf("Tsukimura_Temari", "Mitsumine_Yuika")
-            val repository = mockApi {
+            val (repository, _, _) = buildIdolColorsRepository {
                 mockSearchById(
                     lang,
                     10,
@@ -187,15 +190,46 @@ class IdolColorsRepositorySpec : FunSpec({
             }
         }
     }
-})
 
-private fun mockApi(
-    block: () -> HttpClient,
-): IdolColorsRepository = koinApplication {
-    modules(
-        Api.Module(block()) + module {
-            single<AuthClient> { FakeAuthClient() }
-            single<FirestoreClient> { FakeFirestoreClient() }
-        } + IdolColorsRepositories.Module
-    )
-}.koin.get(IdolColorsRepository::class)
+    test("#inChargeOfIdolIds: when sign out it should return empty list") {
+        val (repository, auth, _) = buildIdolColorsRepository {
+            mockHttpClient()
+        }
+
+        val (instances, _) = flowToList(repository.inChargeOfIdolIds())
+        auth.signOut()
+        repository.registerInChargeOf("Amami_Haruka")
+        repository.registerInChargeOf("Kisaragi_Chihaya")
+        repository.registerInChargeOf("Hoshii_Miki")
+
+        repository.unregisterInChargeOf("Amami_Haruka")
+        repository.unregisterInChargeOf("Kisaragi_Chihaya")
+        repository.unregisterInChargeOf("Hoshii_Miki")
+
+        instances.let {
+            it should haveSize(1)
+            it.last() should beEmpty()
+        }
+    }
+
+    test("#favoriteIdolIds: when sign out it should return empty list") {
+        val (repository, auth, _) = buildIdolColorsRepository {
+            mockHttpClient()
+        }
+
+        val (instances, _) = flowToList(repository.favoriteIdolIds())
+        auth.signOut()
+        repository.favorite("Amami_Haruka")
+        repository.favorite("Kisaragi_Chihaya")
+        repository.favorite("Hoshii_Miki")
+
+        repository.unfavorite("Amami_Haruka")
+        repository.unfavorite("Kisaragi_Chihaya")
+        repository.unfavorite("Hoshii_Miki")
+
+        instances.let {
+            it should haveSize(1)
+            it.last() should beEmpty()
+        }
+    }
+})

@@ -9,13 +9,13 @@ import net.subroh0508.colormaster.network.imasparql.query.SearchByIdQuery
 import net.subroh0508.colormaster.network.imasparql.query.SearchByLiveQuery
 import net.subroh0508.colormaster.network.imasparql.query.SearchByNameQuery
 import net.subroh0508.colormaster.model.*
-import net.subroh0508.colormaster.test.mockApi
+import net.subroh0508.colormaster.test.mockHttpClient
 
 fun mockRandom(
     lang: String,
     limit: Int,
     res: String,
-) = mockApi { req ->
+) = mockHttpClient { req ->
     mockRandomResponse(lang, limit, req, res) {
         respondBadRequest()
     }
@@ -28,7 +28,7 @@ fun mockSearchByName(
     brands: Brands? = null,
     types: Set<Types> = setOf(),
     res: String,
-) = mockApi { req ->
+) = mockHttpClient { req ->
     val query = SearchByNameQuery(
         lang,
         name?.value,
@@ -55,7 +55,7 @@ fun mockSearchByLive(
     limit: Int,
     liveName: LiveName?,
     res: String,
-) = mockApi { req ->
+) = mockHttpClient { req ->
     mockRandomResponse(
         lang,
         limit,
@@ -75,7 +75,7 @@ fun mockSearchById(
     limit: Int,
     ids: List<String>,
     res: String,
-) = mockApi { req ->
+) = mockHttpClient { req ->
     mockRandomResponse(
         lang,
         limit,
