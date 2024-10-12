@@ -2,14 +2,9 @@ package net.subroh0508.colormaster.data.internal
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onStart
 import net.subroh0508.colormaster.network.auth.AuthClient
 import net.subroh0508.colormaster.network.firestore.FirestoreClient
-import net.subroh0508.colormaster.network.firestore.document.UserDocument
 import net.subroh0508.colormaster.network.imasparql.ImasparqlClient
 import net.subroh0508.colormaster.network.imasparql.json.IdolColorJson
 import net.subroh0508.colormaster.network.imasparql.query.RandomQuery
@@ -154,17 +149,19 @@ internal class IdolColorsRepositoryImpl(
 
     private suspend fun getUserDocument() = firestoreClient.getUserDocument(currentUser?.uid)
 
-    private fun Response<IdolColorJson>.toIdolColors(): List<IdolColor> = results.bindings.mapNotNull { (idMap, nameMap, colorMap) ->
-        val id = idMap["value"] ?: return@mapNotNull null
-        val name = nameMap["value"] ?: return@mapNotNull null
-        val color = colorMap["value"] ?: return@mapNotNull null
+    private fun Response<IdolColorJson>.toIdolColors() = results
+        .bindings
+        .mapNotNull { (idMap, nameMap, colorMap) ->
+            val id = idMap["value"] ?: return@mapNotNull null
+            val name = nameMap["value"] ?: return@mapNotNull null
+            val color = colorMap["value"] ?: return@mapNotNull null
 
-        val intColor = Triple(
-            color.substring(0, 2).toInt(16),
-            color.substring(2, 4).toInt(16),
-            color.substring(4, 6).toInt(16),
-        )
+            val intColor = Triple(
+                color.substring(0, 2).toInt(16),
+                color.substring(2, 4).toInt(16),
+                color.substring(4, 6).toInt(16),
+            )
 
-        IdolColor(id, name, intColor)
-    }
+            IdolColor(id, name, intColor)
+        }
 }
