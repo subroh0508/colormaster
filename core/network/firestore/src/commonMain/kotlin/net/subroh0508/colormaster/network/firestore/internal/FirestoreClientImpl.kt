@@ -8,7 +8,18 @@ import net.subroh0508.colormaster.network.firestore.document.UserDocument
 internal class FirestoreClientImpl(
     private val firestore: FirebaseFirestore,
 ) : FirestoreClient {
-    override fun getUsersCollection() = firestore.collection(COLLECTION_USERS)
+    private fun getUsersCollection() = firestore.collection(COLLECTION_USERS)
+
+    override suspend fun setUserDocument(
+        uid: String,
+        userDocument: UserDocument,
+    ) {
+        getUsersCollection().document(uid).set(
+            UserDocument.serializer(),
+            userDocument,
+            merge = true,
+        )
+    }
 
     override suspend fun getUserDocument(uid: String?): UserDocument {
         uid ?: return UserDocument()

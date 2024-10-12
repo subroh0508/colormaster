@@ -52,46 +52,41 @@ internal class IdolColorsRepositoryImpl(
     override suspend fun registerInChargeOf(id: String) {
         val uid = currentUser?.uid ?: return
 
-        getUsersCollection().document(uid).set(
-            UserDocument.serializer(),
+        firestoreClient.setUserDocument(
+            uid,
             getUserDocument().copy(inCharges = getInChargeOfIdolIds() + id),
-            merge = true,
         )
     }
 
     override suspend fun unregisterInChargeOf(id: String) {
         val uid = currentUser?.uid ?: return
 
-        getUsersCollection().document(uid).set(
-            UserDocument.serializer(),
+        firestoreClient.setUserDocument(
+            uid,
             getUserDocument().copy(inCharges = getInChargeOfIdolIds() - id),
-            merge = true,
         )
     }
 
     override suspend fun favorite(id: String) {
         val uid = currentUser?.uid ?: return
 
-        getUsersCollection().document(uid).set(
-            UserDocument.serializer(),
+        firestoreClient.setUserDocument(
+            uid,
             getUserDocument().copy(favorites = getFavoriteIdolIds() + id),
-            merge = true,
         )
     }
 
     override suspend fun unfavorite(id: String) {
         val uid = currentUser?.uid ?: return
 
-        getUsersCollection().document(uid).set(
-            UserDocument.serializer(),
+        firestoreClient.setUserDocument(
+            uid,
             getUserDocument().copy(favorites = getFavoriteIdolIds() - id),
-            merge = true,
         )
     }
 
     private val currentUser get() = authClient.currentUser
 
-    private fun getUsersCollection() = firestoreClient.getUsersCollection()
     private suspend fun getUserDocument() = firestoreClient.getUserDocument(currentUser?.uid)
 
     private fun Response<IdolColorJson>.toIdolColors(): List<IdolColor> = results.bindings.mapNotNull { (idMap, nameMap, colorMap) ->
