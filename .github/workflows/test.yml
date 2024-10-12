@@ -7,7 +7,8 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  test:
+  android:
+    name: 'Test / Android'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,14 +25,32 @@ jobs:
             ${{ runner.os }}-gradle-
       - name: Run test on JVM
         run: ./gradlew testDebugUnitTest --stacktrace testDebugUnitTestReport --stacktrace
-      - name: Run test on JS
-        run: ./gradlew jsBrowserTest --stacktrace jsBrowserTestReport --stacktrace
       - name: Archive test on JVM results artifact
+        if: success() || failure()
         uses: actions/upload-artifact@master
         with:
           name: all-jvm-test-reports
           path: ./build/reports/allTests/testDebugUnitTest
+  js:
+    name: 'Test / Web'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 17
+      - uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Run test on JS
+        run: ./gradlew jsBrowserTest --stacktrace jsBrowserTestReport --stacktrace
       - name: Archive test on JS results artifact
+        if: success() || failure()
         uses: actions/upload-artifact@master
         with:
           name: all-js-test-reports
