@@ -3,7 +3,7 @@ package net.subroh0508.colormaster.features.home
 import androidx.compose.runtime.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import net.subroh0508.colormaster.data.AuthRepository
+import net.subroh0508.colormaster.model.auth.AuthRepository
 import org.koin.core.KoinApplication
 
 actual class SignInUseCase(

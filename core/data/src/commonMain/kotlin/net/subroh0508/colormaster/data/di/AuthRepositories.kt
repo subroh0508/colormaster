@@ -1,10 +1,7 @@
 package net.subroh0508.colormaster.data.di
 
-import net.subroh0508.colormaster.data.AuthRepository
-import org.koin.dsl.module
+import org.koin.core.module.Module
 
-object AuthRepositories {
-    val Module get() = module {
-        single<AuthRepository> { AuthRepository(get()) }
-    }
+expect object AuthRepositories {
+    val Module: Module
 }

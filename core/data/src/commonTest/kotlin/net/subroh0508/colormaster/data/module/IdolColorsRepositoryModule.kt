@@ -1,8 +1,8 @@
 package net.subroh0508.colormaster.data.module
 
 import io.ktor.client.HttpClient
-import net.subroh0508.colormaster.data.IdolColorsRepository
 import net.subroh0508.colormaster.data.di.IdolColorsRepositories
+import net.subroh0508.colormaster.model.IdolColorsRepository
 import net.subroh0508.colormaster.network.auth.AuthClient
 import net.subroh0508.colormaster.network.firestore.FirestoreClient
 import net.subroh0508.colormaster.network.imasparql.di.Api

@@ -6,7 +6,7 @@ import net.subroh0508.colormaster.network.imasparql.ImasparqlClient
 import net.subroh0508.colormaster.network.imasparql.json.LiveNameJson
 import net.subroh0508.colormaster.network.imasparql.query.SuggestLiveQuery
 import net.subroh0508.colormaster.model.LiveName
-import net.subroh0508.colormaster.data.LiveRepository
+import net.subroh0508.colormaster.model.LiveRepository
 import net.subroh0508.colormaster.network.imasparql.serializer.Response
 
 internal class LiveRepositoryImpl(

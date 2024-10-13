@@ -6,7 +6,7 @@ import net.subroh0508.colormaster.common.CurrentLocalKoinApp
 import net.subroh0508.colormaster.common.model.LoadState
 import net.subroh0508.colormaster.common.ui.CurrentLocalLanguage
 import net.subroh0508.colormaster.common.ui.Languages
-import net.subroh0508.colormaster.data.IdolColorsRepository
+import net.subroh0508.colormaster.model.IdolColorsRepository
 import org.koin.core.KoinApplication
 
 @Composable
