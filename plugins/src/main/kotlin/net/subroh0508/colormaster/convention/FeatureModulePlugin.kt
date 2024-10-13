@@ -27,7 +27,6 @@ class FeatureModulePlugin : Plugin<Project> {
                         dependencies {
                             implementation(project(":core:common"))
                             implementation(project(":core:model"))
-                            implementation(project(":core:data"))
                             implementation(compose.dependencies.runtime)
                             implementation(libs.kotlinxCoroutinesCore)
                             implementation(libs.koinCore)
