@@ -12,7 +12,7 @@ import net.subroh0508.colormaster.data.module.buildLiveRepository
 import net.subroh0508.colormaster.network.imasparql.query.SuggestLiveQuery
 import net.subroh0508.colormaster.test.extension.flowToList
 
-class LiveRepositorySpec : FunSpec({
+class DefaultLiveRepositorySpec : FunSpec({
     test("#suggest(by dateRange): it should return live names") {
         val range = "2020-01-01" to "2020-12-31"
         val repository = buildLiveRepository {

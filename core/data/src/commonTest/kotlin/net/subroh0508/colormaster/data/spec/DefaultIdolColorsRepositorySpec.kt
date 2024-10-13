@@ -16,7 +16,7 @@ import net.subroh0508.colormaster.network.imasparql.query.SearchByNameQuery
 import net.subroh0508.colormaster.test.extension.flowToList
 import net.subroh0508.colormaster.test.mockHttpClient
 
-class IdolColorsRepositorySpec : FunSpec({
+class DefaultIdolColorsRepositorySpec : FunSpec({
     fun randomQuery(lang: String) = RandomQuery(
         lang,
         limit = 10,
