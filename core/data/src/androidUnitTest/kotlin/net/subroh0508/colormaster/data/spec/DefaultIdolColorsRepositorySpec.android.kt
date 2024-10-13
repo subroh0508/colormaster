@@ -8,7 +8,7 @@ import net.subroh0508.colormaster.data.module.buildIdolColorsRepository
 import net.subroh0508.colormaster.test.extension.flowToList
 import net.subroh0508.colormaster.test.mockHttpClient
 
-class AndroidIdolColorsRepositorySpec : FunSpec({
+class AndroidDefaultIdolColorsRepositorySpec : FunSpec({
     test("#inChargeOfIdolIds: when sign in it should return id list") {
         val (repository, auth, _) = buildIdolColorsRepository {
             mockHttpClient()

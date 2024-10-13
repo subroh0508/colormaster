@@ -1,7 +1,6 @@
-package net.subroh0508.colormaster.data
+package net.subroh0508.colormaster.model
 
 import kotlinx.coroutines.flow.Flow
-import net.subroh0508.colormaster.model.*
 
 interface IdolColorsRepository {
     fun idols(limit: Int, lang: String): Flow<List<IdolColor>>

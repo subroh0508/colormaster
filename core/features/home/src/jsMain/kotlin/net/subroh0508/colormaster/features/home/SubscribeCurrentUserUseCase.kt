@@ -4,8 +4,8 @@ import androidx.compose.runtime.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import net.subroh0508.colormaster.common.CurrentLocalKoinApp
+import net.subroh0508.colormaster.model.auth.AuthRepository
 import net.subroh0508.colormaster.model.auth.CurrentUser
-import net.subroh0508.colormaster.data.AuthRepository
 import org.koin.core.KoinApplication
 
 @Composable

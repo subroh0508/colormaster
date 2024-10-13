@@ -6,7 +6,7 @@ import net.subroh0508.colormaster.common.CurrentLocalKoinApp
 import net.subroh0508.colormaster.common.model.LoadState
 import net.subroh0508.colormaster.features.search.model.LiveNameQuery
 import net.subroh0508.colormaster.model.LiveName
-import net.subroh0508.colormaster.data.LiveRepository
+import net.subroh0508.colormaster.model.LiveRepository
 import org.koin.core.KoinApplication
 
 @Composable

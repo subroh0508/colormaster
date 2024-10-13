@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.data.internal
+package net.subroh0508.colormaster.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,9 +13,8 @@ import net.subroh0508.colormaster.network.imasparql.query.SearchByLiveQuery
 import net.subroh0508.colormaster.network.imasparql.query.SearchByNameQuery
 import net.subroh0508.colormaster.network.imasparql.serializer.Response
 import net.subroh0508.colormaster.model.*
-import net.subroh0508.colormaster.data.IdolColorsRepository
 
-internal class IdolColorsRepositoryImpl(
+internal class DefaultIdolColorsRepository(
     private val imasparqlClient: ImasparqlClient,
     private val firestoreClient: FirestoreClient,
     private val authClient: AuthClient,

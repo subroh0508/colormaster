@@ -1,24 +1,18 @@
 package net.subroh0508.colormaster.data.spec
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
-import io.ktor.client.*
 import net.subroh0508.colormaster.data.LiveNameDateRange
 import net.subroh0508.colormaster.data.LiveNameTitle
-import net.subroh0508.colormaster.network.imasparql.di.Api
 import net.subroh0508.colormaster.model.LiveName
-import net.subroh0508.colormaster.data.LiveRepository
-import net.subroh0508.colormaster.data.di.LiveRepositories
 import net.subroh0508.colormaster.data.mock.mockSuggestLiveName
 import net.subroh0508.colormaster.data.module.buildLiveRepository
 import net.subroh0508.colormaster.network.imasparql.query.SuggestLiveQuery
 import net.subroh0508.colormaster.test.extension.flowToList
-import org.koin.dsl.koinApplication
 
-class LiveRepositorySpec : FunSpec({
+class DefaultLiveRepositorySpec : FunSpec({
     test("#suggest(by dateRange): it should return live names") {
         val range = "2020-01-01" to "2020-12-31"
         val repository = buildLiveRepository {

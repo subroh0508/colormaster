@@ -4,7 +4,7 @@ import androidx.compose.runtime.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.common.CurrentLocalKoinApp
-import net.subroh0508.colormaster.data.IdolColorsRepository
+import net.subroh0508.colormaster.model.IdolColorsRepository
 import org.koin.core.KoinApplication
 
 class AddIdolToInChargeUseCase(
