@@ -2,6 +2,8 @@
 kotlin = "2.0.10"
 compose = "1.7.0-alpha03"
 
+lifecycle-viewmodel-compose = "2.8.2"
+
 agp = "8.6.1"
 google-services-plugin = "4.4.2"
 
@@ -78,6 +80,8 @@ ktor-serialization-ios-arm64 = { module = "io.ktor:ktor-client-serialization-ios
 ktor-serialization-ios-x64 = { module = "io.ktor:ktor-client-serialization-iosx64", version.ref = "ktor" }
 ktor-serialization-js = { module = "io.ktor:ktor-client-serialization-js", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
+
+lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
 
 decompose-core = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 decompose-compose-jb = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }

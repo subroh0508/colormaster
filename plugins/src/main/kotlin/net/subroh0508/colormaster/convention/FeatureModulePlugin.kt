@@ -29,6 +29,7 @@ class FeatureModulePlugin : Plugin<Project> {
                             implementation(project(":core:model"))
                             implementation(compose.dependencies.runtime)
                             implementation(libs.kotlinxCoroutinesCore)
+                            implementation(libs.library("lifecycle-viewmodel-compose"))
                             implementation(libs.koinCore)
                         }
                     }
