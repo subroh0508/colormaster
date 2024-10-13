@@ -1,11 +1,10 @@
-package net.subroh0508.colormaster.data.internal
+package net.subroh0508.colormaster.data
 
 import kotlinx.coroutines.flow.map
 import net.subroh0508.colormaster.network.auth.AuthClient
-import net.subroh0508.colormaster.data.toEntity
 import net.subroh0508.colormaster.model.auth.AuthRepository
 
-internal class AuthRepositoryImpl(
+internal class DefaultAuthRepository(
     private val client: AuthClient,
 ) : AuthRepository {
     override fun currentUser() = client.subscribeAuthState().map { it?.toEntity() }
