@@ -23,19 +23,19 @@ internal class DefaultIdolColorsRepository(
     private val inChargeOfIdolIdsStateFlow = MutableStateFlow<List<String>>(listOf())
     private val favoriteIdolIdsStateFlow = MutableStateFlow<List<String>>(listOf())
 
-    override fun idols(limit: Int, lang: String): Flow<List<IdolColor>> {
+    override fun getIdolColorsStream(limit: Int, lang: String): Flow<List<IdolColor>> {
         return idolsStateFlow.onStart {
             rand(limit, lang)
         }
     }
 
-    override fun inChargeOfIdolIds(): Flow<List<String>> {
+    override fun getInChargeOfIdolIdsStream(): Flow<List<String>> {
         return inChargeOfIdolIdsStateFlow.onStart {
             getInChargeOfIdolIds()
         }
     }
 
-    override fun favoriteIdolIds(): Flow<List<String>> {
+    override fun getFavoriteIdolIdsStream(): Flow<List<String>> {
         return favoriteIdolIdsStateFlow.onStart {
             getFavoriteIdolIds()
         }

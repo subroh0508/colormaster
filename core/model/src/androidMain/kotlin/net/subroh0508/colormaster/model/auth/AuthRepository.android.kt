@@ -3,7 +3,7 @@ package net.subroh0508.colormaster.model.auth
 import kotlinx.coroutines.flow.Flow
 
 actual interface AuthRepository {
-    actual fun currentUser(): Flow<CurrentUser?>
+    actual fun getCurrentUserStream(): Flow<CurrentUser?>
     actual suspend fun signOut()
 
     suspend fun fetchCurrentUser(): CurrentUser?

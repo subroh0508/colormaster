@@ -7,7 +7,7 @@ import net.subroh0508.colormaster.model.auth.AuthRepository
 internal class DefaultAuthRepository(
     private val client: AuthClient,
 ) : AuthRepository {
-    override fun currentUser() = client.subscribeAuthState().map { it?.toEntity() }
+    override fun getCurrentUserStream() = client.subscribeAuthState().map { it?.toEntity() }
     override suspend fun signOut() = client.signOut()
 
     override suspend fun fetchCurrentUser() = client.currentUser?.toEntity()
