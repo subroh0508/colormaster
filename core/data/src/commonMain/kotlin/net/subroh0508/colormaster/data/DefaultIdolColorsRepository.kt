@@ -41,6 +41,10 @@ internal class DefaultIdolColorsRepository(
         }
     }
 
+    override suspend fun refresh() {
+        idolsStateFlow.value = listOf()
+    }
+
     override suspend fun rand(
         limit: Int,
         lang: String,

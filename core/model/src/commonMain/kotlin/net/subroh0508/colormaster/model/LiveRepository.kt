@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.Flow
 interface LiveRepository {
     fun getLiveNamesStream(): Flow<List<LiveName>>
 
+    suspend fun refresh()
+
     suspend fun suggest(dateRange: Pair<String, String>): List<LiveName>
 
     suspend fun suggest(name: String?): List<LiveName>
