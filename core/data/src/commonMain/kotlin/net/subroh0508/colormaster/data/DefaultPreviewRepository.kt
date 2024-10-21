@@ -12,10 +12,13 @@ internal class DefaultPreviewRepository(
 ) : PreviewRepository {
     private val idolsStateFlow = MutableStateFlow<List<IdolColor>>(listOf())
 
-    override fun getPreviewColorsStream(
-        ids: List<String>,
-        lang: String,
-    ) = idolsStateFlow.onStart {
+    override fun getPreviewColorsStream() = idolsStateFlow.onStart { clear() }
+
+    override fun clear() {
+        idolsStateFlow.value = listOf()
+    }
+
+    override suspend fun show(ids: List<String>, lang: String) {
         idolsStateFlow.value = imasparqlClient.search(ids, lang)
     }
 }
