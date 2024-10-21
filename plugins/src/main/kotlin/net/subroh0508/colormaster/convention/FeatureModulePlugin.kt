@@ -45,6 +45,12 @@ class FeatureModulePlugin : Plugin<Project> {
                             implementation(compose.dependencies.html.core)
                         }
                     }
+
+                    commonTest {
+                        dependencies {
+                            implementation(project(":core:test"))
+                        }
+                    }
                 }
             }
         }

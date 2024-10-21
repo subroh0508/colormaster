@@ -24,8 +24,8 @@ class PenlightViewModel(
             initialValue = PenlightUiState.Loading,
         )
 
-    suspend fun show(ids: List<String>) {
+    suspend fun show(ids: List<String>, lang: String) {
         repository.clear()
-        repository.show(ids, "ja")
+        repository.show(ids, lang)
     }
 }
