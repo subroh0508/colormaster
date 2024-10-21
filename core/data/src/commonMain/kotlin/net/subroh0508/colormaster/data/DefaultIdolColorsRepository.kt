@@ -151,20 +151,4 @@ internal class DefaultIdolColorsRepository(
     private val currentUser get() = authClient.currentUser
 
     private suspend fun getUserDocument() = firestoreClient.getUserDocument(currentUser?.uid)
-
-    private fun Response<IdolColorJson>.toIdolColors() = results
-        .bindings
-        .mapNotNull { (idMap, nameMap, colorMap) ->
-            val id = idMap["value"] ?: return@mapNotNull null
-            val name = nameMap["value"] ?: return@mapNotNull null
-            val color = colorMap["value"] ?: return@mapNotNull null
-
-            val intColor = Triple(
-                color.substring(0, 2).toInt(16),
-                color.substring(2, 4).toInt(16),
-                color.substring(4, 6).toInt(16),
-            )
-
-            IdolColor(id, name, intColor)
-        }
 }
