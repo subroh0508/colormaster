@@ -9,12 +9,12 @@ import net.subroh0508.colormaster.test.extension.flowToList
 import net.subroh0508.colormaster.test.mockHttpClient
 
 class AndroidDefaultIdolColorsRepositorySpec : FunSpec({
-    test("#inChargeOfIdolIds: when sign in it should return id list") {
+    test("#getInChargeOfIdolIdsStream: when sign in it should return id list") {
         val (repository, auth, _) = buildIdolColorsRepository {
             mockHttpClient()
         }
 
-        val (instances, _) = flowToList(repository.inChargeOfIdolIds())
+        val (instances, _) = flowToList(repository.getInChargeOfIdolIdsStream())
         auth.signInWithGoogle("idToken")
         repository.registerInChargeOf("Amami_Haruka")
         repository.registerInChargeOf("Kisaragi_Chihaya")
@@ -38,12 +38,12 @@ class AndroidDefaultIdolColorsRepositorySpec : FunSpec({
         }
     }
 
-    test("#favoriteIdolIds: when sign in it should return id list") {
+    test("#getFavoriteIdolIdsStream: when sign in it should return id list") {
         val (repository, auth, _) = buildIdolColorsRepository {
             mockHttpClient()
         }
 
-        val (instances, _) = flowToList(repository.favoriteIdolIds())
+        val (instances, _) = flowToList(repository.getFavoriteIdolIdsStream())
         auth.signInWithGoogle("idToken")
         repository.favorite("Amami_Haruka")
         repository.favorite("Kisaragi_Chihaya")

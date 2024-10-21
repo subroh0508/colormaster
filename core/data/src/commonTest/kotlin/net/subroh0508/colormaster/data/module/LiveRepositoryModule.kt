@@ -6,7 +6,7 @@ import net.subroh0508.colormaster.model.LiveRepository
 import net.subroh0508.colormaster.network.imasparql.di.Api
 import org.koin.dsl.koinApplication
 
-fun buildLiveRepository(
+internal fun buildLiveRepository(
     block: () -> HttpClient,
 ): LiveRepository = koinApplication {
     modules(
