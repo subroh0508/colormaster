@@ -7,4 +7,6 @@ import net.subroh0508.colormaster.network.imasparql.di.Api
 val DataModule get() = Api.Module() + Auth.Module + Firestore.Module +
         AuthRepositories.Module +
         IdolColorsRepositories.Module +
-        LiveRepositories.Module
+        LiveRepositories.Module +
+        MyIdolsRepositories.Module +
+        PreviewRepositories.Module

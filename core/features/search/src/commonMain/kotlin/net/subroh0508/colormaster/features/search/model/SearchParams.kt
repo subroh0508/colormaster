@@ -6,7 +6,7 @@ import net.subroh0508.colormaster.model.*
 sealed class SearchParams {
     abstract fun isEmpty(): Boolean
 
-    object None : SearchParams() { override fun isEmpty() = true }
+    data object None : SearchParams() { override fun isEmpty() = true }
 
     data class ByName(
         val idolName: IdolName?,

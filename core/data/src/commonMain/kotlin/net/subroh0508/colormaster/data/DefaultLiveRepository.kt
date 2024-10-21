@@ -14,7 +14,11 @@ internal class DefaultLiveRepository(
 ) : LiveRepository {
     private val names: MutableStateFlow<List<LiveName>> = MutableStateFlow(listOf())
 
-    override fun names() = names.onStart {
+    override fun getLiveNamesStream() = names.onStart {
+        refresh()
+    }
+
+    override suspend fun refresh() {
         names.value = listOf()
     }
 

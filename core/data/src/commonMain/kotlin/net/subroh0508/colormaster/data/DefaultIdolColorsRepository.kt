@@ -3,6 +3,7 @@ package net.subroh0508.colormaster.data
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
+import net.subroh0508.colormaster.data.extension.toIdolColors
 import net.subroh0508.colormaster.network.auth.AuthClient
 import net.subroh0508.colormaster.network.firestore.FirestoreClient
 import net.subroh0508.colormaster.network.imasparql.ImasparqlClient
@@ -11,7 +12,6 @@ import net.subroh0508.colormaster.network.imasparql.query.RandomQuery
 import net.subroh0508.colormaster.network.imasparql.query.SearchByIdQuery
 import net.subroh0508.colormaster.network.imasparql.query.SearchByLiveQuery
 import net.subroh0508.colormaster.network.imasparql.query.SearchByNameQuery
-import net.subroh0508.colormaster.network.imasparql.serializer.Response
 import net.subroh0508.colormaster.model.*
 
 internal class DefaultIdolColorsRepository(
@@ -23,22 +23,26 @@ internal class DefaultIdolColorsRepository(
     private val inChargeOfIdolIdsStateFlow = MutableStateFlow<List<String>>(listOf())
     private val favoriteIdolIdsStateFlow = MutableStateFlow<List<String>>(listOf())
 
-    override fun idols(limit: Int, lang: String): Flow<List<IdolColor>> {
+    override fun getIdolColorsStream(limit: Int, lang: String): Flow<List<IdolColor>> {
         return idolsStateFlow.onStart {
             rand(limit, lang)
         }
     }
 
-    override fun inChargeOfIdolIds(): Flow<List<String>> {
+    override fun getInChargeOfIdolIdsStream(): Flow<List<String>> {
         return inChargeOfIdolIdsStateFlow.onStart {
             getInChargeOfIdolIds()
         }
     }
 
-    override fun favoriteIdolIds(): Flow<List<String>> {
+    override fun getFavoriteIdolIdsStream(): Flow<List<String>> {
         return favoriteIdolIdsStateFlow.onStart {
             getFavoriteIdolIds()
         }
+    }
+
+    override suspend fun refresh() {
+        idolsStateFlow.value = listOf()
     }
 
     override suspend fun rand(
@@ -147,20 +151,4 @@ internal class DefaultIdolColorsRepository(
     private val currentUser get() = authClient.currentUser
 
     private suspend fun getUserDocument() = firestoreClient.getUserDocument(currentUser?.uid)
-
-    private fun Response<IdolColorJson>.toIdolColors() = results
-        .bindings
-        .mapNotNull { (idMap, nameMap, colorMap) ->
-            val id = idMap["value"] ?: return@mapNotNull null
-            val name = nameMap["value"] ?: return@mapNotNull null
-            val color = colorMap["value"] ?: return@mapNotNull null
-
-            val intColor = Triple(
-                color.substring(0, 2).toInt(16),
-                color.substring(2, 4).toInt(16),
-                color.substring(4, 6).toInt(16),
-            )
-
-            IdolColor(id, name, intColor)
-        }
 }

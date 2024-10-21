@@ -21,7 +21,7 @@ class DefaultLiveRepositorySpec : FunSpec({
             )
         }
 
-        val (instances, _) = flowToList(repository.names())
+        val (instances, _) = flowToList(repository.getLiveNamesStream())
 
         repository.suggest(range)
 
@@ -44,7 +44,7 @@ class DefaultLiveRepositorySpec : FunSpec({
             )
         }
 
-        val (instances, _) = flowToList(repository.names())
+        val (instances, _) = flowToList(repository.getLiveNamesStream())
 
         repository.suggest(name)
 

@@ -9,10 +9,10 @@ import net.subroh0508.colormaster.test.extension.flowToList
 import net.subroh0508.colormaster.test.model.GoogleUser
 
 class AndroidDefaultAuthRepositorySpec : FunSpec({
-    test("#currentUser: it should return current user") {
+    test("#getCurrentUserStream: it should return current user") {
         val repository = buildAuthRepository()
 
-        val (instances, _) = flowToList(repository.currentUser())
+        val (instances, _) = flowToList(repository.getCurrentUserStream())
 
         repository.signInWithGoogle("idToken")
         repository.signOut()

@@ -3,11 +3,13 @@ package net.subroh0508.colormaster.model
 import kotlinx.coroutines.flow.Flow
 
 interface IdolColorsRepository {
-    fun idols(limit: Int, lang: String): Flow<List<IdolColor>>
+    fun getIdolColorsStream(limit: Int, lang: String): Flow<List<IdolColor>>
 
-    fun inChargeOfIdolIds(): Flow<List<String>>
+    fun getInChargeOfIdolIdsStream(): Flow<List<String>>
 
-    fun favoriteIdolIds(): Flow<List<String>>
+    fun getFavoriteIdolIdsStream(): Flow<List<String>>
+
+    suspend fun refresh()
 
     suspend fun rand(limit: Int, lang: String): List<IdolColor>
 

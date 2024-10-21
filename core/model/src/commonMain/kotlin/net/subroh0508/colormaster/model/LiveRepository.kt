@@ -3,7 +3,9 @@ package net.subroh0508.colormaster.model
 import kotlinx.coroutines.flow.Flow
 
 interface LiveRepository {
-    fun names(): Flow<List<LiveName>>
+    fun getLiveNamesStream(): Flow<List<LiveName>>
+
+    suspend fun refresh()
 
     suspend fun suggest(dateRange: Pair<String, String>): List<LiveName>
 

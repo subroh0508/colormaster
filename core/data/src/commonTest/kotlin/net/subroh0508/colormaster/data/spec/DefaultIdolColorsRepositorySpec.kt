@@ -2,10 +2,12 @@ package net.subroh0508.colormaster.data.spec
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.beEmpty
+import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
 import net.subroh0508.colormaster.data.*
+import net.subroh0508.colormaster.data.extension.signInWithGoogle
 import net.subroh0508.colormaster.model.*
 import net.subroh0508.colormaster.data.mock.*
 import net.subroh0508.colormaster.data.module.buildIdolColorsRepository
@@ -53,14 +55,14 @@ class DefaultIdolColorsRepositorySpec : FunSpec({
     ) to (if (lang == "ja") IdolColorIdsJA else IdolColorIdsEN)
 
     listOf("ja", "en").forEach { lang ->
-        test("#idols: when lang = '$lang' it should return idols at random") {
+        test("#getIdolColorsStream: when lang = '$lang' it should return idols at random") {
             val (repository, _, _) = buildIdolColorsRepository {
                 mockIdolSearch(
                     randomQuery(lang),
                 )
             }
 
-            val (instances, _) = flowToList(repository.idols(10, lang))
+            val (instances, _) = flowToList(repository.getIdolColorsStream(10, lang))
 
             instances.let {
                 it should haveSize(1)
@@ -94,7 +96,7 @@ class DefaultIdolColorsRepositorySpec : FunSpec({
                 )
             }
 
-            val (instances, _) = flowToList(repository.idols(10, lang))
+            val (instances, _) = flowToList(repository.getIdolColorsStream(10, lang))
 
             repository.search(
                 name = params,
@@ -125,7 +127,7 @@ class DefaultIdolColorsRepositorySpec : FunSpec({
                 )
             }
 
-            val (instances, _) = flowToList(repository.idols(10, lang))
+            val (instances, _) = flowToList(repository.getIdolColorsStream(10, lang))
 
             repository.search(
                 name = null,
@@ -158,7 +160,7 @@ class DefaultIdolColorsRepositorySpec : FunSpec({
                 )
             }
 
-            val (instances, _) = flowToList(repository.idols(10, lang))
+            val (instances, _) = flowToList(repository.getIdolColorsStream(10, lang))
 
             repository.search(
                 name = null,
@@ -187,7 +189,7 @@ class DefaultIdolColorsRepositorySpec : FunSpec({
                 )
             }
 
-            val (instances, _) = flowToList(repository.idols(10, lang))
+            val (instances, _) = flowToList(repository.getIdolColorsStream(10, lang))
 
             repository.search(liveName, lang)
 
@@ -209,7 +211,7 @@ class DefaultIdolColorsRepositorySpec : FunSpec({
                 )
             }
 
-            val (instances, _) = flowToList(repository.idols(10, lang))
+            val (instances, _) = flowToList(repository.getIdolColorsStream(10, lang))
 
             repository.search(ids = ids, lang = lang)
 
@@ -223,12 +225,41 @@ class DefaultIdolColorsRepositorySpec : FunSpec({
         }
     }
 
-    test("#inChargeOfIdolIds: when sign out it should return empty list") {
+    test("#getInChargeOfIdolIdsStream: when sign in it should return id list") {
         val (repository, auth, _) = buildIdolColorsRepository {
             mockHttpClient()
         }
 
-        val (instances, _) = flowToList(repository.inChargeOfIdolIds())
+        val (instances, _) = flowToList(repository.getInChargeOfIdolIdsStream())
+        signInWithGoogle(auth)
+        repository.registerInChargeOf("Amami_Haruka")
+        repository.registerInChargeOf("Kisaragi_Chihaya")
+        repository.registerInChargeOf("Hoshii_Miki")
+
+        repository.unregisterInChargeOf("Hoshii_Miki")
+        repository.unregisterInChargeOf("Kisaragi_Chihaya")
+        repository.unregisterInChargeOf("Amami_Haruka")
+
+        instances.let {
+            it should haveSize(7)
+            it should containExactly(
+                listOf(),
+                listOf("Amami_Haruka"),
+                listOf("Amami_Haruka", "Kisaragi_Chihaya"),
+                listOf("Amami_Haruka", "Kisaragi_Chihaya", "Hoshii_Miki"),
+                listOf("Amami_Haruka", "Kisaragi_Chihaya"),
+                listOf("Amami_Haruka"),
+                listOf(),
+            )
+        }
+    }
+
+    test("#getInChargeOfIdolIdsStream: when sign out it should return empty list") {
+        val (repository, auth, _) = buildIdolColorsRepository {
+            mockHttpClient()
+        }
+
+        val (instances, _) = flowToList(repository.getInChargeOfIdolIdsStream())
         auth.signOut()
         repository.registerInChargeOf("Amami_Haruka")
         repository.registerInChargeOf("Kisaragi_Chihaya")
@@ -244,12 +275,41 @@ class DefaultIdolColorsRepositorySpec : FunSpec({
         }
     }
 
-    test("#favoriteIdolIds: when sign out it should return empty list") {
+    test("#getFavoriteIdolIdsStream: when sign in it should return id list") {
         val (repository, auth, _) = buildIdolColorsRepository {
             mockHttpClient()
         }
 
-        val (instances, _) = flowToList(repository.favoriteIdolIds())
+        val (instances, _) = flowToList(repository.getFavoriteIdolIdsStream())
+        signInWithGoogle(auth)
+        repository.favorite("Amami_Haruka")
+        repository.favorite("Kisaragi_Chihaya")
+        repository.favorite("Hoshii_Miki")
+
+        repository.unfavorite("Hoshii_Miki")
+        repository.unfavorite("Kisaragi_Chihaya")
+        repository.unfavorite("Amami_Haruka")
+
+        instances.let {
+            it should haveSize(7)
+            it should containExactly(
+                listOf(),
+                listOf("Amami_Haruka"),
+                listOf("Amami_Haruka", "Kisaragi_Chihaya"),
+                listOf("Amami_Haruka", "Kisaragi_Chihaya", "Hoshii_Miki"),
+                listOf("Amami_Haruka", "Kisaragi_Chihaya"),
+                listOf("Amami_Haruka"),
+                listOf(),
+            )
+        }
+    }
+
+    test("#getFavoriteIdolIdsStream: when sign out it should return empty list") {
+        val (repository, auth, _) = buildIdolColorsRepository {
+            mockHttpClient()
+        }
+
+        val (instances, _) = flowToList(repository.getFavoriteIdolIdsStream())
         auth.signOut()
         repository.favorite("Amami_Haruka")
         repository.favorite("Kisaragi_Chihaya")
