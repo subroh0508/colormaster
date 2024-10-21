@@ -6,12 +6,10 @@ import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
 import net.subroh0508.colormaster.data.IdolColorIdsEN
 import net.subroh0508.colormaster.data.IdolColorIdsJA
+import net.subroh0508.colormaster.data.extension.setUserDocument
 import net.subroh0508.colormaster.data.mock.mockIdolSearch
 import net.subroh0508.colormaster.data.module.buildMyIdolsRepository
 import net.subroh0508.colormaster.model.IdolColor
-import net.subroh0508.colormaster.network.auth.AuthClient
-import net.subroh0508.colormaster.network.firestore.FirestoreClient
-import net.subroh0508.colormaster.network.firestore.document.UserDocument
 import net.subroh0508.colormaster.network.imasparql.query.SearchByIdQuery
 import net.subroh0508.colormaster.test.extension.flowToList
 
@@ -23,18 +21,6 @@ class DefaultMyIdolsRepositorySpec : FunSpec({
         lang,
         ids,
     ) to (if (lang == "ja") IdolColorIdsJA else IdolColorIdsEN)
-
-    suspend fun setUserDocument(
-        auth: AuthClient,
-        firestore: FirestoreClient,
-        inChargeIds: List<String> = listOf(),
-        favoriteIds: List<String> = listOf(),
-    ) {
-        auth.signInWithGoogle("idToken")
-        val uid = auth.currentUser?.uid ?: return
-
-        firestore.setUserDocument(uid, UserDocument(inChargeIds, favoriteIds))
-    }
 
     listOf("ja", "en").forEach { lang ->
         test("#getInChargeOfIdolsStream: when lang = '$lang' and sign in it should return idol list") {
