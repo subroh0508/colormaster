@@ -1,4 +1,4 @@
-package net.subroh0508.colormaster.data
+package net.subroh0508.colormaster.data.extension
 
 import net.subroh0508.colormaster.model.IdolColor
 import net.subroh0508.colormaster.network.imasparql.json.IdolColorJson

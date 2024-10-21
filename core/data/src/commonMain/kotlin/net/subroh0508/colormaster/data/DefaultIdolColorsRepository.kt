@@ -3,6 +3,7 @@ package net.subroh0508.colormaster.data
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
+import net.subroh0508.colormaster.data.extension.toIdolColors
 import net.subroh0508.colormaster.network.auth.AuthClient
 import net.subroh0508.colormaster.network.firestore.FirestoreClient
 import net.subroh0508.colormaster.network.imasparql.ImasparqlClient
@@ -11,7 +12,6 @@ import net.subroh0508.colormaster.network.imasparql.query.RandomQuery
 import net.subroh0508.colormaster.network.imasparql.query.SearchByIdQuery
 import net.subroh0508.colormaster.network.imasparql.query.SearchByLiveQuery
 import net.subroh0508.colormaster.network.imasparql.query.SearchByNameQuery
-import net.subroh0508.colormaster.network.imasparql.serializer.Response
 import net.subroh0508.colormaster.model.*
 
 internal class DefaultIdolColorsRepository(

@@ -8,4 +8,5 @@ val DataModule get() = Api.Module() + Auth.Module + Firestore.Module +
         AuthRepositories.Module +
         IdolColorsRepositories.Module +
         LiveRepositories.Module +
-        MyIdolsRepositories.Module
+        MyIdolsRepositories.Module +
+        PreviewRepositories.Module
