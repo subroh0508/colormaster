@@ -27,7 +27,7 @@ class DefaultMyIdolsRepositorySpec : FunSpec({
             val ids = listOf("Tsukimura_Temari", "Mitsumine_Yuika")
             val (repository, auth, firestore) = buildMyIdolsRepository {
                 mockIdolSearch(
-                    idsQuery(lang, ids)
+                    idsQuery(lang, ids),
                 )
             }
             setUserDocument(auth, firestore, inChargeIds = ids)
@@ -47,7 +47,7 @@ class DefaultMyIdolsRepositorySpec : FunSpec({
             val ids = listOf("Tsukimura_Temari", "Mitsumine_Yuika")
             val (repository, auth, firestore) = buildMyIdolsRepository {
                 mockIdolSearch(
-                    idsQuery(lang, ids)
+                    idsQuery(lang, ids),
                 )
             }
             setUserDocument(auth, firestore, favoriteIds = ids)
