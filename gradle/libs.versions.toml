@@ -12,7 +12,7 @@ kotlinx-serialization = "1.7.3"
 
 ktor = "2.3.12"
 
-decompose = "1.0.0"
+decompose = "3.2.0"
 
 koin = "3.5.6"
 
