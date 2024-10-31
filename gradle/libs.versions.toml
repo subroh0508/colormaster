@@ -4,7 +4,7 @@ compose = "1.7.0-alpha03"
 
 lifecycle-viewmodel-compose = "2.8.2"
 
-agp = "8.6.1"
+agp = "8.7.2"
 google-services-plugin = "4.4.2"
 
 kotlinx-coroutines = "1.9.0"
