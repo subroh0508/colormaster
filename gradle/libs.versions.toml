@@ -16,7 +16,7 @@ decompose = "1.0.0"
 
 koin = "4.0.0"
 
-androidx-core = "1.13.1"
+androidx-core = "1.15.0"
 androidx-annotation = "1.9.1"
 androidx-activity = "1.9.3"
 material = "1.12.0"
