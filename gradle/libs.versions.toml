@@ -2,7 +2,7 @@
 kotlin = "2.0.21"
 compose = "1.7.0-alpha03"
 
-lifecycle-viewmodel-compose = "2.8.2"
+lifecycle-viewmodel-compose = "2.8.4"
 
 agp = "8.6.1"
 google-services-plugin = "4.4.2"
