@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.0.21"
-compose = "1.7.0-alpha03"
+compose = "1.8.0+check"
 
 lifecycle-viewmodel-compose = "2.8.4"
 
