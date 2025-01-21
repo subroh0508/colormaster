@@ -14,7 +14,7 @@ ktor = "3.0.1"
 
 decompose = "1.0.0"
 
-koin = "4.0.0"
+koin = "4.0.2"
 
 androidx-core = "1.15.0"
 androidx-annotation = "1.9.1"
