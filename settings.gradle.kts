@@ -20,7 +20,6 @@ include(
     ":android:app",
     ":js:app",
     ":js:material",
-    ":js:catalog",
     ":core:common",
     ":core:model",
     ":core:data",
