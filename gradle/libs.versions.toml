@@ -1,16 +1,16 @@
 [versions]
 kotlin = "2.1.20"
-compose = "1.7.0-alpha03"
+compose = "1.7.3"
 
 lifecycle-viewmodel-compose = "2.8.4"
 
 agp = "8.7.2"
 google-services-plugin = "4.4.2"
 
-kotlinx-coroutines = "1.9.0"
+kotlinx-coroutines = "1.10.1"
 kotlinx-serialization = "1.7.3"
 
-ktor = "3.0.1"
+ktor = "3.1.1"
 
 decompose = "1.0.0"
 
