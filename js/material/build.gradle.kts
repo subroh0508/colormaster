@@ -10,8 +10,8 @@ kotlin {
     sourceSets {
         named("jsMain") {
             dependencies {
-                implementation(compose.web.core)
-                implementation(compose.web.svg)
+                implementation(compose.html.core)
+                implementation(compose.html.svg)
                 implementation(compose.runtime)
 
                 api(npm("@material/button", libs.versions.npm.material.component.web.get()))

@@ -18,9 +18,8 @@ dependencyResolutionManagement {
 
 include(
     ":android:app",
-    ":web:app",
-    ":web:material",
-    ":web:catalog",
+    ":js:app",
+    ":js:material",
     ":core:common",
     ":core:model",
     ":core:data",

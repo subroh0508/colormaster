@@ -42,10 +42,10 @@ kotlin {
                 implementation(project(":core:features:search"))
                 implementation(project(":core:features:myidols"))
 
-                implementation(project(":web:material"))
+                implementation(project(":js:material"))
 
-                implementation(compose.web.core)
-                implementation(compose.web.svg)
+                implementation(compose.html.core)
+                implementation(compose.html.svg)
                 implementation(compose.runtime)
 
                 implementation(libs.kotlinx.coroutines.js)
