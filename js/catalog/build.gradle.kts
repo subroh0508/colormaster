@@ -36,8 +36,8 @@ kotlin {
             dependencies {
                 implementation(project(":js:material"))
 
-                implementation(compose.web.core)
-                implementation(compose.web.svg)
+                implementation(compose.html.core)
+                implementation(compose.html.svg)
                 implementation(compose.runtime)
 
                 implementation(devNpm("sass", "^1.51.0"))

@@ -44,8 +44,8 @@ kotlin {
 
                 implementation(project(":js:material"))
 
-                implementation(compose.web.core)
-                implementation(compose.web.svg)
+                implementation(compose.html.core)
+                implementation(compose.html.svg)
                 implementation(compose.runtime)
 
                 implementation(libs.kotlinx.coroutines.js)
