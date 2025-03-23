@@ -22,9 +22,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel)
 
     implementation(libs.koin.android)
-
-    // Workaround
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.4")
 }
 
 //apply(plugin = "com.google.gms.google-services")

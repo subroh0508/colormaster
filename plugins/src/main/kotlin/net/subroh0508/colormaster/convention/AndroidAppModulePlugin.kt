@@ -18,7 +18,7 @@ class AndroidAppModulePlugin : Plugin<Project> {
                 apply("com.google.gms.google-services")
             }
 
-            setupAndroid()
+            setupAndroid(isMinifyEnabled = true)
             androidApplication {
                 defaultConfig {
                     minSdk = Android.Versions.minSdk
