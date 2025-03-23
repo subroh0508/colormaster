@@ -16,13 +16,13 @@ fun Project.androidLibrary(action: LibraryExtension.() -> Unit) = extensions.con
 
 fun Project.android(action: TestedExtension.() -> Unit) = extensions.configure(action)
 
-fun Project.setupAndroid() {
+fun Project.setupAndroid(isMinifyEnabled: Boolean = false) {
     android {
         compileSdkVersion(Android.Versions.compileSdk)
 
         buildTypes {
             getByName("release") {
-                isMinifyEnabled = true
+                this.isMinifyEnabled = isMinifyEnabled
                 proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             }
         }
