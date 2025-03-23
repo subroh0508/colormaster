@@ -18,7 +18,7 @@ jobs:
         with:
           distribution: zulu
           java-version: 17
-      - run: './gradlew :web:app:jsBrowserDistribution --stacktrace'
+      - run: './gradlew :js:app:jsBrowserDistribution --stacktrace'
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

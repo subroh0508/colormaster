@@ -1,7 +1,7 @@
 const sass = require('sass');
 const autoprefixer = require('autoprefixer');
 
-config.entry.main.push(path.resolve(rootPath, 'web/app/src/jsMain/resources/app.scss'));
+config.entry.main.push(path.resolve(rootPath, 'js/app/src/jsMain/resources/app.scss'));
 
 config.module.rules.push({
   test: /\.scss$/,

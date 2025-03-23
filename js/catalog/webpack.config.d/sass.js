@@ -5,7 +5,7 @@ const autoprefixer = require('autoprefixer');
 const rootPath = path.resolve(__dirname, '../../../../');
 const nodeModulePath = path.resolve(rootPath, 'build/js/node_modules');
 
-config.entry.main.push(path.resolve(rootPath, 'web/catalog/src/jsMain/resources/app.scss'));
+config.entry.main.push(path.resolve(rootPath, 'js/catalog/src/jsMain/resources/app.scss'));
 
 config.module.rules.push({
   test: /\.scss$/,

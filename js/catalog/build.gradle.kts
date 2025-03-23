@@ -34,7 +34,7 @@ kotlin {
     sourceSets {
         named("jsMain") {
             dependencies {
-                implementation(project(":web:material"))
+                implementation(project(":js:material"))
 
                 implementation(compose.web.core)
                 implementation(compose.web.svg)
