@@ -48,6 +48,7 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 kotlin-js = { id = "org.jetbrains.kotlin.js", version.ref = "kotlin" }
 kotest = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

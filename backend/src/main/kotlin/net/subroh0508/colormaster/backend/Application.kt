@@ -15,11 +15,16 @@ import net.subroh0508.colormaster.backend.model.toDto
 import java.io.File
 
 fun main() {
-    val dbFile = File("color_master.db")
+    // データベースファイルをdata/ディレクトリに保存
+    val dbDir = File("data").also { if (!it.exists()) it.mkdirs() }
+    val dbFile = File(dbDir, "color_master.db")
     val driver = createSqlDriver(dbFile.absolutePath)
     val database = ColorMasterDatabase(driver)
     
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0") { 
+    // ポート番号を環境変数から取得（デフォルトは8080）
+    val port = System.getenv("PORT")?.toIntOrNull() ?: 8080
+    
+    embeddedServer(Netty, port = port, host = "0.0.0.0") { 
         module(database)
     }.start(wait = true)
 }
