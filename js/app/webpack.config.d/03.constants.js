@@ -14,7 +14,7 @@ const MEASUREMENT_ID = prod ? 'G-XV1LEWMH6K' : 'G-JPJRS76T16';
 config.plugins.push(
   new webpack.DefinePlugin({
     APP_NAME: '"COLOR M@STER"',
-    APP_VERSION: '"v2025.03.23"',
+    APP_VERSION: '"v2025.05.06"',
     API_KEY: `"${API_KEY}"`,
     AUTH_DOMAIN: `"${AUTH_DOMAIN}"`,
     DATABASE_URL: `"${DATABASE_URL}"`,
