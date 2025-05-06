@@ -4,9 +4,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":core:model"))
-    implementation(project(":core:data"))
-    
     // サーバーフレームワーク
     val ktorVersion = "2.3.5"
     implementation("io.ktor:ktor-server-core:$ktorVersion")
@@ -23,5 +20,5 @@ dependencies {
 }
 
 application {
-    mainClass.set("io.github.colorm.backend.ApplicationKt")
+    mainClass.set("net.subroh0508.colormaster.backend.ApplicationKt")
 }

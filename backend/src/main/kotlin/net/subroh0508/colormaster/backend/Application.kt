@@ -1,4 +1,4 @@
-package io.github.colorm.backend
+package net.subroh0508.colormaster.backend
 
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
