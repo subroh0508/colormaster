@@ -30,6 +30,8 @@ kotlin-wrappers = "1.0.0-pre.426"
 
 kotest = "6.0.0.M1"
 
+sqldelight = "2.0.2"
+
 npm-material-component-web = "^14.0.0"
 npm-i18next-core = "^22.0.4"
 npm-i18next-http-backend = "^2.0.1"
@@ -45,6 +47,7 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services-plugin" }
 kotlin-js = { id = "org.jetbrains.kotlin.js", version.ref = "kotlin" }
 kotest = { id = "io.kotest.multiplatform", version.ref = "kotest" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -90,6 +93,11 @@ ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref 
 
 # ロギングライブラリ
 logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.4.11" }
+
+# SQLDelight
+sqldelight-jvm-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
 
 lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
 
