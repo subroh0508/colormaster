@@ -93,7 +93,7 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 
 # ロギングライブラリ
-logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.4.11" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.5.18" }
 
 # SQLDelight
 sqldelight-jvm-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
