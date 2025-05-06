@@ -4,18 +4,19 @@ plugins {
 }
 
 dependencies {
-    // サーバーフレームワーク
-    val ktorVersion = "2.3.5"
-    implementation("io.ktor:ktor-server-core:$ktorVersion")
-    implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+
+    
+    // Ktor サーバーフレームワーク
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
     
     // ロギング
-    implementation("ch.qos.logback:logback-classic:1.4.11")
+    implementation(libs.logback.classic)
     
     // テスト
-    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+    testImplementation(libs.ktor.server.test.host)
     testImplementation(kotlin("test"))
 }
 

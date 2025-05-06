@@ -81,6 +81,16 @@ ktor-serialization-ios-x64 = { module = "io.ktor:ktor-client-serialization-iosx6
 ktor-serialization-js = { module = "io.ktor:ktor-client-serialization-js", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 
+# Ktor サーバーライブラリ
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
+
+# ロギングライブラリ
+logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.4.11" }
+
 lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
 
 decompose-core = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
