@@ -35,6 +35,6 @@ fun printUsage() {
         Options for fetch-colors:
           --lang=<language>     Language code (default: ja)
           --output=<file>       Output file path (default: stdout)
-          --format=<format>     Output format: csv or json (default: csv)
+          --format=<format>     Output format: csv, json, or yaml (default: csv)
     """.trimIndent())
 }

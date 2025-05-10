@@ -9,6 +9,7 @@ import net.subroh0508.colormaster.backend.cli.imasparql.ImasparqlApiClient
 import net.subroh0508.colormaster.backend.cli.imasparql.json.IdolColorJson
 import net.subroh0508.colormaster.backend.cli.imasparql.query.SearchByIdQuery
 import net.subroh0508.colormaster.backend.cli.util.JsonOutput
+import net.subroh0508.colormaster.backend.cli.util.YamlOutput
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 
@@ -49,8 +50,9 @@ class FetchIdolColorsCommand {
                 val id = idolColor.id["value"] ?: ""
                 val name = idolColor.name["value"] ?: ""
                 val color = idolColor.color["value"] ?: ""
+                val brand = idolColor.brandName["value"] ?: ""
 
-                IdolColorResult(id, name, color)
+                IdolColorResult(id, name, color, brand)
             }
 
             // Output the results
@@ -74,10 +76,11 @@ class FetchIdolColorsCommand {
     private fun formatResults(results: List<IdolColorResult>, format: String = "csv"): String {
         return when (format.lowercase()) {
             "json" -> JsonOutput.formatIdolColors(results)
+            "yaml" -> YamlOutput.formatIdolColors(results)
             "csv" -> buildString {
-                appendLine("ID,Name,Color")
+                appendLine("ID,Name,Color,Brand")
                 results.forEach { result ->
-                    appendLine("${result.id},${result.name},${result.color}")
+                    appendLine("${result.id},${result.name},${result.color},${result.brand}")
                 }
             }
             else -> throw IllegalArgumentException("Unsupported format: $format")
@@ -91,6 +94,7 @@ class FetchIdolColorsCommand {
     data class IdolColorResult(
         val id: String,
         val name: String,
-        val color: String
+        val color: String,
+        val brand: String
     )
 }
