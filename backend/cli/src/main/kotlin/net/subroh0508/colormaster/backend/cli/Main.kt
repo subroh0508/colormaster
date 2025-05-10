@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
     }
 
     when (args[0]) {
-        "fetch-colors" -> runBlocking { FetchIdolColorsCommand().execute(args.drop(1).toTypedArray()) }
+        "fetch-colors" -> runBlocking { FetchIdolColorsCommand().execute() }
         "help" -> printUsage()
         else -> {
             println("Unknown command: ${args[0]}")

@@ -1,11 +1,6 @@
 plugins {
     kotlin("jvm")
     alias(libs.plugins.kotlinx.serialization)
-    application
-}
-
-application {
-    mainClass.set("net.subroh0508.colormaster.backend.cli.MainKt")
 }
 
 dependencies {
@@ -29,4 +24,12 @@ dependencies {
     implementation(libs.sqldelight.jvm.driver)
     implementation(libs.sqldelight.coroutines.extensions)
     implementation(libs.sqldelight.primitive.adapters)
+}
+
+val fetchIdolColors by tasks.registering(JavaExec::class) {
+    group = "colormaster"
+    description = "Fetch idol member colors from im@sparql"
+    mainClass.set("net.subroh0508.colormaster.backend.cli.MainKt")
+    classpath(sourceSets["main"].runtimeClasspath)
+    args("fetch-colors")
 }

@@ -8,12 +8,11 @@ import kotlinx.serialization.json.Json
 import net.subroh0508.colormaster.backend.cli.imasparql.ImasparqlApiClient
 import net.subroh0508.colormaster.backend.cli.imasparql.json.IdolColorJson
 import net.subroh0508.colormaster.backend.cli.imasparql.query.SearchByIdQuery
-import net.subroh0508.colormaster.backend.cli.util.JsonOutput
 import net.subroh0508.colormaster.backend.cli.util.YamlOutput
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 
-class FetchIdolColorsCommand {
+class FetchIdolColorsCommand{
     private val json = Json {
         ignoreUnknownKeys = true
         isLenient = true
@@ -29,12 +28,11 @@ class FetchIdolColorsCommand {
 
     private val imasparqlClient = ImasparqlApiClient(httpClient, json)
 
-    suspend fun execute(args: Array<String>) {
+    suspend fun execute() {
         try {
             // Parse command-line arguments
-            val lang = args.findOption("--lang") ?: "ja"
-            val outputPath = args.findOption("--output")
-            val format = args.findOption("--format") ?: "csv"
+            val lang = "ja"
+            val outputPath = "result.yaml"
 
             // Create the query
             val query = SearchByIdQuery(lang)
@@ -56,7 +54,7 @@ class FetchIdolColorsCommand {
             }
 
             // Output the results
-            val output = formatResults(results, format)
+            val output = YamlOutput.formatIdolColors(results)
             if (outputPath != null) {
                 withContext(Dispatchers.IO) {
                     File(outputPath).writeText(output)
@@ -71,24 +69,6 @@ class FetchIdolColorsCommand {
         } finally {
             httpClient.close()
         }
-    }
-
-    private fun formatResults(results: List<IdolColorResult>, format: String = "csv"): String {
-        return when (format.lowercase()) {
-            "json" -> JsonOutput.formatIdolColors(results)
-            "yaml" -> YamlOutput.formatIdolColors(results)
-            "csv" -> buildString {
-                appendLine("ID,Name,Color,Brand")
-                results.forEach { result ->
-                    appendLine("${result.id},${result.name},${result.color},${result.brand}")
-                }
-            }
-            else -> throw IllegalArgumentException("Unsupported format: $format")
-        }
-    }
-
-    private fun Array<String>.findOption(prefix: String): String? {
-        return this.find { it.startsWith("$prefix=") }?.substringAfter("=")
     }
 
     data class IdolColorResult(
