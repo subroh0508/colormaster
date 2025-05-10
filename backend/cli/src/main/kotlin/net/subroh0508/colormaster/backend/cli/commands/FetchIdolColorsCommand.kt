@@ -3,6 +3,7 @@ package net.subroh0508.colormaster.backend.cli.commands
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import net.subroh0508.colormaster.backend.cli.imasparql.ImasparqlApiClient
@@ -12,7 +13,13 @@ import net.subroh0508.colormaster.backend.cli.util.YamlOutput
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 
-class FetchIdolColorsCommand{
+object FetchIdolColorsCommand {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        runBlocking { execute() }
+    }
+
+
     private val json = Json {
         ignoreUnknownKeys = true
         isLenient = true
@@ -28,7 +35,7 @@ class FetchIdolColorsCommand{
 
     private val imasparqlClient = ImasparqlApiClient(httpClient, json)
 
-    suspend fun execute() {
+    private suspend fun execute() {
         try {
             // Parse command-line arguments
             val lang = "ja"

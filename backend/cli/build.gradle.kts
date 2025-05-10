@@ -29,7 +29,6 @@ dependencies {
 val fetchIdolColors by tasks.registering(JavaExec::class) {
     group = "colormaster"
     description = "Fetch idol member colors from im@sparql"
-    mainClass.set("net.subroh0508.colormaster.backend.cli.MainKt")
+    mainClass.set("net.subroh0508.colormaster.backend.cli.commands.FetchIdolColorsCommand")
     classpath(sourceSets["main"].runtimeClasspath)
-    args("fetch-colors")
 }
