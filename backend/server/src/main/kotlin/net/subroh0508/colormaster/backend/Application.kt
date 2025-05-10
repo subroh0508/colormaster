@@ -32,6 +32,7 @@ fun main() {
 private fun createSqlDriver(path: String): SqlDriver {
     val driver = JdbcSqliteDriver("jdbc:sqlite:$path")
 
+    println(path)
     if (!File(path).exists()) {
         ColorMasterDatabase.Schema.create(driver)
 

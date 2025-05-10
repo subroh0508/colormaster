@@ -31,5 +31,5 @@ include(
     ":core:features:search",
     ":core:features:myidols",
     ":core:test",
-    ":backend"
+    ":backend:server"
 )
