@@ -1,10 +1,26 @@
 plugins {
     kotlin("jvm")
     alias(libs.plugins.kotlinx.serialization)
+    application
+}
+
+application {
+    mainClass.set("net.subroh0508.colormaster.backend.cli.MainKt")
 }
 
 dependencies {
     implementation(project(":backend:server"))
+
+    // Add Ktor client dependencies
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)  // For JVM platform
+    implementation(libs.ktor.client.json)
+    implementation(libs.ktor.serialization.core)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.kotlinx.coroutines.core)
+
+    // Logging
+    implementation(libs.okhttp3.logging.interceptor)
 
     // SQLDelight
     implementation(libs.sqldelight.jvm.driver)
