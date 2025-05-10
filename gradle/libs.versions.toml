@@ -30,6 +30,7 @@ kotlin-wrappers = "1.0.0-pre.426"
 
 kotest = "6.0.0.M1"
 
+snakeyaml = "2.0"
 sqldelight = "2.0.2"
 
 npm-material-component-web = "^14.0.0"
@@ -99,6 +100,8 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.5.18
 sqldelight-jvm-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
+
+snakeyaml = { module = "org.yaml:snakeyaml", version.ref = "snakeyaml" }
 
 lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
 

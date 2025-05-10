@@ -23,7 +23,7 @@ dependencies {
     implementation(libs.okhttp3.logging.interceptor)
 
     // YAML
-    implementation("org.yaml:snakeyaml:2.0")
+    implementation(libs.snakeyaml)
 
     // SQLDelight
     implementation(libs.sqldelight.jvm.driver)
