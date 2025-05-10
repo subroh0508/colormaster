@@ -1,29 +1,40 @@
-CREATE TABLE Idol (
-    id TEXT PRIMARY KEY,
+CREATE TABLE idol (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name TEXT NOT NULL,
-    nameKana TEXT NOT NULL,
+    name_kana TEXT NOT NULL,
     color TEXT NOT NULL,
-    brand TEXT
+    content_category TEXT NOT NULL,
+    content_title TEXT NOT NULL
 );
 
 insertIdol:
-INSERT INTO Idol(id, name, nameKana, color, brand)
+INSERT INTO idol(name, name_kana, color, content_category, content_title)
 VALUES (?, ?, ?, ?, ?);
 
 selectAll:
 SELECT *
-FROM Idol;
+FROM idol;
 
 selectById:
 SELECT *
-FROM Idol
+FROM idol
 WHERE id = ?;
 
-selectByBrand:
+selectByContentCategory:
 SELECT *
-FROM Idol
-WHERE brand = ?;
+FROM idol
+WHERE content_category = ?;
+
+selectByContentTitle:
+SELECT *
+FROM idol
+WHERE content_title = ?;
+
+selectByNameLike:
+SELECT *
+FROM idol
+WHERE name LIKE '%' || ? || '%' OR name_kana LIKE '%' || ? || '%';
 
 deleteById:
-DELETE FROM Idol
+DELETE FROM idol
 WHERE id = ?;

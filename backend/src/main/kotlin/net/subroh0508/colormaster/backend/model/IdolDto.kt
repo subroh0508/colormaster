@@ -5,17 +5,19 @@ import net.subroh0508.colormaster.backend.database.Idol
 
 @Serializable
 data class IdolDto(
-    val id: String,
+    val id: Long,
     val name: String,
     val nameKana: String,
     val color: String,
-    val brand: String?
+    val contentCategory: String,
+    val contentTitle: String
 )
 
 fun Idol.toDto() = IdolDto(
     id = id,
     name = name,
-    nameKana = nameKana,
+    nameKana = name_kana,
     color = color,
-    brand = brand
+    contentCategory = content_category,
+    contentTitle = content_title
 )
