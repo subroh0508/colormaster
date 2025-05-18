@@ -34,25 +34,6 @@ private fun createSqlDriver(path: String): SqlDriver {
 
     if (!File(path).exists()) {
         ColorMasterDatabase.Schema.create(driver)
-
-        // サンプルデータの挿入
-        val db = ColorMasterDatabase(driver)
-        db.idolQueries.insertIdol(
-            name_ja = "天海春香",
-            name_kana_ja = "あまみはるか",
-            name_en = "Haruka Amami",
-            color = "#e22b30",
-            content_category = "アイドルマスター",
-            content_title = "765AS"
-        )
-        db.idolQueries.insertIdol(
-            name_ja = "島村卯月",
-            name_kana_ja = "しまむらうづき",
-            name_en = "Uzuki Shimamura",
-            color = "#ff91a4",
-            content_category = "アイドルマスター",
-            content_title = "CinderellaGirls"
-        )
     }
 
     return driver

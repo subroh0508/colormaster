@@ -32,3 +32,10 @@ val fetchIdolColors by tasks.registering(JavaExec::class) {
     mainClass.set("net.subroh0508.colormaster.backend.cli.commands.FetchIdolColorsCommand")
     classpath(sourceSets["main"].runtimeClasspath)
 }
+
+val importIdolsFromYaml by tasks.registering(JavaExec::class) {
+    group = "colormaster"
+    description = "Import idol records from result.yaml to color_master.db"
+    mainClass.set("net.subroh0508.colormaster.backend.cli.commands.ImportIdolsFromYamlCommand")
+    classpath(sourceSets["main"].runtimeClasspath)
+}
