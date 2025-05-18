@@ -16,7 +16,7 @@ object YamlOutput {
         // Sort results by brand and then by name
         val sortedResults = results.sortedWith(
             compareBy<IdolColorResult> { it.brand }
-                .thenBy { it.name }
+                .thenBy { it.id }
         )
         
         // Create a list of maps, each with a primary_key
@@ -24,7 +24,9 @@ object YamlOutput {
             mapOf(
                 "primary_key" to index, // Integer primary_key starting from 0
                 "id" to result.id,
-                "name" to result.name,
+                "name_ja" to result.nameJa,
+                "name_kana_ja" to result.nameKanaJa,
+                "name_en" to result.nameEn,
                 "color" to result.color,
                 "brand" to result.brand
             )

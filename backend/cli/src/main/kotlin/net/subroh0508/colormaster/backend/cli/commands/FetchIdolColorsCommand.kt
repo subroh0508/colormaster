@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import net.subroh0508.colormaster.backend.cli.imasparql.ImasparqlApiClient
 import net.subroh0508.colormaster.backend.cli.imasparql.json.IdolColorJson
-import net.subroh0508.colormaster.backend.cli.imasparql.query.SearchByIdQuery
+import net.subroh0508.colormaster.backend.cli.imasparql.query.FetchAllIdolsQuery
 import net.subroh0508.colormaster.backend.cli.util.YamlOutput
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
@@ -37,12 +37,10 @@ object FetchIdolColorsCommand {
 
     private suspend fun execute() {
         try {
-            // Parse command-line arguments
-            val lang = "ja"
             val outputPath = "result.yaml"
 
             // Create the query
-            val query = SearchByIdQuery(lang)
+            val query = FetchAllIdolsQuery
 
             // Execute the query
             val response = imasparqlClient.search(
@@ -53,11 +51,20 @@ object FetchIdolColorsCommand {
             // Process the results
             val results = response.results.bindings.map { idolColor ->
                 val id = idolColor.id["value"] ?: ""
-                val name = idolColor.name["value"] ?: ""
+                val nameJa = idolColor.nameJa["value"] ?: ""
+                val nameKanaJa = idolColor.nameKanaJa["value"] ?: ""
+                val nameEn = idolColor.nameEn["value"] ?: ""
                 val color = idolColor.color["value"] ?: ""
                 val brand = idolColor.brandName["value"] ?: ""
 
-                IdolColorResult(id, name, color, brand)
+                IdolColorResult(
+                    id,
+                    nameJa,
+                    nameKanaJa,
+                    nameEn,
+                    color,
+                    brand,
+                )
             }
 
             // Output the results
@@ -80,7 +87,9 @@ object FetchIdolColorsCommand {
 
     data class IdolColorResult(
         val id: String,
-        val name: String,
+        val nameJa: String,
+        val nameKanaJa: String,
+        val nameEn: String,
         val color: String,
         val brand: String
     )

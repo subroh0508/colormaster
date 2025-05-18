@@ -1,15 +1,16 @@
 CREATE TABLE idol (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    name TEXT NOT NULL,
-    name_kana TEXT NOT NULL,
+    name_ja TEXT NOT NULL,
+    name_kana_ja TEXT NOT NULL,
+    name_en TEXT NOT NULL,
     color TEXT NOT NULL,
     content_category TEXT NOT NULL,
     content_title TEXT NOT NULL
 );
 
 insertIdol:
-INSERT INTO idol(name, name_kana, color, content_category, content_title)
-VALUES (?, ?, ?, ?, ?);
+INSERT INTO idol(name_ja, name_kana_ja, name_en, color, content_category, content_title)
+VALUES (?, ?, ?, ?, ?, ?);
 
 selectAll:
 SELECT *
@@ -33,7 +34,7 @@ WHERE content_title = ?;
 selectByNameLike:
 SELECT *
 FROM idol
-WHERE name LIKE '%' || ? || '%' OR name_kana LIKE '%' || ? || '%';
+WHERE name_ja LIKE '%' || ? || '%' OR name_kana_ja LIKE '%' || ? || '%' OR name_en LIKE '%' || ? || '%';
 
 deleteById:
 DELETE FROM idol
