@@ -1,6 +1,6 @@
 package net.subroh0508.colormaster.backend.cli.util
 
-import net.subroh0508.colormaster.backend.cli.commands.FetchIdolColorsCommand.IdolColorResult
+import net.subroh0508.colormaster.backend.cli.commands.FetchIdolColorsFromImasparqlCommand.IdolColorResult
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
 

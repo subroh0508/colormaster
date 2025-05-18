@@ -3,9 +3,7 @@ package net.subroh0508.colormaster.backend.cli.commands
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import net.subroh0508.colormaster.backend.cli.imasparql.ImasparqlApiClient
 import net.subroh0508.colormaster.backend.cli.imasparql.json.IdolColorJson
@@ -14,7 +12,7 @@ import net.subroh0508.colormaster.backend.database.ColorMasterDatabase
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 
-object FetchIdolColorsCommand {
+object FetchIdolColorsFromImasparqlCommand {
     @JvmStatic
     fun main(args: Array<String>) {
         runBlocking { execute() }
@@ -99,7 +97,8 @@ object FetchIdolColorsCommand {
                     CONTENT_CATEGORY_IMAS
                 ).executeAsList().firstOrNull()
 
-                val isDuplicate = existingRecord != null
+                val isDuplicate = existingRecord != null &&
+                        existingRecord.content_title == result.brand
 
                 // Ensure color has # prefix
                 val formattedColor = if (result.color.startsWith("#")) result.color else "#${result.color}"

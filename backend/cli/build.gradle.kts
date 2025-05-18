@@ -26,23 +26,9 @@ dependencies {
     implementation(libs.sqldelight.primitive.adapters)
 }
 
-val fetchIdolColors by tasks.registering(JavaExec::class) {
+val fetchIdolColorsFromImasparql by tasks.registering(JavaExec::class) {
     group = "colormaster"
     description = "Fetch idol member colors from im@sparql"
-    mainClass.set("net.subroh0508.colormaster.backend.cli.commands.FetchIdolColorsCommand")
-    classpath(sourceSets["main"].runtimeClasspath)
-}
-
-val importIdolsFromYaml by tasks.registering(JavaExec::class) {
-    group = "colormaster"
-    description = "Import idol records from result.yaml to color_master.db"
-    mainClass.set("net.subroh0508.colormaster.backend.cli.commands.ImportIdolsFromYamlCommand")
-    classpath(sourceSets["main"].runtimeClasspath)
-}
-
-val exportIdolsToYaml by tasks.registering(JavaExec::class) {
-    group = "colormaster"
-    description = "Export idol records from color_master.db to YAML file"
-    mainClass.set("net.subroh0508.colormaster.backend.cli.commands.ExportIdolsToYamlCommand")
+    mainClass.set("net.subroh0508.colormaster.backend.cli.commands.FetchIdolColorsFromImasparqlCommand")
     classpath(sourceSets["main"].runtimeClasspath)
 }
