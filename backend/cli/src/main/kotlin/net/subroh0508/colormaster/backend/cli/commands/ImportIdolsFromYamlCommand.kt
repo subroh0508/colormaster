@@ -16,6 +16,7 @@ object ImportIdolsFromYamlCommand {
 
     private const val INPUT_FILE_PATH = "result.yaml"
     private const val DB_FILE_NAME = "color_master.db"
+    private const val CONTENT_CATEGORY_IMAS = "The Idolmaster"
     // プロジェクトルートからの相対パスでサーバーのdataディレクトリを指定
     private val DB_DIR_PATH = File("../../backend/server/data").absolutePath
 
@@ -75,7 +76,7 @@ object ImportIdolsFromYamlCommand {
                         name_kana_ja = nameKanaJa,
                         name_en = nameEn,
                         color = color,
-                        content_category = "アイドルマスター", // 固定値として設定
+                        content_category = CONTENT_CATEGORY_IMAS, // 固定値として設定
                         content_title = brand
                     )
                     insertedCount++
