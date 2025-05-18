@@ -32,13 +32,16 @@ object ImportIdolsFromYamlCommand {
             val dbDir = File(DB_DIR_PATH).also { if (!it.exists()) it.mkdirs() }
             val dbFile = File(dbDir, DB_FILE_NAME)
             val driver = JdbcSqliteDriver("jdbc:sqlite:${dbFile.absolutePath}")
-            
+
             // データベースが存在しない場合はスキーマを作成
             if (!dbFile.exists()) {
                 ColorMasterDatabase.Schema.create(driver)
             }
-            
+
             val database = ColorMasterDatabase(driver)
+
+            // 既存のレコードをすべて取得
+            val existingIdols = database.idolQueries.selectAll().executeAsList()
 
             // YAMLファイルを解析
             val yaml = Yaml()
@@ -46,8 +49,10 @@ object ImportIdolsFromYamlCommand {
                 yaml.load<List<Map<String, Any>>>(yamlFile.readText())
             }
 
-            // レコードをデータベースに挿入
+            // レコードをデータベースに挿入（重複チェック付き）
             var insertedCount = 0
+            var skippedCount = 0
+
             idolRecords.forEach { record ->
                 val nameJa = record["name_ja"] as String
                 val nameKanaJa = record["name_kana_ja"] as String
@@ -56,20 +61,37 @@ object ImportIdolsFromYamlCommand {
                     if (it.startsWith("#")) it else "#$it" 
                 }
                 val brand = record["brand"] as String
-                
-                // brandをcontent_titleとして使用し、content_categoryは固定値「アイドルマスター」を設定
-                database.idolQueries.insertIdol(
-                    name_ja = nameJa,
-                    name_kana_ja = nameKanaJa,
-                    name_en = nameEn,
-                    color = color,
-                    content_category = "アイドルマスター", // 固定値として設定
-                    content_title = brand
-                )
-                insertedCount++
+
+                // 重複チェック
+                val isDuplicate = existingIdols.any { idol ->
+                    idol.name_ja == nameJa &&
+                    idol.name_kana_ja == nameKanaJa &&
+                    idol.name_en == nameEn &&
+                    idol.color == color &&
+                    idol.content_title == brand
+                }
+
+                if (!isDuplicate) {
+                    // 重複がなければ挿入
+                    database.idolQueries.insertIdol(
+                        name_ja = nameJa,
+                        name_kana_ja = nameKanaJa,
+                        name_en = nameEn,
+                        color = color,
+                        content_category = "アイドルマスター", // 固定値として設定
+                        content_title = brand
+                    )
+                    insertedCount++
+                } else {
+                    skippedCount++
+                }
             }
 
-            println("Successfully imported $insertedCount records from $INPUT_FILE_PATH to ${dbFile.absolutePath}")
+            println("Import summary:")
+            println("- Total records in YAML: ${idolRecords.size}")
+            println("- New records inserted: $insertedCount")
+            println("- Duplicate records skipped: $skippedCount")
+            println("- Database location: ${dbFile.absolutePath}")
         } catch (e: Exception) {
             System.err.println("Error: ${e.message}")
             e.printStackTrace()
