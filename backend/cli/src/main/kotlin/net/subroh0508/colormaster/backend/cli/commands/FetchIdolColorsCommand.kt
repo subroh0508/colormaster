@@ -19,6 +19,7 @@ object FetchIdolColorsCommand {
         runBlocking { execute() }
     }
 
+    private const val OUTPUT_FILE_PATH = "result.yaml"
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -37,8 +38,6 @@ object FetchIdolColorsCommand {
 
     private suspend fun execute() {
         try {
-            val outputPath = "result.yaml"
-
             // Create the query
             val query = FetchAllIdolsQuery
 
@@ -69,14 +68,10 @@ object FetchIdolColorsCommand {
 
             // Output the results
             val output = YamlOutput.formatIdolColors(results)
-            if (outputPath != null) {
-                withContext(Dispatchers.IO) {
-                    File(outputPath).writeText(output)
-                }
-                println("Results written to $outputPath")
-            } else {
-                println(output)
+            withContext(Dispatchers.IO) {
+                File(OUTPUT_FILE_PATH).writeText(output)
             }
+            println("Results written to $OUTPUT_FILE_PATH")
         } catch (e: Exception) {
             System.err.println("Error: ${e.message}")
             e.printStackTrace()
