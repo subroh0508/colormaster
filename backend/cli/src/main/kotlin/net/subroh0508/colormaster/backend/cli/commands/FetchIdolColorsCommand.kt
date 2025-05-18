@@ -1,5 +1,6 @@
 package net.subroh0508.colormaster.backend.cli.commands
 
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import kotlinx.coroutines.Dispatchers
@@ -9,7 +10,7 @@ import kotlinx.serialization.json.Json
 import net.subroh0508.colormaster.backend.cli.imasparql.ImasparqlApiClient
 import net.subroh0508.colormaster.backend.cli.imasparql.json.IdolColorJson
 import net.subroh0508.colormaster.backend.cli.imasparql.query.FetchAllIdolsQuery
-import net.subroh0508.colormaster.backend.cli.util.YamlOutput
+import net.subroh0508.colormaster.backend.database.ColorMasterDatabase
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 
@@ -19,7 +20,10 @@ object FetchIdolColorsCommand {
         runBlocking { execute() }
     }
 
-    private const val OUTPUT_FILE_PATH = "result.yaml"
+    private const val DB_FILE_NAME = "color_master.db"
+    private const val CONTENT_CATEGORY_IMAS = "The Idolmaster"
+    // プロジェクトルートからの相対パスでサーバーのdataディレクトリを指定
+    private val DB_DIR_PATH = File("../../backend/server/data").absolutePath
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -66,12 +70,62 @@ object FetchIdolColorsCommand {
                 )
             }
 
-            // Output the results
-            val output = YamlOutput.formatIdolColors(results)
-            withContext(Dispatchers.IO) {
-                File(OUTPUT_FILE_PATH).writeText(output)
+            // Database connection setup
+            val dbDir = File(DB_DIR_PATH).also { if (!it.exists()) it.mkdirs() }
+            val dbFile = File(dbDir, DB_FILE_NAME)
+            val driver = JdbcSqliteDriver("jdbc:sqlite:${dbFile.absolutePath}")
+
+            // Create database schema if it doesn't exist
+            if (!dbFile.exists()) {
+                ColorMasterDatabase.Schema.create(driver)
             }
-            println("Results written to $OUTPUT_FILE_PATH")
+
+            val database = ColorMasterDatabase(driver)
+
+            // Insert records into database with duplicate checking by name_en and content_category
+            var insertedCount = 0
+            var skippedCount = 0
+
+            // Sort results by brand and then by id for consistent ordering
+            val sortedResults = results.sortedWith(
+                compareBy<IdolColorResult> { it.brand }
+                    .thenBy { it.id }
+            )
+
+            sortedResults.forEach { result ->
+                // Check if a record with the same name_en and content_category already exists
+                val existingRecord = database.idolQueries.selectByNameEnAndContentCategory(
+                    result.nameEn,
+                    CONTENT_CATEGORY_IMAS
+                ).executeAsList().firstOrNull()
+
+                val isDuplicate = existingRecord != null
+
+                // Ensure color has # prefix
+                val formattedColor = if (result.color.startsWith("#")) result.color else "#${result.color}"
+
+                if (!isDuplicate) {
+                    // Insert new record
+                    database.idolQueries.insertIdol(
+                        name_ja = result.nameJa,
+                        name_kana_ja = result.nameKanaJa,
+                        name_en = result.nameEn,
+                        color = formattedColor,
+                        content_category = CONTENT_CATEGORY_IMAS,
+                        content_title = result.brand
+                    )
+                    insertedCount++
+                } else {
+                    skippedCount++
+                }
+            }
+
+            // Print summary
+            println("Import summary:")
+            println("- Total records from im@sparql: ${results.size}")
+            println("- New records inserted: $insertedCount")
+            println("- Duplicate records skipped: $skippedCount")
+            println("- Database location: ${dbFile.absolutePath}")
         } catch (e: Exception) {
             System.err.println("Error: ${e.message}")
             e.printStackTrace()
