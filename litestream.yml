@@ -1,0 +1,6 @@
+dbs:
+  - path: /app/data/color_master.db
+    replicas:
+      - type: gcs
+        bucket: colormaster-db
+        path: color_master.db
