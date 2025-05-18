@@ -30,7 +30,7 @@ kotlin-wrappers = "1.0.0-pre.426"
 
 kotest = "6.0.0.M1"
 
-snakeyaml = "2.0"
+snakeyaml = "2.4"
 sqldelight = "2.1.0"
 
 npm-material-component-web = "^14.0.0"
