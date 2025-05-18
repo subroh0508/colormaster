@@ -13,11 +13,11 @@ COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 # Build the fat JAR, Gradle also supports shadow
 # and boot JAR by default.
-RUN gradle backend:buildFatJar --no-daemon
+RUN gradle backend:server:buildFatJar --no-daemon
 
 # Stage 3: Create the Runtime Image
 FROM amazoncorretto:22 AS runtime
 EXPOSE 8080
 RUN mkdir /app
-COPY --from=build /home/gradle/src/backend/build/libs/*.jar /app/colormaster.jar
+COPY --from=build /home/gradle/src/backend/server/build/libs/*.jar /app/colormaster.jar
 ENTRYPOINT ["java","-jar","/app/colormaster.jar"]

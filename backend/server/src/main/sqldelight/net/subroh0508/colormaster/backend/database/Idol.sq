@@ -1,0 +1,46 @@
+CREATE TABLE idol (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name_ja TEXT NOT NULL,
+    name_kana_ja TEXT NOT NULL,
+    name_en TEXT NOT NULL,
+    color TEXT NOT NULL,
+    content_category TEXT NOT NULL,
+    content_title TEXT NOT NULL
+);
+
+insertIdol:
+INSERT INTO idol(name_ja, name_kana_ja, name_en, color, content_category, content_title)
+VALUES (?, ?, ?, ?, ?, ?);
+
+selectAll:
+SELECT *
+FROM idol;
+
+selectById:
+SELECT *
+FROM idol
+WHERE id = ?;
+
+selectByContentCategory:
+SELECT *
+FROM idol
+WHERE content_category = ?;
+
+selectByContentTitle:
+SELECT *
+FROM idol
+WHERE content_title = ?;
+
+selectByNameLike:
+SELECT *
+FROM idol
+WHERE name_ja LIKE '%' || ? || '%' OR name_kana_ja LIKE '%' || ? || '%' OR name_en LIKE '%' || ? || '%';
+
+selectByNameEnAndContentCategory:
+SELECT *
+FROM idol
+WHERE name_en = ? AND content_category = ?;
+
+deleteById:
+DELETE FROM idol
+WHERE id = ?;
