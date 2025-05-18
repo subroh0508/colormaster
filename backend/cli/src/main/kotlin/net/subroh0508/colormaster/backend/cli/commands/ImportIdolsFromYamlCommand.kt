@@ -15,8 +15,9 @@ object ImportIdolsFromYamlCommand {
     }
 
     private const val INPUT_FILE_PATH = "result.yaml"
-    private const val DB_DIR_PATH = "data"
     private const val DB_FILE_NAME = "color_master.db"
+    // プロジェクトルートからの相対パスでサーバーのdataディレクトリを指定
+    private val DB_DIR_PATH = File("../../backend/server/data").absolutePath
 
     private suspend fun execute() {
         try {
