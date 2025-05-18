@@ -39,3 +39,10 @@ val importIdolsFromYaml by tasks.registering(JavaExec::class) {
     mainClass.set("net.subroh0508.colormaster.backend.cli.commands.ImportIdolsFromYamlCommand")
     classpath(sourceSets["main"].runtimeClasspath)
 }
+
+val exportIdolsToYaml by tasks.registering(JavaExec::class) {
+    group = "colormaster"
+    description = "Export idol records from color_master.db to YAML file"
+    mainClass.set("net.subroh0508.colormaster.backend.cli.commands.ExportIdolsToYamlCommand")
+    classpath(sourceSets["main"].runtimeClasspath)
+}
