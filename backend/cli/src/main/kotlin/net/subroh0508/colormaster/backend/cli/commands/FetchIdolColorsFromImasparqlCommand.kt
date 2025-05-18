@@ -91,14 +91,14 @@ object FetchIdolColorsFromImasparqlCommand {
             )
 
             sortedResults.forEach { result ->
-                // Check if a record with the same name_en and content_category already exists
-                val existingRecord = database.idolQueries.selectByNameEnAndContentCategory(
+                // Check if a record with the same name_en, content_category, and content_title already exists
+                val existingRecord = database.idolQueries.selectByNameEnAndContentCategoryAndTitle(
                     result.nameEn,
-                    CONTENT_CATEGORY_IMAS
+                    CONTENT_CATEGORY_IMAS,
+                    result.brand
                 ).executeAsList().firstOrNull()
-
-                val isDuplicate = existingRecord != null &&
-                        existingRecord.content_title == result.brand
+            
+                val isDuplicate = existingRecord != null
 
                 // Ensure color has # prefix
                 val formattedColor = if (result.color.startsWith("#")) result.color else "#${result.color}"

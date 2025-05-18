@@ -36,10 +36,10 @@ SELECT *
 FROM idol
 WHERE name_ja LIKE '%' || ? || '%' OR name_kana_ja LIKE '%' || ? || '%' OR name_en LIKE '%' || ? || '%';
 
-selectByNameEnAndContentCategory:
+selectByNameEnAndContentCategoryAndTitle:
 SELECT *
 FROM idol
-WHERE name_en = ? AND content_category = ?;
+WHERE name_en = ? AND content_category = ? AND content_title = ?;
 
 deleteById:
 DELETE FROM idol
