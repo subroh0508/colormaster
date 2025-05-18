@@ -40,9 +40,6 @@ object ImportIdolsFromYamlCommand {
 
             val database = ColorMasterDatabase(driver)
 
-            // 既存のレコードをすべて取得
-            val existingIdols = database.idolQueries.selectAll().executeAsList()
-
             // YAMLファイルを解析
             val yaml = Yaml()
             val idolRecords = withContext(Dispatchers.IO) {
@@ -54,6 +51,15 @@ object ImportIdolsFromYamlCommand {
             var skippedCount = 0
 
             idolRecords.forEach { record ->
+                // primary_keyを取得（YAMLファイル内のインデックス）
+                val primaryKey = (record["primary_key"] as Int).toLong() + 1 // データベースのIDは1から始まるため+1
+
+                // 同じIDのレコードがデータベースに存在するか確認
+                val existingRecord = database.idolQueries.selectById(primaryKey).executeAsOneOrNull()
+
+                // 重複チェック
+                val isDuplicate = existingRecord != null
+
                 val nameJa = record["name_ja"] as String
                 val nameKanaJa = record["name_kana_ja"] as String
                 val nameEn = record["name_en"] as String
@@ -61,15 +67,6 @@ object ImportIdolsFromYamlCommand {
                     if (it.startsWith("#")) it else "#$it" 
                 }
                 val brand = record["brand"] as String
-
-                // 重複チェック
-                val isDuplicate = existingIdols.any { idol ->
-                    idol.name_ja == nameJa &&
-                    idol.name_kana_ja == nameKanaJa &&
-                    idol.name_en == nameEn &&
-                    idol.color == color &&
-                    idol.content_title == brand
-                }
 
                 if (!isDuplicate) {
                     // 重複がなければ挿入
