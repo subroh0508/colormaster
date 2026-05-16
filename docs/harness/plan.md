@@ -942,10 +942,10 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 | `harness-bootstrap` | B0 のみ。手動起動 | 専用 Skill 群が揃うまでの汎用 Skill。タスク種別 (ADR 起草 / rules 追加 / docs 拡充 / モジュール撤去 / Lint 導入) に応じた汎用手順を実行。A3 完了後に `archived/` へ |
 | `plan-author` | feature-request / bug-fix / refactor が単一 PR スコープと判定 | `docs/plans/PLAN-NNN-*.md` を 1 ファイル生成、INDEX.md 更新 |
 | `epic-author` | 同上、複数 PR スコープと判定。または Plan 昇格時 | `docs/epics/EPIC-NNN-<slug>/` を template から生成、INDEX.md 更新 |
-| **`roadmap-tracker`** | (a) `epic-author` が新規 Epic を起票した直後 (**Plan は 1 PR で完結するためロードマップ追跡対象外**)、(b) `implementation-workflow` Phase 7 (Merge 後) で Epic 配下 PR / B-A-C フェーズ項目の完了根拠を登録、(c) 人間 / 他 Skill から「ロードマップ更新」「進捗可視化」「着手順入れ替え」「障壁記録」「保留事項追加」の指示 | **新規**: 入力に応じてロードマップ Markdown を生成・更新。(1) 計画 Markdown (`docs/harness/plan.md` 等) を読み取り B0/A1-A10/C1-C10 等の項目を抽出、(2) `docs/epics/EPIC-NNN-*/` を走査して frontmatter から ID/タイトル/status を読む (`docs/plans/` は走査対象外)、(3) `docs/harness/roadmap.md` または `docs/epics/<id>/roadmap.md` を更新。完了根拠は `gh pr view` で PR メタ情報を取得して PR 番号 + マージ日 + 主要ファイルパスを記録。Open Questions / 障壁 / 着手順変更履歴は append-only で蓄積。**plan.md や Epic 本体への逆同期はしない** (片方向ミラー)。詳細規約は `.claude/rules/roadmap.md` |
+| **`roadmap-tracker`** | (a) `epic-author` が新規 Epic を起票した直後 (**Plan は 1 PR で完結するためロードマップ追跡対象外**)、(b) `implementation-workflow` Phase 7 (Merge 後) で Epic 配下 PR / B-A-C フェーズ項目の完了根拠を登録、(c) 人間 / 他 Skill から「ロードマップ更新」「進捗可視化」「着手順入れ替え」「障壁記録」「保留事項追加」「次の推奨着手を出して」の指示 | **新規**: 入力に応じてロードマップ Markdown を生成・更新。(1) 計画 Markdown (`docs/harness/plan.md` 等) を読み取り B0/A1-A10/C1-C10 等の項目を抽出、(2) `docs/epics/EPIC-NNN-*/` を走査して frontmatter から ID/タイトル/status/**想定変更モジュール (`expected_modules`)** を読む (`docs/plans/` は走査対象外)、(3) `docs/harness/roadmap.md` または `docs/epics/<id>/roadmap.md` を更新。完了根拠は `gh pr view` で PR メタ情報を取得して PR 番号 + マージ日 + 主要ファイルパスを記録。Open Questions / 障壁 / 着手順変更履歴は append-only で蓄積。**plan.md や Epic 本体への逆同期はしない** (片方向ミラー)。<br>**(4) 並行実装容易性に基づく次の推奨着手 (top-N) を出力**: 各候補 (proposed / blocked-解除済) について、(a) 依存関係 (Mermaid gantt の `after` 句) が解決済みであること、(b) 現在 `in-progress` な項目の `expected_modules` 集合と **重複モジュールが少ない順** に並べ替えて roadmap.md の「次の推奨着手 (並行実装観点)」セクションに出力。重複が完全に無い候補が複数あれば優先度 (must/should/could) で二次ソート。`expected_modules` が未記入の候補は「並行可否不明 (要記入)」として warning 出力。詳細規約は `.claude/rules/roadmap.md` |
 | **`pr-poller`** | ローカル Claude Code 起動時 + `CronCreate` 日次スケジュール + `ScheduleWakeup` ループ | gh CLI で merged / closed PR を取得 → 既に learning ファイルがある PR を除外 → 未処理 PR があれば `pr-retrospective` を起動 → 一定期間経過 (7 日) または未処理 learning 件数閾値到達で `harness-meta` を起動。**さらに open PR で `labels:renovate` が付くものを検出して `dependency-upgrade` Skill を起動** (GitHub Actions で Claude API を呼ばないためのローカル化)。詳細規約は `.claude/rules/pr-poller.md` |
 | **`pr-retrospective`** (旧 `kpt-retrospective`) | `pr-poller` から自動起動 / 手動起動 | 対象 PR の diff (`gh pr diff`) / comments / reviews / CI ログ / Skill 実行ログ / 三層指標差分 (Kover / Konsist / PITest) / 関連 Plan・Epic を収集。`docs/harness/learnings/YYYY-MM-DD-pr-<n>.md` を `.claude/rules/retrospective-format.md` の構造化フォーマット (**日本語見出し**) で生成。`harness/learnings-batch-YYYY-WW` ブランチに集約し、週次 (or 件数到達時) に PR としてまとめて起票 |
-| **`implementation-workflow`** | Plan / Epic 確定後、ユーザー指示で起動 | **新規 (オーケストレーター)**: 8 フェーズで全工程を統合管理 — (1) 要件/基本設計/詳細設計 Markdown 読込、(2) Spec 整合性チェック、(3) 実装 + Lint/Test 実行 + fix loop (上限 3 回)、(4) Self-Verification、(5) Draft PR 作成、(6) `code-reviewer` 呼出 → Evaluator フェーズ、(7) 人間 approve → squash merge、(8) `pr-poller` 即時起動。詳細規約は `.claude/rules/implementation-workflow.md`、`merge-readiness.md`、`pr-draft-policy.md`、`spec-living-sync.md` |
+| **`implementation-workflow`** | Plan / Epic 確定後、ユーザー指示で起動 | **新規 (オーケストレーター)**: **10 フェーズ**で全工程を統合管理、複数 Claude Code セッションでの並行実装に備え **Git worktree** で作業ディレクトリを物理分離する — **(0) Worktree 作成** (`git worktree add ../<repo-name>-worktrees/<branch-slug> -b <branch-name>`、ブランチ命名は `.claude/rules/branch-naming.md` に従う、以降の全 Phase はこの worktree 内で実行)、(1) 要件/基本設計/詳細設計 Markdown 読込、(2) Spec 整合性チェック、(3) 実装 + Lint/Test 実行 + fix loop (上限 3 回)、(4) Self-Verification、(5) Draft PR 作成、(6) `code-reviewer` 呼出 → Evaluator フェーズ、(7) 人間 approve → squash merge、(8) `pr-poller` 即時起動 + `roadmap-tracker` 起動で完了根拠登録、**(9) Worktree 削除** (merge 済みを `git branch --merged main` で確認 → `git worktree remove ../<repo-name>-worktrees/<branch-slug>` + `git branch -d <branch-name>`、未マージなら停止して人間に通知)。詳細規約は `.claude/rules/implementation-workflow.md`、`merge-readiness.md`、`pr-draft-policy.md`、`spec-living-sync.md`、`branch-naming.md` |
 | **`code-reviewer`** | `implementation-workflow` Phase 6 から呼出 / 手動起動 | **新規 (独立 Evaluator)**: 8 aspect を並列実行 — spec-conformance / test-quality / architecture / security / performance / code-quality / **visual-regression** / **design-tokens** (後ろ 2 つは A10 完了後に有効化)。各 aspect が binary yes/no eval checklist を実行。Coordinator が重複排除して **日本語の構造化レビューコメント** を PR に post し、Merge readiness を判定。詳細規約は `.claude/rules/code-reviewer-aspects.md`。Anthropic Evaluator 独立性原則に従い、aspect ごとに別の system prompt を持たせる |
 | **`ui-snapshot`** | A10 内の Plan、Phase C 各リファクタ後の visual regression 検証 | **新規**: Konsist で Composable をスキャン → `@Preview` 不在を検出 → Plan 起票、Roborazzi で 4 パターン (mobile/desktop × Light/Dark) baseline 生成、DESIGN.md と UI Inventory のドラフトを起草、hex / sp / dp ハードコードを検出して tokens 化提案 |
 | `feature-request` | ユーザー指示 or Issue | 要件 → 基本設計 → (必要なら詳細設計) → ADR (必要時) → Plan / Epic 起票 **まで** (実装はしない、`implementation-workflow` にバトンタッチ) |
@@ -973,6 +973,8 @@ Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の spec
                        ▼ Plan / Epic を引き継ぐ
 ┌── ② Implementation フェーズ ─────────────────────────────┐
 │ [implementation-workflow]  (オーケストレーター)            │
+│   Phase 0: Worktree 作成 (git worktree add、以降の処理は   │
+│            この worktree 内で完結、複数セッション並行可)    │
 │   Phase 1: 要件/基本設計/詳細設計 Markdown を Read         │
 │   Phase 2: Spec 整合性チェック (SPEC-ID 採番確認)           │
 │   Phase 3: rules-index → 実装 + Lint + Test (fix loop ≤3) │
@@ -998,9 +1000,14 @@ Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の spec
 │   CI green + 全 aspect pass + 人間 approve                 │
 │   → gh pr merge --squash                                   │
 │   Auto-merge は禁止 (GitHub Agentic Workflows 原則)        │
+│ [implementation-workflow Phase 8]                          │
+│   pr-poller 即時起動 + roadmap-tracker で完了根拠登録      │
+│ [implementation-workflow Phase 9]                          │
+│   Worktree 削除 (git branch --merged 確認 →               │
+│   git worktree remove + git branch -d)                     │
 └────────────────────────────────────────────────────────────┘
                        │
-                       ▼ implementation-workflow Phase 8 で即時起動
+                       ▼ Phase 8 で即時起動
 ┌── ⑤ Retrospection フェーズ ──────────────────────────────┐
 │ [pr-poller]                                                │
 │   gh pr list --state closed,merged                         │
@@ -1050,7 +1057,7 @@ Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の spec
 - **Learning ファイルが Single Source of Truth**: PR コメントは出さない。`docs/harness/learnings/` の Markdown が `pr-retrospective` の出力先かつ `harness-meta` の入力源
 - **対話的フィードバック**: 採用見送りや保留は元 learning ファイルに `harness-meta feedback` セクションを追記、提案 → 結果の往復ログが 1 ファイル内で完結
 - **テンプレート言語は日本語**: ADR / Plan / Epic / 要件 / 仕様 / runbook / learning / レビューコメント の全テンプレ Markdown は日本語見出し・日本語例文で記述 (ADR 0027、`.claude/rules/template-language.md`)。frontmatter のキー (`id`, `status`, `type` 等) やコマンド文字列は英語のまま
-- **横断 Skill `roadmap-tracker`**: 6 フェーズの図には直接組み込まない補助 Skill。(1) Spec Gen フェーズ後 (`epic-author` の Epic 起票直後、**Plan は 1 PR 完結のため対象外**)、(2) Merge フェーズ (`implementation-workflow` Phase 7 の merge 完了直後、Epic 配下 PR または B-A-C フェーズ項目に該当する場合) に呼ばれ、`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` を最新化する。Open Questions / 障壁 / 着手順変更履歴は (3) 人間や他 Skill から手動起動で追記。ループ内のどのフェーズからも Read 可能な「現在の進捗ビュー」を提供する役割。詳細規約は `.claude/rules/roadmap.md` (ADR 化は見送り、§4.5 ADR にすべきでない例の表参照)
+- **横断 Skill `roadmap-tracker`**: 6 フェーズの図には直接組み込まない補助 Skill。(1) Spec Gen フェーズ後 (`epic-author` の Epic 起票直後、**Plan は 1 PR 完結のため対象外**)、(2) Merge フェーズ (`implementation-workflow` Phase 8 で `pr-poller` と同時起動、Epic 配下 PR または B-A-C フェーズ項目に該当する場合) に呼ばれ、`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` を最新化する。Open Questions / 障壁 / 着手順変更履歴は (3) 人間や他 Skill から手動起動で追記。**並行実装容易性に基づく「次の推奨着手 (top-N)」を出力** することで、複数 Claude Code セッションが Phase 0 (worktree add) → Phase 9 (worktree remove) の並列ループを安全に走らせる前提条件 (touch ファイルの非重複) を提示する。ループ内のどのフェーズからも Read 可能な「現在の進捗ビュー」を提供する役割。詳細規約は `.claude/rules/roadmap.md` (ADR 化は見送り、§4.5 ADR にすべきでない例の表参照)
 
 ### 5.5 テンプレート言語ポリシー
 
@@ -1477,11 +1484,12 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
   - 見送り提案は元 learning ファイルに `## 📝 harness-meta feedback` セクションを追記、提案 → 結果の往復ログがファイル内で完結
   - 未使用 rule / dormant Skill は **月次 cleanup PR** で別建てで撤去候補レビュー
 - **コード実装ワークフロー**:
-  - 新規 Skill `implementation-workflow` が 8 フェーズで Plan/Epic 確定後の実装着手 → Lint/Test → AI Review → マージ判断 → レトロ起動を統合管理
+  - 新規 Skill `implementation-workflow` が **10 フェーズ**で Plan/Epic 確定後の実装着手 → Lint/Test → AI Review → マージ判断 → レトロ起動 → クリーンアップ を統合管理。**Phase 0 で Git worktree を作成 (`git worktree add ../<repo-name>-worktrees/<branch-slug>`)、Phase 9 で削除 (merge 済み確認後 `git worktree remove` + `git branch -d`)**、複数 Claude Code セッションでの並行実装でも作業ディレクトリが物理分離され Git コンフリクトリスクを構造的に下げる
   - 新規 Skill `code-reviewer` が **独立 Evaluator** として 8 aspect (spec-conformance / test-quality / architecture / security / performance / code-quality / visual-regression / design-tokens) を並列レビュー、Coordinator が日本語の構造化レビューコメントを PR に post し Merge readiness を判定
   - 既存 `feature-request` / `bug-fix` / `refactor` の責務は **Plan / Epic 起票まで** に縮小、その後 implementation-workflow にバトンタッチ
   - Fix loop 上限はデフォルト 3 回、超過したら Plan に `status: blocked`
   - **人間 approve なしの auto-merge は禁止** (GitHub Agentic Workflows 原則準拠)
+  - **並行実装の前提条件**: `roadmap-tracker` の「次の推奨着手 (並行実装観点)」で `expected_modules` の重複が少ない候補を選ぶ。worktree のパスは `../<repo-name>-worktrees/<branch-slug>` で統一 (`.claude/rules/branch-naming.md` および `.claude/rules/implementation-workflow.md` で規定)
 - **テンプレート言語**:
   - 全 Markdown テンプレート (ADR / Epic / Plan / 要件 / 仕様 / runbook / learning / PR description / レビューコメント等) は **日本語見出し・日本語例文** で記述 (ADR 0027)
   - 例外: YAML frontmatter のキー、ステータス値、コマンド・パス・コード断片、識別子 (SPEC-ID / EPIC-NNN / PLAN-NNN / ADR 番号等) は英語のまま
@@ -1505,7 +1513,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 - **ロードマップ管理** (`.claude/rules/roadmap.md` で規定、ADR 化は見送り):
   - 新規 Skill `roadmap-tracker` が **plan.md と `docs/epics/EPIC-NNN-*/`** を入力に `docs/harness/roadmap.md` (全体) および `docs/epics/<id>/roadmap.md` (Epic 別) を生成・更新
   - **Plan は 1 PR で完結するボリュームのためロードマップ追跡対象外** (PR レビュー & merge で完結、`docs/plans/*.md` は走査しない)
-  - 管理項目: (1) 項目一覧 (B0/A1-A10/C1-C10/EPIC-NNN) と ステータス (proposed/in-progress/completed/blocked/abandoned)、(2) 完了根拠 (PR 番号 + マージ日 + 主要ファイル `file_path[:line]`)、(3) 着手順とブロック関係 (Mermaid gantt)、(4) 保留中の意思決定・不明事項 (Open Questions)、(5) 技術的障壁と回避策 (Blockers and Workarounds、解決日 / 解決方法を必ず設けて未解決放置を可視化)、(6) 着手順変更履歴 (append-only)
+  - 管理項目: (1) 項目一覧 (B0/A1-A10/C1-C10/EPIC-NNN) と ステータス (proposed/in-progress/completed/blocked/abandoned) + **想定変更モジュール `expected_modules`** (例: `feature/home`, `core/network`)、(2) 完了根拠 (PR 番号 + マージ日 + 主要ファイル `file_path[:line]`)、(3) 着手順とブロック関係 (Mermaid gantt)、(4) 保留中の意思決定・不明事項 (Open Questions)、(5) 技術的障壁と回避策 (Blockers and Workarounds、解決日 / 解決方法を必ず設けて未解決放置を可視化)、(6) 着手順変更履歴 (append-only)、(7) **次の推奨着手 (並行実装観点)**: 依存解決済 + 現在 in-progress 項目との `expected_modules` 重複が少ない順に top-N を提示、Git コンフリクト発生確率を下げる
   - **plan.md / Epic 本体への逆同期はしない** (片方向ミラー)。Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x) で「roadmap.md の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する」を A6 で検証 (§5.2 参照、Konsist は Kotlin file 専用のため不可)
   - 自動起動フック: `epic-author` の Epic 起票直後、`implementation-workflow` Phase 7 (Merge 直後、Epic 配下 PR または B-A-C フェーズ項目に該当時のみ)、`pr-poller` の pending-fetch 再走査
   - 手動起動契機: 「ロードマップ更新」「進捗可視化」「着手順入れ替え」「障壁記録」「保留事項追加」等の人間 / 他 Skill からの指示
