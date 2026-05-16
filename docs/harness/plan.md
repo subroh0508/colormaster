@@ -99,16 +99,20 @@
 
 | 関心事 | 設計 |
 |---|---|
-| アイドル情報マスタ | リポジトリ内 SQLite (`data/idols.db`) + JSON snapshot (`data/idols.json`) + 同期 state (`data/.imasparql-sync-state.json`) |
-| ユーザーデータ (担当 / 推し) | Firestore 永続化を継続。ただし **Backend 経由化** (Firebase Admin SDK で代理アクセス) |
-| 認証 | Firebase Auth で取得した ID Token を Backend で検証 (firebase-admin SDK)。wasmJs では Firebase JS SDK が動かないため **Google Identity Services (GIS)** で直接 ID Token を取得する代替実装を用意 |
-| 既存 `core/network/{auth,firestore}` | Android / JS では当面残す。wasmJs では colormaster-api 経由に切替。最終的には全 target を colormaster-api 経由に統一 |
+| アイドル情報マスタ | リポジトリ内 SQLite (`data/idols.db`) + JSON snapshot (`data/idols.json`) + 同期 state (`data/.imasparql-sync-state.json`)。Container イメージに焼き込み、read-only。Litestream の対象外 |
+| ユーザーデータ (担当 / 推し) | **Backend (Cloud Run) 内蔵 SQLite `users.db`** に保存。Litestream で **Cloudflare R2** に WAL ストリーミングレプリケート + 起動時 restore。**リポジトリには絶対 commit しない** (`.gitignore` で強制) |
+| ユーザーデータの PII | **DB スキーマには `uid` (Google sub claim) のみ保存**。display name / email / picture は GIS userinfo endpoint から都度取得し、Backend memory に短時間 (TTL 15 分) キャッシュ。万一 `users.db` が漏洩しても個人特定が困難な状態を維持 |
+| 認証 | **全 target で Google Identity Services (GIS)** に統一。フロント (Android / iOS / wasmJs) で GIS から ID Token を取得 → Backend に Bearer 送信 → Backend で Google の JWKS で検証 → uid 抽出。Firebase Auth / firebase-admin SDK は使用しない |
+| Firebase 依存 | **完全廃止**。`dev.gitlive:firebase-{app,auth,firestore}` を依存から削除、`core/network/{auth,firestore}` は撤去または `core/network/colormaster-api` に統合 |
 
 採用根拠:
 
 - アイドル情報マスタを Git に乗せることで、Cloud Run コンテナはステートレスを保ち、im@sparql ダウン時もアプリは前回正常データで稼働可能。
 - 同期失敗を PR レビューでブロックでき、予期せぬデータ消失を防げる。
-- ユーザーデータの Firestore 利用は実績があるため継続。ただし Wasm 対応のため Backend 経由化は必須。
+- **Firebase Auth / Firestore は wasmJs 非対応**、また Firebase 無料枠の縮小傾向 (Cloud Storage の Spark plan 除外、Firestore の 3,000 DAU 制限) もあり、依存撤廃が中長期保守性に有利。
+- GIS による全 target 統一で SDK 依存が激減、Wasm 対応の expect/actual 切替が不要に。
+- ユーザーデータは Backend SQLite + Litestream で永続化、Cloud Run の ephemeral 性は R2 への WAL レプリケートでカバー。
+- PII 最小化により `users.db` 漏洩時の影響を構造的に下げる。
 
 ### 3.3 同期戦略 — upstream-driven sync
 
@@ -128,22 +132,22 @@
 
 ### 3.4 ホスティング
 
-| サービス | 採用 |
+| 役割 | 採用サービス |
 |---|---|
-| Backend | **Google Cloud Run** |
-| 代替候補 | Koyeb (ADR で記録) |
+| **Backend (Ktor / Kotlin/JVM)** | **Google Cloud Run** |
+| **静的配信 (wasmJs バンドル等)** | **Cloudflare Pages** |
+| **ユーザーデータ永続化 (Litestream バックアップ先)** | **Cloudflare R2** (S3 互換、egress fee 無料) |
+| 代替候補 (Backend) | Koyeb (ADR 0010 で記録) |
+| 不採用 (Backend) | Cloudflare Containers (Workers Paid plan $5/月必須でコスト劣後)、Fly.io (無料枠廃止)、Render (sleep)、Railway (実質有料) |
+| 不採用 (Hosting) | Firebase Hosting (10GB bandwidth 上限、Firebase 全廃方針に整合しない)、Vercel (Hobby は商用不可)、Netlify (Cloudflare Pages の方が unlimited bandwidth で優位) |
 
 採用根拠:
 
-- 無料枠が最も厚い (200 万 req / 360,000 vCPU-sec / 180,000 GiB-sec)。request-based billing で idle 課金なし。
-- Artifact Registry / Firebase Admin SDK / Google アカウント認証連携が容易。
-- 既存 Dockerfile (amazoncorretto:22 ベース) が Cloud Run 互換。
-
-不採用:
-
-- **Fly.io**: 無料枠が 2024 年に廃止された。
-- **Render**: 無料 Web Service は sleep するためコールドスタートが長い。
-- **Railway**: $5 初月 + $1/月クレジットで実質有料。
+- **Cloud Run**: 無料枠が最も厚い (200 万 req / 360,000 vCPU-sec / 180,000 GiB-sec)、request-based billing で idle 課金なし。既存 Dockerfile (amazoncorretto:22) がそのまま流用可能。
+- **Cloudflare Pages**: **無制限 bandwidth**、300+ edge locations、Git 連携でデプロイ自動化容易、Firebase Hosting より明確に優位。
+- **Cloudflare R2**: S3 互換 + zero egress、Litestream v0.5.0 で endpoint URL から自動検出 (追加設定ほぼ不要)、実例多数で本番運用レベル確立済。
+- **ハイブリッド構成のメリット**: Backend は GCP (Cloud Run の成熟した JVM サポート)、Storage / Hosting / CDN は Cloudflare (egress 無料・unlimited bandwidth)、両者のいいとこ取り。完全無料運用が可能 (個人プロジェクト規模)。
+- **Cloudflare Containers を不採用とした理由**: Containers は 2026/4/13 GA で技術的には Kotlin/JVM 動作可能だが、**Workers Paid plan $5/月 必須** で完全無料運用ができない (Cloud Run の Free tier に対して明確に劣る)。年 $60 の固定費は個人プロジェクトには重い。
 
 ### 3.5 Terraform / IaC
 
@@ -157,12 +161,84 @@
 | `js/app/` | wasmJs 移行先決定済み、即時撤去で後続リファクタが clean になる |
 | `js/material/` | `js/app` 専用、`js/app` 撤去と同時に削除 |
 | `kotlin-js-store/` | wasmJs 移行時に再生成 |
-| `.github/workflows/web-build-and-deploy.yml` | Web 配信は wasmJs 完成後に再開 |
+| `.github/workflows/web-build-and-deploy.yml` | Web 配信は wasmJs 完成後に再開 (Cloudflare Pages 経由で再構築) |
 | `public/` の js/app 専用ファイル | js/app 撤去と同時に整理。共有資源は `core/resources/` 等に退避 |
+| **`dev.gitlive:firebase-app/auth/firestore` 依存** | Firebase 完全廃止 (ADR 0012 / 0022 / 0023)。GIS + Backend SQLite + Cloudflare Pages に置換 |
+| **`core/network/auth`、`core/network/firestore`** | Firebase 廃止に伴い `core/network/colormaster-api` に統合または撤去 |
+| **`firebase.json`、`.firebaserc`** | Cloudflare Pages 移行後は不要 |
 
-Web 配信は wasmJs ターゲット完成まで **一時停止** することを許容する。
+Web 配信は wasmJs ターゲット完成まで **一時停止** することを許容し、再開時は **Cloudflare Pages** にデプロイする。
 
-### 3.7 テスト品質方針 — 三層指標の併用
+### 3.7 .gitignore に必須で含める項目
+
+PII 保護および credentials 漏洩防止のため、以下を `.gitignore` に明示する (ADR 0024 / 0025):
+
+```
+# ユーザーデータ (PII を含む、絶対 commit 禁止)
+data/users.db
+data/users.db-shm
+data/users.db-wal
+data/*.db-journal
+
+# Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+*-credentials.json
+.cloudflare/credentials
+.gcloud/credentials
+```
+
+Konsist で「`data/users.db*` がリポジトリに含まれていないこと」「`Dockerfile` 内で `COPY data/users.db` が存在しないこと」を機械検証する。
+
+### 3.8 PII 保護とアクセス制御
+
+ユーザーデータには Google アカウント由来の個人情報が含まれうるため、漏洩経路を構造的に塞ぐ多層防御を採用する (ADR 0024)。
+
+#### 漏洩経路と防御対応
+
+| # | 漏洩経路 | 防御 |
+|---|---|---|
+| 1 | リポジトリへの直接 commit | `.gitignore` で `data/users.db*` を除外 + Konsist 検証 |
+| 2 | Container イメージへの焼き込み | Dockerfile で `users.db` を COPY しない + Konsist 検証 |
+| 3 | R2 バケットからの読出し | バケットは **private**、Backend Container の R2 token のみ allow |
+| 4 | R2 token の流出 | Secrets で管理、TTL **90 日** で定期ローテーション (ADR 0025) |
+| 5 | リポジトリ内の credentials コミット | trufflehog による CI スキャン + `.gitignore` |
+| 6 | PR diff からの credentials 漏洩 | trufflehog の secret-scan workflow を全 PR に発火 |
+| 7 | Backend API 経由で他人のデータ取得 | ID Token 検証 + `uid` フィルタ、Konsist で `/api/me/*` ハンドラの `requireUid()` 呼出を強制 |
+| 8 | ログ / モニタリングへの PII 出力 | rules/logging.md + rules/pii.md で禁止、detekt カスタムルールで `Logger.*(user.email/...)` 検出 |
+| 9 | エラー応答に PII 含める | エラーレスポンス schema に PII フィールド禁止、Konsist 検証 |
+| 10 | GIS から取得した userinfo の過剰保存 | DB スキーマに保存するのは `uid` のみ (display name / email は都度取得 + memory cache TTL 15 分) |
+| 11 | GCP / Cloudflare コンソールへのアクセス | リリース権限を持つ単一 owner ロールのみ (ADR 0026) |
+| 12 | `pr-retrospective` / KPT learning への PII 混入 | rules/pii.md で Skill 出力前の redaction 強制、Konsist でテスト fixture の非 `@example.com` domain 検出 |
+| 13 | `code-reviewer` が CI ログから PII を漏らす | aspect ごとに PII redaction の前処理を必須化 |
+
+#### PII の定義
+
+メールアドレス / Google Account ID (sub claim 以外) / Display Name / プロフィール画像 URL / IP アドレス。`uid` (Google sub claim) は内部識別子として扱い PII 同等の取扱いとする。
+
+#### 権限ロール (ADR 0026)
+
+- **owner**: 全権限、Secrets ローテーション、GCP / Cloudflare コンソール operator、master マージ権限
+- 当面は owner ロール 1 名のみで運用 (個人プロジェクト想定)
+- 将来複数人体制になったら `developer` / `releaser` を別 ADR 改訂で追加
+
+#### Skill ループにおける PII 配慮
+
+`pr-retrospective` / `code-reviewer` / `harness-meta` は、CI ログ・diff・PR コメント等から PII を間接的に拾う可能性があるため、出力前に必ず redaction フェーズを通す。テストフィクスチャは `@example.com` ドメインのみ使用し、Konsist で機械検証する。
+
+#### Secrets 管理 (ADR 0025)
+
+- ローカル: `.env.local` (`.gitignore` で除外)
+- CI/CD: **GitHub Secrets**
+- Runtime: **Cloud Run Secret Manager** (R2 access key, GIS client secret 等)
+- TTL: R2 token は **90 日**、定期ローテーション (`docs/runbooks/secrets-rotation.md` に履歴を記録)
+- Skill は secret の値を出力に含めない (redaction 必須)
+
+### 3.9 テスト品質方針 — 三層指標の併用
 
 AI による自動テスト生成を前提とし、テスト品質は **3 つの独立した指標** で多層検証する。それぞれが異なるアウトカムを目指し、互いに代替不可能。
 
@@ -285,6 +361,11 @@ docs/
     0019-implementation-workflow.md
     0020-code-review-aspects-coordinator.md
     0021-template-language-japanese.md
+    0022-gis-unified-authentication.md
+    0023-cloudflare-pages-and-r2.md
+    0024-pii-protection-access-control.md
+    0025-secrets-management-policy.md
+    0026-permission-roles-owner-only.md
   epics/                        ─ 複数 PR の取り組み (1 epic = 1 ディレクトリ)
     INDEX.md
     template/
@@ -425,9 +506,16 @@ Epic 配下で複数 PR を出す場合の個別 Plan は、`docs/plans/` に一
     # 同期 / Backend
     sync-job.md
     sqlite-data-file.md
-    backend-auth.md
+    backend-auth.md             ─ GIS ID Token 検証 + JWKS + uid 抽出 規約
     cloud-run-deploy.md
     removed-modules.md
+    # セキュリティ / 個人情報
+    pii.md                      ─ ★新規 PII の定義・最小化・redaction 強制
+    secrets.md                  ─ ★新規 Secrets 管理 (.env / GitHub Secrets / Secret Manager)
+    db-protection.md            ─ ★新規 users.db の commit / イメージ焼込み禁止、R2 private、access policy
+    no-firebase.md              ─ ★新規 (旧 firebase-boundary.md を改名) Firebase 系 import 禁止
+    cloudflare-pages.md         ─ ★新規 Cloudflare Pages デプロイ規約
+    r2-litestream.md            ─ ★新規 Litestream replicate / restore、R2 endpoint、TTL ローテーション
 ```
 
 ### 5.1 ルール参照の階層構造
@@ -716,7 +804,7 @@ completed_at: null
 
 | # | 内容 |
 |---|---|
-| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer}` の最小版 / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects}.md` 骨格 / `docs/{adr, epics, plans, harness/learnings, runbooks, requirements, specifications}` スケルトン (テンプレートは全て**日本語**) / EPIC-000-harness-foundation 起票。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動するため) |
+| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer}` の最小版 / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection}.md` 骨格 / `docs/{adr, epics, plans, harness/learnings, runbooks, requirements, specifications}` スケルトン (テンプレートは全て**日本語**) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)**。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動するため) |
 
 B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Skill 駆動 + KPT 生成の対象となる。`pr-poller` はローカル Claude Code 起動時に手動起動可能とし、A4 で `CronCreate` / `ScheduleWakeup` による自動化を完成させる。
 
@@ -726,12 +814,12 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 
 | # | 単位 | 起動 Skill | 内容 |
 |---|---|---|---|
-| **A1** | Plan | `harness-bootstrap` | ADR 0001-0021 を一括起草する PR (全て日本語) |
+| **A1** | Plan | `harness-bootstrap` | ADR 0001-0026 を一括起草する PR (全て日本語) |
 | **A2** | Plan | `harness-bootstrap` | `.claude/rules/*` 全ファイル + `docs/` 拡充 (architecture/, requirements/, specifications/ テンプレ等) |
 | **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** の本格版へのアップグレード)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 6 aspect の binary eval checklist + coordinator を完全実装。マージ後、`harness-bootstrap` は `archived/` へ |
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
-| **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル) |
-| **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook) |
+| **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル、**`dev.gitlive:firebase-*` 依存、`core/network/{auth,firestore}`、`firebase.json`、`.firebaserc`**) |
+| **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook + **trufflehog による secret-scan workflow**)。Konsist で「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「`feature/**`・`core/**` で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラに `requireUid()` 強制」を検証 |
 | **A7** | Plan | `feature-request` | **三層テスト品質基盤の導入**:<br>● **指標 A**: Kover 導入 + `koverVerify minValue=100` 必達化 (ADR 0014 除外列挙のみ許可)<br>● **指標 B**: `@Spec` annotation の Kotlin 定義 + Konsist による Spec coverage 検証ルール導入 (ADR 0017、`.claude/rules/spec-traceability.md`)<br>● **指標 C**: PITest + pitest-kotlin + gradle-pitest-plugin 導入。JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。PR コメントで mutation score 可視化 (ADR 0016、`.claude/rules/mutation-testing.md`)<br>本 PR 時点では既存コードの未充足は除外リストで一旦逃がし、A9 完了までに全モジュールに展開する旨を rules に明記 |
 | **A8** | Plan | `feature-request` | **im@sparql ローカル Docker 環境構築** (Apache Jena Fuseki + RDF データ初期投入スクリプト + `docker-compose.yml` + integration test 基盤 + Testcontainers 規約)。`docs/runbooks/local-imasparql.md` を整備し、backend のローカル開発・テストを Fuseki に対して実行できる状態にする |
 | **A9** | **EPIC-A9** | `refactor` | **既存コード全体に対する三層指標の達成**。モジュールごとに段階 Plan (PLAN-NNN × 多数) を発行:<br>● 指標 A: line / branch 100% カバレッジを全モジュールで達成<br>● 指標 B: 既存機能の Acceptance criteria を `docs/specifications/<id>.md` に逆生成、テストに `@Spec` annotation を付与、Spec coverage 100% 達成<br>● 指標 C: 各モジュールの初回 mutation score をベースラインとして記録、明らかな tautological テストは learnings に蓄積し改善<br>Konsist の「実装クラス ⇄ テストクラス対応」検証を本 EPIC 完了時に enforce。backend/server / android/app / core/* / data/ 全モジュールが対象。A7 で導入した除外リストは ADR 0014 列挙分のみに整理する |
@@ -755,12 +843,12 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | C2 | Plan | `harness-meta` | C1 KPT を受けたハーネス改修 |
 | C3 | **EPIC-001** | `refactor` | フィーチャ再編 + Decompose 撤去 + CMP Navigation 3 + 共通 ViewModel |
 | C4 | **EPIC-002** | `refactor` | i18n 移植 (`public/locale/` → compose-multiplatform-resources) |
-| C5 | **EPIC-003** | `feature-request` | Backend 強化 (`colormaster-api` モジュール、Firebase Admin SDK、ID Token 検証、`/api/me/*` エンドポイント) |
+| C5 | **EPIC-003** | `feature-request` | Backend 強化 (`colormaster-api` モジュール、**GIS ID Token 検証 (JWKS)**、**Backend 内蔵 SQLite に `users.db` 追加 (uid のみ保存)**、**Litestream + R2 レプリケート**、`/api/me/*` エンドポイント、PII redaction、`requireUid()` ヘルパ) |
 | C6 | **EPIC-004** | `feature-request` | upstream-driven 同期パイプライン (`imas/imasparql` SHA 監視、日次 cron、初期データ投入) |
-| C7 | Plan | `feature-request` | Cloud Run デプロイ (GitHub Actions + gcloud CLI、Artifact Registry) |
-| C8 | **EPIC-005** | `feature-request` | KMP - iOS ターゲット有効化 + Xcode プロジェクト雛形 |
-| C9 | **EPIC-006** | `feature-request` | KMP - wasmJs + GIS 認証代替 + Firebase 切り離し完成 |
-| C10 | Plan | `feature-request` | Web 配信再開 (wasmJs ビルドを Firebase Hosting にデプロイ) |
+| C7 | Plan | `feature-request` | **Cloud Run デプロイ + Cloudflare Pages デプロイ + R2 バケット作成** (GitHub Actions + gcloud CLI + wrangler / Pages CLI、Artifact Registry、Secret Manager 連携、R2 token のローテーション runbook) |
+| C8 | **EPIC-005** | `feature-request` | KMP - iOS ターゲット有効化 + Xcode プロジェクト雛形 + GIS iOS 実装 |
+| C9 | **EPIC-006** | `feature-request` | KMP - wasmJs ターゲット有効化 + GIS wasmJs 実装 (Firebase 切り離しは EPIC-003 で完了済み) |
+| C10 | Plan | `feature-request` | Web 配信再開 (**wasmJs ビルドを Cloudflare Pages にデプロイ**) |
 
 旧計画にあった「C5 im@sparql ローカル Docker」「C12 テストカバレッジ段階引き上げ」は本改訂で **Phase A (A7-A9)** に前倒した結果、Phase C からは消えている。
 
@@ -768,9 +856,9 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 
 - C3 を先頭に: 以降の実装が `feature/*` 構造前提になる。
 - C4 を C3 直後に: 新 `feature/*` に composeResources を組み込みたい。
-- C5 (Backend 強化) を C6/C7/C9 より前に: Firestore 経由化エンドポイントが揃わないと Cloud Run と wasmJs の意味が薄い。Backend integration test は A8 で整備済の Fuseki 環境を利用。
-- C6 (同期パイプライン) を C7 (Cloud Run デプロイ) より前に: `data/idols.db` 初期データがリポジトリに乗らないと Cloud Run コンテナイメージが空になる。
-- C8 (iOS) を C9 (wasmJs) より前に: iOS は Firebase JS SDK の制約に当たらず、先に iOS でアーキ全体を検証してから wasmJs の重い切り離しに進む方が安全。
+- C5 (Backend 強化) を C6/C7/C8/C9 より前に: **GIS 検証エンドポイントと Backend SQLite (users.db + Litestream/R2) が揃わないと Cloud Run デプロイと iOS/wasmJs クライアントの開発が進まない**。Backend integration test は A8 で整備済の Fuseki 環境 + Testcontainers R2 emulator (MinIO) を利用。
+- C6 (同期パイプライン) を C7 (デプロイ) より前に: `data/idols.db` 初期データがリポジトリに乗らないと Cloud Run コンテナイメージが空になる。
+- C8 (iOS) を C9 (wasmJs) より前に: 先に iOS でアーキ全体を検証してから wasmJs の重い切替に進む方が安全。**Firebase 切り離しは C5 で既に完了している** ため、C9 は wasmJs ターゲット有効化に集中可能。
 
 ---
 
@@ -788,7 +876,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 
 ## 8. テストカバレッジ戦略
 
-テスト品質は **3.7 節で定義した三層指標** で多層検証する。詳細は 3.7 節を参照。本節では運用面の補足を記す。
+テスト品質は **3.9 節で定義した三層指標** で多層検証する。詳細は 3.9 節を参照。本節では運用面の補足を記す。
 
 - **指標 A (Line/Branch Coverage 100%)**: Kover を導入、`./gradlew check` に `koverXmlReport` / `koverVerify` を組み込む。`koverVerify` の minBounds: `minValue = 100`、counter = `LINE` と `BRANCH` の両方を必達ゲートとする。除外対象は ADR 0014 で限定列挙のみ、除外追加は ADR 改訂が必須。
 - **指標 B (Spec Coverage 100%)**: `@Spec("SPEC-NNN-N")` annotation をテスト関数に付与し、`docs/specifications/<id>.md` の Acceptance criteria と双方向対応させる。Konsist で「全 Acceptance criteria に対応する `@Spec` が存在する」「`@Spec` ID が specifications に実在する」を機械検証。詳細は ADR 0017。
@@ -804,11 +892,11 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 
 | ID | リスク / 論点 | 暫定方針 |
 |---|---|---|
-| R-1 | iOS Compose Multiplatform は Stable 到達済みだが、scroll physics 等の挙動差異が残る可能性 | C9 で限定機能から検証、ADR に「実験的採用」を残す |
-| R-2 | wasmJs での Firebase Auth 代替 (GIS) は実装パターンの公式リファレンスが薄い | C10 で spike PR を最初に切る。Open question として EPIC-006 に記録 |
+| R-1 | iOS Compose Multiplatform は Stable 到達済みだが、scroll physics 等の挙動差異が残る可能性 | C8 で限定機能から検証、ADR に「実験的採用」を残す |
+| R-2 | wasmJs での GIS 実装パターンの公式リファレンスが薄い | C9 で spike PR を最初に切る。Open question として EPIC-006 に記録 |
 | R-3 | `data/idols.db` のバイナリ管理によるリポジトリサイズ膨張 | アイドル情報は数百〜千行のため当面は通常 commit。MB 級になったら Git LFS 移行を別 ADR で |
 | R-4 | Cloud Run JVM コールドスタート | Phase C 完了後に GraalVM Native Image を別 ADR で検討 |
-| R-7 | AI 自動生成テストが「網羅性はあるが意味のないテスト」になる可能性 | 三層指標で多層対処: 指標 B (Spec coverage) で仕様トレーサビリティを強制、指標 C (Mutation score) で意味的強度を計測可視化、Konsist メタ規約 + KPT 学習 + `kotlin-test.md` 強化のフォールバックループで担保 (3.7 節参照) |
+| R-7 | AI 自動生成テストが「網羅性はあるが意味のないテスト」になる可能性 | 三層指標で多層対処: 指標 B (Spec coverage) で仕様トレーサビリティを強制、指標 C (Mutation score) で意味的強度を計測可視化、Konsist メタ規約 + KPT 学習 + `kotlin-test.md` 強化のフォールバックループで担保 (3.9 節参照) |
 | R-8 | A9 (既存コード三層指標達成 EPIC) の作業量が想定を超える可能性 | モジュール単位で Plan を切り、PR を細粒度に分割。完了見込みが立たない場合は除外対象の見直しを ADR 改訂で対応 (ただし安易な除外追加は禁止)。指標 C は初回 baseline 記録のみで完了とし、改善は継続課題に |
 | R-9 | Fuseki に投入する RDF データの著作権・ライセンス確認 | A8 でデータ取得元 (`imas/imasparql` リポジトリ) のライセンスを確認し ADR 0015 に明記。条件次第ではダミー RDF + テスト専用データ構成にする |
 | R-10 | PITest が KMP の JS/Wasm/iOS actual 実装を mutate できない | これらは expect/actual の薄い層で本質的にロジックが薄いため実害が小さいと判断。Konsist (テスト存在) と通常単体テストで担保。将来 MutFlow (K2 compiler plugin、KMP 全 target 適合の可能性) を別 ADR で評価可能性として記録 (ADR 0016) |
@@ -817,6 +905,11 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-13 | code-reviewer の aspect が、code を書いた Generator と同じバイアスを共有するリスク | Anthropic Evaluator 独立性原則に従い、aspect ごとに別の system prompt を持たせる (`code-reviewer-aspects.md` に明文化)。さらに各 aspect は binary yes/no eval checklist を最低 5 項目持ち、yes/no 判定を強制 |
 | R-14 | implementation-workflow の fix loop が無限に回るリスク | 上限 3 回 (デフォルト) で停止し、Plan に `status: blocked` を記録、人間に通知 (`implementation-workflow.md` に明文化) |
 | R-15 | code-reviewer の自動レビューに人間が依存しすぎ、本質的な見落としを許すリスク | GitHub Agentic Workflows 原則「人間 approve なしに merge しない」を必達。code-reviewer の Ready 判定は merge を許可するだけで自動 merge しない。人間レビュアーには「code-reviewer の指摘で十分か?」を考えさせる文言を PR コメントに含める |
+| R-17 | Cloud Run の JVM Container は Cold Start に数秒かかる可能性 | C7 で cold start 計測、許容不可なら GraalVM Native Image 化を別 ADR で検討。read-heavy API なので初回のみ影響、トラフィック想定では問題小さい見込み |
+| R-18 | R2 + Litestream の実環境動作未検証 | C5 内で Testcontainers の MinIO (S3 互換) と本番 R2 の両方で integration test を実施。runbook `docs/runbooks/r2-litestream.md` に手順を残す |
+| R-19 | R2 token 流出による `users.db` 漏洩 | R2 bucket private + bucket policy で Backend Service Token のみ allow、token TTL 90 日で定期ローテーション (ADR 0025)、漏洩時のローテーション runbook を `docs/runbooks/secrets-rotation.md` に整備。DB スキーマで PII を `uid` のみに最小化することで漏洩時の影響を構造的に下げる |
+| R-20 | PR diff / リポジトリ履歴に PII / credentials が混入するリスク | trufflehog による全 PR 差分のスキャン (A6 で導入)、`.gitignore` で `data/users.db*` / `.env*` / `*-credentials.json` 等を除外、Konsist で `data/users.db*` の追跡禁止を検証 |
+| R-21 | Skill (code-reviewer / pr-retrospective / harness-meta) が PII を出力に転載するリスク | `.claude/rules/pii.md` で Skill 出力前の redaction を強制、Konsist でテストフィクスチャの `@example.com` ドメイン以外の検出、Skill 設計で CI ログ等の取り込み時に redaction フェーズを必須化 |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
 | R-6 | harness-bootstrap が万能になりすぎると専用 Skill 化が遅れる | A3 完了で必ず `archived/` へ移動、CLAUDE.md からも参照を外す |
 
@@ -828,12 +921,17 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 
 - アーキテクチャは Compose Multiplatform + 共通 ViewModel + Navigation 3。Decompose は撤去。
 - i18n は compose-multiplatform-resources。
-- アイドル情報はリポジトリ内 SQLite + JSON snapshot、ユーザーデータは Backend 経由の Firestore。
+- アイドル情報はリポジトリ内 SQLite + JSON snapshot、Container イメージ焼込み、read-only、Litestream 対象外。
+- **ユーザーデータは Backend (Cloud Run) 内蔵 SQLite `users.db`、Litestream で Cloudflare R2 に WAL レプリケート + 起動時 restore**。リポジトリには絶対 commit しない (`.gitignore` 強制)。
+- **DB スキーマには `uid` (Google sub claim) のみ保存**。display name / email / picture は GIS userinfo endpoint から都度取得 + memory cache TTL 15 分。
 - 同期は `imas/imasparql` SHA 監視、1 日 1 回。差分時のみ PR 自動作成。
-- 認証は Firebase Auth + GIS (wasmJs 代替)、Backend で ID Token 検証。
-- Backend は Cloud Run。Terraform 不使用。
+- **認証は全 target で GIS (Google Identity Services) に統一**。フロントが ID Token 取得 → Backend が JWKS で検証 → uid 抽出。Firebase Auth は使用しない。
+- **Firebase 依存は完全廃止** (`dev.gitlive:firebase-{app,auth,firestore}`、`core/network/{auth,firestore}`、`firebase.json`、`.firebaserc` を全て撤去)。
+- **Backend は Cloud Run**、**静的配信は Cloudflare Pages**、**Litestream バックアップ先は Cloudflare R2** のハイブリッド構成。完全無料運用が可能。
+- Cloudflare Containers は不採用 (Workers Paid plan $5/月必須でコスト劣後)。
+- Terraform 不使用。デプロイは GitHub Actions + gcloud CLI + wrangler。
 - `js/app` / `js/material` / `kotlin-js-store` / `web-build-and-deploy.yml` は即時撤去。
-- Web 配信は wasmJs 完成まで一時停止を許容。
+- Web 配信は wasmJs 完成まで一時停止を許容、再開は **Cloudflare Pages** にデプロイ。
 - 大規模な取り組みは Epic (`docs/epics/EPIC-NNN-<slug>/`)、単一 PR は Plan (`docs/plans/PLAN-NNN-*.md`)。
 - Epic / Plan は独立採番。Epic 紐付き Plan も `docs/plans/` に一元化。
 - Plan の Notes は自由記述、蓄積したら template に反映。
@@ -858,6 +956,14 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
   - 全 Markdown テンプレート (ADR / Epic / Plan / 要件 / 仕様 / runbook / learning / PR description / レビューコメント等) は **日本語見出し・日本語例文** で記述 (ADR 0021)
   - 例外: YAML frontmatter のキー、ステータス値、コマンド・パス・コード断片、識別子 (SPEC-ID / EPIC-NNN / PLAN-NNN / ADR 番号等) は英語のまま
   - Konsist で「frontmatter 外の見出しは日本語必須」を機械検証
+- **PII 保護とアクセス制御**:
+  - PII の定義: メアド / Google Account ID / Display Name / プロフィール画像 URL / IP アドレス。`uid` は内部識別子だが PII 同等の取扱
+  - DB に保存する PII は `uid` のみ、それ以外は GIS userinfo から都度取得 + memory cache TTL 15 分
+  - `.gitignore` で `data/users.db*` / `.env*` / `*-credentials.json` 等を除外、Konsist で機械検証
+  - **trufflehog** による secret-scan workflow を A6 で導入、全 PR 差分をスキャン
+  - **R2 token TTL 90 日 + 定期ローテーション** (ADR 0025)、漏洩時の runbook を整備
+  - Skill (code-reviewer / pr-retrospective / harness-meta) は出力前に PII redaction フェーズを通す
+  - 権限ロールは **当面 owner 1 名のみ** (ADR 0026)、複数人体制になったら別 ADR で `developer` / `releaser` を追加
 - テスト品質は **三層指標** で多層検証する:
   - 指標 A: **Line / Branch coverage 100%** (テスト存在の保証、CI 必達ゲート、`koverVerify minValue=100`)
   - 指標 B: **Spec coverage 100%** (仕様適合性の保証、`@Spec` annotation + Konsist 検証で CI 必達ゲート)
