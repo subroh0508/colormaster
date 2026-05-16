@@ -653,20 +653,40 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 
 判断フロー (`docs/adr/README.md` にも記載):
 
-```
-新しい決定が発生
-   │
-   ├─ ADR 起票基準の 2 項目以上を満たす? ──── Yes ──→ ADR を起こす (adr-author Skill)
-   │
-   ├─ コーディング/スタイル/命名規約? ───── Yes ──→ .claude/rules/*.md に追記
-   │
-   ├─ Epic 内の細粒度な保留→解決? ─────── Yes ──→ Epic の open-questions / decisions.md
-   │
-   ├─ 1 PR で完結する判断? ────────────── Yes ──→ Plan or PR description
-   │
-   ├─ 運用手順? ──────────────────────── Yes ──→ docs/runbooks/
-   │
-   └─ PR ごとの学びや改善案? ─────────── Yes ──→ docs/harness/learnings/ (pr-retrospective)
+```mermaid
+flowchart TD
+    Start([新しい決定が発生])
+    Q1{ADR 起票基準の<br/>2 項目以上を満たす?}
+    Q2{コーディング / スタイル /<br/>命名規約?}
+    Q3{Epic 内の<br/>細粒度な保留 → 解決?}
+    Q4{1 PR で完結する判断?}
+    Q5{運用手順?}
+    Q6{PR ごとの学び /<br/>改善案?}
+    Default[/その他 → 一旦 Plan の<br/>メモに残し再評価/]
+
+    ADR[ADR を起票<br/>adr-author Skill]
+    Rules[.claude/rules/*.md に追記]
+    Epic[Epic の open-questions /<br/>decisions.md]
+    Plan[Plan or PR description]
+    Runbook[docs/runbooks/]
+    Learn[docs/harness/learnings/<br/>pr-retrospective]
+
+    Start --> Q1
+    Q1 -->|Yes| ADR
+    Q1 -->|No| Q2
+    Q2 -->|Yes| Rules
+    Q2 -->|No| Q3
+    Q3 -->|Yes| Epic
+    Q3 -->|No| Q4
+    Q4 -->|Yes| Plan
+    Q4 -->|No| Q5
+    Q5 -->|Yes| Runbook
+    Q5 -->|No| Q6
+    Q6 -->|Yes| Learn
+    Q6 -->|No| Default
+
+    classDef destination fill:#f5f5f5,stroke:#555,stroke-width:1px;
+    class ADR,Rules,Epic,Plan,Runbook,Learn,Default destination;
 ```
 
 #### `.claude/rules/adr.md` の責務
@@ -961,92 +981,80 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 
 Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の specialized reviewer + coordinator + GitHub Agentic Workflows の human-in-the-loop に準拠した 6 段階ループ。
 
-```
-┌── ① Spec Gen フェーズ ───────────────────────────────────┐
-│ [feature-request / bug-fix / refactor / dependency-upgrade] │
-│    → 要件/基本設計/詳細設計 生成 (docs/requirements,        │
-│      specifications)                                       │
-│    → ADR (必要時) / Plan / Epic 起票                       │
-│    実装は次のフェーズへ                                     │
-└────────────────────────────────────────────────────────────┘
-                       │
-                       ▼ Plan / Epic を引き継ぐ
-┌── ② Implementation フェーズ ─────────────────────────────┐
-│ [implementation-workflow]  (オーケストレーター)            │
-│   Phase 0: Worktree 作成 (git worktree add、以降の処理は   │
-│            この worktree 内で完結、複数セッション並行可)    │
-│   Phase 1: 要件/基本設計/詳細設計 Markdown を Read         │
-│   Phase 2: Spec 整合性チェック (SPEC-ID 採番確認)           │
-│   Phase 3: rules-index → 実装 + Lint + Test (fix loop ≤3) │
-│   Phase 4: Self-Verification (三層指標 + rules)            │
-│   Phase 5: Draft PR 作成 (gh pr create --draft)            │
-│   Skill 実行ログを .claude/logs/ に逐次追記                │
-└────────────────────────────────────────────────────────────┘
-                       │
-                       ▼ (Generator と独立した Evaluator を呼ぶ)
-┌── ③ Evaluation フェーズ ─────────────────────────────────┐
-│ [code-reviewer]  (独立 Evaluator)                          │
-│   spec-conformance / test-quality / architecture /         │
-│   security / performance / code-quality を並列実行         │
-│   Coordinator が日本語の構造化レビューコメントを PR に post │
-│   Merge readiness を判定                                    │
-│   - Critical findings = 0 → Ready                          │
-│   - ある場合 → implementation-workflow Phase 3 に戻る       │
-└────────────────────────────────────────────────────────────┘
-                       │
-                       ▼ Ready で人間 approve を待つ
-┌── ④ Merge フェーズ ───────────────────────────────────────┐
-│ [implementation-workflow Phase 7]                          │
-│   CI green + 全 aspect pass + 人間 approve                 │
-│   → gh pr merge --squash                                   │
-│   Auto-merge は禁止 (GitHub Agentic Workflows 原則)        │
-│ [implementation-workflow Phase 8]                          │
-│   pr-poller 即時起動 + roadmap-tracker で完了根拠登録      │
-│ [implementation-workflow Phase 9]                          │
-│   Worktree 削除 (git branch --merged 確認 →               │
-│   git worktree remove + git branch -d)                     │
-└────────────────────────────────────────────────────────────┘
-                       │
-                       ▼ Phase 8 で即時起動
-┌── ⑤ Retrospection フェーズ ──────────────────────────────┐
-│ [pr-poller]                                                │
-│   gh pr list --state closed,merged                         │
-│   未処理 PR を検出 (learning ファイルが未生成)             │
-│       │                                                    │
-│       ▼                                                    │
-│ [pr-retrospective]                                         │
-│   PR 情報・CI・Skill ログ・指標差分を収集                  │
-│   docs/harness/learnings/YYYY-MM-DD-pr-N.md を生成         │
-│   (日本語の構造化フォーマット)                              │
-│   harness/learnings-batch-YYYY-WW ブランチに集約           │
-└────────────────────────────────────────────────────────────┘
-                       │
-                       ▼ (一定期間経過 / 件数閾値で pr-poller が起動)
-┌── ⑥ Meta フェーズ (内部 + 外部の二系統) ────────────────┐
-│ [harness-meta] (内部 KPT 駆動、週次 cron + 閾値 + 手動)    │
-│   docs/harness/learnings/*.md を直接 Read                  │
-│   Suggested harness changes を集計・優先度付け             │
-│   1 改修テーマ = 1 PR で複数起票 (テーマ別粒度)             │
-│   見送り提案: 元 learning ファイルに feedback セクション追記 │
-│   撤去候補: 月次まとめて cleanup PR を別建てで起票          │
-│                                                            │
-│ [harness-evolution] (外部研究駆動、手動起動のみ)           │
-│   WebSearch/WebFetch + Context7 MCP で外部ベストプラクティス取得 │
-│   既存 ハーネスと gap 分析 → docs/harness/evolution-proposals/ 出力 │
-│   重要案は example-skills:skill-creator 経由で Skill scaffold │
-│   または Plan/EPIC 起票 (人間 approve 必須)                 │
-│                                                            │
-│ [skill-creator] (ユーザースコープ example-skills:skill-creator) │
-│   新規/改修 Skill の SKILL.md scaffolding、Gotchas 必須化、 │
-│   Anthropic Complete Guide + 100-point rubric 準拠         │
-└────────────────────────────────────────────────────────────┘
-                       │
-                       ▼
-                改修 PR 群 → ① Spec Gen フェーズへ
-                (再帰的セルフ改善ループ完成)
+#### 5.4.1 全体フロー
+
+```mermaid
+flowchart TD
+    SpecGen["① Spec Gen<br/>要件 / 基本・詳細設計 + ADR + Plan/Epic 起票"]
+    Impl["② Implementation<br/>Phase 0-5 (worktree → 実装 → Draft PR)"]
+    Eval["③ Evaluation<br/>8 aspect 並列レビュー + Coordinator"]
+    Merge["④ Merge<br/>Phase 6-9 (review → approve → squash → worktree 削除)"]
+    Retro["⑤ Retrospection<br/>pr-poller / pr-retrospective (learning 生成)"]
+    Meta["⑥ Meta (二系統)<br/>harness-meta (内部) + harness-evolution (外部)"]
+
+    SpecGen -->|Plan / Epic 引継| Impl
+    Impl -->|Draft PR 完成| Eval
+    Eval -->|Critical = 0 → Ready| Merge
+    Eval -.->|Critical あり (fix loop ≤ 3)| Impl
+    Merge -->|Phase 8 で即時起動| Retro
+    Retro -.->|閾値到達 / 週次 / 手動| Meta
+    Meta -->|改修 PR 群| SpecGen
+
+    classDef phase fill:#f5f5f5,stroke:#555,stroke-width:1px;
+    class SpecGen,Impl,Eval,Merge,Retro,Meta phase;
 ```
 
-ポイント:
+#### 5.4.2 各フェーズの責務
+
+##### ① Spec Gen フェーズ
+
+- **Skill**: `feature-request` / `bug-fix` / `refactor` / `dependency-upgrade`
+- **入力**: ユーザー指示 / Issue / 障害報告 / Renovate ラベル PR
+- **出力**: `docs/requirements/REQ-NNN-<slug>.md`、`docs/specifications/basic/SPEC-NNN-<slug>.md`、必要なら `docs/specifications/detail/SPEC-NNN-<slug>.md`、ADR (必要時)、Plan / Epic 起票
+- **責務境界**: 起票のみ、実装はしない (② Implementation にバトンタッチ)
+
+##### ② Implementation フェーズ
+
+- **Skill**: `implementation-workflow` (オーケストレーター、10 フェーズ構成、§5.3 参照)
+- **Phase 0**: Worktree 作成 (`git worktree add ../<repo-name>-worktrees/<branch-slug>`)
+- **Phase 1**: 要件 / 基本設計 / 詳細設計 Markdown を Read
+- **Phase 2**: Spec 整合性チェック (SPEC-ID 採番確認)
+- **Phase 3**: rules-index → 実装 + Lint + Test (fix loop ≤ 3 回)
+- **Phase 4**: Self-Verification (三層指標 + rules)
+- **Phase 5**: Draft PR 作成 (`gh pr create --draft`)
+- **ログ**: Skill 実行ログを `.claude/logs/` に逐次追記
+
+##### ③ Evaluation フェーズ
+
+- **Skill**: `code-reviewer` (独立 Evaluator、Generator と system prompt 分離)
+- **並列 aspect (8 つ)**: spec-conformance / test-quality / architecture / security / performance / code-quality / visual-regression / design-tokens (後 2 つは A10 完了後に有効化)
+- **Coordinator**: 日本語の構造化レビューコメントを PR に post、Merge readiness を判定
+- **遷移条件**:
+  - Critical findings = 0 → Ready (④ Merge へ)
+  - Critical findings あり → ② Phase 3 に戻る (fix loop)
+
+##### ④ Merge フェーズ
+
+- **Skill**: `implementation-workflow` Phase 6-9
+- **Phase 6**: `code-reviewer` 呼出 (③ Evaluation を駆動)
+- **Phase 7**: CI green + 全 aspect pass + 人間 approve → `gh pr merge --squash` (auto-merge 禁止、GitHub Agentic Workflows 原則)
+- **Phase 8**: `pr-poller` 即時起動 + `roadmap-tracker` で完了根拠登録
+- **Phase 9**: `git branch --merged main` 確認 → `git worktree remove` + `git branch -d` (未マージなら停止し人間に通知)
+
+##### ⑤ Retrospection フェーズ
+
+- **Skill**: `pr-poller` → `pr-retrospective`
+- **`pr-poller`**: `gh pr list --state closed,merged` → 未処理 PR (learning ファイル未生成) を検出
+- **`pr-retrospective`**: PR 情報 / CI / Skill ログ / 三層指標差分を収集、`docs/harness/learnings/YYYY-MM-DD-pr-N.md` を生成 (日本語の構造化フォーマット)、`harness/learnings-batch-YYYY-WW` ブランチに集約
+
+##### ⑥ Meta フェーズ (二系統)
+
+- **`harness-meta`** (内部 KPT 駆動、週次 cron + 閾値 + 手動): `docs/harness/learnings/*.md` を直接 Read、Suggested harness changes を集計・優先度付け、1 改修テーマ = 1 PR で複数起票。見送り提案は元 learning ファイルに feedback セクション追記、撤去候補は月次まとめて cleanup PR
+- **`harness-evolution`** (外部研究駆動、手動起動のみ): WebSearch / WebFetch + Context7 MCP で外部ベストプラクティス取得、既存ハーネスと gap 分析 → `docs/harness/evolution-proposals/` 出力、重要案は `example-skills:skill-creator` 経由で Skill scaffold または Plan / EPIC 起票 (人間 approve 必須)
+- **`example-skills:skill-creator`** (ユーザースコープ): 新規 / 改修 Skill の SKILL.md scaffolding、Gotchas 必須化、Anthropic Complete Guide + 100-point rubric 準拠
+- **出力**: 改修 PR 群が ① Spec Gen フェーズに戻り、再帰的セルフ改善ループを完成させる
+
+#### 5.4.3 ポイント
 
 - **6 フェーズで責務分離**: Spec Gen / Implementation / Evaluation / Merge / Retrospection / Meta。各フェーズに専用 Skill (or オーケストレーター) を割り当て
 - **Meta フェーズは二系統**: 内部 (harness-meta、KPT 駆動) と 外部 (harness-evolution、外部研究駆動、**手動起動のみ**) を補完併用。Skill 作成は **`example-skills:skill-creator`** (Claude Code ユーザースコープ) を経由
