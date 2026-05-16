@@ -655,21 +655,21 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 
 ```mermaid
 flowchart TD
-    Start([新しい決定が発生])
-    Q1{ADR 起票基準の<br/>2 項目以上を満たす?}
-    Q2{コーディング / スタイル /<br/>命名規約?}
-    Q3{Epic 内の<br/>細粒度な保留 → 解決?}
-    Q4{1 PR で完結する判断?}
-    Q5{運用手順?}
-    Q6{PR ごとの学び /<br/>改善案?}
-    Default[/その他 → 一旦 Plan の<br/>メモに残し再評価/]
+    Start(["新しい決定が発生"])
+    Q1{"ADR 起票基準の<br/>2 項目以上を満たす?"}
+    Q2{"コーディング・スタイル・<br/>命名規約?"}
+    Q3{"Epic 内の<br/>細粒度な保留→解決?"}
+    Q4{"1 PR で完結する判断?"}
+    Q5{"運用手順?"}
+    Q6{"PR ごとの学び・<br/>改善案?"}
+    Default["その他 → Plan のメモに<br/>残し再評価"]
 
-    ADR[ADR を起票<br/>adr-author Skill]
-    Rules[.claude/rules/*.md に追記]
-    Epic[Epic の open-questions /<br/>decisions.md]
-    Plan[Plan or PR description]
-    Runbook[docs/runbooks/]
-    Learn[docs/harness/learnings/<br/>pr-retrospective]
+    ADR["ADR を起票<br/>adr-author Skill"]
+    Rules[".claude/rules/*.md に追記"]
+    Epic["Epic の open-questions<br/>または decisions.md"]
+    Plan["Plan または PR description"]
+    Runbook["docs/runbooks/"]
+    Learn["docs/harness/learnings/<br/>pr-retrospective"]
 
     Start --> Q1
     Q1 -->|Yes| ADR
@@ -985,20 +985,20 @@ Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の spec
 
 ```mermaid
 flowchart TD
-    SpecGen["① Spec Gen<br/>要件 / 基本・詳細設計 + ADR + Plan/Epic 起票"]
-    Impl["② Implementation<br/>Phase 0-5 (worktree → 実装 → Draft PR)"]
-    Eval["③ Evaluation<br/>8 aspect 並列レビュー + Coordinator"]
-    Merge["④ Merge<br/>Phase 6-9 (review → approve → squash → worktree 削除)"]
-    Retro["⑤ Retrospection<br/>pr-poller / pr-retrospective (learning 生成)"]
-    Meta["⑥ Meta (二系統)<br/>harness-meta (内部) + harness-evolution (外部)"]
+    SpecGen["① Spec Gen<br/>要件・基本設計・詳細設計<br/>+ ADR + Plan/Epic 起票"]
+    Impl["② Implementation<br/>Phase 0-5<br/>worktree → 実装 → Draft PR"]
+    Eval["③ Evaluation<br/>8 aspect 並列レビュー<br/>+ Coordinator"]
+    Merge["④ Merge<br/>Phase 6-9<br/>review → approve → squash → worktree 削除"]
+    Retro["⑤ Retrospection<br/>pr-poller / pr-retrospective<br/>learning 生成"]
+    Meta["⑥ Meta（二系統）<br/>harness-meta（内部）<br/>+ harness-evolution（外部）"]
 
-    SpecGen -->|Plan / Epic 引継| Impl
-    Impl -->|Draft PR 完成| Eval
-    Eval -->|Critical = 0 → Ready| Merge
-    Eval -.->|Critical あり (fix loop ≤ 3)| Impl
-    Merge -->|Phase 8 で即時起動| Retro
-    Retro -.->|閾値到達 / 週次 / 手動| Meta
-    Meta -->|改修 PR 群| SpecGen
+    SpecGen -->|"Plan / Epic 引継"| Impl
+    Impl -->|"Draft PR 完成"| Eval
+    Eval -->|"Critical = 0 で Ready"| Merge
+    Eval -.->|"Critical あり、fix loop ≤ 3"| Impl
+    Merge -->|"Phase 8 で即時起動"| Retro
+    Retro -.->|"閾値到達 / 週次 / 手動"| Meta
+    Meta -->|"改修 PR 群"| SpecGen
 
     classDef phase fill:#f5f5f5,stroke:#555,stroke-width:1px;
     class SpecGen,Impl,Eval,Merge,Retro,Meta phase;
