@@ -429,6 +429,7 @@ docs/
     0024-secrets-management-policy.md           (旧 0025)
     0025-ui-design-snapshot-before-refactor.md  ─ ★新規 DESIGN.md + UI Inventory + Visual Regression Baseline の三本柱
     0026-visual-regression-testing-roborazzi.md ─ ★新規 Roborazzi + Compose Desktop で commonMain を screenshot、解像度マトリックス (mobile + PC 16:9) × テーママトリックス
+    0027-mcp-servers-jetbrains-context7-cloudflare.md ─ ★新規 JetBrains MCP + Context7 MCP + Cloudflare MCP の採用。GitHub MCP は gh CLI で代替、Sourcegraph MCP は JetBrains MCP の IDE indexing で代替、Figma/Sentry/他は将来検討
     # 削除済 (起票基準に照らして規約レベル → rules/ に統合)
     #   旧 0004 state-and-uiaction-conventions   → .claude/rules/{viewmodel,ui-state}.md
     #   旧 0026 permission-roles-owner-only       → ADR 0023 内のセクション
@@ -548,6 +549,14 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 - 全 Markdown テンプレートを日本語で記述する (ADR 0020)
 - PII の DB スキーマは `uid` のみ、権限ロールは当面 owner のみ (ADR 0023)
 - UI/UX をリファクタ前に DESIGN.md + UI Inventory + Roborazzi baseline で凍結する (ADR 0025 / 0026)
+- **MCP サーバは JetBrains MCP + Context7 MCP + Cloudflare MCP の 3 つを採用** (ADR 0027):
+  - **JetBrains MCP** (IntelliJ IDEA 2025.2+ 組み込み): Skill が IDE 経由で rename / inspection / IDE index 検索 / build を操作
+  - **Context7 MCP**: Kotlin / Compose MP / Ktor / SQLDelight / Roborazzi 等のバージョン固有ドキュメントを LLM に注入、ハルシネーション抑止
+  - **Cloudflare MCP**: R2 / Pages / DNS / Secrets 管理
+  - **GitHub MCP は採用見送り**、`gh` CLI で代替 (実証ベンチマークで MCP は CLI より 10〜32 倍トークン消費、ColorMaster 用途では CLI が優位)
+  - **Sourcegraph MCP は採用見送り**、JetBrains MCP の IDE indexing で代替
+  - **Serena MCP は採用見送り**、JetBrains MCP + Context7 MCP で代替 (Kotlin は "Indirect Support" にとどまり Compose MP / KMP / wasmJs 解析で IntelliJ Kotlin Plugin に劣る、JetBrains backend は有料、30 分のセットアップ + 初回インデックスのオーバーヘッド)。ただし IDE 非起動環境 (CI 上 agent) で fallback が必要になったら別 Plan で再評価
+  - 将来検討: Figma MCP (Figma 資産を作る場合) / Code Pathfinder (高度なコード検索が必要なら) / Serena MCP (上記条件成立時) / Sentry MCP (本番後)
 
 #### ADR にすべきでない例 (他の記録方法を使う)
 
@@ -609,6 +618,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 ```
 .claude/
   settings.json
+  mcp.json                      ─ ★新規 MCP サーバ接続定義 (GitHub / Cloudflare、Figma は将来)
   skills/
     harness-bootstrap/          B0 の唯一の Skill。A3 完了後に archived/ へ
     plan-author/                B0 から導入
@@ -660,6 +670,8 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
     ui-snapshot.md             ─ Preview + screenshot baseline 維持、baseline 更新は human approve 必須
     ui-inventory.md            ─ docs/design/inventory/ のファイル構造と更新規約 (screens/components/states/flows)
     behavior-preservation.md   ─ リファクタ時の振る舞い維持原則 (visual regression + spec-conformance 両輪)
+    # MCP (新規)
+    mcp-usage.md               ─ MCP サーバ (GitHub / Cloudflare / 将来 Figma) の使い分け、認証情報の取り扱い、Skill 別の使用パターン
     # プロセス
     pr-template.md
     commit-message.md
@@ -971,6 +983,113 @@ completed_at: null
 - ...
 ```
 
+### 5.6 MCP サーバ構成
+
+Skill が IDE / ライブラリドキュメント / Cloudflare を操作するために MCP (Model Context Protocol) サーバを接続する (ADR 0027)。**GitHub 操作は `gh` CLI で代替**、コード検索は **JetBrains MCP の IDE indexing で代替**するため、これらの MCP は採用しない。
+
+#### 採用する MCP (B0 で導入する 3 つ)
+
+| MCP | 提供元 | 接続方式 | 用途 | 連携 Skill |
+|---|---|---|---|---|
+| **JetBrains MCP** (IntelliJ IDEA / Android Studio 2025.2+ にバンドルされる **MCP Server プラグイン** [`JetBrains/mcp-server-plugin`](https://github.com/JetBrains/mcp-server-plugin)) | JetBrains 公式 | **SSE (HTTP) / Stdio (JVM-based proxy) / HTTP Stream のいずれか** を IDE 内蔵 MCP server から「Copy Config」して `.claude/mcp.json` に貼り付け | **コーディングエージェントから IntelliJ IDEA を操作**: rename symbol / lint inspection / regex search via IDE index / run configuration / build / file analysis / refactoring | implementation-workflow (実装中の rename・inspection)、code-reviewer (architecture aspect で IDE 検索)、refactor (影響範囲分析)、ui-snapshot (Composable / Preview スキャン) |
+| **Context7 MCP** | Upstash (`upstash/context7`) | Remote (HTTP) | **バージョン固有のライブラリドキュメントを LLM に注入**: Kotlin / Compose Multiplatform / Compose Navigation 3 / Ktor / Koin / SQLDelight / kotlinx.serialization / kotlinx.coroutines / Kover / Konsist / Roborazzi / compose-multiplatform-resources / Apache Jena Fuseki / Litestream / Firebase Admin SDK (撤去対象なので Plan のみで参照) 等。"no hallucinated APIs / no outdated code generation" | feature-request / bug-fix / refactor / implementation-workflow / dependency-upgrade (全実装系 Skill が利用、ハルシネーション抑止) |
+| **Cloudflare MCP Server** | Cloudflare 公式 | Remote (`mcp.cloudflare.com/mcp`、OAuth) | R2 / Pages / Workers / DNS / Secrets の管理。2,500+ API endpoints を `search()` / `execute()` の 2 tool で操作 (Codemode による Worker sandbox 実行) | C7 デプロイ Plan、secrets-rotation runbook |
+
+#### 採用見送り (gh CLI / IDE indexing で代替)
+
+| MCP | 代替手段 | 採用見送りの理由 |
+|---|---|---|
+| **GitHub MCP Server** | **`gh` CLI** | 実証ベンチマーク (mariozechner.at / scalekit) で **MCP は CLI より 10〜32 倍トークン消費**、初期化に約 55,000 tokens (90+ tools schema)。`gh` は Claude の training data に含まれハルシネーション少なく 1-shot で正確、bash / CI / CD パイプラインと一体化。MCP の優位性 (structured JSON / guardrails) は ColorMaster 用途では不要 |
+| **Sourcegraph MCP** | **JetBrains MCP** | JetBrains MCP の IDE indexing で代替可能、機能重複。ColorMaster は単一 repo で Sourcegraph の cross-repo 検索能力を必要としない |
+| **Serena MCP** (oraios/serena) | **JetBrains MCP + Context7 MCP** | (1) Serena LSP backend での Kotlin は **"Indirect Support via multilspy (community tested)"** で、`jdtls` (Eclipse JDT LS) 経由。Compose MP / KMP / wasmJs 特有の解析で IntelliJ の Kotlin Plugin に劣る。(2) Serena JetBrains backend は **有料プラグイン**で JetBrains MCP と機能ほぼ同一、二重投資。(3) **30 分の初期セットアップ + monorepo は初回インデックス数分**のオーバーヘッド。(4) Serena の強み「symbol-level retrieval」は JetBrains MCP の IDE index 検索で十分に達成可能、token 効率も rules ベースの参照と組み合わせれば差は決定的でない |
+
+#### 将来必要時に Plan で追加 (B0 では入れない)
+
+| MCP | 採用条件 |
+|---|---|
+| **Figma MCP Server** (公式 Remote) | Figma プロジェクト資産を作るタイミング (現状 DESIGN.md は A10 で実コードから抽出する方針なので不要) |
+| **Code Pathfinder / codesearch MCP** | JetBrains MCP の検索性能で不足を感じた場合、Kotlin AST 検索 / call graph 分析が必要になった場合 |
+| **Serena MCP** | **(a) IntelliJ IDEA が起動できない環境で Skill を動かす必要が発生** (CI 上の agent 実行など、R-27 のフォールバック) / **(b) 非 Kotlin コード (Markdown / Gradle DSL / YAML / SPARQL etc.) の symbol-level 操作頻度が増えた** / **(c) Claude Desktop / Codex / OpenCode 等の他 MCP クライアントでも同じハーネスを portable に動かしたい** ─ のいずれかが発生したら別 Plan で再評価 |
+| **Sentry MCP** | 本番稼働後にエラートラッキングが必要になった場合 |
+| Linear / Slack / Notion MCP | 個人プロジェクト規模では不要 |
+
+#### 接続情報 (`.claude/mcp.json`)
+
+```json
+{
+  "mcpServers": {
+    "jetbrains": {
+      "type": "sse",
+      "url": "http://localhost:<IDE-dynamic-port>/sse"
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "cloudflare": {
+      "type": "http",
+      "url": "https://mcp.cloudflare.com/mcp"
+    }
+  }
+}
+```
+
+##### JetBrains MCP の接続詳細
+
+> **重要**: 旧来の `@jetbrains/mcp-proxy` npm パッケージ (旧リポジトリ `JetBrains/mcp-jetbrains`) は **deprecated**。「The core functionality has been integrated into all IntelliJ-based IDEs since version 2025.2. The built-in functionality works with SSE and JVM-based proxy (for STDIO) so this NPM package is no longer required」(公式 README) 。本計画では **IDE 内蔵 MCP Server プラグイン ([`JetBrains/mcp-server-plugin`](https://github.com/JetBrains/mcp-server-plugin), Marketplace ID [26071-mcp-server](https://plugins.jetbrains.com/plugin/26071-mcp-server)) を使用**。
+
+**前提条件**:
+
+- **IntelliJ IDEA / Android Studio 2025.2 以降** が必須 (内蔵 MCP Server プラグインがバンドル済 + 既定有効)
+- IDE 側で `Settings | Tools | MCP Server` を開いて MCP server を有効化
+- IDE が起動中であること (起動していなければ JetBrains MCP は接続失敗、CLI fallback へ — R-27)
+- **Node.js 不要** (npx proxy は deprecated 方式、内蔵 SSE/Stdio/HTTP Stream で完結)
+
+**接続モードの選択 (IDE 側で 3 種から Copy)**:
+
+`Settings | Tools | MCP Server` 画面に以下のボタンがあり、それぞれの接続定義をクリップボードに取得できる:
+
+| ボタン | 形式 | 性質 | `.claude/mcp.json` での記載例 |
+|---|---|---|---|
+| **Copy SSE Config** (推奨) | Server-Sent Events (HTTP) | 軽量、再接続容易、URL は動的ポート | `{ "type": "sse", "url": "http://localhost:<port>/sse" }` |
+| **Copy Stdio Config** | JVM-based proxy を IDE が spawn | プロセス分離、Node.js 不要 | `{ "command": "<IDE が指定するパス>", "args": [...] }` |
+| **Copy HTTP Stream Config** | HTTP Streaming | SSE の代替、大量ストリーム時 | `{ "type": "http", "url": "http://localhost:<port>/mcp" }` |
+
+**ColorMaster の推奨は SSE**: 軽量 / 動的ポートの管理が IDE 任せ / 再接続が容易。動的ポートは IDE 起動ごとに変わるので、**Copy SSE Config の値を runbook の手順に従って `.claude/mcp.json` に貼り直す** 運用 (or 後述の `claude mcp add` コマンド経由)。
+
+**自動登録の代替**:
+
+IDE の `Settings | Tools | MCP Server` 画面に「Claude Code に自動登録」のような連携 UI が用意される場合もある。または Claude Code の `claude mcp add --transport sse jetbrains <URL>` コマンドでローカル設定に登録可能。手順は runbook に記載。
+
+##### Context7 MCP の接続詳細
+
+Remote HTTP、認証不要 (公開ライブラリ docs)。URL の正確な値は公式ドキュメント (`upstash/context7`) に従う。API key を要するプランも存在するが、ColorMaster 用途では公開 docs アクセスのみで足りる。
+
+##### Cloudflare MCP の接続詳細
+
+Remote HTTP + OAuth。初回接続時に Claude Code がブラウザで認証フローを開き、token はローカル Claude Code の安全領域に保存される。
+
+##### 詳細セットアップ手順は runbook 参照
+
+`docs/runbooks/mcp-setup.md` に以下を記載 (B0 で作成):
+
+- IntelliJ IDEA 2025.2+ の MCP Server プラグイン有効化手順
+- Node.js 18+ のインストール / バージョン確認
+- 3 つの接続方式 (npx proxy / SSE / Stdio / HTTP Stream) のそれぞれの設定例とトレードオフ
+- Context7 MCP / Cloudflare MCP の OAuth フロー
+- 接続確認コマンド (Claude Code 内で `/mcp` などの diagnostic)
+- 接続失敗時のトラブルシュート (IDE 未起動、port 競合、Node.js バージョン不整合等)
+
+#### MCP 利用規約 (`.claude/rules/mcp-usage.md`)
+
+- **GitHub 操作は原則 `gh` CLI**: PR list / view / diff / search / create / merge / comment 追加 / Actions logs 取得 / Issue 起票はすべて `gh`。MCP は不採用 (token コスト・ハルシネーション抑止の観点で CLI が優位)
+- **IDE 操作は JetBrains MCP**: rename / inspection / file analysis / index 経由 regex search / build / run config 実行。手動で `git grep` する代わりに JetBrains MCP の検索を優先 (IDE index が高速・正確)
+- **ライブラリの API 確認は Context7 MCP**: コード生成前に「`androidx.lifecycle.ViewModel` の `viewModelScope` の API」のような確認を行うときは必ず Context7 を経由 (training data の古い情報や hallucination を回避)
+- **Cloudflare 操作**: `wrangler` CLI で済む場合 (`wrangler deploy` 等) は CLI を優先、複雑な API 操作 (R2 token ローテーション、bucket policy 更新等) は Cloudflare MCP を使う
+- **MCP 認証情報の取扱**: OAuth token はローカル Claude Code 管理、リポジトリには絶対 commit しない (Secrets 管理規約 ADR 0024 の対象)
+- **Skill が MCP 結果を learning / レビューコメントに含める場合**: PII redaction フェーズで token / API キー類を除去 (PII 規約 ADR 0023 と同等)
+- **権限スコープ**: Cloudflare MCP は対象 zone / bucket のみ allow、JetBrains MCP は IDE のプロジェクトスコープに自動的に制限される
+
 ---
 
 ## 6. フェーズ順序
@@ -979,7 +1098,7 @@ completed_at: null
 
 | # | 内容 |
 |---|---|
-| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot}` の最小版 / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**) / `docs/{adr, epics, plans, harness/learnings, runbooks, requirements, specifications, design/inventory}` スケルトン (テンプレートは全て**日本語**、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)**。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動するため) |
+| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / **`.claude/mcp.json` で JetBrains MCP + Context7 MCP + Cloudflare MCP の接続定義** / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot}` の最小版 / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation, mcp-usage}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**、`mcp-usage.md` は **GitHub は gh CLI / IDE 操作は JetBrains MCP / ライブラリ docs は Context7 / Cloudflare 管理は Cloudflare MCP の使い分けを規定**) / `docs/{adr, epics, plans, harness/learnings, runbooks, requirements, specifications, design/inventory}` スケルトン (テンプレートは全て**日本語**、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)** / **`docs/runbooks/mcp-setup.md` を新規追加** — 以下を記載: (1) IntelliJ IDEA / Android Studio **2025.2+ にバンドル済の MCP Server プラグイン** (`JetBrains/mcp-server-plugin`、Marketplace 26071) を `Settings | Tools | MCP Server` で有効化、(2) **旧 `@jetbrains/mcp-proxy` npm パッケージは deprecated なので使用しない** こと、(3) JetBrains MCP の **3 つの接続方式** (Copy SSE Config [推奨] / Copy Stdio Config / Copy HTTP Stream Config) の選択基準と `.claude/mcp.json` への貼り付け手順、(4) IDE 再起動で動的ポートが変わる場合の再貼り付け手順 (or `claude mcp add` 経由の登録)、(5) Context7 / Cloudflare の OAuth 接続フロー、(6) `/mcp` での接続確認、(7) トラブルシュート (IDE 未起動 / MCP Server プラグイン未有効 / ポート競合 / IDE バージョン 2025.2 未満)。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動するため) |
 
 B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Skill 駆動 + KPT 生成の対象となる。`pr-poller` はローカル Claude Code 起動時に手動起動可能とし、A4 で `CronCreate` / `ScheduleWakeup` による自動化を完成させる。
 
@@ -989,7 +1108,7 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 
 | # | 単位 | 起動 Skill | 内容 |
 |---|---|---|---|
-| **A1** | Plan | `harness-bootstrap` | ADR 0001-0026 を一括起草する PR (全て日本語) |
+| **A1** | Plan | `harness-bootstrap` | ADR 0001-0027 を一括起草する PR (全て日本語) |
 | **A2** | Plan | `harness-bootstrap` | `.claude/rules/*` 全ファイル + `docs/` 拡充 (architecture/, requirements/, specifications/ テンプレ等) |
 | **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** / **ui-snapshot** の本格版へのアップグレード)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 8 aspect の binary eval checklist + coordinator を完全実装 (visual-regression / design-tokens は A10 完了後に enable)。マージ後、`harness-bootstrap` は `archived/` へ |
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
@@ -1092,6 +1211,10 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-22 | Preview 未整備の Composable が多く A10 の baseline 生成が想定より長期化 | モジュール単位で段階 Plan に分割。重要画面 (Home/Search/Preview/MyIdols) を最優先で baseline 化、補助コンポーネントは Phase C 内で追加することも許容 (ADR 0025 で記録) |
 | R-23 | 動的色 (アイドル brand color) で Roborazzi の diff が誤検出される | Preview ではアニメーション停止 + 代表 brand color 固定パラメータ、別途 brand-color バリエーション Preview を作成して網羅。Roborazzi `changeThreshold` の許容しきい値も併用 (ADR 0026) |
 | R-24 | Roborazzi が wasmJs を未サポート、wasmJs 固有レンダリング差異を検出できない | commonMain は JVM (Compose Desktop) で screenshot test、wasmJs 固有 actual は Konsist + 単体テストで担保。将来 Roborazzi が wasmJs 対応したら ADR 0026 改訂で乗り換え (ADR 0026) |
+| R-25 | MCP の OAuth token がローカル Claude Code から流出するリスク | token はローカル Claude Code の安全領域のみに保存、リポジトリ commit 禁止 (`.gitignore` で `.claude/oauth-tokens*` 等を除外)。Cloudflare MCP は対象 zone / bucket のみに権限スコープを制限、JetBrains MCP は IDE プロジェクトスコープに自動制限 (ADR 0027) |
+| R-26 | Skill が MCP の結果に含まれる secret / PII を learning / レビューコメントに転載 | `.claude/rules/mcp-usage.md` で出力前の redaction を強制、Konsist で Skill 実装ファイル内の secret パターン (`/^GHP_/`, `/^sk_/` 等) を検出 (ADR 0023 / 0027) |
+| R-27 | IntelliJ IDEA が起動していない / バージョンが 2025.2 未満 / MCP Server プラグインが無効 / 動的ポートが IDE 再起動で変わって `.claude/mcp.json` が古い、で JetBrains MCP が利用不可 | `docs/runbooks/mcp-setup.md` に IDE バージョン要件 (2025.2+) と MCP Server プラグイン有効化手順、Copy SSE Config の再貼り付け / `claude mcp add` 経由の再登録手順を明記。Skill 起動時に JetBrains MCP の接続失敗を検出したら、警告を出しつつ `gh` CLI / `git grep` などの代替手段にフォールバック。長期的・恒常的に IDE 非起動環境 (CI 上 agent 実行など) で運用したい場合は **Serena MCP の採用を別 Plan で再評価** (ADR 0027 の将来検討に記載) |
+| R-28 | Context7 MCP が古い / 取得不能 / 別のライブラリの API を返すリスク | Context7 は公開ライブラリ docs のため、AI が取得した内容を Konsist / detekt / 型チェッカーで二重検証。「Context7 で確認した」だけで実装を確定させない (rules/mcp-usage.md 明記) |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
 | R-6 | harness-bootstrap が万能になりすぎると専用 Skill 化が遅れる | A3 完了で必ず `archived/` へ移動、CLAUDE.md からも参照を外す |
 
