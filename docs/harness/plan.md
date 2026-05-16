@@ -238,7 +238,69 @@ Konsist で「`data/users.db*` がリポジトリに含まれていないこと�
 - TTL: R2 token は **90 日**、定期ローテーション (`docs/runbooks/secrets-rotation.md` に履歴を記録)
 - Skill は secret の値を出力に含めない (redaction 必須)
 
-### 3.9 テスト品質方針 — 三層指標の併用
+### 3.9 UI/UX デザインの現状記録 (Behavior Preservation)
+
+Phase C の大規模リファクタ (Decompose 撤去 / CMP Navigation 3 / Firebase 廃止 / wasmJs 化) が UI に与える影響を構造的にブロックするため、**リファクタ前に既存 UI/UX を凍結 (freeze)** し、機械的に検証可能な状態にする (ADR 0025 / 0026)。
+
+#### 三本柱
+
+1. **`DESIGN.md` (リポジトリ root)**
+   - Google Stitch / Anthropic が de facto としてプッシュしている AI 駆動 UI 開発の標準
+   - 上部: machine-readable な design tokens (Primitive / Semantic / Component の 3 階層)
+   - 下部: human-readable な rationale (なぜその値か、どう適用するか、アクセシビリティ基準)
+   - Markdown は LLM が最も読みやすく、AI コーディングツールが自動参照する
+   - Konsist で「DESIGN.md に存在しない hex code がコードに混入していない」を機械検証
+
+2. **UI Inventory (`docs/design/inventory/`)**
+   - Marcin Treder の "Interface Inventory" 手法に準拠
+   - 全画面・全コンポーネント・全状態を網羅キャプチャ
+   - `screens/` / `components/` / `states/` / `flows/` の 4 軸
+   - 各 Markdown は frontmatter で関連 SPEC-ID / 実装パスを記録
+
+3. **Visual Regression Baseline (Roborazzi)**
+   - **採用ツール: Roborazzi** (Compose Multiplatform 対応、唯一の Compose-Desktop 対応)
+   - 主実行ランタイム: **JVM (Compose Desktop)**、補助: Android (Robolectric)
+   - 対象: **commonMain の Composable** (全 target 共通)
+   - 対象外: `wasmJsMain` / `iosMain` / `androidMain` の actual 実装 (Konsist + 単体で担保)
+   - **解像度マトリックス必須化**:
+     - **モバイル (412 x 915 dp)**: Pixel 7 portrait 相当
+     - **PC 16:9 (1920 x 1080 dp)**: デスクトップブラウザ標準
+   - **テーママトリックス必須化**: Light / Dark
+   - → 1 Composable あたり **4 パターン (mobile-light / mobile-dark / desktop-light / desktop-dark)** が baseline
+
+#### Roborazzi の wasmJs 未対応への対処
+
+2026/5 時点で Roborazzi は wasmJs を未サポート (JVM → Multiplatform 実装に移行中)。ただし:
+
+- **commonMain の Composable は Compose Desktop (JVM) で screenshot 化可能**、これは wasmJs 用に書いた commonMain コードもそのまま検証できる (Compose は全 target で Skia ベースのレンダリング)
+- wasmJs ターゲット固有の `actual` 実装 (GIS 認証フロー等) は薄い層で、screenshot test の対象外として Konsist + 単体テストで担保
+- 将来 Roborazzi が wasmJs に公式対応したら ADR 0026 を改訂し、wasmJs ランタイムでの実機 screenshot に切替を検討
+
+#### code-reviewer aspect の拡張 (6 → 8)
+
+| 既存 6 aspect | 新規追加 |
+|---|---|
+| spec-conformance / test-quality / architecture / security / performance / code-quality | **visual-regression**: Roborazzi の diff が 0 ピクセル (or 許容しきい値内)、baseline 更新時は意図的な UI 変更であるか確認 |
+| | **design-tokens**: コード中の hex / sp / dp / radius がハードコードされておらず DESIGN.md の token を参照、新規 token 追加時に DESIGN.md と Rationale を同時更新 |
+
+#### Skill: `ui-snapshot` (新規)
+
+| 項目 | 内容 |
+|---|---|
+| 起動契機 | A10 EPIC 内の Plan、または Phase C 各リファクタ後の visual regression 検証 |
+| 主な動作 | (1) Konsist で全 Composable をスキャン → `@Preview` 不在の検出、(2) Preview 追加 Plan を起票、(3) Roborazzi screenshot baseline 生成 (`./gradlew recordRoborazziDebug` 等)、(4) `DESIGN.md` と UI Inventory のドラフト生成、(5) hex / sp / dp のハードコードを検出して tokens 化提案 |
+| 連携 | code-reviewer の `visual-regression` aspect、`design-tokens` aspect と双方向参照 |
+
+#### 関連規約
+
+- `.claude/rules/design-tokens.md`: DESIGN.md の構造、3 階層、ハードコード禁止
+- `.claude/rules/ui-snapshot.md`: Preview + screenshot baseline 維持、baseline 更新は human approve 必須
+- `.claude/rules/ui-inventory.md`: UI Inventory のファイル構造と更新規約
+- `.claude/rules/behavior-preservation.md`: リファクタ時の振る舞い維持原則 (visual regression + spec-conformance の両輪)
+- `.claude/rules/composable.md` 既存: 全 Screen Composable に `@Preview` 必須を追加、PreviewParameter で全 UiState バリエーション網羅
+- `.claude/rules/screenshot-test.md` 既存: Roborazzi 運用規約を本格化、解像度マトリックスとテーママトリックスを明文化
+
+### 3.10 テスト品質方針 — 三層指標の併用
 
 AI による自動テスト生成を前提とし、テスト品質は **3 つの独立した指標** で多層検証する。それぞれが異なるアウトカムを目指し、互いに代替不可能。
 
@@ -365,6 +427,8 @@ docs/
     0022-cloudflare-pages-and-r2.md             (旧 0023)
     0023-pii-protection-and-permission-roles.md (旧 0024 + 0026 統合、権限ロール=owner のみを含む)
     0024-secrets-management-policy.md           (旧 0025)
+    0025-ui-design-snapshot-before-refactor.md  ─ ★新規 DESIGN.md + UI Inventory + Visual Regression Baseline の三本柱
+    0026-visual-regression-testing-roborazzi.md ─ ★新規 Roborazzi + Compose Desktop で commonMain を screenshot、解像度マトリックス (mobile + PC 16:9) × テーママトリックス
     # 削除済 (起票基準に照らして規約レベル → rules/ に統合)
     #   旧 0004 state-and-uiaction-conventions   → .claude/rules/{viewmodel,ui-state}.md
     #   旧 0026 permission-roles-owner-only       → ADR 0023 内のセクション
@@ -399,6 +463,24 @@ docs/
     local-imasparql.md
     sync-imasparql.md
     release.md
+    secrets-rotation.md
+  design/                       ─ ★新規 UI/UX デザインの現状記録 (ADR 0025 / 0026 で定義)
+    README.md                   ─ DESIGN.md / Inventory / Baseline の運用ガイドと参照リンク
+    inventory/
+      INDEX.md
+      screens/                  ─ 画面ごと (home.md, search.md, preview.md, myidols.md, ...)
+      components/               ─ コンポーネントごと (idol-card.md, brand-chip.md, ...)
+      states/                   ─ 状態別パターン (empty.md, loading.md, error.md, ...)
+      flows/                    ─ ユーザーフロー (login.md, add-favorite.md, ...)
+      screenshots/              ─ Roborazzi が生成する baseline PNG 群
+        <composable>-mobile-light.png
+        <composable>-mobile-dark.png
+        <composable>-desktop-light.png
+        <composable>-desktop-dark.png
+
+DESIGN.md                       ─ ★リポジトリ root に配置 (Google Stitch 標準準拠)
+                                  上部: design tokens (machine-readable, 3 階層)
+                                  下部: rationale (human-readable, アクセシビリティ含む)
 ```
 
 ### 4.1 Epic と Plan の区別
@@ -462,9 +544,10 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 - アイドル情報を Git 内 SQLite に commit、ユーザーデータは Litestream で R2 にレプリケート (ADR 0008 / 0010)
 - Line/Branch coverage 100% を必達ゲートにする (ADR 0013)
 - ハーネスループをローカル Claude Code ポーリングで駆動する (GitHub Actions で Claude API を呼ばない) (ADR 0017)
-- code-reviewer を 6 aspect + Coordinator で構成する (ADR 0019)
+- code-reviewer を 8 aspect + Coordinator で構成する (ADR 0019、visual-regression / design-tokens を含む)
 - 全 Markdown テンプレートを日本語で記述する (ADR 0020)
 - PII の DB スキーマは `uid` のみ、権限ロールは当面 owner のみ (ADR 0023)
+- UI/UX をリファクタ前に DESIGN.md + UI Inventory + Roborazzi baseline で凍結する (ADR 0025 / 0026)
 
 #### ADR にすべきでない例 (他の記録方法を使う)
 
@@ -533,7 +616,8 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
     pr-retrospective/           B0 から最小版で稼働 (1 PR = 1 learning ファイル生成)
     pr-poller/                  B0 から導入 (ローカル Claude Code 内でポーリング、未処理 PR を検出して pr-retrospective を起動)
     implementation-workflow/    B0 で雛形、A3 で本格化 (要件読込 → 実装 → Lint/Test → AI Review → マージ判断 → レトロ起動を 8 フェーズでオーケストレート)
-    code-reviewer/              B0 で雛形、A3 で本格化 (独立 Evaluator、6 aspect 並列レビュー + Coordinator で構造化コメント)
+    code-reviewer/              B0 で雛形、A3 で本格化 (独立 Evaluator、★8 aspect 並列レビュー + Coordinator で構造化コメント)
+    ui-snapshot/                B0 で雛形、A10 で本格化 (Preview スキャン、Roborazzi baseline 生成、DESIGN.md / UI Inventory 起草)
     feature-request/            A3 で完成 (要件・仕様生成と Plan/Epic 起票まで、実装はしない)
     bug-fix/                    A3 で完成 (再現・ルートコーズ・仕様補強・Plan 起票まで)
     refactor/                   A3 で完成 (影響分析・Plan/Epic 起票まで)
@@ -564,13 +648,18 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
     # ファイルタイプ別 / テスト
     gradle.md
     kotlin-test.md
-    screenshot-test.md
+    screenshot-test.md         ─ Roborazzi 運用規約: JVM (Compose Desktop) + Android、解像度マトリックス (mobile + PC 16:9) × Light/Dark、wasmJs 固有 actual は対象外
     coverage-100.md            ─ Line/Branch 100% 規約 (指標 A)
     spec-traceability.md       ─ @Spec annotation / Spec coverage 規約 (指標 B)
     mutation-testing.md        ─ PITest 運用規約 (指標 C)
     test-paired-class.md
     sql-delight.md
     sparql.md
+    # UI/UX デザイン (新規)
+    design-tokens.md           ─ DESIGN.md 構造 (Primitive/Semantic/Component 3 階層)、hex/sp/dp ハードコード禁止
+    ui-snapshot.md             ─ Preview + screenshot baseline 維持、baseline 更新は human approve 必須
+    ui-inventory.md            ─ docs/design/inventory/ のファイル構造と更新規約 (screens/components/states/flows)
+    behavior-preservation.md   ─ リファクタ時の振る舞い維持原則 (visual regression + spec-conformance 両輪)
     # プロセス
     pr-template.md
     commit-message.md
@@ -581,7 +670,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
     harness-meta-criteria.md   ─ 改修 PR 採用/見送り/撤去の判定基準 (Anthropic harness 原則を明文化)
     # 実装ワークフロー
     implementation-workflow.md  ─ 8 フェーズの手順、fix loop の上限 (デフォルト 3 回)、Phase 失敗時の Plan 修正提案
-    code-reviewer-aspects.md    ─ 6 aspect (spec-conformance / test-quality / architecture / security / performance / code-quality) の binary eval checklist、coordinator の構造化コメント形式
+    code-reviewer-aspects.md    ─ 8 aspect (spec-conformance / test-quality / architecture / security / performance / code-quality / visual-regression / design-tokens) の binary eval checklist、coordinator の構造化コメント形式
     merge-readiness.md          ─ Merge 可否の判定基準 (CI green + 全 aspect pass + 人間 approve、auto-merge 禁止)
     pr-draft-policy.md          ─ Draft → Ready for review の昇格条件
     spec-living-sync.md         ─ 実装中の仕様変更時の双方向同期手順 (Spec Kit / Intent 由来)
@@ -645,7 +734,8 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 | **`pr-poller`** | ローカル Claude Code 起動時 + `CronCreate` 日次スケジュール + `ScheduleWakeup` ループ | gh CLI で merged / closed PR を取得 → 既に learning ファイルがある PR を除外 → 未処理 PR があれば `pr-retrospective` を起動 → 一定期間経過 (7 日) または未処理 learning 件数閾値到達で `harness-meta` を起動。詳細規約は `.claude/rules/pr-poller.md` |
 | **`pr-retrospective`** (旧 `kpt-retrospective`) | `pr-poller` から自動起動 / 手動起動 | 対象 PR の diff (`gh pr diff`) / comments / reviews / CI ログ / Skill 実行ログ / 三層指標差分 (Kover / Konsist / PITest) / 関連 Plan・Epic を収集。`docs/harness/learnings/YYYY-MM-DD-pr-<n>.md` を `.claude/rules/retrospective-format.md` の構造化フォーマット (**日本語見出し**) で生成。`harness/learnings-batch-YYYY-WW` ブランチに集約し、週次 (or 件数到達時) に PR としてまとめて起票 |
 | **`implementation-workflow`** | Plan / Epic 確定後、ユーザー指示で起動 | **新規 (オーケストレーター)**: 8 フェーズで全工程を統合管理 — (1) 要件/基本設計/詳細設計 Markdown 読込、(2) Spec 整合性チェック、(3) 実装 + Lint/Test 実行 + fix loop (上限 3 回)、(4) Self-Verification、(5) Draft PR 作成、(6) `code-reviewer` 呼出 → Evaluator フェーズ、(7) 人間 approve → squash merge、(8) `pr-poller` 即時起動。詳細規約は `.claude/rules/implementation-workflow.md`、`merge-readiness.md`、`pr-draft-policy.md`、`spec-living-sync.md` |
-| **`code-reviewer`** | `implementation-workflow` Phase 6 から呼出 / 手動起動 | **新規 (独立 Evaluator)**: 6 aspect を並列実行 — spec-conformance / test-quality / architecture / security / performance / code-quality。各 aspect が binary yes/no eval checklist を実行。Coordinator が重複排除して **日本語の構造化レビューコメント** を PR に post し、Merge readiness を判定。詳細規約は `.claude/rules/code-reviewer-aspects.md`。Anthropic Evaluator 独立性原則に従い、aspect ごとに別の system prompt を持たせる |
+| **`code-reviewer`** | `implementation-workflow` Phase 6 から呼出 / 手動起動 | **新規 (独立 Evaluator)**: 8 aspect を並列実行 — spec-conformance / test-quality / architecture / security / performance / code-quality / **visual-regression** / **design-tokens** (後ろ 2 つは A10 完了後に有効化)。各 aspect が binary yes/no eval checklist を実行。Coordinator が重複排除して **日本語の構造化レビューコメント** を PR に post し、Merge readiness を判定。詳細規約は `.claude/rules/code-reviewer-aspects.md`。Anthropic Evaluator 独立性原則に従い、aspect ごとに別の system prompt を持たせる |
+| **`ui-snapshot`** | A10 内の Plan、Phase C 各リファクタ後の visual regression 検証 | **新規**: Konsist で Composable をスキャン → `@Preview` 不在を検出 → Plan 起票、Roborazzi で 4 パターン (mobile/desktop × Light/Dark) baseline 生成、DESIGN.md と UI Inventory のドラフトを起草、hex / sp / dp ハードコードを検出して tokens 化提案 |
 | `feature-request` | ユーザー指示 or Issue | 要件 → 基本設計 → (必要なら詳細設計) → ADR (必要時) → Plan / Epic 起票 **まで** (実装はしない、`implementation-workflow` にバトンタッチ) |
 | `bug-fix` | Issue / 障害報告 | 再現 → ルートコーズ分析 → 仕様補強 → ADR (設計起因なら) → Plan 起票 **まで** |
 | `refactor` | 改善提案 | 影響範囲分析 → リスク評価 → Plan or Epic 起票 **まで** |
@@ -889,7 +979,7 @@ completed_at: null
 
 | # | 内容 |
 |---|---|
-| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer}` の最小版 / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**) / `docs/{adr, epics, plans, harness/learnings, runbooks, requirements, specifications}` スケルトン (テンプレートは全て**日本語**、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)**。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動するため) |
+| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot}` の最小版 / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**) / `docs/{adr, epics, plans, harness/learnings, runbooks, requirements, specifications, design/inventory}` スケルトン (テンプレートは全て**日本語**、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)**。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動するため) |
 
 B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Skill 駆動 + KPT 生成の対象となる。`pr-poller` はローカル Claude Code 起動時に手動起動可能とし、A4 で `CronCreate` / `ScheduleWakeup` による自動化を完成させる。
 
@@ -899,15 +989,16 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 
 | # | 単位 | 起動 Skill | 内容 |
 |---|---|---|---|
-| **A1** | Plan | `harness-bootstrap` | ADR 0001-0024 を一括起草する PR (全て日本語) |
+| **A1** | Plan | `harness-bootstrap` | ADR 0001-0026 を一括起草する PR (全て日本語) |
 | **A2** | Plan | `harness-bootstrap` | `.claude/rules/*` 全ファイル + `docs/` 拡充 (architecture/, requirements/, specifications/ テンプレ等) |
-| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** の本格版へのアップグレード)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 6 aspect の binary eval checklist + coordinator を完全実装。マージ後、`harness-bootstrap` は `archived/` へ |
+| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** / **ui-snapshot** の本格版へのアップグレード)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 8 aspect の binary eval checklist + coordinator を完全実装 (visual-regression / design-tokens は A10 完了後に enable)。マージ後、`harness-bootstrap` は `archived/` へ |
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
 | **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル、**`dev.gitlive:firebase-*` 依存、`core/network/{auth,firestore}`、`firebase.json`、`.firebaserc`**) |
 | **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook + **trufflehog による secret-scan workflow**)。Konsist で「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「`feature/**`・`core/**` で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラに `requireUid()` 強制」を検証 |
 | **A7** | Plan | `feature-request` | **三層テスト品質基盤の導入**:<br>● **指標 A**: Kover 導入 + `koverVerify minValue=100` 必達化 (ADR 0013 除外列挙のみ許可)<br>● **指標 B**: `@Spec` annotation の Kotlin 定義 + Konsist による Spec coverage 検証ルール導入 (ADR 0016、`.claude/rules/spec-traceability.md`)<br>● **指標 C**: PITest + pitest-kotlin + gradle-pitest-plugin 導入。JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。PR コメントで mutation score 可視化 (ADR 0015、`.claude/rules/mutation-testing.md`)<br>本 PR 時点では既存コードの未充足は除外リストで一旦逃がし、A9 完了までに全モジュールに展開する旨を rules に明記 |
 | **A8** | Plan | `feature-request` | **im@sparql ローカル Docker 環境構築** (Apache Jena Fuseki + RDF データ初期投入スクリプト + `docker-compose.yml` + integration test 基盤 + Testcontainers 規約)。`docs/runbooks/local-imasparql.md` を整備し、backend のローカル開発・テストを Fuseki に対して実行できる状態にする |
 | **A9** | **EPIC-A9** | `refactor` | **既存コード全体に対する三層指標の達成**。モジュールごとに段階 Plan (PLAN-NNN × 多数) を発行:<br>● 指標 A: line / branch 100% カバレッジを全モジュールで達成<br>● 指標 B: 既存機能の Acceptance criteria を `docs/specifications/<id>.md` に逆生成、テストに `@Spec` annotation を付与、Spec coverage 100% 達成<br>● 指標 C: 各モジュールの初回 mutation score をベースラインとして記録、明らかな tautological テストは learnings に蓄積し改善<br>Konsist の「実装クラス ⇄ テストクラス対応」検証を本 EPIC 完了時に enforce。backend/server / android/app / core/* / data/ 全モジュールが対象。A7 で導入した除外リストは ADR 0013 列挙分のみに整理する |
+| **A10** | **EPIC-A10** | `ui-snapshot` + `refactor` | **UI/UX 現状記録 EPIC (Phase C のリファクタ前に Behavior Preservation を確立)**:<br>● Roborazzi (Compose Desktop + Android Robolectric) を導入<br>● Konsist で全 Composable をスキャン、`@Preview` 不在を検出して Plan で追加 (段階的)<br>● 各 Preview に対応する screenshot baseline を **4 パターン** (mobile-light/mobile-dark/desktop-light/desktop-dark) で生成し `docs/design/inventory/screenshots/` に commit<br>● **`DESIGN.md` を repo root に生成**: 色・タイポ・スペーシング・radii を実コードから抽出 + Rationale を AI 起草 → 人間レビュー必須<br>● **UI Inventory** (`docs/design/inventory/{screens,components,states,flows}/*.md`) を全件生成<br>● `.claude/rules/{design-tokens,ui-snapshot,ui-inventory,behavior-preservation}.md` を本格化、Konsist で「実装クラスに対応する Preview と screenshot baseline がある」「DESIGN.md に存在しない hex code がコードに混入していない」を機械検証<br>● code-reviewer の **visual-regression / design-tokens aspect を enable** |
 
 **Phase A 完了条件**:
 
@@ -915,6 +1006,9 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 - Konsist の Spec coverage 検証がグリーン (指標 B: 全 Acceptance criteria に対応する `@Spec` 付きテストが存在)。
 - `./gradlew pitest` が JVM target で実行可能、初回 mutation score が記録されている (指標 C)。
 - `docker compose up imasparql` でローカル Fuseki が起動し、backend integration test が Fuseki に対して実行可能。
+- **`./gradlew verifyRoborazziDebug` (or 相当) がグリーン**: 全 Composable に対する 4 パターンの screenshot baseline が一致 (A10 完了)。
+- **`DESIGN.md` が repo root に存在し、UI Inventory が全画面・全主要コンポーネント・全状態を網羅** (A10 完了)。
+- **code-reviewer の visual-regression / design-tokens aspect が有効化済み** (A10 完了)。
 - `harness-bootstrap` は `archived/` へ移動済み、全専用 Skill が稼働。
 - KPT ループが post-merge workflow + 月次 harness-meta で完全自動稼働。
 
@@ -961,7 +1055,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 
 ## 8. テストカバレッジ戦略
 
-テスト品質は **3.9 節で定義した三層指標** で多層検証する。詳細は 3.9 節を参照。本節では運用面の補足を記す。
+テスト品質は **3.10 節で定義した三層指標** で多層検証する。詳細は 3.10 節を参照。本節では運用面の補足を記す。
 
 - **指標 A (Line/Branch Coverage 100%)**: Kover を導入、`./gradlew check` に `koverXmlReport` / `koverVerify` を組み込む。`koverVerify` の minBounds: `minValue = 100`、counter = `LINE` と `BRANCH` の両方を必達ゲートとする。除外対象は ADR 0013 で限定列挙のみ、除外追加は ADR 改訂が必須。
 - **指標 B (Spec Coverage 100%)**: `@Spec("SPEC-NNN-N")` annotation をテスト関数に付与し、`docs/specifications/<id>.md` の Acceptance criteria と双方向対応させる。Konsist で「全 Acceptance criteria に対応する `@Spec` が存在する」「`@Spec` ID が specifications に実在する」を機械検証。詳細は ADR 0016。
@@ -981,7 +1075,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-2 | wasmJs での GIS 実装パターンの公式リファレンスが薄い | C9 で spike PR を最初に切る。Open question として EPIC-006 に記録 |
 | R-3 | `data/idols.db` のバイナリ管理によるリポジトリサイズ膨張 | アイドル情報は数百〜千行のため当面は通常 commit。MB 級になったら Git LFS 移行を別 ADR で |
 | R-4 | Cloud Run JVM コールドスタート | Phase C 完了後に GraalVM Native Image を別 ADR で検討 |
-| R-7 | AI 自動生成テストが「網羅性はあるが意味のないテスト」になる可能性 | 三層指標で多層対処: 指標 B (Spec coverage) で仕様トレーサビリティを強制、指標 C (Mutation score) で意味的強度を計測可視化、Konsist メタ規約 + KPT 学習 + `kotlin-test.md` 強化のフォールバックループで担保 (3.9 節参照) |
+| R-7 | AI 自動生成テストが「網羅性はあるが意味のないテスト」になる可能性 | 三層指標で多層対処: 指標 B (Spec coverage) で仕様トレーサビリティを強制、指標 C (Mutation score) で意味的強度を計測可視化、Konsist メタ規約 + KPT 学習 + `kotlin-test.md` 強化のフォールバックループで担保 (3.10 節参照) |
 | R-8 | A9 (既存コード三層指標達成 EPIC) の作業量が想定を超える可能性 | モジュール単位で Plan を切り、PR を細粒度に分割。完了見込みが立たない場合は除外対象の見直しを ADR 改訂で対応 (ただし安易な除外追加は禁止)。指標 C は初回 baseline 記録のみで完了とし、改善は継続課題に |
 | R-9 | Fuseki に投入する RDF データの著作権・ライセンス確認 | A8 でデータ取得元 (`imas/imasparql` リポジトリ) のライセンスを確認し ADR 0014 に明記。条件次第ではダミー RDF + テスト専用データ構成にする |
 | R-10 | PITest が KMP の JS/Wasm/iOS actual 実装を mutate できない | これらは expect/actual の薄い層で本質的にロジックが薄いため実害が小さいと判断。Konsist (テスト存在) と通常単体テストで担保。将来 MutFlow (K2 compiler plugin、KMP 全 target 適合の可能性) を別 ADR で評価可能性として記録 (ADR 0015) |
@@ -995,6 +1089,9 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-19 | R2 token 流出による `users.db` 漏洩 | R2 bucket private + bucket policy で Backend Service Token のみ allow、token TTL 90 日で定期ローテーション (ADR 0024)、漏洩時のローテーション runbook を `docs/runbooks/secrets-rotation.md` に整備。DB スキーマで PII を `uid` のみに最小化することで漏洩時の影響を構造的に下げる |
 | R-20 | PR diff / リポジトリ履歴に PII / credentials が混入するリスク | trufflehog による全 PR 差分のスキャン (A6 で導入)、`.gitignore` で `data/users.db*` / `.env*` / `*-credentials.json` 等を除外、Konsist で `data/users.db*` の追跡禁止を検証 |
 | R-21 | Skill (code-reviewer / pr-retrospective / harness-meta) が PII を出力に転載するリスク | `.claude/rules/pii.md` で Skill 出力前の redaction を強制、Konsist でテストフィクスチャの `@example.com` ドメイン以外の検出、Skill 設計で CI ログ等の取り込み時に redaction フェーズを必須化 |
+| R-22 | Preview 未整備の Composable が多く A10 の baseline 生成が想定より長期化 | モジュール単位で段階 Plan に分割。重要画面 (Home/Search/Preview/MyIdols) を最優先で baseline 化、補助コンポーネントは Phase C 内で追加することも許容 (ADR 0025 で記録) |
+| R-23 | 動的色 (アイドル brand color) で Roborazzi の diff が誤検出される | Preview ではアニメーション停止 + 代表 brand color 固定パラメータ、別途 brand-color バリエーション Preview を作成して網羅。Roborazzi `changeThreshold` の許容しきい値も併用 (ADR 0026) |
+| R-24 | Roborazzi が wasmJs を未サポート、wasmJs 固有レンダリング差異を検出できない | commonMain は JVM (Compose Desktop) で screenshot test、wasmJs 固有 actual は Konsist + 単体テストで担保。将来 Roborazzi が wasmJs 対応したら ADR 0026 改訂で乗り換え (ADR 0026) |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
 | R-6 | harness-bootstrap が万能になりすぎると専用 Skill 化が遅れる | A3 完了で必ず `archived/` へ移動、CLAUDE.md からも参照を外す |
 
@@ -1035,7 +1132,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
   - 未使用 rule / dormant Skill は **月次 cleanup PR** で別建てで撤去候補レビュー
 - **コード実装ワークフロー**:
   - 新規 Skill `implementation-workflow` が 8 フェーズで Plan/Epic 確定後の実装着手 → Lint/Test → AI Review → マージ判断 → レトロ起動を統合管理
-  - 新規 Skill `code-reviewer` が **独立 Evaluator** として 6 aspect (spec-conformance / test-quality / architecture / security / performance / code-quality) を並列レビュー、Coordinator が日本語の構造化レビューコメントを PR に post し Merge readiness を判定
+  - 新規 Skill `code-reviewer` が **独立 Evaluator** として 8 aspect (spec-conformance / test-quality / architecture / security / performance / code-quality / visual-regression / design-tokens) を並列レビュー、Coordinator が日本語の構造化レビューコメントを PR に post し Merge readiness を判定
   - 既存 `feature-request` / `bug-fix` / `refactor` の責務は **Plan / Epic 起票まで** に縮小、その後 implementation-workflow にバトンタッチ
   - Fix loop 上限はデフォルト 3 回、超過したら Plan に `status: blocked`
   - **人間 approve なしの auto-merge は禁止** (GitHub Agentic Workflows 原則準拠)
