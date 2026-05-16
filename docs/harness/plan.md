@@ -171,7 +171,7 @@ Web 配信は wasmJs ターゲット完成まで **一時停止** すること�
 
 ### 3.7 .gitignore に必須で含める項目
 
-PII 保護および credentials 漏洩防止のため、以下を `.gitignore` に明示する (ADR 0023 / 0024):
+PII 保護および credentials 漏洩防止のため、以下を `.gitignore` に明示する (ADR 0019 / 0024):
 
 ```
 # ユーザーデータ (PII を含む、絶対 commit 禁止)
@@ -196,7 +196,7 @@ Konsist で「`data/users.db*` がリポジトリに含まれていないこと�
 
 ### 3.8 PII 保護とアクセス制御
 
-ユーザーデータには Google アカウント由来の個人情報が含まれうるため、漏洩経路を構造的に塞ぐ多層防御を採用する (ADR 0023)。
+ユーザーデータには Google アカウント由来の個人情報が含まれうるため、漏洩経路を構造的に塞ぐ多層防御を採用する (ADR 0019)。
 
 #### 漏洩経路と防御対応
 
@@ -205,14 +205,14 @@ Konsist で「`data/users.db*` がリポジトリに含まれていないこと�
 | 1 | リポジトリへの直接 commit | `.gitignore` で `data/users.db*` を除外 + Konsist 検証 |
 | 2 | Container イメージへの焼き込み | Dockerfile で `users.db` を COPY しない + Konsist 検証 |
 | 3 | R2 バケットからの読出し | バケットは **private**、Backend Container の R2 token のみ allow |
-| 4 | R2 token の流出 | Secrets で管理、TTL **90 日** で定期ローテーション (ADR 0024) |
+| 4 | R2 token の流出 | Secrets で管理、TTL **90 日** で定期ローテーション (ADR 0020) |
 | 5 | リポジトリ内の credentials コミット | trufflehog による CI スキャン + `.gitignore` |
 | 6 | PR diff からの credentials 漏洩 | trufflehog の secret-scan workflow を全 PR に発火 |
 | 7 | Backend API 経由で他人のデータ取得 | ID Token 検証 + `uid` フィルタ、Konsist で `/api/me/*` ハンドラの `requireUid()` 呼出を強制 |
 | 8 | ログ / モニタリングへの PII 出力 | rules/logging.md + rules/pii.md で禁止、detekt カスタムルールで `Logger.*(user.email/...)` 検出 |
 | 9 | エラー応答に PII 含める | エラーレスポンス schema に PII フィールド禁止、Konsist 検証 |
 | 10 | GIS から取得した userinfo の過剰保存 | DB スキーマに保存するのは `uid` のみ (display name / email は都度取得 + memory cache TTL 15 分) |
-| 11 | GCP / Cloudflare コンソールへのアクセス | リリース権限を持つ単一 owner ロールのみ (ADR 0023) |
+| 11 | GCP / Cloudflare コンソールへのアクセス | リリース権限を持つ単一 owner ロールのみ (ADR 0019) |
 | 12 | `pr-retrospective` / KPT learning への PII 混入 | rules/pii.md で Skill 出力前の redaction 強制、Konsist でテスト fixture の非 `@example.com` domain 検出 |
 | 13 | `code-reviewer` が CI ログから PII を漏らす | aspect ごとに PII redaction の前処理を必須化 |
 
@@ -220,7 +220,7 @@ Konsist で「`data/users.db*` がリポジトリに含まれていないこと�
 
 メールアドレス / Google Account ID (sub claim 以外) / Display Name / プロフィール画像 URL / IP アドレス。`uid` (Google sub claim) は内部識別子として扱い PII 同等の取扱いとする。
 
-#### 権限ロール (ADR 0023)
+#### 権限ロール (ADR 0019)
 
 - **owner**: 全権限、Secrets ローテーション、GCP / Cloudflare コンソール operator、master マージ権限
 - 当面は owner ロール 1 名のみで運用 (個人プロジェクト想定)
@@ -230,7 +230,7 @@ Konsist で「`data/users.db*` がリポジトリに含まれていないこと�
 
 `pr-retrospective` / `code-reviewer` / `harness-meta` は、CI ログ・diff・PR コメント等から PII を間接的に拾う可能性があるため、出力前に必ず redaction フェーズを通す。テストフィクスチャは `@example.com` ドメインのみ使用し、Konsist で機械検証する。
 
-#### Secrets 管理 (ADR 0024)
+#### Secrets 管理 (ADR 0020)
 
 - ローカル: `.env.local` (`.gitignore` で除外)
 - CI/CD: **GitHub Secrets**
@@ -240,7 +240,7 @@ Konsist で「`data/users.db*` がリポジトリに含まれていないこと�
 
 ### 3.9 UI/UX デザインの現状記録 (Behavior Preservation)
 
-Phase C の大規模リファクタ (Decompose 撤去 / CMP Navigation 3 / Firebase 廃止 / wasmJs 化) が UI に与える影響を構造的にブロックするため、**リファクタ前に既存 UI/UX を凍結 (freeze)** し、機械的に検証可能な状態にする (ADR 0025 / 0026)。
+Phase C の大規模リファクタ (Decompose 撤去 / CMP Navigation 3 / Firebase 廃止 / wasmJs 化) が UI に与える影響を構造的にブロックするため、**リファクタ前に既存 UI/UX を凍結 (freeze)** し、機械的に検証可能な状態にする (ADR 0021)。
 
 #### 三本柱
 
@@ -274,7 +274,7 @@ Phase C の大規模リファクタ (Decompose 撤去 / CMP Navigation 3 / Fireb
 
 - **commonMain の Composable は Compose Desktop (JVM) で screenshot 化可能**、これは wasmJs 用に書いた commonMain コードもそのまま検証できる (Compose は全 target で Skia ベースのレンダリング)
 - wasmJs ターゲット固有の `actual` 実装 (GIS 認証フロー等) は薄い層で、screenshot test の対象外として Konsist + 単体テストで担保
-- 将来 Roborazzi が wasmJs に公式対応したら ADR 0026 を改訂し、wasmJs ランタイムでの実機 screenshot に切替を検討
+- 将来 Roborazzi が wasmJs に公式対応したら ADR 0021 を改訂し、wasmJs ランタイムでの実機 screenshot に切替を検討
 
 #### code-reviewer aspect の拡張 (6 → 8)
 
@@ -393,7 +393,7 @@ AI による自動テスト生成を前提とし、テスト品質は **3 つの
 
 ## 4. ドキュメント構造
 
-> AI が自律的に実装を進めるために必要な情報を `docs/` に体系化する (ADR 0030)。各 docs は **冒頭 5 行以内の summary + 詳細 lazy-load** の構造を必須化し、AI のコンテキストを圧迫しないようにする (R-32)。重複・矛盾は `traceability.md` と Konsist で機械検証 (R-33)。
+> AI が自律的に実装を進めるために必要な情報を `docs/` に体系化する (ADR 0025)。各 docs は **冒頭 5 行以内の summary + 詳細 lazy-load** の構造を必須化し、AI のコンテキストを圧迫しないようにする (R-32)。重複・矛盾は `traceability.md` と Konsist で機械検証 (R-33)。
 
 ```
 DESIGN.md                       ← リポジトリ root に配置 (Google Stitch 標準準拠)
@@ -441,39 +441,44 @@ docs/
   adr/                          ─ Architecture Decision Records (起票基準は ADR 0001 と .claude/rules/adr.md に明文化)
     README.md                   ─ ADR 起票基準と運用ガイド (判断フロー図、ADR にすべき例/他の方法にすべき例)
     template.md                 ─ MADR + 日本語化された雛形 (巻末に「ADR 化すべき例」「他の記録方法にすべき例」を列挙)
-    0001-record-architecture-decisions.md       ─ ADR 運用基準・書式・起票判断フロー (本計画 4.5 節を要約)
+    0001-record-architecture-decisions.md                       ─ ADR 運用基準・書式・起票判断フロー (本計画 4.5 節を要約)
     0002-app-architecture-cmp-viewmodel-nav3.md
     0003-module-structure-feature-first.md
-    0004-test-strategy-and-coverage.md          (旧 0005)
-    0005-decompose-removal.md                   (旧 0006)
-    0006-i18n-compose-resources.md              (旧 0007)
-    0007-imasparql-sync-upstream-driven.md      (旧 0008)
-    0008-user-data-backend-sqlite-litestream-r2.md  (旧 0009、内容更新)
-    0009-backend-hosting-cloud-run.md           (旧 0010)
-    0010-idol-master-sqlite-in-repo.md          (旧 0011、タイトル明確化)
-    0011-firebase-removal-complete.md           (旧 0012、改題)
-    0012-remove-js-app.md                       (旧 0013)
-    0013-line-branch-coverage-100-percent.md    (旧 0014)
-    0014-imasparql-local-docker-fuseki.md       (旧 0015)
-    0015-mutation-testing-pitest.md             (旧 0016)
-    0016-spec-coverage-traceability.md          (旧 0017)
-    0017-harness-loop-local-polling.md          (旧 0018)
-    0018-implementation-workflow.md             (旧 0019)
-    0019-code-review-aspects-coordinator.md     (旧 0020)
-    0020-template-language-japanese.md          (旧 0021)
-    0021-gis-unified-authentication.md          (旧 0022)
-    0022-cloudflare-pages-and-r2.md             (旧 0023)
-    0023-pii-protection-and-permission-roles.md (旧 0024 + 0026 統合、権限ロール=owner のみを含む)
-    0024-secrets-management-policy.md           (旧 0025)
-    0025-ui-design-snapshot-before-refactor.md  ─ ★新規 DESIGN.md + UI Inventory + Visual Regression Baseline の三本柱
-    0026-visual-regression-testing-roborazzi.md ─ ★新規 Roborazzi + Compose Desktop で commonMain を screenshot、解像度マトリックス (mobile + PC 16:9) × テーママトリックス
-    0027-mcp-servers-jetbrains-context7-cloudflare.md ─ ★新規 JetBrains MCP + Context7 MCP + Cloudflare MCP の採用。GitHub MCP は gh CLI で代替、Sourcegraph MCP は JetBrains MCP の IDE indexing で代替、Figma/Sentry/Serena は将来検討
-    0028-skill-authoring-with-skill-creator.md  ─ ★新規 Skill 作成は Claude Code ユーザースコープの example-skills:skill-creator を経由、SKILL.md は Anthropic Complete Guide 準拠 (description=trigger, Gotchas 必須, MUST/ALWAYS/NEVER 禁止)
-    0029-harness-evolution-from-external-research.md  ─ ★新規 外部研究 / ベストプラクティス駆動の改善ループ、手動起動のみ (cron 不採用、Claude API コスト抑制)、harness-meta (内部 KPT 駆動) と二系統で補完
-    0030-documentation-structure-for-ai-autonomy.md   ─ ★新規 AI 駆動実装に必要な docs 構造を体系化 (architecture 6 分割 / API は OpenAPI 3.1 / glossary / codebase-map / traceability)、命名規約 (REQ-NNN / SPEC-NNN-N / EPIC-NNN / PLAN-NNN / ADR-NNNN)、各 docs は冒頭 5 行 summary + 詳細 lazy-load
-    # 削除済 (起票基準に照らして規約レベル → rules/ に統合)
-    #   旧 0004 state-and-uiaction-conventions   → .claude/rules/{viewmodel,ui-state}.md
-    #   旧 0026 permission-roles-owner-only       → ADR 0023 内のセクション
+    0004-test-strategy-and-coverage.md                          ─ テスト戦略総論 (三層指標へのインデックス)
+    0005-decompose-removal.md
+    0006-i18n-compose-resources.md
+    0007-imasparql-sync-upstream-driven.md
+    0008-user-data-backend-sqlite-litestream-r2.md
+    0009-hybrid-hosting-cloud-run-cloudflare.md                 ─ 旧 0009 (Cloud Run) + 旧 0022 (Cloudflare Pages + R2) を統合: Backend は Cloud Run、静的配信は Cloudflare Pages、Litestream バックアップ先は R2、Cloudflare Containers は不採用 (Workers Paid $5/月のため)
+    0010-idol-master-sqlite-in-repo.md
+    0011-auth-stack-migration-from-firebase-to-gis.md           ─ 旧 0011 (Firebase 廃止) + 旧 0021 (GIS 統一) を統合: 認証スタック転換を 1 ADR で表裏一体に記録、dev.gitlive:firebase-* と core/network/{auth,firestore} を撤去し全 target で GIS に統一、Backend で JWKS 検証
+    0012-remove-js-app.md
+    0013-line-branch-coverage-100-percent.md
+    0014-imasparql-local-docker-fuseki.md
+    0015-mutation-testing-pitest.md
+    0016-spec-coverage-traceability.md
+    0017-harness-loop-local-polling.md
+    0018-implementation-and-evaluation-workflow.md              ─ 旧 0018 (implementation-workflow) + 旧 0019 (code-reviewer) を統合: Anthropic GAN-style の Generator (implementation-workflow、8 フェーズ) + Evaluator (code-reviewer、8 aspect + coordinator) を 1 ADR で扱う
+    0019-pii-protection-and-permission-roles.md                 (旧 0023)
+    0020-secrets-management-policy.md                           (旧 0024)
+    0021-ui-design-freeze-with-visual-regression.md             ─ 旧 0025 (UI 凍結三本柱) + 旧 0026 (Roborazzi) を統合: DESIGN.md + UI Inventory + Roborazzi baseline、Roborazzi + Compose Desktop で commonMain を screenshot、解像度マトリックス (mobile + PC 16:9) × Light/Dark、wasmJs 未対応への対処
+    0022-mcp-servers-jetbrains-context7-cloudflare.md           ─ JetBrains MCP + Context7 MCP + Cloudflare MCP の採用。GitHub MCP は gh CLI で代替、Sourcegraph MCP は JetBrains MCP の IDE indexing で代替、Figma/Sentry/Serena は将来検討
+    0023-skill-authoring-with-skill-creator.md                  ─ Skill 作成は Claude Code ユーザースコープの example-skills:skill-creator を経由、SKILL.md は Anthropic Complete Guide 準拠 (description=trigger, Gotchas 必須, MUST/ALWAYS/NEVER 禁止)
+    0024-harness-evolution-from-external-research.md            ─ 外部研究 / ベストプラクティス駆動の改善ループ、手動起動のみ (cron 不採用、Claude API コスト抑制)、harness-meta (内部 KPT 駆動) と二系統で補完
+    0025-documentation-structure-and-language.md                ─ 旧 0030 + 旧 0020 (template-language-japanese) を統合: AI 駆動実装に必要な docs 構造 (architecture 6 分割 / API は OpenAPI 3.1 / glossary / codebase-map / traceability) と命名規約 (REQ-NNN / SPEC-NNN-N / EPIC-NNN / PLAN-NNN / ADR-NNNN)、各 docs は 5 行 summary + lazy-load、**ハーネスを構成する Markdown は全て日本語で記述する** 方針
+    # 統合・削除の履歴
+    #   旧 0004 state-and-uiaction-conventions   → .claude/rules/{viewmodel,ui-state}.md に統合
+    #   旧 0009 backend-hosting-cloud-run         → 新 0009 (Cloudflare Pages + R2 と統合)
+    #   旧 0011 firebase-removal-complete         → 新 0011 (GIS と統合)
+    #   旧 0018 implementation-workflow            → 新 0018 (code-reviewer と統合)
+    #   旧 0019 code-review-aspects-coordinator    → 新 0018 (implementation-workflow と統合)
+    #   旧 0020 template-language-japanese         → 新 0025 (documentation-structure と統合)
+    #   旧 0021 gis-unified-authentication         → 新 0011 (Firebase 廃止と統合)
+    #   旧 0022 cloudflare-pages-and-r2            → 新 0009 (Cloud Run と統合)
+    #   旧 0025 ui-design-snapshot-before-refactor → 新 0021 (Roborazzi と統合)
+    #   旧 0026 visual-regression-testing-roborazzi → 新 0021 (UI 凍結三本柱と統合)
+    #   旧 0026 permission-roles-owner-only        → 新 0019 内のセクション
+    #   旧 0030 documentation-structure-for-ai-autonomy → 新 0025 (日本語化方針と統合)
   epics/                        ─ 複数 PR の取り組み (1 epic = 1 ディレクトリ)
     INDEX.md
     template/
@@ -514,7 +519,7 @@ docs/
     testing.md                  ─ ★新規 三層指標の運用 + Roborazzi baseline 操作
     i18n.md                     ─ ★新規 composeResources 運用、文言 ID 命名、locale 追加手順
     troubleshooting.md          ─ (将来追加) 既知問題 / エラーカタログ / FAQ
-  design/                       ─ ★新規 UI/UX デザインの現状記録 (ADR 0025 / 0026 で定義)
+  design/                       ─ ★新規 UI/UX デザインの現状記録 (ADR 0021 で定義)
     README.md                   ─ DESIGN.md / Inventory / Baseline の運用ガイドと参照リンク
     inventory/
       INDEX.md
@@ -585,16 +590,16 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 
 - Compose Multiplatform + 共通 ViewModel + Navigation 3 を採用する (ADR 0002)
 - Decompose を撤去する (ADR 0005)
-- Firebase を完全廃止して GIS + 自前 Backend にする (ADR 0011 / 0021)
-- Backend ホスティングに Cloud Run を採用、Cloudflare Containers を不採用 (ADR 0009 / 0022)
+- Firebase を完全廃止して GIS に統一する (ADR 0011)
+- Backend は Cloud Run、静的配信は Cloudflare Pages、Litestream バックアップ先は R2 のハイブリッド (ADR 0009)
 - アイドル情報を Git 内 SQLite に commit、ユーザーデータは Litestream で R2 にレプリケート (ADR 0008 / 0010)
 - Line/Branch coverage 100% を必達ゲートにする (ADR 0013)
 - ハーネスループをローカル Claude Code ポーリングで駆動する (GitHub Actions で Claude API を呼ばない) (ADR 0017)
-- code-reviewer を 8 aspect + Coordinator で構成する (ADR 0019、visual-regression / design-tokens を含む)
-- 全 Markdown テンプレートを日本語で記述する (ADR 0020)
-- PII の DB スキーマは `uid` のみ、権限ロールは当面 owner のみ (ADR 0023)
-- UI/UX をリファクタ前に DESIGN.md + UI Inventory + Roborazzi baseline で凍結する (ADR 0025 / 0026)
-- **MCP サーバは JetBrains MCP + Context7 MCP + Cloudflare MCP の 3 つを採用** (ADR 0027):
+- implementation-workflow + code-reviewer の Generator/Evaluator 二段構成 (ADR 0018、code-reviewer は 8 aspect + Coordinator)
+- ハーネスを構成する Markdown は全て日本語で記述する (ADR 0025 に統合、旧 0020 単独 ADR は廃止して新 0025 内のセクションに)
+- PII の DB スキーマは `uid` のみ、権限ロールは当面 owner のみ (ADR 0019)
+- UI/UX をリファクタ前に DESIGN.md + UI Inventory + Roborazzi baseline で凍結する (ADR 0021)
+- **MCP サーバは JetBrains MCP + Context7 MCP + Cloudflare MCP の 3 つを採用** (ADR 0022):
   - **JetBrains MCP** (IntelliJ IDEA 2025.2+ 組み込み): Skill が IDE 経由で rename / inspection / IDE index 検索 / build を操作
   - **Context7 MCP**: Kotlin / Compose MP / Ktor / SQLDelight / Roborazzi 等のバージョン固有ドキュメントを LLM に注入、ハルシネーション抑止
   - **Cloudflare MCP**: R2 / Pages / DNS / Secrets 管理
@@ -602,10 +607,10 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
   - **Sourcegraph MCP は採用見送り**、JetBrains MCP の IDE indexing で代替
   - **Serena MCP は採用見送り**、JetBrains MCP + Context7 MCP で代替 (Kotlin は "Indirect Support" にとどまり Compose MP / KMP / wasmJs 解析で IntelliJ Kotlin Plugin に劣る、JetBrains backend は有料、30 分のセットアップ + 初回インデックスのオーバーヘッド)。ただし IDE 非起動環境 (CI 上 agent) で fallback が必要になったら別 Plan で再評価
   - 将来検討: Figma MCP (Figma 資産を作る場合) / Code Pathfinder (高度なコード検索が必要なら) / Serena MCP (上記条件成立時) / Sentry MCP (本番後)
-- **Skill 作成は `example-skills:skill-creator` 経由**: Claude Code ユーザースコープにインストール済の Anthropic 公式 Skill を使用、本リポジトリには配置しない。SKILL.md は Anthropic "Complete Guide to Building Skills for Claude" 準拠 (description=trigger、Gotchas 必須、MUST/ALWAYS/NEVER 禁止)、AgentSkills 2026 spec + 100-point rubric (ADR 0028)
-- **ハーネス進化は内部 + 外部の二系統**: `harness-meta` (内部 KPT 駆動、週次 cron + 閾値 + 手動) と `harness-evolution` (外部研究 / ベストプラクティス駆動、**手動起動のみ**、Claude API コスト抑制のため cron 不採用) を補完併用 (ADR 0029)。harness-evolution の出力は `docs/harness/evolution-proposals/YYYY-MM-DD.md`
+- **Skill 作成は `example-skills:skill-creator` 経由**: Claude Code ユーザースコープにインストール済の Anthropic 公式 Skill を使用、本リポジトリには配置しない。SKILL.md は Anthropic "Complete Guide to Building Skills for Claude" 準拠 (description=trigger、Gotchas 必須、MUST/ALWAYS/NEVER 禁止)、AgentSkills 2026 spec + 100-point rubric (ADR 0023)
+- **ハーネス進化は内部 + 外部の二系統**: `harness-meta` (内部 KPT 駆動、週次 cron + 閾値 + 手動) と `harness-evolution` (外部研究 / ベストプラクティス駆動、**手動起動のみ**、Claude API コスト抑制のため cron 不採用) を補完併用 (ADR 0024)。harness-evolution の出力は `docs/harness/evolution-proposals/YYYY-MM-DD.md`
 - **GitHub Actions 上での Claude API 実行はゼロ**: 既存方針 (pr-poller / pr-retrospective / harness-meta のローカル化) に加え、**`dependency-upgrade` Skill 起動も pr-poller がローカルで Renovate ラベル PR を検出して実行** に統一。`upstream-driven 同期`・CI・trufflehog secret-scan は Claude API を使わないため GitHub Actions のまま運用
-- **AI 駆動実装のための docs 構造**: `docs/` に **glossary / codebase-map / traceability / architecture (6 分割) / api (OpenAPI 3.1) / security / requirements / specifications (basic + detail)** を体系化 (ADR 0030)。各 docs は **冒頭 5 行 summary + 詳細 lazy-load** 構造、命名規約 (REQ-NNN / SPEC-NNN-N / EPIC-NNN / PLAN-NNN / ADR-NNNN) を `.claude/rules/docs-structure.md` で明文化。`docs/traceability.md` は A6 で Konsist 自動生成。`docs/README.md` を **AI 用エントリポイント** として推奨読み順を明記
+- **AI 駆動実装のための docs 構造**: `docs/` に **glossary / codebase-map / traceability / architecture (6 分割) / api (OpenAPI 3.1) / security / requirements / specifications (basic + detail)** を体系化 (ADR 0025)。各 docs は **冒頭 5 行 summary + 詳細 lazy-load** 構造、命名規約 (REQ-NNN / SPEC-NNN-N / EPIC-NNN / PLAN-NNN / ADR-NNNN) を `.claude/rules/docs-structure.md` で明文化。`docs/traceability.md` は A6 で Konsist 自動生成。`docs/README.md` を **AI 用エントリポイント** として推奨読み順を明記
 
 #### ADR にすべきでない例 (他の記録方法を使う)
 
@@ -632,7 +637,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 - ステータス: `proposed` → `accepted` → `deprecated` | `superseded by ADR-NNNN` (MADR 4 状態)
 - `accepted` 以降は immutable。変更時は新 ADR を起こし、旧 ADR を `Superseded by` でリンク
 - 採番欠番は実装前なら整理可、運用後は番号を維持して `withdrawn` を許容
-- 言語は日本語 (ADR 0020)
+- 言語は日本語 (ADR 0025)
 
 #### ADR と他ドキュメントの使い分け
 
@@ -742,7 +747,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
     spec-living-sync.md         ─ 実装中の仕様変更時の双方向同期手順 (Spec Kit / Intent 由来)
     # ドキュメント表記
     markdown.md                 ─ Markdown 表記規約 (テンプレート言語ポリシーを含む)
-    template-language.md        ─ ★新規 全テンプレート Markdown は日本語で記述 (ADR 0020 を要約)
+    template-language.md        ─ ★新規 全テンプレート Markdown は日本語で記述 (ADR 0025 を要約)
     # 同期 / Backend
     sync-job.md
     sqlite-data-file.md
@@ -906,11 +911,11 @@ Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の spec
 - **GitHub Actions で Claude API を呼ばない**: ローカル Claude Code 内の `CronCreate` / `ScheduleWakeup` でポーリング駆動。API コストはユーザーの既存利用枠内で完結
 - **Learning ファイルが Single Source of Truth**: PR コメントは出さない。`docs/harness/learnings/` の Markdown が `pr-retrospective` の出力先かつ `harness-meta` の入力源
 - **対話的フィードバック**: 採用見送りや保留は元 learning ファイルに `harness-meta feedback` セクションを追記、提案 → 結果の往復ログが 1 ファイル内で完結
-- **テンプレート言語は日本語**: ADR / Plan / Epic / 要件 / 仕様 / runbook / learning / レビューコメント の全テンプレ Markdown は日本語見出し・日本語例文で記述 (ADR 0020、`.claude/rules/template-language.md`)。frontmatter のキー (`id`, `status`, `type` 等) やコマンド文字列は英語のまま
+- **テンプレート言語は日本語**: ADR / Plan / Epic / 要件 / 仕様 / runbook / learning / レビューコメント の全テンプレ Markdown は日本語見出し・日本語例文で記述 (ADR 0025、`.claude/rules/template-language.md`)。frontmatter のキー (`id`, `status`, `type` 等) やコマンド文字列は英語のまま
 
 ### 5.5 テンプレート言語ポリシー
 
-ハーネスが生成・参照する全ての Markdown テンプレートは **日本語で記述** する (ADR 0020)。AI 駆動でも人間レビューでも認知負荷を最小化し、ユーザーが第一言語で読み書きできるようにするため。
+ハーネスが生成・参照する全ての Markdown テンプレートは **日本語で記述** する (ADR 0025)。AI 駆動でも人間レビューでも認知負荷を最小化し、ユーザーが第一言語で読み書きできるようにするため。
 
 #### 日本語化対象
 
@@ -1055,7 +1060,7 @@ completed_at: null
 
 ### 5.6 MCP サーバ構成
 
-Skill が IDE / ライブラリドキュメント / Cloudflare を操作するために MCP (Model Context Protocol) サーバを接続する (ADR 0027)。**GitHub 操作は `gh` CLI で代替**、コード検索は **JetBrains MCP の IDE indexing で代替**するため、これらの MCP は採用しない。
+Skill が IDE / ライブラリドキュメント / Cloudflare を操作するために MCP (Model Context Protocol) サーバを接続する (ADR 0022)。**GitHub 操作は `gh` CLI で代替**、コード検索は **JetBrains MCP の IDE indexing で代替**するため、これらの MCP は採用しない。
 
 #### 採用する MCP (B0 で導入する 3 つ)
 
@@ -1156,8 +1161,8 @@ Remote HTTP + OAuth。初回接続時に Claude Code がブラウザで認証フ
 - **IDE 操作は JetBrains MCP**: rename / inspection / file analysis / index 経由 regex search / build / run config 実行。手動で `git grep` する代わりに JetBrains MCP の検索を優先 (IDE index が高速・正確)
 - **ライブラリの API 確認は Context7 MCP**: コード生成前に「`androidx.lifecycle.ViewModel` の `viewModelScope` の API」のような確認を行うときは必ず Context7 を経由 (training data の古い情報や hallucination を回避)
 - **Cloudflare 操作**: `wrangler` CLI で済む場合 (`wrangler deploy` 等) は CLI を優先、複雑な API 操作 (R2 token ローテーション、bucket policy 更新等) は Cloudflare MCP を使う
-- **MCP 認証情報の取扱**: OAuth token はローカル Claude Code 管理、リポジトリには絶対 commit しない (Secrets 管理規約 ADR 0024 の対象)
-- **Skill が MCP 結果を learning / レビューコメントに含める場合**: PII redaction フェーズで token / API キー類を除去 (PII 規約 ADR 0023 と同等)
+- **MCP 認証情報の取扱**: OAuth token はローカル Claude Code 管理、リポジトリには絶対 commit しない (Secrets 管理規約 ADR 0020 の対象)
+- **Skill が MCP 結果を learning / レビューコメントに含める場合**: PII redaction フェーズで token / API キー類を除去 (PII 規約 ADR 0019 と同等)
 - **権限スコープ**: Cloudflare MCP は対象 zone / bucket のみ allow、JetBrains MCP は IDE のプロジェクトスコープに自動的に制限される
 
 ---
@@ -1178,8 +1183,8 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 
 | # | 単位 | 起動 Skill | 内容 |
 |---|---|---|---|
-| **A1** | Plan | `harness-bootstrap` | ADR 0001-0030 を一括起草する PR (全て日本語) |
-| **A2** | EPIC-A2 | `harness-bootstrap` | **`.claude/rules/*` 全ファイル本格化 + `docs/` 全面拡充**: docs/README.md (AI エントリポイント・推奨読み順)、glossary.md、codebase-map.md (初版、A10 / Phase C で随時更新)、architecture/{layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md、api/README.md + colormaster-api.yaml (骨格、内容は C5 で本格化)、security/README.md (ADR 索引)、requirements/{README, template}.md、specifications/{README, basic-template, detail-template}.md、runbooks/{local-development, testing, i18n}.md を完成。各 docs は冒頭 5 行 summary + 詳細 lazy-load 構造 (ADR 0030) |
+| **A1** | Plan | `harness-bootstrap` | ADR 0001-0025 を一括起草する PR (全て日本語) |
+| **A2** | EPIC-A2 | `harness-bootstrap` | **`.claude/rules/*` 全ファイル本格化 + `docs/` 全面拡充**: docs/README.md (AI エントリポイント・推奨読み順)、glossary.md、codebase-map.md (初版、A10 / Phase C で随時更新)、architecture/{layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md、api/README.md + colormaster-api.yaml (骨格、内容は C5 で本格化)、security/README.md (ADR 索引)、requirements/{README, template}.md、specifications/{README, basic-template, detail-template}.md、runbooks/{local-development, testing, i18n}.md を完成。各 docs は冒頭 5 行 summary + 詳細 lazy-load 構造 (ADR 0025) |
 | **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** / **ui-snapshot** / **harness-evolution** の本格版へのアップグレード、**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を採用しリポジトリには配置しない**)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 8 aspect の binary eval checklist + coordinator を完全実装 (visual-regression / design-tokens は A10 完了後に enable)。pr-poller は **Renovate ラベル PR の検出と dependency-upgrade 起動** も担当。マージ後、`harness-bootstrap` は `archived/` へ |
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
 | **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル、**`dev.gitlive:firebase-*` 依存、`core/network/{auth,firestore}`、`firebase.json`、`.firebaserc`**) |
@@ -1275,20 +1280,20 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-15 | code-reviewer の自動レビューに人間が依存しすぎ、本質的な見落としを許すリスク | GitHub Agentic Workflows 原則「人間 approve なしに merge しない」を必達。code-reviewer の Ready 判定は merge を許可するだけで自動 merge しない。人間レビュアーには「code-reviewer の指摘で十分か?」を考えさせる文言を PR コメントに含める |
 | R-17 | Cloud Run の JVM Container は Cold Start に数秒かかる可能性 | C7 で cold start 計測、許容不可なら GraalVM Native Image 化を別 ADR で検討。read-heavy API なので初回のみ影響、トラフィック想定では問題小さい見込み |
 | R-18 | R2 + Litestream の実環境動作未検証 | C5 内で Testcontainers の MinIO (S3 互換) と本番 R2 の両方で integration test を実施。runbook `docs/runbooks/r2-litestream.md` に手順を残す |
-| R-19 | R2 token 流出による `users.db` 漏洩 | R2 bucket private + bucket policy で Backend Service Token のみ allow、token TTL 90 日で定期ローテーション (ADR 0024)、漏洩時のローテーション runbook を `docs/runbooks/secrets-rotation.md` に整備。DB スキーマで PII を `uid` のみに最小化することで漏洩時の影響を構造的に下げる |
+| R-19 | R2 token 流出による `users.db` 漏洩 | R2 bucket private + bucket policy で Backend Service Token のみ allow、token TTL 90 日で定期ローテーション (ADR 0020)、漏洩時のローテーション runbook を `docs/runbooks/secrets-rotation.md` に整備。DB スキーマで PII を `uid` のみに最小化することで漏洩時の影響を構造的に下げる |
 | R-20 | PR diff / リポジトリ履歴に PII / credentials が混入するリスク | trufflehog による全 PR 差分のスキャン (A6 で導入)、`.gitignore` で `data/users.db*` / `.env*` / `*-credentials.json` 等を除外、Konsist で `data/users.db*` の追跡禁止を検証 |
 | R-21 | Skill (code-reviewer / pr-retrospective / harness-meta) が PII を出力に転載するリスク | `.claude/rules/pii.md` で Skill 出力前の redaction を強制、Konsist でテストフィクスチャの `@example.com` ドメイン以外の検出、Skill 設計で CI ログ等の取り込み時に redaction フェーズを必須化 |
-| R-22 | Preview 未整備の Composable が多く A10 の baseline 生成が想定より長期化 | モジュール単位で段階 Plan に分割。重要画面 (Home/Search/Preview/MyIdols) を最優先で baseline 化、補助コンポーネントは Phase C 内で追加することも許容 (ADR 0025 で記録) |
-| R-23 | 動的色 (アイドル brand color) で Roborazzi の diff が誤検出される | Preview ではアニメーション停止 + 代表 brand color 固定パラメータ、別途 brand-color バリエーション Preview を作成して網羅。Roborazzi `changeThreshold` の許容しきい値も併用 (ADR 0026) |
-| R-24 | Roborazzi が wasmJs を未サポート、wasmJs 固有レンダリング差異を検出できない | commonMain は JVM (Compose Desktop) で screenshot test、wasmJs 固有 actual は Konsist + 単体テストで担保。将来 Roborazzi が wasmJs 対応したら ADR 0026 改訂で乗り換え (ADR 0026) |
-| R-25 | MCP の OAuth token がローカル Claude Code から流出するリスク | token はローカル Claude Code の安全領域のみに保存、リポジトリ commit 禁止 (`.gitignore` で `.claude/oauth-tokens*` 等を除外)。Cloudflare MCP は対象 zone / bucket のみに権限スコープを制限、JetBrains MCP は IDE プロジェクトスコープに自動制限 (ADR 0027) |
-| R-26 | Skill が MCP の結果に含まれる secret / PII を learning / レビューコメントに転載 | `.claude/rules/mcp-usage.md` で出力前の redaction を強制、Konsist で Skill 実装ファイル内の secret パターン (`/^GHP_/`, `/^sk_/` 等) を検出 (ADR 0023 / 0027) |
-| R-27 | IntelliJ IDEA が起動していない / バージョンが 2025.2 未満 / MCP Server プラグインが無効 / 動的ポートが IDE 再起動で変わって `.claude/mcp.json` が古い、で JetBrains MCP が利用不可 | `docs/runbooks/mcp-setup.md` に IDE バージョン要件 (2025.2+) と MCP Server プラグイン有効化手順、Copy SSE Config の再貼り付け / `claude mcp add` 経由の再登録手順を明記。Skill 起動時に JetBrains MCP の接続失敗を検出したら、警告を出しつつ `gh` CLI / `git grep` などの代替手段にフォールバック。長期的・恒常的に IDE 非起動環境 (CI 上 agent 実行など) で運用したい場合は **Serena MCP の採用を別 Plan で再評価** (ADR 0027 の将来検討に記載) |
+| R-22 | Preview 未整備の Composable が多く A10 の baseline 生成が想定より長期化 | モジュール単位で段階 Plan に分割。重要画面 (Home/Search/Preview/MyIdols) を最優先で baseline 化、補助コンポーネントは Phase C 内で追加することも許容 (ADR 0021 で記録) |
+| R-23 | 動的色 (アイドル brand color) で Roborazzi の diff が誤検出される | Preview ではアニメーション停止 + 代表 brand color 固定パラメータ、別途 brand-color バリエーション Preview を作成して網羅。Roborazzi `changeThreshold` の許容しきい値も併用 (ADR 0021) |
+| R-24 | Roborazzi が wasmJs を未サポート、wasmJs 固有レンダリング差異を検出できない | commonMain は JVM (Compose Desktop) で screenshot test、wasmJs 固有 actual は Konsist + 単体テストで担保。将来 Roborazzi が wasmJs 対応したら ADR 0021 改訂で乗り換え (ADR 0021) |
+| R-25 | MCP の OAuth token がローカル Claude Code から流出するリスク | token はローカル Claude Code の安全領域のみに保存、リポジトリ commit 禁止 (`.gitignore` で `.claude/oauth-tokens*` 等を除外)。Cloudflare MCP は対象 zone / bucket のみに権限スコープを制限、JetBrains MCP は IDE プロジェクトスコープに自動制限 (ADR 0022) |
+| R-26 | Skill が MCP の結果に含まれる secret / PII を learning / レビューコメントに転載 | `.claude/rules/mcp-usage.md` で出力前の redaction を強制、Konsist で Skill 実装ファイル内の secret パターン (`/^GHP_/`, `/^sk_/` 等) を検出 (ADR 0019 / 0027) |
+| R-27 | IntelliJ IDEA が起動していない / バージョンが 2025.2 未満 / MCP Server プラグインが無効 / 動的ポートが IDE 再起動で変わって `.claude/mcp.json` が古い、で JetBrains MCP が利用不可 | `docs/runbooks/mcp-setup.md` に IDE バージョン要件 (2025.2+) と MCP Server プラグイン有効化手順、Copy SSE Config の再貼り付け / `claude mcp add` 経由の再登録手順を明記。Skill 起動時に JetBrains MCP の接続失敗を検出したら、警告を出しつつ `gh` CLI / `git grep` などの代替手段にフォールバック。長期的・恒常的に IDE 非起動環境 (CI 上 agent 実行など) で運用したい場合は **Serena MCP の採用を別 Plan で再評価** (ADR 0022 の将来検討に記載) |
 | R-28 | Context7 MCP が古い / 取得不能 / 別のライブラリの API を返すリスク | Context7 は公開ライブラリ docs のため、AI が取得した内容を Konsist / detekt / 型チェッカーで二重検証。「Context7 で確認した」だけで実装を確定させない (rules/mcp-usage.md 明記) |
-| R-29 | harness-evolution が古い / 信頼性の低い情報源を追従するリスク | 情報源は `.claude/rules/harness-evolution.md` の **ホワイトリスト方式**、提案には必ず出典 URL + 引用日付、Context7 MCP で API 引用検証 (ADR 0029) |
+| R-29 | harness-evolution が古い / 信頼性の低い情報源を追従するリスク | 情報源は `.claude/rules/harness-evolution.md` の **ホワイトリスト方式**、提案には必ず出典 URL + 引用日付、Context7 MCP で API 引用検証 (ADR 0024) |
 | R-30 | `example-skills:skill-creator` の公式アップデートに追従できないと SKILL.md 仕様 drift する | harness-evolution の手動実行時に `anthropics/skills` の更新を確認する責務に組み込み (`.claude/rules/harness-evolution.md` のホワイトリスト先頭に明記)。月次相当の頻度で手動実行を奨励 |
 | R-31 | harness-evolution が harness-meta と提案重複 | 重複検出ルール (`.claude/rules/harness-evolution.md`): 既に learning ファイルで指摘済の提案は harness-evolution 側を見送り。改修 PR は `harness-meta` / `harness-evolution` の **ラベル分離** で運用、harness-meta 側を優先 |
-| R-32 | docs/ が肥大化して AI のコンテキストを圧迫 | 各 docs に **冒頭 5 行以内の summary + 詳細 lazy-load** 構造を必須化、`.claude/rules/docs-structure.md` で規定、Konsist で機械検証 (ADR 0030 / A6) |
+| R-32 | docs/ が肥大化して AI のコンテキストを圧迫 | 各 docs に **冒頭 5 行以内の summary + 詳細 lazy-load** 構造を必須化、`.claude/rules/docs-structure.md` で規定、Konsist で機械検証 (ADR 0025 / A6) |
 | R-33 | 複数 docs 間の重複・矛盾 (例: api.md と OpenAPI yaml、spec と requirements、ADR と rules の重複指摘) | `docs/traceability.md` を Konsist で自動生成し Plan/Epic/ADR/Spec/実装のクロスリンクを機械維持 (A6)。code-reviewer の architecture aspect で docs 間の矛盾も検出対象に |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
 | R-6 | harness-bootstrap が万能になりすぎると専用 Skill 化が遅れる | A3 完了で必ず `archived/` へ移動、CLAUDE.md からも参照を外す |
@@ -1318,7 +1323,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 - 昇格時のステータスは `promoted`。
 - B0 のみ手作業、A1 以降は Skill ループ駆動。
 - **ADR の起票基準**: 4.5 節の 10 項目のうち 2 つ以上を満たすときに ADR を起こす。コーディング/命名規約は `.claude/rules/`、PR 単位の判断は Plan、Epic 内の保留→解決は `decisions.md`、運用手順は runbook で扱う。ADR 0001 と `.claude/rules/adr.md`、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙。
-- **ADR 精査結果**: 初期 ADR は **24 個** (旧 0004 state-and-uiaction-conventions は規約レベルにつき rules に統合、旧 0026 permission-roles-owner-only は ADR 0023 PII に統合)。連番に再採番済み。
+- **ADR 精査結果**: 初期 ADR は **24 個** (旧 0004 state-and-uiaction-conventions は規約レベルにつき rules に統合、旧 0026 permission-roles-owner-only は ADR 0019 PII に統合)。連番に再採番済み。
 - harness-bootstrap は A3 後に `archived/` へ移動。
 - **KPT は全 PR で生成**:
   - 出力先は **ファイル** (`docs/harness/learnings/YYYY-MM-DD-pr-N.md`)、PR コメントは出さない
@@ -1335,7 +1340,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
   - Fix loop 上限はデフォルト 3 回、超過したら Plan に `status: blocked`
   - **人間 approve なしの auto-merge は禁止** (GitHub Agentic Workflows 原則準拠)
 - **テンプレート言語**:
-  - 全 Markdown テンプレート (ADR / Epic / Plan / 要件 / 仕様 / runbook / learning / PR description / レビューコメント等) は **日本語見出し・日本語例文** で記述 (ADR 0020)
+  - 全 Markdown テンプレート (ADR / Epic / Plan / 要件 / 仕様 / runbook / learning / PR description / レビューコメント等) は **日本語見出し・日本語例文** で記述 (ADR 0025)
   - 例外: YAML frontmatter のキー、ステータス値、コマンド・パス・コード断片、識別子 (SPEC-ID / EPIC-NNN / PLAN-NNN / ADR 番号等) は英語のまま
   - Konsist で「frontmatter 外の見出しは日本語必須」を機械検証
 - **PII 保護とアクセス制御**:
@@ -1343,9 +1348,9 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
   - DB に保存する PII は `uid` のみ、それ以外は GIS userinfo から都度取得 + memory cache TTL 15 分
   - `.gitignore` で `data/users.db*` / `.env*` / `*-credentials.json` 等を除外、Konsist で機械検証
   - **trufflehog** による secret-scan workflow を A6 で導入、全 PR 差分をスキャン
-  - **R2 token TTL 90 日 + 定期ローテーション** (ADR 0024)、漏洩時の runbook を整備
+  - **R2 token TTL 90 日 + 定期ローテーション** (ADR 0020)、漏洩時の runbook を整備
   - Skill (code-reviewer / pr-retrospective / harness-meta) は出力前に PII redaction フェーズを通す
-  - 権限ロールは **当面 owner 1 名のみ** (ADR 0023)、複数人体制になったら別 ADR で `developer` / `releaser` を追加
+  - 権限ロールは **当面 owner 1 名のみ** (ADR 0019)、複数人体制になったら別 ADR で `developer` / `releaser` を追加
 - テスト品質は **三層指標** で多層検証する:
   - 指標 A: **Line / Branch coverage 100%** (テスト存在の保証、CI 必達ゲート、`koverVerify minValue=100`)
   - 指標 B: **Spec coverage 100%** (仕様適合性の保証、`@Spec` annotation + Konsist 検証で CI 必達ゲート)
