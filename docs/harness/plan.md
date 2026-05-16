@@ -484,7 +484,7 @@ docs/
     INDEX.md
     template/
       README.md
-      roadmap.md
+      roadmap.md                ─ Epic 配下の進捗・完了根拠・保留事項・障壁・着手順変更履歴。`roadmap-tracker` Skill が Epic 配下 PR と Epic 内の progress.md / decisions.md / open-questions.md を統合して更新 (フォーマットは `docs/harness/roadmap.md` と共通テンプレート、Plan ファイル単体は走査対象外)
       open-questions.md
       decisions.md
       progress.md
@@ -501,6 +501,7 @@ docs/
     archive/
   harness/                      ─ ハーネス本体に関するドキュメント
     plan.md                     ─ 本ドキュメント
+    roadmap.md                  ─ ★新規 全体ロードマップ (plan.md 由来の B0/A1-A10/C1-C10 等のフェーズ項目と Epic の進捗一覧、完了根拠、保留事項、技術的障壁と回避策、着手順変更履歴)。`roadmap-tracker` Skill が plan.md / docs/epics を入力に更新 (一方向ミラー、逆同期はしない、**Plan 単体は 1 PR 完結のため追跡対象外**)
     overview.md
     workflow.md
     skills.md
@@ -626,6 +627,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 | テスト fixture に `@example.com` ドメインを使う規約 | `.claude/rules/pii.md` |
 | Compose Preview の表記揺れを統一する | `.claude/rules/composable.md` (KPT 起点で追記) |
 | 「Skill 実行時のログを `.claude/logs/` に追記する」運用 | `.claude/rules/pr-poller.md` などの該当 Skill 規約 |
+| `roadmap-tracker` Skill の操作規約 (ロードマップ Markdown の構造、ステータス語彙、Konsist 検証、逆同期禁止) | `.claude/rules/roadmap.md`。ハーネス中核フェーズには直接組み込まない補助 Skill であり、撤回コストも低い (Skill / rule / 出力 md を削除すれば完結) ため ADR 起票基準を満たさない |
 | Cloud Run の `min-instances` を 0 から 1 に変更する | runbook (`docs/runbooks/release.md`) + Plan |
 | 開発者がローカルで Fuseki Docker を起動する手順 | runbook (`docs/runbooks/local-imasparql.md`) |
 | im@sparql 同期 PR の自動マージ可否 | sync workflow の設定 + 該当 Skill 規約 |
@@ -678,6 +680,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
     harness-bootstrap/          B0 の唯一の Skill。A3 完了後に archived/ へ
     plan-author/                B0 から導入
     epic-author/                B0 から導入
+    roadmap-tracker/            B0 で雛形、A3 で本格化 (plan.md と Epic を入力に docs/harness/roadmap.md と docs/epics/<id>/roadmap.md を生成・更新、進捗・完了根拠・Open Questions・障壁・着手順変更履歴を一元管理、plan.md / Epic への逆同期はしない、**Plan は 1 PR 完結のため対象外**)
     pr-retrospective/           B0 から最小版で稼働 (1 PR = 1 learning ファイル生成)
     pr-poller/                  B0 から導入 (ローカル Claude Code 内でポーリング、未処理 PR を検出して pr-retrospective を起動)
     implementation-workflow/    B0 で雛形、A3 で本格化 (要件読込 → 実装 → Lint/Test → AI Review → マージ判断 → レトロ起動を 8 フェーズでオーケストレート)
@@ -697,6 +700,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
     # 計画・記録
     plan.md
     epic.md
+    roadmap.md                  ─ ★新規 `roadmap-tracker` Skill の操作規約。ロードマップ Markdown の構造 (frontmatter / 項目一覧 / 完了根拠 / 着手順とブロック / 保留事項 / 障壁と回避策 / 着手順変更履歴)、ステータス語彙 (proposed/in-progress/completed/blocked/abandoned)、入力スコープ (plan.md と Epic のみ、**Plan 単体は対象外**)、Konsist による項目 ID 実在検証、plan.md / Epic への逆同期禁止を明文化
     adr.md                      ─ ADR 起票基準 / 採番 / ステータス遷移 / ADR 化すべき例・他の記録方法にすべき例の列挙 (4.5 節を要約)
     # アーキテクチャ層別
     viewmodel.md
@@ -786,6 +790,7 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 | docs/glossary.md, docs/codebase-map.md, docs/traceability.md     | docs-structure.md                        |
 | docs/epics/**/                                 | epic.md                                 |
 | docs/plans/*.md                                | plan.md                                 |
+| docs/harness/roadmap.md, docs/epics/**/roadmap.md | roadmap.md                              |
 ```
 
 ### 5.2 機械的ガード (二重化)
@@ -806,6 +811,7 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 | `harness-bootstrap` | B0 のみ。手動起動 | 専用 Skill 群が揃うまでの汎用 Skill。タスク種別 (ADR 起草 / rules 追加 / docs 拡充 / モジュール撤去 / Lint 導入) に応じた汎用手順を実行。A3 完了後に `archived/` へ |
 | `plan-author` | feature-request / bug-fix / refactor が単一 PR スコープと判定 | `docs/plans/PLAN-NNN-*.md` を 1 ファイル生成、INDEX.md 更新 |
 | `epic-author` | 同上、複数 PR スコープと判定。または Plan 昇格時 | `docs/epics/EPIC-NNN-<slug>/` を template から生成、INDEX.md 更新 |
+| **`roadmap-tracker`** | (a) `epic-author` が新規 Epic を起票した直後 (**Plan は 1 PR で完結するためロードマップ追跡対象外**)、(b) `implementation-workflow` Phase 7 (Merge 後) で Epic 配下 PR / B-A-C フェーズ項目の完了根拠を登録、(c) 人間 / 他 Skill から「ロードマップ更新」「進捗可視化」「着手順入れ替え」「障壁記録」「保留事項追加」の指示 | **新規**: 入力に応じてロードマップ Markdown を生成・更新。(1) 計画 Markdown (`docs/harness/plan.md` 等) を読み取り B0/A1-A10/C1-C10 等の項目を抽出、(2) `docs/epics/EPIC-NNN-*/` を走査して frontmatter から ID/タイトル/status を読む (`docs/plans/` は走査対象外)、(3) `docs/harness/roadmap.md` または `docs/epics/<id>/roadmap.md` を更新。完了根拠は `gh pr view` で PR メタ情報を取得して PR 番号 + マージ日 + 主要ファイルパスを記録。Open Questions / 障壁 / 着手順変更履歴は append-only で蓄積。**plan.md や Epic 本体への逆同期はしない** (片方向ミラー)。詳細規約は `.claude/rules/roadmap.md` |
 | **`pr-poller`** | ローカル Claude Code 起動時 + `CronCreate` 日次スケジュール + `ScheduleWakeup` ループ | gh CLI で merged / closed PR を取得 → 既に learning ファイルがある PR を除外 → 未処理 PR があれば `pr-retrospective` を起動 → 一定期間経過 (7 日) または未処理 learning 件数閾値到達で `harness-meta` を起動。**さらに open PR で `labels:renovate` が付くものを検出して `dependency-upgrade` Skill を起動** (GitHub Actions で Claude API を呼ばないためのローカル化)。詳細規約は `.claude/rules/pr-poller.md` |
 | **`pr-retrospective`** (旧 `kpt-retrospective`) | `pr-poller` から自動起動 / 手動起動 | 対象 PR の diff (`gh pr diff`) / comments / reviews / CI ログ / Skill 実行ログ / 三層指標差分 (Kover / Konsist / PITest) / 関連 Plan・Epic を収集。`docs/harness/learnings/YYYY-MM-DD-pr-<n>.md` を `.claude/rules/retrospective-format.md` の構造化フォーマット (**日本語見出し**) で生成。`harness/learnings-batch-YYYY-WW` ブランチに集約し、週次 (or 件数到達時) に PR としてまとめて起票 |
 | **`implementation-workflow`** | Plan / Epic 確定後、ユーザー指示で起動 | **新規 (オーケストレーター)**: 8 フェーズで全工程を統合管理 — (1) 要件/基本設計/詳細設計 Markdown 読込、(2) Spec 整合性チェック、(3) 実装 + Lint/Test 実行 + fix loop (上限 3 回)、(4) Self-Verification、(5) Draft PR 作成、(6) `code-reviewer` 呼出 → Evaluator フェーズ、(7) 人間 approve → squash merge、(8) `pr-poller` 即時起動。詳細規約は `.claude/rules/implementation-workflow.md`、`merge-readiness.md`、`pr-draft-policy.md`、`spec-living-sync.md` |
@@ -913,6 +919,7 @@ Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の spec
 - **Learning ファイルが Single Source of Truth**: PR コメントは出さない。`docs/harness/learnings/` の Markdown が `pr-retrospective` の出力先かつ `harness-meta` の入力源
 - **対話的フィードバック**: 採用見送りや保留は元 learning ファイルに `harness-meta feedback` セクションを追記、提案 → 結果の往復ログが 1 ファイル内で完結
 - **テンプレート言語は日本語**: ADR / Plan / Epic / 要件 / 仕様 / runbook / learning / レビューコメント の全テンプレ Markdown は日本語見出し・日本語例文で記述 (ADR 0027、`.claude/rules/template-language.md`)。frontmatter のキー (`id`, `status`, `type` 等) やコマンド文字列は英語のまま
+- **横断 Skill `roadmap-tracker`**: 6 フェーズの図には直接組み込まない補助 Skill。(1) Spec Gen フェーズ後 (`epic-author` の Epic 起票直後、**Plan は 1 PR 完結のため対象外**)、(2) Merge フェーズ (`implementation-workflow` Phase 7 の merge 完了直後、Epic 配下 PR または B-A-C フェーズ項目に該当する場合) に呼ばれ、`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` を最新化する。Open Questions / 障壁 / 着手順変更履歴は (3) 人間や他 Skill から手動起動で追記。ループ内のどのフェーズからも Read 可能な「現在の進捗ビュー」を提供する役割。詳細規約は `.claude/rules/roadmap.md` (ADR 化は見送り、§4.5 ADR にすべきでない例の表参照)
 
 ### 5.5 テンプレート言語ポリシー
 
@@ -929,6 +936,7 @@ Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の spec
 | 基本設計 / 詳細設計 | `docs/specifications/template.md`、各仕様 md |
 | Runbook | `docs/runbooks/template.md`、各 runbook md |
 | Learning | `pr-retrospective` Skill が生成する `docs/harness/learnings/YYYY-MM-DD-pr-N.md` (フォーマット定義 `retrospective-format.md`) |
+| ロードマップ | `roadmap-tracker` Skill が更新する `docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` (フォーマット定義 `.claude/rules/roadmap.md`) |
 | PR description テンプレ | `.github/pull_request_template.md` |
 | code-reviewer レビューコメント | `code-reviewer` Skill が PR に post する構造化コメント (フォーマット定義 `code-reviewer-aspects.md`) |
 | ハーネス改修 PR description | `harness-meta` Skill が起票する PR の本文 |
@@ -1174,7 +1182,7 @@ Remote HTTP + OAuth。初回接続時に Claude Code がブラウザで認証フ
 
 | # | 内容 |
 |---|---|
-| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / **`.claude/mcp.json` で JetBrains MCP + Context7 MCP + Cloudflare MCP の接続定義** / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot, harness-evolution}` の最小版 (**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を参照、本リポジトリには配置しない**) / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation, mcp-usage, skill-authoring, harness-evolution, docs-structure}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**、`mcp-usage.md` は **GitHub は gh CLI / IDE 操作は JetBrains MCP / ライブラリ docs は Context7 / Cloudflare 管理は Cloudflare MCP の使い分けを規定**、`skill-authoring.md` は **example-skills:skill-creator 経由 + Anthropic Complete Guide 準拠**、`harness-evolution.md` は **外部情報源ホワイトリスト + 手動起動のみ + harness-meta との責務分離**、`docs-structure.md` は **AI が docs を読む順序 + 命名規約 + 5 行 summary + lazy-load 構造**) / `docs/{adr, epics, plans, harness/learnings, harness/evolution-proposals, runbooks, requirements, specifications, design/inventory, architecture, api, security}` スケルトン (テンプレートは全て**日本語**、`docs/README.md` は **AI 用エントリポイント** として推奨読み順を明記、`docs/{glossary, codebase-map, traceability}.md` の骨格を配置、`docs/architecture/{overview, layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md` 骨格、`docs/api/{README, colormaster-api.yaml, auth, idols, me}.md` 骨格、`docs/security/README.md` で ADR 索引、`docs/requirements/{README, template}.md`、`docs/specifications/{README, basic-template, detail-template}.md`、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)** / **`docs/runbooks/{local-development, testing, i18n, mcp-setup}.md` を新規追加 (骨格)**。`mcp-setup.md` は以下を記載: (1) IntelliJ IDEA / Android Studio **2025.2+ にバンドル済の MCP Server プラグイン** (`JetBrains/mcp-server-plugin`、Marketplace 26071) を `Settings | Tools | MCP Server` で有効化、(2) **旧 `@jetbrains/mcp-proxy` npm パッケージは deprecated なので使用しない** こと、(3) JetBrains MCP の **3 つの接続方式** (Copy SSE Config [推奨] / Copy Stdio Config / Copy HTTP Stream Config) の選択基準と `.claude/mcp.json` への貼り付け手順、(4) IDE 再起動で動的ポートが変わる場合の再貼り付け手順 (or `claude mcp add` 経由の登録)、(5) Context7 / Cloudflare の OAuth 接続フロー、(6) `/mcp` での接続確認、(7) トラブルシュート (IDE 未起動 / MCP Server プラグイン未有効 / ポート競合 / IDE バージョン 2025.2 未満)。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動)、**`dependency-upgrade-check.yml` も導入しない** (Renovate PR の検証は pr-poller がローカルで dependency-upgrade Skill を起動して実施、Claude API の GitHub Actions 上実行を回避) |
+| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / **`.claude/mcp.json` で JetBrains MCP + Context7 MCP + Cloudflare MCP の接続定義** / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot, harness-evolution, roadmap-tracker}` の最小版 (**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を参照、本リポジトリには配置しない**) / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation, mcp-usage, skill-authoring, harness-evolution, docs-structure, roadmap}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**、`mcp-usage.md` は **GitHub は gh CLI / IDE 操作は JetBrains MCP / ライブラリ docs は Context7 / Cloudflare 管理は Cloudflare MCP の使い分けを規定**、`skill-authoring.md` は **example-skills:skill-creator 経由 + Anthropic Complete Guide 準拠**、`harness-evolution.md` は **外部情報源ホワイトリスト + 手動起動のみ + harness-meta との責務分離**、`docs-structure.md` は **AI が docs を読む順序 + 命名規約 + 5 行 summary + lazy-load 構造**、`roadmap.md` は **ロードマップ Markdown の構造 (frontmatter / 項目一覧 / 完了根拠 / 着手順とブロック / 保留事項 / 障壁と回避策 / 着手順変更履歴) + ステータス語彙 + 入力スコープ (plan.md と Epic のみ、Plan 単体は対象外) + plan.md / Epic への逆同期禁止**) / `docs/{adr, epics, plans, harness/learnings, harness/evolution-proposals, runbooks, requirements, specifications, design/inventory, architecture, api, security}` スケルトン + **`docs/harness/roadmap.md` 骨格** (本計画 plan.md から B0/A1-A10/C1-C10 / EPIC-000 を初期取り込みした全体ロードマップ、frontmatter + 項目一覧 + 空の完了根拠/保留事項/障壁/着手順変更履歴セクション) + **`docs/epics/EPIC-000-harness-foundation/roadmap.md` 骨格** (EPIC-000 配下の PR 進捗トラッカー、template/roadmap.md と同一フォーマット、Plan 単体は列挙しない) (テンプレートは全て**日本語**、`docs/README.md` は **AI 用エントリポイント** として推奨読み順を明記、`docs/{glossary, codebase-map, traceability}.md` の骨格を配置、`docs/architecture/{overview, layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md` 骨格、`docs/api/{README, colormaster-api.yaml, auth, idols, me}.md` 骨格、`docs/security/README.md` で ADR 索引、`docs/requirements/{README, template}.md`、`docs/specifications/{README, basic-template, detail-template}.md`、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)** / **`docs/runbooks/{local-development, testing, i18n, mcp-setup}.md` を新規追加 (骨格)**。`mcp-setup.md` は以下を記載: (1) IntelliJ IDEA / Android Studio **2025.2+ にバンドル済の MCP Server プラグイン** (`JetBrains/mcp-server-plugin`、Marketplace 26071) を `Settings | Tools | MCP Server` で有効化、(2) **旧 `@jetbrains/mcp-proxy` npm パッケージは deprecated なので使用しない** こと、(3) JetBrains MCP の **3 つの接続方式** (Copy SSE Config [推奨] / Copy Stdio Config / Copy HTTP Stream Config) の選択基準と `.claude/mcp.json` への貼り付け手順、(4) IDE 再起動で動的ポートが変わる場合の再貼り付け手順 (or `claude mcp add` 経由の登録)、(5) Context7 / Cloudflare の OAuth 接続フロー、(6) `/mcp` での接続確認、(7) トラブルシュート (IDE 未起動 / MCP Server プラグイン未有効 / ポート競合 / IDE バージョン 2025.2 未満)。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動)、**`dependency-upgrade-check.yml` も導入しない** (Renovate PR の検証は pr-poller がローカルで dependency-upgrade Skill を起動して実施、Claude API の GitHub Actions 上実行を回避) |
 
 B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Skill 駆動 + KPT 生成の対象となる。`pr-poller` はローカル Claude Code 起動時に手動起動可能とし、A4 で `CronCreate` / `ScheduleWakeup` による自動化を完成させる。
 
@@ -1186,10 +1194,10 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 |---|---|---|---|
 | **A1** | Plan | `harness-bootstrap` | ADR 0001-0027 を一括起草する PR (全て日本語) |
 | **A2** | EPIC-A2 | `harness-bootstrap` | **`.claude/rules/*` 全ファイル本格化 + `docs/` 全面拡充**: docs/README.md (AI エントリポイント・推奨読み順)、glossary.md、codebase-map.md (初版、A10 / Phase C で随時更新)、architecture/{layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md、api/README.md + colormaster-api.yaml (骨格、内容は C5 で本格化)、security/README.md (ADR 索引)、requirements/{README, template}.md、specifications/{README, basic-template, detail-template}.md、runbooks/{local-development, testing, i18n}.md を完成。各 docs は冒頭 5 行 summary + 詳細 lazy-load 構造 (ADR 0027) |
-| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** / **ui-snapshot** / **harness-evolution** の本格版へのアップグレード、**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を採用しリポジトリには配置しない**)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 8 aspect の binary eval checklist + coordinator を完全実装 (visual-regression / design-tokens は A10 完了後に enable)。pr-poller は **Renovate ラベル PR の検出と dependency-upgrade 起動** も担当。マージ後、`harness-bootstrap` は `archived/` へ |
+| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** / **ui-snapshot** / **harness-evolution** / **roadmap-tracker** の本格版へのアップグレード、**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を採用しリポジトリには配置しない**)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 8 aspect の binary eval checklist + coordinator を完全実装 (visual-regression / design-tokens は A10 完了後に enable)。pr-poller は **Renovate ラベル PR の検出と dependency-upgrade 起動** も担当。**roadmap-tracker は plan.md / Epic 走査 (Plan 単体は対象外) → ロードマップ生成・更新ロジック / `gh pr view` での完了根拠取得 / Open Questions・障壁・着手順変更履歴の append-only 追記 / `.claude/rules/roadmap.md` 規約準拠を完全実装。`epic-author` / `implementation-workflow` (Phase 7、Epic 配下 PR または B-A-C フェーズ項目に該当時のみ) から自動起動するフックも整備**。マージ後、`harness-bootstrap` は `archived/` へ |
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
 | **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル、**`dev.gitlive:firebase-*` 依存、`core/network/{auth,firestore}`、`firebase.json`、`.firebaserc`**) |
-| **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook + **trufflehog による secret-scan workflow**)。Konsist で「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「`feature/**`・`core/**` で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラに `requireUid()` 強制」「**`docs/traceability.md` を Konsist で自動生成** (Plan/Epic/ADR/Spec/実装ファイルのクロスリンク表)」「**docs/ の各 Markdown が冒頭 5 行以内の summary を持つ**」を検証 |
+| **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook + **trufflehog による secret-scan workflow**)。Konsist で「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「`feature/**`・`core/**` で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラに `requireUid()` 強制」「**`docs/traceability.md` を Konsist で自動生成** (Plan/Epic/ADR/Spec/実装ファイルのクロスリンク表)」「**docs/ の各 Markdown が冒頭 5 行以内の summary を持つ**」「**`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する** (PLAN-NNN は追跡対象外のため検証不要)」を検証 |
 | **A7** | Plan | `feature-request` | **三層テスト品質基盤の導入**:<br>● **指標 A**: Kover 導入 + `koverVerify minValue=100` 必達化 (ADR 0013 除外列挙のみ許可)<br>● **指標 B**: `@Spec` annotation の Kotlin 定義 + Konsist による Spec coverage 検証ルール導入 (ADR 0016、`.claude/rules/spec-traceability.md`)<br>● **指標 C**: PITest + pitest-kotlin + gradle-pitest-plugin 導入。JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。PR コメントで mutation score 可視化 (ADR 0015、`.claude/rules/mutation-testing.md`)<br>本 PR 時点では既存コードの未充足は除外リストで一旦逃がし、A9 完了までに全モジュールに展開する旨を rules に明記 |
 | **A8** | Plan | `feature-request` | **im@sparql ローカル Docker 環境構築** (Apache Jena Fuseki + RDF データ初期投入スクリプト + `docker-compose.yml` + integration test 基盤 + Testcontainers 規約)。`docs/runbooks/local-imasparql.md` を整備し、backend のローカル開発・テストを Fuseki に対して実行できる状態にする |
 | **A9** | **EPIC-A9** | `refactor` | **既存コード全体に対する三層指標の達成**。モジュールごとに段階 Plan (PLAN-NNN × 多数) を発行:<br>● 指標 A: line / branch 100% カバレッジを全モジュールで達成<br>● 指標 B: 既存機能の Acceptance criteria を `docs/specifications/<id>.md` に逆生成、テストに `@Spec` annotation を付与、Spec coverage 100% 達成<br>● 指標 C: 各モジュールの初回 mutation score をベースラインとして記録、明らかな tautological テストは learnings に蓄積し改善<br>Konsist の「実装クラス ⇄ テストクラス対応」検証を本 EPIC 完了時に enforce。backend/server / android/app / core/* / data/ 全モジュールが対象。A7 で導入した除外リストは ADR 0013 列挙分のみに整理する |
@@ -1296,6 +1304,9 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-31 | harness-evolution が harness-meta と提案重複 | 重複検出ルール (`.claude/rules/harness-evolution.md`): 既に learning ファイルで指摘済の提案は harness-evolution 側を見送り。改修 PR は `harness-meta` / `harness-evolution` の **ラベル分離** で運用、harness-meta 側を優先 |
 | R-32 | docs/ が肥大化して AI のコンテキストを圧迫 | 各 docs に **冒頭 5 行以内の summary + 詳細 lazy-load** 構造を必須化、`.claude/rules/docs-structure.md` で規定、Konsist で機械検証 (ADR 0027 / A6) |
 | R-33 | 複数 docs 間の重複・矛盾 (例: api.md と OpenAPI yaml、spec と requirements、ADR と rules の重複指摘) | `docs/traceability.md` を Konsist で自動生成し Plan/Epic/ADR/Spec/実装のクロスリンクを機械維持 (A6)。code-reviewer の architecture aspect で docs 間の矛盾も検出対象に |
+| R-34 | `docs/harness/roadmap.md` と plan.md / Epic で進捗が二重管理になり乖離するリスク | roadmap.md は **片方向ミラー** (plan.md / Epic 本体への逆同期はしない、`.claude/rules/roadmap.md` で明文化)。`roadmap-tracker` Skill は Read のみで取り込み、進捗・完了根拠・障壁の記録は roadmap.md 側にのみ追記。Konsist で「roadmap.md の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する」を A6 で検証。`epic-author` の起票直後と `implementation-workflow` Phase 7 (Merge 直後、Epic 配下 PR または B-A-C フェーズ項目に該当する場合) に自動同期するフックで人手の二重編集を抑制。**Plan は 1 PR で完結するためロードマップ追跡対象外** (PR レビュー & merge で完結) |
+| R-35 | `roadmap-tracker` が `gh pr view` の取得に失敗した場合に完了根拠が空のまま放置されるリスク | gh CLI 失敗時はユーザーから渡された PR 番号 / 関連ファイルパスのみで暫定登録、後段で再取得を試みる旨を roadmap.md の該当項目に `<!-- evidence:pending-fetch -->` コメントで残す。`pr-poller` が定期的に pending-fetch 項目を再走査する責務を `.claude/rules/roadmap.md` に明文化 |
+| R-36 | `roadmap-tracker` が補助 Skill で ADR を持たないため、運用方針の重大変更を ADR として残せず歴史を辿りにくくなるリスク | 運用方針の重大変更が発生した場合は §4.5 ADR 起票基準を再評価し、基準を 2 項目以上満たす状態になったら **新規 ADR を起こして格上げ** する。それまでは `.claude/rules/roadmap.md` の改訂履歴 (frontmatter `last_updated` + 変更コミットメッセージ) を辿る運用で代替 |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
 | R-6 | harness-bootstrap が万能になりすぎると専用 Skill 化が遅れる | A3 完了で必ず `archived/` へ移動、CLAUDE.md からも参照を外す |
 
@@ -1360,6 +1371,15 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 - 除外対象 (指標 A) は ADR 0013 で限定列挙。Mutation testing 対象外スコープ (JS/Wasm/iOS actual 実装) は ADR 0015 で明示。
 - im@sparql ローカル Docker (Fuseki) は **Phase A (A8) で整備**。Phase C 着手前に backend integration test が Fuseki に対して実行可能な状態にする。
 - 既存コードの三層指標達成は **Phase A (A9) を EPIC として実施**。Phase C はこの完了をもって着手。
+- **ロードマップ管理** (`.claude/rules/roadmap.md` で規定、ADR 化は見送り):
+  - 新規 Skill `roadmap-tracker` が **plan.md と `docs/epics/EPIC-NNN-*/`** を入力に `docs/harness/roadmap.md` (全体) および `docs/epics/<id>/roadmap.md` (Epic 別) を生成・更新
+  - **Plan は 1 PR で完結するボリュームのためロードマップ追跡対象外** (PR レビュー & merge で完結、`docs/plans/*.md` は走査しない)
+  - 管理項目: (1) 項目一覧 (B0/A1-A10/C1-C10/EPIC-NNN) と ステータス (proposed/in-progress/completed/blocked/abandoned)、(2) 完了根拠 (PR 番号 + マージ日 + 主要ファイル `file_path[:line]`)、(3) 着手順とブロック関係 (Mermaid gantt)、(4) 保留中の意思決定・不明事項 (Open Questions)、(5) 技術的障壁と回避策 (Blockers and Workarounds、解決日 / 解決方法を必ず設けて未解決放置を可視化)、(6) 着手順変更履歴 (append-only)
+  - **plan.md / Epic 本体への逆同期はしない** (片方向ミラー)。Konsist で「roadmap.md の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する」を A6 で検証
+  - 自動起動フック: `epic-author` の Epic 起票直後、`implementation-workflow` Phase 7 (Merge 直後、Epic 配下 PR または B-A-C フェーズ項目に該当時のみ)、`pr-poller` の pending-fetch 再走査
+  - 手動起動契機: 「ロードマップ更新」「進捗可視化」「着手順入れ替え」「障壁記録」「保留事項追加」等の人間 / 他 Skill からの指示
+  - **ADR 化は見送り** (§4.5 ADR にすべきでない例の表で根拠を明示): ハーネス中核フェーズには直接組み込まない補助 Skill、撤回コストが低い、複数代替案の本格比較未実施、のため 10 項目中 2 項目以上を満たさない。重大な運用方針変更が起きた場合は ADR 起票基準を再評価して格上げ (R-36)
+  - B0 で Skill / rule / docs スケルトン、A3 で本格実装
 
 ---
 
