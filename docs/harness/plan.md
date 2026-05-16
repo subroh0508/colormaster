@@ -400,6 +400,15 @@ AI による自動テスト生成を前提とし、テスト品質は **3 つの
 
 カバレッジは **「指標」ではなく「テスト存在を保証する制約」** と再定義することで、Goodhart's law (測定が目標化されて指標としての意味を失う) を回避する。「仕様の指標」は指標 B が、「意味の指標」は指標 C が直接担当する分担構造。
 
+#### 三層指標の運用補足
+
+上記 3 指標を実運用に乗せるための補助規約。
+
+- **Konsist でペアリング検証**: 各実装クラスに対応するテストクラス (`*Spec.kt` / `*Test.kt` / `*ScreenshotTest.kt`) の存在を機械的に強制する (`.claude/rules/test-paired-class.md`)。Phase A 時点では新規分のみ enforce、Phase C で全コードに展開。
+- **UI モジュール (Compose) の指標 A 達成**: Compose UI Test + screenshot test (Paparazzi / Roborazzi) で達成。詳細は §3.9 / ADR 0023 を参照。
+- **AI 自動生成テストの質担保**: 指標 B (仕様トレーサビリティ) と指標 C (mutation score) が別軸で抑制効果を持つ。さらに Konsist で「テストクラスは最低 1 つの assert を含む」「Mock のみで実装を呼ばないテストは禁止」等のメタ規約を加える。KPT で発見された無意味テストパターンは `harness-meta` が `.claude/rules/kotlin-test.md` ルールに追加していくフォールバックループで対処。
+- **3 段階運用の要約**: Phase A (A7-A9) で計測基盤と差分ゲートを導入 / Phase C で各 Epic / Plan が新規分の即時 100% + 既存コード段階達成を担う / Phase C 完了時点で全体 100% を達成 (指標 A 段階達成テーブル参照)。
+
 ---
 
 ## 4. ドキュメント構造
@@ -1420,24 +1429,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **新規追�
 
 ---
 
-## 8. テストカバレッジ戦略
-
-テスト品質は **3.10 節で定義した三層指標** で多層検証する。詳細は 3.10 節を参照。本節では運用面の補足を記す。
-
-- **指標 A (Line / Branch Coverage、段階達成)**: Kover を導入、`./gradlew check` に `koverXmlReport` を組み込む。
-  - **Phase A 完了時点 (段階 1)**: 計測可能な状態を達成。`koverVerify` は全体 100% を要求せず、既存コードは ADR 0013 の暫定除外リストに含める。
-  - **Phase C 各 PR (段階 2)**: 新規追加・変更された Kotlin 行に対して line / branch 100% を要求 (差分カバレッジゲート、A7 で実装方式を確定)。
-  - **Phase C 完了時点 (段階 3)**: 暫定除外リストを段階解消し、全体で line / branch 100% を達成。除外対象は ADR 0013 列挙分のみ、除外追加は ADR 改訂が必須。
-- **指標 B (Spec Coverage 100%)**: `@Spec("SPEC-NNN-N")` annotation をテスト関数に付与し、`docs/specifications/basic/SPEC-NNN-<slug>.md` の Acceptance criteria と双方向対応させる。Konsist で「全 Acceptance criteria に対応する `@Spec` が存在する」「`@Spec` ID が specifications に実在する」を機械検証。新規機能は Phase C 各 PR で必達、既存機能の Acceptance criteria 逆生成と `@Spec` 付与は Phase C 各 Epic で段階達成、Phase C 完了時点で全体 100% に到達。詳細は ADR 0016。
-- **指標 C (Mutation Score)**: PITest + pitest-kotlin + gradle-pitest-plugin を採用し、JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。`jsMain` / `wasmJsMain` / `iosMain` の actual 実装は対象外 (これらは Konsist + 通常単体テストで担保)。CI ではゲートにせず PR コメントで可視化。詳細は ADR 0015。
-- **Konsist でペアリング検証**: 各実装クラスに対応するテストクラス (`*Spec.kt` / `*Test.kt` / `*ScreenshotTest.kt`) の存在を機械的に強制する (`.claude/rules/test-paired-class.md`)。Phase A 時点では新規分のみ enforce、Phase C で全コードに展開。
-- **UI モジュール (Compose)** は **Compose UI Test + screenshot test (Paparazzi / Roborazzi)** で指標 A を達成。
-- **AI 自動生成テストの質の担保**: 指標 B (仕様トレーサビリティ) と指標 C (mutation score) がそれぞれ別軸で抑制効果を持つ。さらに Konsist で「テストクラスは最低 1 つの assert を含む」「Mock のみで実装を呼ばないテストは禁止」等のメタ規約を加える。KPT で発見された無意味テストパターンは harness-meta が `kotlin-test.md` ルールに追加していくフォールバックループで対処。
-- **Phase A (A7-A9) で計測基盤と差分ゲートを導入**、**Phase C で各 Epic / Plan が新規分の即時 100% + 既存コード段階達成を担う**、**Phase C 完了時点で全体 100% を達成** という 3 段階運用 (§3.10 指標 A 段階達成テーブル参照)。
-
----
-
-## 9. リスクと未解決事項
+## 8. リスクと未解決事項
 
 | ID | リスク / 論点 | 暫定方針 |
 |---|---|---|
@@ -1480,7 +1472,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **新規追�
 
 ---
 
-## 10. 確認済みの確定事項一覧
+## 9. 確認済みの確定事項一覧
 
 本計画策定セッションで合意した事項を集約:
 
@@ -1561,7 +1553,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **新規追�
 
 ---
 
-## 11. 次のアクション
+## 10. 次のアクション
 
 本ドキュメントの merge を計画確定の起点とする。次のセッションで以下を実施:
 
