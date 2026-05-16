@@ -431,12 +431,14 @@ docs/
     template.md                 ─ ★新規 日本語テンプレ
     REQ-NNN-<slug>.md           ─ 機能ごと
 
-  specifications/               ─ 仕様詳細
-    README.md                   ─ ★新規 基本設計 / 詳細設計の使い分けガイド
-    basic-template.md           ─ ★新規 基本設計テンプレ (Acceptance criteria + SPEC-NNN-N 採番)
-    detail-template.md          ─ ★新規 詳細設計テンプレ (実装パス + シーケンス + データ構造)
-    SPEC-<id>-basic.md          ─ 機能ごと、基本設計
-    SPEC-<id>-detail.md         ─ 機能ごと、詳細設計
+  specifications/               ─ 仕様詳細 (基本設計と詳細設計をサブディレクトリで物理分離)
+    README.md                   ─ ★新規 基本設計 / 詳細設計の使い分けガイド + サブディレクトリ構造の説明
+    basic/                      ─ ★新規 基本設計サブディレクトリ
+      template.md               ─ ★新規 基本設計テンプレ (§4.6.4、Acceptance criteria + SPEC-NNN 採番、Mermaid graph/sequence/state/erDiagram)
+      SPEC-<id>-<slug>.md       ─ 機能ごとの基本設計 (frontmatter `id: SPEC-NNN-basic`、`related_detail: SPEC-NNN-detail`)
+    detail/                     ─ ★新規 詳細設計サブディレクトリ
+      template.md               ─ ★新規 詳細設計テンプレ (§4.6.5、モジュール配置 + 状態遷移 + シーケンス + 論理スキーマ、コード断片禁止)
+      SPEC-<id>-<slug>.md       ─ 機能ごとの詳細設計 (frontmatter `id: SPEC-NNN-detail`、`related_basic: SPEC-NNN-basic`)
 
   adr/                          ─ Architecture Decision Records (起票基準は ADR 0001 と .claude/rules/adr.md に明文化)
     README.md                   ─ ADR 起票基準と運用ガイド (判断フロー図、ADR にすべき例/他の方法にすべき例)
@@ -668,6 +670,107 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 - `adr-author` Skill が新規 ADR 起草時に必ず Read する
 - ADR テンプレ (`docs/adr/template.md`) の巻末にも「ADR 化すべき例 / 他の記録方法にすべき例」を簡潔に列挙し、人間が ADR を書くときも基準にアクセスしやすくする
 
+### 4.6 設計ドキュメント (要件定義 / 基本設計 / 詳細設計) のフォーマットポリシー
+
+要件定義 (`docs/requirements/`)・基本設計 (`docs/specifications/basic/SPEC-<id>-<slug>.md`)・詳細設計 (`docs/specifications/detail/SPEC-<id>-<slug>.md`) の 3 種は、IPA の **共通フレーム (SLCP)** / **機能要件の合意形成ガイド** / **非機能要求グレード** の章立てを下敷きにし、人間と AI 双方の認知負荷を下げる「自然言語 + テーブル + Mermaid 図」で表現する。基本設計と詳細設計は **物理的にサブディレクトリで分離** し (責務の物理分離、段階的起票 PR スコープ明確化、AI の glob 絞り込み容易性のため)、ペア参照は frontmatter `related_basic` / `related_detail` で双方向リンクする。実テンプレ Markdown (`docs/requirements/template.md` / `docs/specifications/basic/template.md` / `docs/specifications/detail/template.md`) は B0 で配置し、内容は本節の方針に従って各 Skill が雛形を埋める。
+
+#### 4.6.1 共通の原則
+
+| 原則 | 内容 | 理由 |
+|---|---|---|
+| **コード断片を一切含めない** | Kotlin / Gradle DSL / シェル / SQL 等、**言語文法を持つ具体コード片** はいかなる例示でも記述しない。型名 / クラス名 / API パス / SQL テーブル名等の **識別子参照は許可**。実装位置の参照は `file_path:line` のみで本文への引用はしない | 設計書 ⇄ 実装の整合性チェック工数を抑制。コードは Kotlin 側 (Konsist / テスト) が Single Source of Truth、設計書はそれと**重複しない情報**だけを保持する |
+| **テーブル優先 + 補助に Mermaid** | 列挙可能なものは必ずテーブル化、関係性 / 時系列 / 状態遷移 / 構造は Mermaid 図で示す。長文の自然言語段落は最小化 | AI が parse しやすく、人間も視認性が高い |
+| **冒頭 5 行 summary** | frontmatter 直下に「何のための文書か」を 5 行以内で要約 (ADR 0027 / `docs-structure.md`) | lazy-load で AI のコンテキスト圧迫を防止 |
+| **frontmatter 必須キー** | `id` / `title` / `status` (proposed / accepted / superseded) / `related_*` / `created_at` / `updated_at` を必須化 | Konsist 相当の Gradle カスタムタスク (§5.2) で JSON Schema 検証 |
+| **片方向トレーサビリティ** | REQ → SPEC (basic) → SPEC (detail) → Kotlin 実装 (`@Spec` annotation) → テスト の一方向参照のみ。逆向きに「実装に必要な情報を要件に押し戻す」ことはしない | Single Source of Truth を維持、`docs/traceability.md` を Gradle カスタムタスクで自動生成可能 |
+| **未解決事項の明示** | 各文書末尾に Open Questions セクションを必置 (空でも見出しは残す) | 後回しにした判断を放置せず、Epic の `open-questions.md` / roadmap.md と接続 |
+
+#### 4.6.2 3 種類の責務分担
+
+| 文書 | 主目的 | 抽象度 | 主読者 | 答えるべき問い |
+|---|---|---|---|---|
+| **要件定義** (`REQ-NNN`) | 何を達成すべきか / 誰のために / どんな制約下で | 業務 / ユーザー視点 | 人間 (オーナー / レビュー) + AI (feature-request Skill) | "WHY" と "WHAT" の境界画定 |
+| **基本設計** (`SPEC-NNN-basic`) | 要件を満たすシステム全体像 / 構成 / 流れ | アーキ視点 | 人間 + AI (implementation-workflow Skill) | "システム外形" と "業務フロー" |
+| **詳細設計** (`SPEC-NNN-detail`) | 基本設計を実装可能粒度に分解、モジュール責務 / 状態 / 例外 | モジュール視点 | 主に AI (implementation-workflow / code-reviewer) | "どの責務が何処に / どの状態でどう振る舞うか" (具体コードは書かず責務のみ) |
+
+#### 4.6.3 要件定義テンプレ (`docs/requirements/template.md`) の主要セクション
+
+| # | セクション | 表現方法 | 含めない情報 |
+|---|---|---|---|
+| 1 | 概要 / 目的 / 背景 | 自然言語 (5 行以内) + 表 | 解決手段 (HOW) |
+| 2 | ステークホルダー / アクター | 表 (アクター / 役割 / 主要なゴール) | — |
+| 3 | スコープ (含む / 含まない) | 箇条書き 2 段 | — |
+| 4 | ユースケース概要 | Mermaid `graph` でアクター ⇄ UC 図 + UC 表 (ID / 名称 / 事前条件 / 事後条件) | UC 詳細フロー (基本設計に委譲) |
+| 5 | 機能要件 (FR) | 表 (FR ID / 機能名 / 説明 / 優先度 (must/should/could/won't) / 関連 UC) | 実装方式・API パス |
+| 6 | 非機能要件 (NFR) | IPA 非機能要求グレードの 6 大項目 (可用性 / 性能・拡張性 / 運用・保守性 / 移行性 / セキュリティ / システム環境・エコロジー) に沿った表 (区分 / 指標 / 目標値 / 計測方法) | 実装手段 |
+| 7 | 制約 / 前提 | 箇条書き (法令 / 既存資産 / 期間 / 体制) | — |
+| 8 | 用語定義 | 表 (用語 / 説明 / `docs/glossary.md` への参照) | — |
+| 9 | トレーサビリティ | 表 (FR ID / 関連 SPEC / 関連 EPIC / 関連 PLAN / 関連 ADR) | — |
+| 10 | 受け入れ基準 (AC) | チェックリスト形式 (AC-NN / 検証可能な条件) | テスト実装詳細 |
+| 11 | Open Questions | 表 (起票日 / 内容 / 暫定方針 / 解決状態) | — |
+
+#### 4.6.4 基本設計テンプレ (`docs/specifications/basic/template.md`) の主要セクション
+
+| # | セクション | 表現方法 | 含めない情報 |
+|---|---|---|---|
+| 1 | 概要 (5 行以内サマリ) | 自然言語 | — |
+| 2 | システム構成 | Mermaid `graph LR` でコンポーネント間結線 + 表 (構成要素 / 役割 / 関連 ADR) | 内部実装詳細 |
+| 3 | 機能一覧と要件マッピング | 表 (SPEC-ID / 機能名 / 関連 FR ID / 関連 AC ID) | — |
+| 4 | 業務フロー | Mermaid `sequenceDiagram` で主要 UC ごとの actor ⇄ system 交信 | クラス間呼び出し詳細 (詳細設計に委譲) |
+| 5 | 画面遷移 | Mermaid `stateDiagram-v2` + 表 (画面 / 状態 / 遷移トリガー) | Composable 引数・props |
+| 6 | データモデル (論理) | Mermaid `erDiagram` + 表 (エンティティ / 属性 / 制約 / 説明、論理スキーマのみ) | 物理スキーマ DDL / `*.sq` の中身 |
+| 7 | 外部 I/F 一覧 | 表 (I/F 名 / 種別 (REST/SPARQL 等) / エンドポイント / 入力概要 / 出力概要 / 関連 ADR)。詳細リクエスト/レスポンス JSON は **`docs/api/colormaster-api.yaml` (OpenAPI 3.1)** を Single Source of Truth として参照 | リクエスト/レスポンスの具体 JSON |
+| 8 | エラーケース / 例外パターン | 表 (ケース / 発生条件 / UX / ログ / メトリクス) | try/catch の構文 |
+| 9 | 受け入れ基準 (AC) ↔ テストマップ | 表 (AC ID / 内容 / 対応 SPEC-ID-detail / 期待テスト種別) | — |
+| 10 | 関連 ADR / リスク | 箇条書き + ADR 番号リンク | — |
+| 11 | Open Questions | 表 | — |
+
+#### 4.6.5 詳細設計テンプレ (`docs/specifications/detail/template.md`) の主要セクション
+
+| # | セクション | 表現方法 | 含めない情報 |
+|---|---|---|---|
+| 1 | 概要 (5 行以内サマリ) | 自然言語 | — |
+| 2 | モジュール / ファイル配置 | 表 (パス / 責務 / 関連 SPEC-ID / 関連 `.claude/rules/`) + Mermaid `graph TD` で依存方向 | パッケージ宣言 / import 文 |
+| 3 | 主要クラスの責務 | 表 (クラス名 / 種別 (ViewModel/Repository/Composable 等) / 責務 / 保持する状態 / 主要メソッドの責務 (シグネチャでなく自然言語の動作説明)) | メソッドシグネチャ・引数型・実装擬似コード |
+| 4 | 状態遷移 | Mermaid `stateDiagram-v2` + 表 (状態 / UI 表示 / 遷移トリガー / 副作用) | `sealed class` の構文 |
+| 5 | シーケンス (主要ユースケース) | Mermaid `sequenceDiagram` でモジュール間呼び出し (UC ごと) | メソッド本文の処理ステップ列挙 |
+| 6 | データ構造 (論理スキーマ) | 表 (構造名 / フィールド / 型 (論理: String / Long / Instant 等) / 制約 / 説明) | Kotlin `data class` 宣言 / SQL DDL |
+| 7 | 例外 / リトライ / タイムアウト | 表 (発生位置 / ケース / 振る舞い / リトライ方針 / タイムアウト / Result 型での扱い) | try/catch の構文 |
+| 8 | 設定値 / 環境変数 | 表 (名前 / 用途 / デフォルト / スコープ (build/runtime/secret)) | `.env` の中身 |
+| 9 | テストパターン | 表 (テスト ID / 観点 / パターン (正常 / 異常 / 境界) / 関連 AC ID / `@Spec` 予定 ID) | テストコード |
+| 10 | 関連 Plan / Epic / ADR / Rules | 箇条書き (ID + 短い説明) | — |
+| 11 | Open Questions | 表 | — |
+
+#### 4.6.6 Mermaid の使い分け早見表
+
+| Mermaid 種別 | 主用途 | 使う文書 |
+|---|---|---|
+| `graph` (LR/TD) | 構成図、依存方向、ユースケース概観 | 全て (要件定義は概観、基本設計はシステム構成、詳細設計はモジュール依存) |
+| `sequenceDiagram` | 業務フロー / モジュール間呼び出し | 基本設計 (actor ⇄ system) / 詳細設計 (モジュール間) |
+| `stateDiagram-v2` | 画面遷移 / UiState 状態遷移 | 基本設計 (画面) / 詳細設計 (UiState) |
+| `erDiagram` | データモデル (論理) | 基本設計のみ (詳細設計のデータ構造は表に統一) |
+| `gantt` | 着手順 (基本的に roadmap.md 専用) | 基本設計 / 詳細設計では使わない |
+
+#### 4.6.7 整合性チェックの責務分担
+
+| 検証対象 | 担当ツール | 参照 |
+|---|---|---|
+| frontmatter 必須キー / 型 / 値域 | Gradle カスタムタスク (commonmark-java + SnakeYAML) | §5.2 |
+| 文書間 ID 参照の実在 (REQ ⇄ SPEC ⇄ EPIC ⇄ PLAN ⇄ ADR) | 同上、`docs/traceability.md` 自動生成 | §5.2 / §6.2 A6 |
+| **基本設計 ⇄ 詳細設計のペア整合性** (basic 側の `related_detail` が指す SPEC-NNN-detail ファイルが `docs/specifications/detail/` に存在、その逆も成立) | Gradle カスタムタスク | §4.6 / §5.2 |
+| 設計書本文に Kotlin 等のコード断片が混入していないか | Gradle カスタムタスク (`docs/{requirements,specifications}/**/*.md` を走査、フェンス付きコードブロック \`\`\`{kotlin,kt,sh,sql,...} の存在を検出 → CI 失敗) | §5.2 / §6.2 A6 |
+| 設計書 ⇄ Kotlin 実装の対応 | Kotlin 側の `@Spec("SPEC-NNN-N")` annotation (Konsist が抽出) | §3.10 / §5.2 |
+| Mermaid 構文エラー | `markdownlint-cli2` (Mermaid プラグイン経由) / CI で `npx -p @mermaid-js/mermaid-cli mmdc` の dry-run | §5.2 / §6.2 A6 |
+
+#### 4.6.8 Skill との連携
+
+| Skill | 関与する設計書 | 役割 |
+|---|---|---|
+| `feature-request` / `bug-fix` / `refactor` | 要件定義 → 基本設計 → (必要なら) 詳細設計 を順に起草、テンプレに沿って空欄を埋める。**コード断片を入れない**規約は Skill prompt + `.claude/rules/docs-structure.md` で強制 | 起草 (実装はしない) |
+| `implementation-workflow` | 全 3 種を Phase 1 で Read、`@Spec` annotation 付きテストと実装に変換 (この時点で初めてコードが書かれる) | 消費 |
+| `code-reviewer` (spec-conformance aspect) | 全 3 種と Kotlin 実装の整合性を 8 aspect の 1 つとして検証、不整合は PR コメントで指摘 | 検証 |
+| `adr-author` | 要件定義の制約 / 基本設計の構成決定で ADR 起票基準を満たすものは ADR に昇格 | 派生 |
+
 ---
 
 ## 5. ハーネス構造 (`.claude/`)
@@ -812,6 +915,7 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
   - `docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する (R-34)。
   - `docs/traceability.md` を Konsist が抽出した Kotlin 側 `@Spec` 一覧 + 本タスクが抽出した Plan/Epic/ADR/Spec 参照を join して自動生成。
   - `data/users.db*` の追跡禁止、Dockerfile 内 `COPY data/users.db` の禁止、`feature/**`・`core/**` Kotlin source に `dev.gitlive.firebase.*` import が無いこと (後者は Konsist と二重化)。
+  - **設計書本文 (`docs/{requirements,specifications}/**/*.md`) にコード断片が混入していないこと** (§4.6 のコード禁止原則): フェンス付きコードブロック \`\`\`{kotlin,kt,java,sh,bash,zsh,sql,gradle,kts} の存在を検出 → CI 失敗。識別子 / パス参照のインラインコード (`backtick`) は許容。
 - **`firebase-boundary.md` 等の境界違反**: 上記 Gradle カスタムタスク内で `git grep` 系の簡易チェックも統合。
 - **trufflehog**: secret-scan workflow (A6 で CI 導入、Claude API を使わない GitHub Actions の本来用途)。
 
@@ -1204,7 +1308,7 @@ Remote HTTP + OAuth。初回接続時に Claude Code がブラウザで認証フ
 
 | # | 内容 |
 |---|---|
-| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / **`.claude/mcp.json` で JetBrains MCP + Context7 MCP + Cloudflare MCP の接続定義** / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot, harness-evolution, roadmap-tracker}` の最小版 (**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を参照、本リポジトリには配置しない**) / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation, mcp-usage, skill-authoring, harness-evolution, docs-structure, roadmap}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**、`mcp-usage.md` は **GitHub は gh CLI / IDE 操作は JetBrains MCP / ライブラリ docs は Context7 / Cloudflare 管理は Cloudflare MCP の使い分けを規定**、`skill-authoring.md` は **example-skills:skill-creator 経由 + Anthropic Complete Guide 準拠**、`harness-evolution.md` は **外部情報源ホワイトリスト + 手動起動のみ + harness-meta との責務分離**、`docs-structure.md` は **AI が docs を読む順序 + 命名規約 + 5 行 summary + lazy-load 構造**、`roadmap.md` は **ロードマップ Markdown の構造 (frontmatter / 項目一覧 / 完了根拠 / 着手順とブロック / 保留事項 / 障壁と回避策 / 着手順変更履歴) + ステータス語彙 + 入力スコープ (plan.md と Epic のみ、Plan 単体は対象外) + plan.md / Epic への逆同期禁止**) / `docs/{adr, epics, plans, harness/learnings, harness/evolution-proposals, runbooks, requirements, specifications, design/inventory, architecture, api, security}` スケルトン + **`docs/harness/roadmap.md` 骨格** (本計画 plan.md から B0/A1-A10/C1-C10 / EPIC-000 を初期取り込みした全体ロードマップ、frontmatter + 項目一覧 + 空の完了根拠/保留事項/障壁/着手順変更履歴セクション) + **`docs/epics/EPIC-000-harness-foundation/roadmap.md` 骨格** (EPIC-000 配下の PR 進捗トラッカー、template/roadmap.md と同一フォーマット、Plan 単体は列挙しない) (テンプレートは全て**日本語**、`docs/README.md` は **AI 用エントリポイント** として推奨読み順を明記、`docs/{glossary, codebase-map, traceability}.md` の骨格を配置、`docs/architecture/{overview, layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md` 骨格、`docs/api/{README, colormaster-api.yaml, auth, idols, me}.md` 骨格、`docs/security/README.md` で ADR 索引、`docs/requirements/{README, template}.md`、`docs/specifications/{README, basic-template, detail-template}.md`、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)** / **`docs/runbooks/{local-development, testing, i18n, mcp-setup}.md` を新規追加 (骨格)**。`mcp-setup.md` は以下を記載: (1) IntelliJ IDEA / Android Studio **2025.2+ にバンドル済の MCP Server プラグイン** (`JetBrains/mcp-server-plugin`、Marketplace 26071) を `Settings | Tools | MCP Server` で有効化、(2) **旧 `@jetbrains/mcp-proxy` npm パッケージは deprecated なので使用しない** こと、(3) JetBrains MCP の **3 つの接続方式** (Copy SSE Config [推奨] / Copy Stdio Config / Copy HTTP Stream Config) の選択基準と `.claude/mcp.json` への貼り付け手順、(4) IDE 再起動で動的ポートが変わる場合の再貼り付け手順 (or `claude mcp add` 経由の登録)、(5) Context7 / Cloudflare の OAuth 接続フロー、(6) `/mcp` での接続確認、(7) トラブルシュート (IDE 未起動 / MCP Server プラグイン未有効 / ポート競合 / IDE バージョン 2025.2 未満)。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動)、**`dependency-upgrade-check.yml` も導入しない** (Renovate PR の検証は pr-poller がローカルで dependency-upgrade Skill を起動して実施、Claude API の GitHub Actions 上実行を回避) |
+| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / **`.claude/mcp.json` で JetBrains MCP + Context7 MCP + Cloudflare MCP の接続定義** / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot, harness-evolution, roadmap-tracker}` の最小版 (**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を参照、本リポジトリには配置しない**) / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation, mcp-usage, skill-authoring, harness-evolution, docs-structure, roadmap}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**、`mcp-usage.md` は **GitHub は gh CLI / IDE 操作は JetBrains MCP / ライブラリ docs は Context7 / Cloudflare 管理は Cloudflare MCP の使い分けを規定**、`skill-authoring.md` は **example-skills:skill-creator 経由 + Anthropic Complete Guide 準拠**、`harness-evolution.md` は **外部情報源ホワイトリスト + 手動起動のみ + harness-meta との責務分離**、`docs-structure.md` は **AI が docs を読む順序 + 命名規約 + 5 行 summary + lazy-load 構造**、`roadmap.md` は **ロードマップ Markdown の構造 (frontmatter / 項目一覧 / 完了根拠 / 着手順とブロック / 保留事項 / 障壁と回避策 / 着手順変更履歴) + ステータス語彙 + 入力スコープ (plan.md と Epic のみ、Plan 単体は対象外) + plan.md / Epic への逆同期禁止**) / `docs/{adr, epics, plans, harness/learnings, harness/evolution-proposals, runbooks, requirements, specifications, design/inventory, architecture, api, security}` スケルトン + **`docs/harness/roadmap.md` 骨格** (本計画 plan.md から B0/A1-A10/C1-C10 / EPIC-000 を初期取り込みした全体ロードマップ、frontmatter + 項目一覧 + 空の完了根拠/保留事項/障壁/着手順変更履歴セクション) + **`docs/epics/EPIC-000-harness-foundation/roadmap.md` 骨格** (EPIC-000 配下の PR 進捗トラッカー、template/roadmap.md と同一フォーマット、Plan 単体は列挙しない) (テンプレートは全て**日本語**、`docs/README.md` は **AI 用エントリポイント** として推奨読み順を明記、`docs/{glossary, codebase-map, traceability}.md` の骨格を配置、`docs/architecture/{overview, layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md` 骨格、`docs/api/{README, colormaster-api.yaml, auth, idols, me}.md` 骨格、`docs/security/README.md` で ADR 索引、`docs/requirements/{README, template}.md`、`docs/specifications/README.md` と `docs/specifications/{basic,detail}/template.md`、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)** / **`docs/runbooks/{local-development, testing, i18n, mcp-setup}.md` を新規追加 (骨格)**。`mcp-setup.md` は以下を記載: (1) IntelliJ IDEA / Android Studio **2025.2+ にバンドル済の MCP Server プラグイン** (`JetBrains/mcp-server-plugin`、Marketplace 26071) を `Settings | Tools | MCP Server` で有効化、(2) **旧 `@jetbrains/mcp-proxy` npm パッケージは deprecated なので使用しない** こと、(3) JetBrains MCP の **3 つの接続方式** (Copy SSE Config [推奨] / Copy Stdio Config / Copy HTTP Stream Config) の選択基準と `.claude/mcp.json` への貼り付け手順、(4) IDE 再起動で動的ポートが変わる場合の再貼り付け手順 (or `claude mcp add` 経由の登録)、(5) Context7 / Cloudflare の OAuth 接続フロー、(6) `/mcp` での接続確認、(7) トラブルシュート (IDE 未起動 / MCP Server プラグイン未有効 / ポート競合 / IDE バージョン 2025.2 未満)。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動)、**`dependency-upgrade-check.yml` も導入しない** (Renovate PR の検証は pr-poller がローカルで dependency-upgrade Skill を起動して実施、Claude API の GitHub Actions 上実行を回避) |
 
 B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Skill 駆動 + KPT 生成の対象となる。`pr-poller` はローカル Claude Code 起動時に手動起動可能とし、A4 で `CronCreate` / `ScheduleWakeup` による自動化を完成させる。
 
@@ -1215,11 +1319,11 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 | # | 単位 | 起動 Skill | 内容 |
 |---|---|---|---|
 | **A1** | Plan | `harness-bootstrap` | ADR 0001-0027 を一括起草する PR (全て日本語) |
-| **A2** | EPIC-A2 | `harness-bootstrap` | **`.claude/rules/*` 全ファイル本格化 + `docs/` 全面拡充**: docs/README.md (AI エントリポイント・推奨読み順)、glossary.md、codebase-map.md (初版、A10 / Phase C で随時更新)、architecture/{layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md、api/README.md + colormaster-api.yaml (骨格、内容は C5 で本格化)、security/README.md (ADR 索引)、requirements/{README, template}.md、specifications/{README, basic-template, detail-template}.md、runbooks/{local-development, testing, i18n}.md を完成。各 docs は冒頭 5 行 summary + 詳細 lazy-load 構造 (ADR 0027) |
+| **A2** | EPIC-A2 | `harness-bootstrap` | **`.claude/rules/*` 全ファイル本格化 + `docs/` 全面拡充**: docs/README.md (AI エントリポイント・推奨読み順)、glossary.md、codebase-map.md (初版、A10 / Phase C で随時更新)、architecture/{layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md、api/README.md + colormaster-api.yaml (骨格、内容は C5 で本格化)、security/README.md (ADR 索引)、requirements/{README, template}.md、specifications/README.md + specifications/{basic,detail}/template.md、runbooks/{local-development, testing, i18n}.md を完成。各 docs は冒頭 5 行 summary + 詳細 lazy-load 構造 (ADR 0027) |
 | **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** / **ui-snapshot** / **harness-evolution** / **roadmap-tracker** の本格版へのアップグレード、**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を採用しリポジトリには配置しない**)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 8 aspect の binary eval checklist + coordinator を完全実装 (visual-regression / design-tokens は A10 完了後に enable)。pr-poller は **Renovate ラベル PR の検出と dependency-upgrade 起動** も担当。**roadmap-tracker は plan.md / Epic 走査 (Plan 単体は対象外) → ロードマップ生成・更新ロジック / `gh pr view` での完了根拠取得 / Open Questions・障壁・着手順変更履歴の append-only 追記 / `.claude/rules/roadmap.md` 規約準拠を完全実装。`epic-author` / `implementation-workflow` (Phase 7、Epic 配下 PR または B-A-C フェーズ項目に該当時のみ) から自動起動するフックも整備**。マージ後、`harness-bootstrap` は `archived/` へ |
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
 | **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル、**`dev.gitlive:firebase-*` 依存、`core/network/{auth,firestore}`、`firebase.json`、`.firebaserc`**) |
-| **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + **`markdownlint-cli2` (`com.github.node-gradle.node` Gradle plugin 経由 + CI で `DavidAnson/markdownlint-cli2-action`)** + **`scripts/install-git-hooks.sh` で `.git/hooks/pre-commit` に `./gradlew check` を配置** (lefthook 等の hook 管理ツールは導入しない、Gradle に集約済みで管理コスト > 便益のため) + **trufflehog による secret-scan workflow**)。検証はファイル種別ごとに別ツールで実施 (§5.2 参照):<br>● **Konsist (Kotlin code 規約)**: 「`feature/**`・`core/**` Kotlin source で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラ実装に `requireUid()` 呼び出し強制」「実装側 `@Spec` annotation の収集」<br>● **`markdownlint-cli2`**: Markdown フォーマット規約 (行長 / 見出しレベル飛び / リスト形式 / コードブロック言語タグ / リンクの妥当性等)<br>● **Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x)**: 「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「frontmatter 必須キー JSON Schema 検証」「**`docs/traceability.md` 自動生成** (Konsist で抽出した Kotlin 側 `@Spec` + 本タスクが抽出した Plan/Epic/ADR/Spec 参照を join)」「**docs/ の各 Markdown が冒頭 5 行以内の summary を持つ**」「**`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する** (PLAN-NNN は追跡対象外のため検証不要)」 |
+| **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + **`markdownlint-cli2` (`com.github.node-gradle.node` Gradle plugin 経由 + CI で `DavidAnson/markdownlint-cli2-action`)** + **`scripts/install-git-hooks.sh` で `.git/hooks/pre-commit` に `./gradlew check` を配置** (lefthook 等の hook 管理ツールは導入しない、Gradle に集約済みで管理コスト > 便益のため) + **trufflehog による secret-scan workflow**)。検証はファイル種別ごとに別ツールで実施 (§5.2 参照):<br>● **Konsist (Kotlin code 規約)**: 「`feature/**`・`core/**` Kotlin source で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラ実装に `requireUid()` 呼び出し強制」「実装側 `@Spec` annotation の収集」<br>● **`markdownlint-cli2`**: Markdown フォーマット規約 (行長 / 見出しレベル飛び / リスト形式 / コードブロック言語タグ / リンクの妥当性等)<br>● **Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x)**: 「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「frontmatter 必須キー JSON Schema 検証」「**`docs/traceability.md` 自動生成** (Konsist で抽出した Kotlin 側 `@Spec` + 本タスクが抽出した Plan/Epic/ADR/Spec 参照を join)」「**docs/ の各 Markdown が冒頭 5 行以内の summary を持つ**」「**`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する** (PLAN-NNN は追跡対象外のため検証不要)」「**設計書本文 (`docs/{requirements,specifications}/**`) にコード断片 (フェンス付きコードブロックの kotlin / java / sh / sql / gradle / kts 等) が混入していない** (§4.6 のコード禁止原則)」 |
 | **A7** | Plan | `feature-request` | **三層テスト品質基盤の導入**:<br>● **指標 A**: Kover 導入 + `koverVerify minValue=100` 必達化 (ADR 0013 除外列挙のみ許可)<br>● **指標 B**: `@Spec` annotation の Kotlin 定義 + Konsist による Spec coverage 検証ルール導入 (ADR 0016、`.claude/rules/spec-traceability.md`)<br>● **指標 C**: PITest + pitest-kotlin + gradle-pitest-plugin 導入。JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。PR コメントで mutation score 可視化 (ADR 0015、`.claude/rules/mutation-testing.md`)<br>本 PR 時点では既存コードの未充足は除外リストで一旦逃がし、A9 完了までに全モジュールに展開する旨を rules に明記 |
 | **A8** | Plan | `feature-request` | **im@sparql ローカル Docker 環境構築** (Apache Jena Fuseki + RDF データ初期投入スクリプト + `docker-compose.yml` + integration test 基盤 + Testcontainers 規約)。`docs/runbooks/local-imasparql.md` を整備し、backend のローカル開発・テストを Fuseki に対して実行できる状態にする |
 | **A9** | **EPIC-A9** | `refactor` | **既存コード全体に対する三層指標の達成**。モジュールごとに段階 Plan (PLAN-NNN × 多数) を発行:<br>● 指標 A: line / branch 100% カバレッジを全モジュールで達成<br>● 指標 B: 既存機能の Acceptance criteria を `docs/specifications/<id>.md` に逆生成、テストに `@Spec` annotation を付与、Spec coverage 100% 達成<br>● 指標 C: 各モジュールの初回 mutation score をベースラインとして記録、明らかな tautological テストは learnings に蓄積し改善<br>Konsist の「実装クラス ⇄ テストクラス対応」検証を本 EPIC 完了時に enforce。backend/server / android/app / core/* / data/ 全モジュールが対象。A7 で導入した除外リストは ADR 0013 列挙分のみに整理する |
@@ -1402,6 +1506,13 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
   - 手動起動契機: 「ロードマップ更新」「進捗可視化」「着手順入れ替え」「障壁記録」「保留事項追加」等の人間 / 他 Skill からの指示
   - **ADR 化は見送り** (§4.5 ADR にすべきでない例の表で根拠を明示): ハーネス中核フェーズには直接組み込まない補助 Skill、撤回コストが低い、複数代替案の本格比較未実施、のため 10 項目中 2 項目以上を満たさない。重大な運用方針変更が起きた場合は ADR 起票基準を再評価して格上げ (R-36)
   - B0 で Skill / rule / docs スケルトン、A3 で本格実装
+- **設計ドキュメント (要件定義 / 基本設計 / 詳細設計) のフォーマット** (§4.6 で規定):
+  - IPA の **共通フレーム (SLCP) / 機能要件の合意形成ガイド / 非機能要求グレード** を下敷きに、「自然言語 + テーブル + Mermaid」で表現。Mermaid は `graph` / `sequenceDiagram` / `stateDiagram-v2` / `erDiagram` を文書種別ごとに使い分け
+  - **コード断片 (Kotlin / Gradle DSL / シェル / SQL / KTS 等の言語文法を持つもの) は 3 種いずれにも含めない**。識別子参照 / `file_path:line` 参照のみ許容。整合性チェック工数の削減と Single Source of Truth (Kotlin 側) 維持が目的
+  - 3 種の責務分担: 要件定義 = WHY/WHAT、基本設計 = システム外形 + 業務フロー、詳細設計 = モジュール責務 + 状態 + 例外
+  - 共通原則: frontmatter 必須キー / 冒頭 5 行 summary / 片方向トレーサビリティ (REQ → SPEC basic → SPEC detail → Kotlin 実装 → テスト) / 末尾に Open Questions 必置
+  - 機械検証: Gradle カスタムタスク (§5.2) で「フェンス付きコードブロック `kotlin` / `java` / `sh` / `bash` / `sql` / `gradle` / `kts` 等の混入禁止」「frontmatter JSON Schema」「ID 参照の実在 (REQ ⇄ SPEC ⇄ EPIC ⇄ PLAN ⇄ ADR)」を A6 で導入
+  - 実テンプレ Markdown (`docs/requirements/template.md` / `docs/specifications/basic/template.md` / `docs/specifications/detail/template.md`) は B0 で配置、§4.6 の主要セクション一覧に従って内容は実際の起票時に埋める。基本設計と詳細設計は **物理的にサブディレクトリで分離** (`docs/specifications/{basic,detail}/`)、ペア参照は frontmatter `related_basic` / `related_detail` で双方向リンク
 
 ---
 
