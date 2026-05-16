@@ -1279,51 +1279,13 @@ Skill が IDE / ライブラリドキュメント / Cloudflare を操作する�
 }
 ```
 
-##### JetBrains MCP の接続詳細
+##### 接続セットアップの要点
 
-> **重要**: 旧来の `@jetbrains/mcp-proxy` npm パッケージ (旧リポジトリ `JetBrains/mcp-jetbrains`) は **deprecated**。「The core functionality has been integrated into all IntelliJ-based IDEs since version 2025.2. The built-in functionality works with SSE and JVM-based proxy (for STDIO) so this NPM package is no longer required」(公式 README) 。本計画では **IDE 内蔵 MCP Server プラグイン ([`JetBrains/mcp-server-plugin`](https://github.com/JetBrains/mcp-server-plugin), Marketplace ID [26071-mcp-server](https://plugins.jetbrains.com/plugin/26071-mcp-server)) を使用**。
+- **JetBrains MCP**: IDE 内蔵 MCP Server プラグイン (`JetBrains/mcp-server-plugin`、2025.2+ バンドル済) を `Settings | Tools | MCP Server` で有効化し、**Copy SSE Config** で取得した接続定義を `.claude/mcp.json` に貼付。IDE 再起動で動的ポートが変わるため貼り直しが必要 (`claude mcp add --transport sse jetbrains <URL>` 経由でも可)。IDE 未起動時は接続失敗するため `gh` CLI / `git grep` 等にフォールバック (R-27)。旧来の `@jetbrains/mcp-proxy` npm パッケージは deprecated。
+- **Context7 MCP**: Remote HTTP、認証不要 (公開ライブラリ docs)。URL は公式ドキュメント (`upstash/context7`) に従う。
+- **Cloudflare MCP**: Remote HTTP + OAuth。初回接続時に Claude Code がブラウザで認証フローを開き、token はローカル Claude Code の安全領域に保存される。
 
-**前提条件**:
-
-- **IntelliJ IDEA / Android Studio 2025.2 以降** が必須 (内蔵 MCP Server プラグインがバンドル済 + 既定有効)
-- IDE 側で `Settings | Tools | MCP Server` を開いて MCP server を有効化
-- IDE が起動中であること (起動していなければ JetBrains MCP は接続失敗、CLI fallback へ — R-27)
-- **Node.js 不要** (npx proxy は deprecated 方式、内蔵 SSE/Stdio/HTTP Stream で完結)
-
-**接続モードの選択 (IDE 側で 3 種から Copy)**:
-
-`Settings | Tools | MCP Server` 画面に以下のボタンがあり、それぞれの接続定義をクリップボードに取得できる:
-
-| ボタン | 形式 | 性質 | `.claude/mcp.json` での記載例 |
-|---|---|---|---|
-| **Copy SSE Config** (推奨) | Server-Sent Events (HTTP) | 軽量、再接続容易、URL は動的ポート | `{ "type": "sse", "url": "http://localhost:<port>/sse" }` |
-| **Copy Stdio Config** | JVM-based proxy を IDE が spawn | プロセス分離、Node.js 不要 | `{ "command": "<IDE が指定するパス>", "args": [...] }` |
-| **Copy HTTP Stream Config** | HTTP Streaming | SSE の代替、大量ストリーム時 | `{ "type": "http", "url": "http://localhost:<port>/mcp" }` |
-
-**ColorMaster の推奨は SSE**: 軽量 / 動的ポートの管理が IDE 任せ / 再接続が容易。動的ポートは IDE 起動ごとに変わるので、**Copy SSE Config の値を runbook の手順に従って `.claude/mcp.json` に貼り直す** 運用 (or 後述の `claude mcp add` コマンド経由)。
-
-**自動登録の代替**:
-
-IDE の `Settings | Tools | MCP Server` 画面に「Claude Code に自動登録」のような連携 UI が用意される場合もある。または Claude Code の `claude mcp add --transport sse jetbrains <URL>` コマンドでローカル設定に登録可能。手順は runbook に記載。
-
-##### Context7 MCP の接続詳細
-
-Remote HTTP、認証不要 (公開ライブラリ docs)。URL の正確な値は公式ドキュメント (`upstash/context7`) に従う。API key を要するプランも存在するが、ColorMaster 用途では公開 docs アクセスのみで足りる。
-
-##### Cloudflare MCP の接続詳細
-
-Remote HTTP + OAuth。初回接続時に Claude Code がブラウザで認証フローを開き、token はローカル Claude Code の安全領域に保存される。
-
-##### 詳細セットアップ手順は runbook 参照
-
-`docs/runbooks/mcp-setup.md` に以下を記載 (B0 で作成):
-
-- IntelliJ IDEA 2025.2+ の MCP Server プラグイン有効化手順
-- Node.js 18+ のインストール / バージョン確認
-- 3 つの接続方式 (npx proxy / SSE / Stdio / HTTP Stream) のそれぞれの設定例とトレードオフ
-- Context7 MCP / Cloudflare MCP の OAuth フロー
-- 接続確認コマンド (Claude Code 内で `/mcp` などの diagnostic)
-- 接続失敗時のトラブルシュート (IDE 未起動、port 競合、Node.js バージョン不整合等)
+詳細手順 (3 接続方式 (SSE / Stdio / HTTP Stream) のトレードオフ / OAuth フロー / `/mcp` での接続確認 / IDE バージョン要件・port 競合等のトラブルシュート) は **`docs/runbooks/mcp-setup.md` に集約** (B0 で作成、本節からは参照のみ)。
 
 #### MCP 利用規約 (`.claude/rules/mcp-usage.md`)
 
@@ -1436,7 +1398,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **新規追�
 | R-1 | iOS Compose Multiplatform は Stable 到達済みだが、scroll physics 等の挙動差異が残る可能性 | C8 で限定機能から検証、ADR に「実験的採用」を残す |
 | R-2 | wasmJs での GIS 実装パターンの公式リファレンスが薄い | C9 で spike PR を最初に切る。Open question として EPIC-006 に記録 |
 | R-3 | `data/idols.db` のバイナリ管理によるリポジトリサイズ膨張 | アイドル情報は数百〜千行のため当面は通常 commit。MB 級になったら Git LFS 移行を別 ADR で |
-| R-4 | Cloud Run JVM コールドスタート | Phase C 完了後に GraalVM Native Image を別 ADR で検討 |
+| R-4 | Cloud Run JVM Container は Cold Start に数秒かかる可能性 | C7 で cold start 計測、read-heavy API なので初回のみ影響、トラフィック想定では問題小さい見込み。許容不可なら GraalVM Native Image 化を別 ADR で検討 (旧 R-17 を統合) |
 | R-7 | AI 自動生成テストが「網羅性はあるが意味のないテスト」になる可能性 | 三層指標で多層対処: 指標 B (Spec coverage) で仕様トレーサビリティを強制、指標 C (Mutation score) で意味的強度を計測可視化、Konsist メタ規約 + KPT 学習 + `kotlin-test.md` 強化のフォールバックループで担保 (3.10 節参照) |
 | R-8 | 既存コードの line / branch 100% 達成作業量が想定を超える可能性 | A9 EPIC を「既存コード一斉 100% 達成」から「baseline 記録 + Spec coverage 適用準備」に縮小し、**Phase A 完了条件から既存コード 100% 達成を外して Phase C 各 Epic / Plan で段階達成** する方針に修正済 (§3.10 / §6.2 / §6.3 参照)。差分カバレッジゲート (A7) で新規分は確実にカバー、既存分は Phase C の各 Epic 内で対象モジュールを並行カバーする。完了見込みが立たない場合は除外対象の見直しを ADR 改訂で対応 (ただし安易な除外追加は禁止)。指標 C は初回 baseline 記録のみで完了とし、改善は継続課題に |
 | R-9 | Fuseki に投入する RDF データの著作権・ライセンス確認 | A8 でデータ取得元 (`imas/imasparql` リポジトリ) のライセンスを確認し ADR 0014 に明記。条件次第ではダミー RDF + テスト専用データ構成にする |
@@ -1446,7 +1408,6 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **新規追�
 | R-13 | code-reviewer の aspect が、code を書いた Generator と同じバイアスを共有するリスク | Anthropic Evaluator 独立性原則に従い、aspect ごとに別の system prompt を持たせる (`code-reviewer-aspects.md` に明文化)。さらに各 aspect は binary yes/no eval checklist を最低 5 項目持ち、yes/no 判定を強制 |
 | R-14 | implementation-workflow の fix loop が無限に回るリスク | 上限 3 回 (デフォルト) で停止し、Plan に `status: blocked` を記録、人間に通知 (`implementation-workflow.md` に明文化) |
 | R-15 | code-reviewer の自動レビューに人間が依存しすぎ、本質的な見落としを許すリスク | GitHub Agentic Workflows 原則「人間 approve なしに merge しない」を必達。code-reviewer の Ready 判定は merge を許可するだけで自動 merge しない。人間レビュアーには「code-reviewer の指摘で十分か?」を考えさせる文言を PR コメントに含める |
-| R-17 | Cloud Run の JVM Container は Cold Start に数秒かかる可能性 | C7 で cold start 計測、許容不可なら GraalVM Native Image 化を別 ADR で検討。read-heavy API なので初回のみ影響、トラフィック想定では問題小さい見込み |
 | R-18 | R2 + Litestream の実環境動作未検証 | C5 内で Testcontainers の MinIO (S3 互換) と本番 R2 の両方で integration test を実施。runbook `docs/runbooks/r2-litestream.md` に手順を残す |
 | R-19 | R2 token 流出による `users.db` 漏洩 | R2 bucket private + bucket policy で Backend Service Token のみ allow、token TTL 90 日で定期ローテーション (ADR 0021)、漏洩時のローテーション runbook を `docs/runbooks/secrets-rotation.md` に整備。DB スキーマで PII を `uid` のみに最小化することで漏洩時の影響を構造的に下げる |
 | R-20 | PR diff / リポジトリ履歴に PII / credentials が混入するリスク | trufflehog による全 PR 差分のスキャン (A6 で導入)、`.gitignore` で `data/users.db*` / `.env*` / `*-credentials.json` 等を除外、Konsist で `data/users.db*` の追跡禁止を検証 |
