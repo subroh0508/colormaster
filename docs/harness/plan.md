@@ -32,7 +32,7 @@
   - **Spec Coverage 100%** (Acceptance criteria ⇄ テストのトレーサビリティ、CI 必達ゲート)
   - **Mutation Score** (テストの意味的強度の計測、PR コメントで可視化、ゲートにはしない)
 - カバレッジの 100% は「テストが存在することの指標」、Spec coverage は「仕様適合性の指標」、Mutation Score は「テストの意味的強度の指標」。三層は別々のアウトカムを目指し、互いに代替不可能。
-- 除外対象は ADR 0014 で限定列挙し、それ以外は AI による自動テスト生成で必ず充足する。
+- 除外対象は ADR 0013 で限定列挙し、それ以外は AI による自動テスト生成で必ず充足する。
 - Phase C (本格運用) 着手時点で、テスト基盤・三層指標の達成・im@sparql ローカル Docker 環境が完全に整っている。
 
 ---
@@ -137,7 +137,7 @@
 | **Backend (Ktor / Kotlin/JVM)** | **Google Cloud Run** |
 | **静的配信 (wasmJs バンドル等)** | **Cloudflare Pages** |
 | **ユーザーデータ永続化 (Litestream バックアップ先)** | **Cloudflare R2** (S3 互換、egress fee 無料) |
-| 代替候補 (Backend) | Koyeb (ADR 0010 で記録) |
+| 代替候補 (Backend) | Koyeb (ADR 0009 で記録) |
 | 不採用 (Backend) | Cloudflare Containers (Workers Paid plan $5/月必須でコスト劣後)、Fly.io (無料枠廃止)、Render (sleep)、Railway (実質有料) |
 | 不採用 (Hosting) | Firebase Hosting (10GB bandwidth 上限、Firebase 全廃方針に整合しない)、Vercel (Hobby は商用不可)、Netlify (Cloudflare Pages の方が unlimited bandwidth で優位) |
 
@@ -163,7 +163,7 @@
 | `kotlin-js-store/` | wasmJs 移行時に再生成 |
 | `.github/workflows/web-build-and-deploy.yml` | Web 配信は wasmJs 完成後に再開 (Cloudflare Pages 経由で再構築) |
 | `public/` の js/app 専用ファイル | js/app 撤去と同時に整理。共有資源は `core/resources/` 等に退避 |
-| **`dev.gitlive:firebase-app/auth/firestore` 依存** | Firebase 完全廃止 (ADR 0012 / 0022 / 0023)。GIS + Backend SQLite + Cloudflare Pages に置換 |
+| **`dev.gitlive:firebase-app/auth/firestore` 依存** | Firebase 完全廃止 (ADR 0011 / 0022 / 0023)。GIS + Backend SQLite + Cloudflare Pages に置換 |
 | **`core/network/auth`、`core/network/firestore`** | Firebase 廃止に伴い `core/network/colormaster-api` に統合または撤去 |
 | **`firebase.json`、`.firebaserc`** | Cloudflare Pages 移行後は不要 |
 
@@ -171,7 +171,7 @@ Web 配信は wasmJs ターゲット完成まで **一時停止** すること�
 
 ### 3.7 .gitignore に必須で含める項目
 
-PII 保護および credentials 漏洩防止のため、以下を `.gitignore` に明示する (ADR 0024 / 0025):
+PII 保護および credentials 漏洩防止のため、以下を `.gitignore` に明示する (ADR 0023 / 0024):
 
 ```
 # ユーザーデータ (PII を含む、絶対 commit 禁止)
@@ -196,7 +196,7 @@ Konsist で「`data/users.db*` がリポジトリに含まれていないこと�
 
 ### 3.8 PII 保護とアクセス制御
 
-ユーザーデータには Google アカウント由来の個人情報が含まれうるため、漏洩経路を構造的に塞ぐ多層防御を採用する (ADR 0024)。
+ユーザーデータには Google アカウント由来の個人情報が含まれうるため、漏洩経路を構造的に塞ぐ多層防御を採用する (ADR 0023)。
 
 #### 漏洩経路と防御対応
 
@@ -205,14 +205,14 @@ Konsist で「`data/users.db*` がリポジトリに含まれていないこと�
 | 1 | リポジトリへの直接 commit | `.gitignore` で `data/users.db*` を除外 + Konsist 検証 |
 | 2 | Container イメージへの焼き込み | Dockerfile で `users.db` を COPY しない + Konsist 検証 |
 | 3 | R2 バケットからの読出し | バケットは **private**、Backend Container の R2 token のみ allow |
-| 4 | R2 token の流出 | Secrets で管理、TTL **90 日** で定期ローテーション (ADR 0025) |
+| 4 | R2 token の流出 | Secrets で管理、TTL **90 日** で定期ローテーション (ADR 0024) |
 | 5 | リポジトリ内の credentials コミット | trufflehog による CI スキャン + `.gitignore` |
 | 6 | PR diff からの credentials 漏洩 | trufflehog の secret-scan workflow を全 PR に発火 |
 | 7 | Backend API 経由で他人のデータ取得 | ID Token 検証 + `uid` フィルタ、Konsist で `/api/me/*` ハンドラの `requireUid()` 呼出を強制 |
 | 8 | ログ / モニタリングへの PII 出力 | rules/logging.md + rules/pii.md で禁止、detekt カスタムルールで `Logger.*(user.email/...)` 検出 |
 | 9 | エラー応答に PII 含める | エラーレスポンス schema に PII フィールド禁止、Konsist 検証 |
 | 10 | GIS から取得した userinfo の過剰保存 | DB スキーマに保存するのは `uid` のみ (display name / email は都度取得 + memory cache TTL 15 分) |
-| 11 | GCP / Cloudflare コンソールへのアクセス | リリース権限を持つ単一 owner ロールのみ (ADR 0026) |
+| 11 | GCP / Cloudflare コンソールへのアクセス | リリース権限を持つ単一 owner ロールのみ (ADR 0023) |
 | 12 | `pr-retrospective` / KPT learning への PII 混入 | rules/pii.md で Skill 出力前の redaction 強制、Konsist でテスト fixture の非 `@example.com` domain 検出 |
 | 13 | `code-reviewer` が CI ログから PII を漏らす | aspect ごとに PII redaction の前処理を必須化 |
 
@@ -220,7 +220,7 @@ Konsist で「`data/users.db*` がリポジトリに含まれていないこと�
 
 メールアドレス / Google Account ID (sub claim 以外) / Display Name / プロフィール画像 URL / IP アドレス。`uid` (Google sub claim) は内部識別子として扱い PII 同等の取扱いとする。
 
-#### 権限ロール (ADR 0026)
+#### 権限ロール (ADR 0023)
 
 - **owner**: 全権限、Secrets ローテーション、GCP / Cloudflare コンソール operator、master マージ権限
 - 当面は owner ロール 1 名のみで運用 (個人プロジェクト想定)
@@ -230,7 +230,7 @@ Konsist で「`data/users.db*` がリポジトリに含まれていないこと�
 
 `pr-retrospective` / `code-reviewer` / `harness-meta` は、CI ログ・diff・PR コメント等から PII を間接的に拾う可能性があるため、出力前に必ず redaction フェーズを通す。テストフィクスチャは `@example.com` ドメインのみ使用し、Konsist で機械検証する。
 
-#### Secrets 管理 (ADR 0025)
+#### Secrets 管理 (ADR 0024)
 
 - ローカル: `.env.local` (`.gitignore` で除外)
 - CI/CD: **GitHub Secrets**
@@ -266,7 +266,7 @@ AI による自動テスト生成を前提とし、テスト品質は **3 つの
 
 **強制方法**: `koverVerify` の minBounds で `minValue = 100`、counter は `LINE` と `BRANCH` の両方。100% を満たさない PR はマージ不可。新規ファイルも例外なし。
 
-**除外対象** (ADR 0014 で限定列挙):
+**除外対象** (ADR 0013 で限定列挙):
 
 - エントリポイント (`MainKt`, `Application`, `MainActivity` 等)
 - DI モジュール定義 (Koin の `module {}` ブロック)
@@ -290,7 +290,7 @@ AI による自動テスト生成を前提とし、テスト品質は **3 つの
 - `docs/specifications/<id>.md` の Acceptance criteria を `SPEC-NNN-N` 形式で ID 付与
 - テスト関数に `@Spec("SPEC-NNN-N")` annotation を付与
 - Konsist で「全 Acceptance criteria に対応する `@Spec` annotation が存在する」ことを機械検証
-- 詳細は ADR 0017、規約は `.claude/rules/spec-traceability.md`
+- 詳細は ADR 0016、規約は `.claude/rules/spec-traceability.md`
 
 #### 指標 C. Mutation Score (シグナル可視化、CI ゲートにしない)
 
@@ -307,7 +307,7 @@ AI による自動テスト生成を前提とし、テスト品質は **3 つの
 - **PITest + pitest-kotlin + gradle-pitest-plugin** を採用
 - KMP の **JVM target 経由** で `commonMain` + `jvmMain` (backend) + `androidMain` のクラスを mutate
 - `jsMain` / `wasmJsMain` / `iosMain` の actual 実装は PITest 対象外 (これらは Konsist + 通常単体テストで担保)
-- 詳細は ADR 0016、規約は `.claude/rules/mutation-testing.md`
+- 詳細は ADR 0015、規約は `.claude/rules/mutation-testing.md`
 - 将来検討: **MutFlow** (2026 年登場の K2 compiler plugin ベース、KMP 全 target 適合の可能性) を別 ADR で評価する余地として記録
 
 **CI での扱い**:
@@ -338,34 +338,36 @@ docs/
     overview.md                 ─ モジュール依存図 (Mermaid)
   requirements/                 ─ 機能要件 (機能ごとに 1 md)
   specifications/               ─ 仕様詳細 (機能ごとに 1 md)
-  adr/                          ─ Architecture Decision Records
-    template.md
-    0001-record-architecture-decisions.md
+  adr/                          ─ Architecture Decision Records (起票基準は ADR 0001 と .claude/rules/adr.md に明文化)
+    README.md                   ─ ADR 起票基準と運用ガイド (判断フロー図、ADR にすべき例/他の方法にすべき例)
+    template.md                 ─ MADR + 日本語化された雛形 (巻末に「ADR 化すべき例」「他の記録方法にすべき例」を列挙)
+    0001-record-architecture-decisions.md       ─ ADR 運用基準・書式・起票判断フロー (本計画 4.5 節を要約)
     0002-app-architecture-cmp-viewmodel-nav3.md
     0003-module-structure-feature-first.md
-    0004-state-and-uiaction-conventions.md
-    0005-test-strategy-and-coverage.md
-    0006-decompose-removal.md
-    0007-i18n-compose-resources.md
-    0008-imasparql-sync-upstream-driven.md
-    0009-user-data-backend-proxy.md
-    0010-backend-hosting-cloud-run.md
-    0011-sqlite-file-in-repo.md
-    0012-firebase-boundary.md
-    0013-remove-js-app.md
-    0014-line-branch-coverage-100-percent.md
-    0015-imasparql-local-docker-fuseki.md
-    0016-mutation-testing-pitest.md
-    0017-spec-coverage-traceability.md
-    0018-harness-loop-local-polling.md
-    0019-implementation-workflow.md
-    0020-code-review-aspects-coordinator.md
-    0021-template-language-japanese.md
-    0022-gis-unified-authentication.md
-    0023-cloudflare-pages-and-r2.md
-    0024-pii-protection-access-control.md
-    0025-secrets-management-policy.md
-    0026-permission-roles-owner-only.md
+    0004-test-strategy-and-coverage.md          (旧 0005)
+    0005-decompose-removal.md                   (旧 0006)
+    0006-i18n-compose-resources.md              (旧 0007)
+    0007-imasparql-sync-upstream-driven.md      (旧 0008)
+    0008-user-data-backend-sqlite-litestream-r2.md  (旧 0009、内容更新)
+    0009-backend-hosting-cloud-run.md           (旧 0010)
+    0010-idol-master-sqlite-in-repo.md          (旧 0011、タイトル明確化)
+    0011-firebase-removal-complete.md           (旧 0012、改題)
+    0012-remove-js-app.md                       (旧 0013)
+    0013-line-branch-coverage-100-percent.md    (旧 0014)
+    0014-imasparql-local-docker-fuseki.md       (旧 0015)
+    0015-mutation-testing-pitest.md             (旧 0016)
+    0016-spec-coverage-traceability.md          (旧 0017)
+    0017-harness-loop-local-polling.md          (旧 0018)
+    0018-implementation-workflow.md             (旧 0019)
+    0019-code-review-aspects-coordinator.md     (旧 0020)
+    0020-template-language-japanese.md          (旧 0021)
+    0021-gis-unified-authentication.md          (旧 0022)
+    0022-cloudflare-pages-and-r2.md             (旧 0023)
+    0023-pii-protection-and-permission-roles.md (旧 0024 + 0026 統合、権限ロール=owner のみを含む)
+    0024-secrets-management-policy.md           (旧 0025)
+    # 削除済 (起票基準に照らして規約レベル → rules/ に統合)
+    #   旧 0004 state-and-uiaction-conventions   → .claude/rules/{viewmodel,ui-state}.md
+    #   旧 0026 permission-roles-owner-only       → ADR 0023 内のセクション
   epics/                        ─ 複数 PR の取り組み (1 epic = 1 ディレクトリ)
     INDEX.md
     template/
@@ -434,6 +436,89 @@ Epic 配下で複数 PR を出す場合の個別 Plan は、`docs/plans/` に一
 - **harness-meta による後追記**: `harness-meta` Skill が改修 PR を起票するたびに、元 learning ファイルの末尾に `## 📝 harness-meta feedback` セクションを追記 (採用/見送り/保留の判定理由)。これにより learning ファイルが「提案 → 結果」の往復ログを担う Single Source of Truth として完結する。
 - ファイル commit 方法: `pr-retrospective` が `harness/learnings-batch` 等のブランチに集約し、週次 (or 一定件数到達時) に PR としてまとめて起票。人間レビューを通してマージ。
 
+### 4.5 ADR の起票基準と書式
+
+Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録、"Any Decision Records" ではない) + AWS / Microsoft / Google / Martin Fowler の ADR ガイドラインに準拠する。本節の内容は ADR 0001 と `.claude/rules/adr.md` に明文化する。
+
+#### 起票基準: 以下の 2 つ以上を満たすとき ADR を起こす
+
+1. アーキテクチャパターン / 層分割 / モジュール構造に影響する
+2. 主要なライブラリ / フレームワークの採用または撤去
+3. 外部サービスの採用または変更 (DB / ホスティング / 認証 / CDN / etc.)
+4. データ永続化 / 同期戦略 / バックアップ方式
+5. テスト戦略・品質指標の中核方針
+6. セキュリティ・プライバシー・ライセンスに関する方針
+7. ハーネス本体の中核設計 (Skill 構成、ループ構造、ローカル vs サーバ実行)
+8. 複数の代替案を比較した結果としての判断
+9. 元に戻すコストが高い決定
+10. 長期的な制約 (今後 1 年以上の判断のベースになるもの)
+
+#### ADR にすべき例 (本リポジトリの実例)
+
+- Compose Multiplatform + 共通 ViewModel + Navigation 3 を採用する (ADR 0002)
+- Decompose を撤去する (ADR 0005)
+- Firebase を完全廃止して GIS + 自前 Backend にする (ADR 0011 / 0021)
+- Backend ホスティングに Cloud Run を採用、Cloudflare Containers を不採用 (ADR 0009 / 0022)
+- アイドル情報を Git 内 SQLite に commit、ユーザーデータは Litestream で R2 にレプリケート (ADR 0008 / 0010)
+- Line/Branch coverage 100% を必達ゲートにする (ADR 0013)
+- ハーネスループをローカル Claude Code ポーリングで駆動する (GitHub Actions で Claude API を呼ばない) (ADR 0017)
+- code-reviewer を 6 aspect + Coordinator で構成する (ADR 0019)
+- 全 Markdown テンプレートを日本語で記述する (ADR 0020)
+- PII の DB スキーマは `uid` のみ、権限ロールは当面 owner のみ (ADR 0023)
+
+#### ADR にすべきでない例 (他の記録方法を使う)
+
+| 例 | 適切な記録方法 |
+|---|---|
+| `@Composable` 関数の引数命名規約 | `.claude/rules/composable.md` |
+| Kotlin の null 安全 / Result 型のコーディングルール | `.claude/rules/error-handling.md` |
+| PR テンプレートに `Related plan` 行を追加する | `.claude/rules/pr-template.md` |
+| `HomeViewModel.refresh()` 内のキャッシュ TTL を 5 分に変更する | Plan (`docs/plans/PLAN-NNN-*.md`) |
+| EPIC-001 内で `SavedStateHandle` をどうシリアライズするか一時保留 | Epic の `open-questions.md` / 解決時は `decisions.md` |
+| 単発のバグ修正の進め方 | Plan ファイル |
+| テスト fixture に `@example.com` ドメインを使う規約 | `.claude/rules/pii.md` |
+| Compose Preview の表記揺れを統一する | `.claude/rules/composable.md` (KPT 起点で追記) |
+| 「Skill 実行時のログを `.claude/logs/` に追記する」運用 | `.claude/rules/pr-poller.md` などの該当 Skill 規約 |
+| Cloud Run の `min-instances` を 0 から 1 に変更する | runbook (`docs/runbooks/release.md`) + Plan |
+| 開発者がローカルで Fuseki Docker を起動する手順 | runbook (`docs/runbooks/local-imasparql.md`) |
+| im@sparql 同期 PR の自動マージ可否 | sync workflow の設定 + 該当 Skill 規約 |
+
+#### 採番・命名・ステータス
+
+- 連番、4 桁ゼロパディング (`0001`, `0002`, ...)
+- ファイル名: `{NNNN}-{kebab-case-title}.md`
+- タイトル: 簡潔・現在形・断定的
+- ステータス: `proposed` → `accepted` → `deprecated` | `superseded by ADR-NNNN` (MADR 4 状態)
+- `accepted` 以降は immutable。変更時は新 ADR を起こし、旧 ADR を `Superseded by` でリンク
+- 採番欠番は実装前なら整理可、運用後は番号を維持して `withdrawn` を許容
+- 言語は日本語 (ADR 0020)
+
+#### ADR と他ドキュメントの使い分け
+
+判断フロー (`docs/adr/README.md` にも記載):
+
+```
+新しい決定が発生
+   │
+   ├─ ADR 起票基準の 2 項目以上を満たす? ──── Yes ──→ ADR を起こす (adr-author Skill)
+   │
+   ├─ コーディング/スタイル/命名規約? ───── Yes ──→ .claude/rules/*.md に追記
+   │
+   ├─ Epic 内の細粒度な保留→解決? ─────── Yes ──→ Epic の open-questions / decisions.md
+   │
+   ├─ 1 PR で完結する判断? ────────────── Yes ──→ Plan or PR description
+   │
+   ├─ 運用手順? ──────────────────────── Yes ──→ docs/runbooks/
+   │
+   └─ PR ごとの学びや改善案? ─────────── Yes ──→ docs/harness/learnings/ (pr-retrospective)
+```
+
+#### `.claude/rules/adr.md` の責務
+
+- 上記の起票基準・例リスト・採番ポリシー・ステータス遷移・判断フローを保持
+- `adr-author` Skill が新規 ADR 起草時に必ず Read する
+- ADR テンプレ (`docs/adr/template.md`) の巻末にも「ADR 化すべき例 / 他の記録方法にすべき例」を簡潔に列挙し、人間が ADR を書くときも基準にアクセスしやすくする
+
 ---
 
 ## 5. ハーネス構造 (`.claude/`)
@@ -461,7 +546,7 @@ Epic 配下で複数 PR を出す場合の個別 Plan は、`docs/plans/` に一
     # 計画・記録
     plan.md
     epic.md
-    adr.md
+    adr.md                      ─ ADR 起票基準 / 採番 / ステータス遷移 / ADR 化すべき例・他の記録方法にすべき例の列挙 (4.5 節を要約)
     # アーキテクチャ層別
     viewmodel.md
     ui-state.md
@@ -502,7 +587,7 @@ Epic 配下で複数 PR を出す場合の個別 Plan は、`docs/plans/` に一
     spec-living-sync.md         ─ 実装中の仕様変更時の双方向同期手順 (Spec Kit / Intent 由来)
     # ドキュメント表記
     markdown.md                 ─ Markdown 表記規約 (テンプレート言語ポリシーを含む)
-    template-language.md        ─ ★新規 全テンプレート Markdown は日本語で記述 (ADR 0021 を要約)
+    template-language.md        ─ ★新規 全テンプレート Markdown は日本語で記述 (ADR 0020 を要約)
     # 同期 / Backend
     sync-job.md
     sqlite-data-file.md
@@ -649,11 +734,11 @@ Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の spec
 - **GitHub Actions で Claude API を呼ばない**: ローカル Claude Code 内の `CronCreate` / `ScheduleWakeup` でポーリング駆動。API コストはユーザーの既存利用枠内で完結
 - **Learning ファイルが Single Source of Truth**: PR コメントは出さない。`docs/harness/learnings/` の Markdown が `pr-retrospective` の出力先かつ `harness-meta` の入力源
 - **対話的フィードバック**: 採用見送りや保留は元 learning ファイルに `harness-meta feedback` セクションを追記、提案 → 結果の往復ログが 1 ファイル内で完結
-- **テンプレート言語は日本語**: ADR / Plan / Epic / 要件 / 仕様 / runbook / learning / レビューコメント の全テンプレ Markdown は日本語見出し・日本語例文で記述 (ADR 0021、`.claude/rules/template-language.md`)。frontmatter のキー (`id`, `status`, `type` 等) やコマンド文字列は英語のまま
+- **テンプレート言語は日本語**: ADR / Plan / Epic / 要件 / 仕様 / runbook / learning / レビューコメント の全テンプレ Markdown は日本語見出し・日本語例文で記述 (ADR 0020、`.claude/rules/template-language.md`)。frontmatter のキー (`id`, `status`, `type` 等) やコマンド文字列は英語のまま
 
 ### 5.5 テンプレート言語ポリシー
 
-ハーネスが生成・参照する全ての Markdown テンプレートは **日本語で記述** する (ADR 0021)。AI 駆動でも人間レビューでも認知負荷を最小化し、ユーザーが第一言語で読み書きできるようにするため。
+ハーネスが生成・参照する全ての Markdown テンプレートは **日本語で記述** する (ADR 0020)。AI 駆動でも人間レビューでも認知負荷を最小化し、ユーザーが第一言語で読み書きできるようにするため。
 
 #### 日本語化対象
 
@@ -804,7 +889,7 @@ completed_at: null
 
 | # | 内容 |
 |---|---|
-| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer}` の最小版 / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection}.md` 骨格 / `docs/{adr, epics, plans, harness/learnings, runbooks, requirements, specifications}` スケルトン (テンプレートは全て**日本語**) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)**。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動するため) |
+| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer}` の最小版 / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**) / `docs/{adr, epics, plans, harness/learnings, runbooks, requirements, specifications}` スケルトン (テンプレートは全て**日本語**、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)**。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動するため) |
 
 B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Skill 駆動 + KPT 生成の対象となる。`pr-poller` はローカル Claude Code 起動時に手動起動可能とし、A4 で `CronCreate` / `ScheduleWakeup` による自動化を完成させる。
 
@@ -814,19 +899,19 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 
 | # | 単位 | 起動 Skill | 内容 |
 |---|---|---|---|
-| **A1** | Plan | `harness-bootstrap` | ADR 0001-0026 を一括起草する PR (全て日本語) |
+| **A1** | Plan | `harness-bootstrap` | ADR 0001-0024 を一括起草する PR (全て日本語) |
 | **A2** | Plan | `harness-bootstrap` | `.claude/rules/*` 全ファイル + `docs/` 拡充 (architecture/, requirements/, specifications/ テンプレ等) |
 | **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** の本格版へのアップグレード)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 6 aspect の binary eval checklist + coordinator を完全実装。マージ後、`harness-bootstrap` は `archived/` へ |
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
 | **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル、**`dev.gitlive:firebase-*` 依存、`core/network/{auth,firestore}`、`firebase.json`、`.firebaserc`**) |
 | **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook + **trufflehog による secret-scan workflow**)。Konsist で「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「`feature/**`・`core/**` で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラに `requireUid()` 強制」を検証 |
-| **A7** | Plan | `feature-request` | **三層テスト品質基盤の導入**:<br>● **指標 A**: Kover 導入 + `koverVerify minValue=100` 必達化 (ADR 0014 除外列挙のみ許可)<br>● **指標 B**: `@Spec` annotation の Kotlin 定義 + Konsist による Spec coverage 検証ルール導入 (ADR 0017、`.claude/rules/spec-traceability.md`)<br>● **指標 C**: PITest + pitest-kotlin + gradle-pitest-plugin 導入。JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。PR コメントで mutation score 可視化 (ADR 0016、`.claude/rules/mutation-testing.md`)<br>本 PR 時点では既存コードの未充足は除外リストで一旦逃がし、A9 完了までに全モジュールに展開する旨を rules に明記 |
+| **A7** | Plan | `feature-request` | **三層テスト品質基盤の導入**:<br>● **指標 A**: Kover 導入 + `koverVerify minValue=100` 必達化 (ADR 0013 除外列挙のみ許可)<br>● **指標 B**: `@Spec` annotation の Kotlin 定義 + Konsist による Spec coverage 検証ルール導入 (ADR 0016、`.claude/rules/spec-traceability.md`)<br>● **指標 C**: PITest + pitest-kotlin + gradle-pitest-plugin 導入。JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。PR コメントで mutation score 可視化 (ADR 0015、`.claude/rules/mutation-testing.md`)<br>本 PR 時点では既存コードの未充足は除外リストで一旦逃がし、A9 完了までに全モジュールに展開する旨を rules に明記 |
 | **A8** | Plan | `feature-request` | **im@sparql ローカル Docker 環境構築** (Apache Jena Fuseki + RDF データ初期投入スクリプト + `docker-compose.yml` + integration test 基盤 + Testcontainers 規約)。`docs/runbooks/local-imasparql.md` を整備し、backend のローカル開発・テストを Fuseki に対して実行できる状態にする |
-| **A9** | **EPIC-A9** | `refactor` | **既存コード全体に対する三層指標の達成**。モジュールごとに段階 Plan (PLAN-NNN × 多数) を発行:<br>● 指標 A: line / branch 100% カバレッジを全モジュールで達成<br>● 指標 B: 既存機能の Acceptance criteria を `docs/specifications/<id>.md` に逆生成、テストに `@Spec` annotation を付与、Spec coverage 100% 達成<br>● 指標 C: 各モジュールの初回 mutation score をベースラインとして記録、明らかな tautological テストは learnings に蓄積し改善<br>Konsist の「実装クラス ⇄ テストクラス対応」検証を本 EPIC 完了時に enforce。backend/server / android/app / core/* / data/ 全モジュールが対象。A7 で導入した除外リストは ADR 0014 列挙分のみに整理する |
+| **A9** | **EPIC-A9** | `refactor` | **既存コード全体に対する三層指標の達成**。モジュールごとに段階 Plan (PLAN-NNN × 多数) を発行:<br>● 指標 A: line / branch 100% カバレッジを全モジュールで達成<br>● 指標 B: 既存機能の Acceptance criteria を `docs/specifications/<id>.md` に逆生成、テストに `@Spec` annotation を付与、Spec coverage 100% 達成<br>● 指標 C: 各モジュールの初回 mutation score をベースラインとして記録、明らかな tautological テストは learnings に蓄積し改善<br>Konsist の「実装クラス ⇄ テストクラス対応」検証を本 EPIC 完了時に enforce。backend/server / android/app / core/* / data/ 全モジュールが対象。A7 で導入した除外リストは ADR 0013 列挙分のみに整理する |
 
 **Phase A 完了条件**:
 
-- 全モジュールで `./gradlew check koverVerify` がグリーン (指標 A: line / branch ともに 100%、除外は ADR 0014 列挙分のみ)。
+- 全モジュールで `./gradlew check koverVerify` がグリーン (指標 A: line / branch ともに 100%、除外は ADR 0013 列挙分のみ)。
 - Konsist の Spec coverage 検証がグリーン (指標 B: 全 Acceptance criteria に対応する `@Spec` 付きテストが存在)。
 - `./gradlew pitest` が JVM target で実行可能、初回 mutation score が記録されている (指標 C)。
 - `docker compose up imasparql` でローカル Fuseki が起動し、backend integration test が Fuseki に対して実行可能。
@@ -878,9 +963,9 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 
 テスト品質は **3.9 節で定義した三層指標** で多層検証する。詳細は 3.9 節を参照。本節では運用面の補足を記す。
 
-- **指標 A (Line/Branch Coverage 100%)**: Kover を導入、`./gradlew check` に `koverXmlReport` / `koverVerify` を組み込む。`koverVerify` の minBounds: `minValue = 100`、counter = `LINE` と `BRANCH` の両方を必達ゲートとする。除外対象は ADR 0014 で限定列挙のみ、除外追加は ADR 改訂が必須。
-- **指標 B (Spec Coverage 100%)**: `@Spec("SPEC-NNN-N")` annotation をテスト関数に付与し、`docs/specifications/<id>.md` の Acceptance criteria と双方向対応させる。Konsist で「全 Acceptance criteria に対応する `@Spec` が存在する」「`@Spec` ID が specifications に実在する」を機械検証。詳細は ADR 0017。
-- **指標 C (Mutation Score)**: PITest + pitest-kotlin + gradle-pitest-plugin を採用し、JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。`jsMain` / `wasmJsMain` / `iosMain` の actual 実装は対象外 (これらは Konsist + 通常単体テストで担保)。CI ではゲートにせず PR コメントで可視化。詳細は ADR 0016。
+- **指標 A (Line/Branch Coverage 100%)**: Kover を導入、`./gradlew check` に `koverXmlReport` / `koverVerify` を組み込む。`koverVerify` の minBounds: `minValue = 100`、counter = `LINE` と `BRANCH` の両方を必達ゲートとする。除外対象は ADR 0013 で限定列挙のみ、除外追加は ADR 改訂が必須。
+- **指標 B (Spec Coverage 100%)**: `@Spec("SPEC-NNN-N")` annotation をテスト関数に付与し、`docs/specifications/<id>.md` の Acceptance criteria と双方向対応させる。Konsist で「全 Acceptance criteria に対応する `@Spec` が存在する」「`@Spec` ID が specifications に実在する」を機械検証。詳細は ADR 0016。
+- **指標 C (Mutation Score)**: PITest + pitest-kotlin + gradle-pitest-plugin を採用し、JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。`jsMain` / `wasmJsMain` / `iosMain` の actual 実装は対象外 (これらは Konsist + 通常単体テストで担保)。CI ではゲートにせず PR コメントで可視化。詳細は ADR 0015。
 - **Konsist でペアリング検証**: 各実装クラスに対応するテストクラス (`*Spec.kt` / `*Test.kt` / `*ScreenshotTest.kt`) の存在を機械的に強制する (`.claude/rules/test-paired-class.md`)。
 - **UI モジュール (Compose)** は **Compose UI Test + screenshot test (Paparazzi / Roborazzi)** で指標 A を達成。
 - **AI 自動生成テストの質の担保**: 指標 B (仕様トレーサビリティ) と指標 C (mutation score) がそれぞれ別軸で抑制効果を持つ。さらに Konsist で「テストクラスは最低 1 つの assert を含む」「Mock のみで実装を呼ばないテストは禁止」等のメタ規約を加える。KPT で発見された無意味テストパターンは harness-meta が `kotlin-test.md` ルールに追加していくフォールバックループで対処。
@@ -898,16 +983,16 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-4 | Cloud Run JVM コールドスタート | Phase C 完了後に GraalVM Native Image を別 ADR で検討 |
 | R-7 | AI 自動生成テストが「網羅性はあるが意味のないテスト」になる可能性 | 三層指標で多層対処: 指標 B (Spec coverage) で仕様トレーサビリティを強制、指標 C (Mutation score) で意味的強度を計測可視化、Konsist メタ規約 + KPT 学習 + `kotlin-test.md` 強化のフォールバックループで担保 (3.9 節参照) |
 | R-8 | A9 (既存コード三層指標達成 EPIC) の作業量が想定を超える可能性 | モジュール単位で Plan を切り、PR を細粒度に分割。完了見込みが立たない場合は除外対象の見直しを ADR 改訂で対応 (ただし安易な除外追加は禁止)。指標 C は初回 baseline 記録のみで完了とし、改善は継続課題に |
-| R-9 | Fuseki に投入する RDF データの著作権・ライセンス確認 | A8 でデータ取得元 (`imas/imasparql` リポジトリ) のライセンスを確認し ADR 0015 に明記。条件次第ではダミー RDF + テスト専用データ構成にする |
-| R-10 | PITest が KMP の JS/Wasm/iOS actual 実装を mutate できない | これらは expect/actual の薄い層で本質的にロジックが薄いため実害が小さいと判断。Konsist (テスト存在) と通常単体テストで担保。将来 MutFlow (K2 compiler plugin、KMP 全 target 適合の可能性) を別 ADR で評価可能性として記録 (ADR 0016) |
-| R-11 | ローカル Claude Code ポーリング駆動のため、ユーザーがしばらく Claude Code を起動しないと KPT ループが停止する | `pr-poller` Skill 起動時に「最後の処理から N 日経過した PR」を最優先で処理するキャッチアップ動作を組み込む (ADR 0018)。長期不在後の再開で取りこぼしを防ぐ |
+| R-9 | Fuseki に投入する RDF データの著作権・ライセンス確認 | A8 でデータ取得元 (`imas/imasparql` リポジトリ) のライセンスを確認し ADR 0014 に明記。条件次第ではダミー RDF + テスト専用データ構成にする |
+| R-10 | PITest が KMP の JS/Wasm/iOS actual 実装を mutate できない | これらは expect/actual の薄い層で本質的にロジックが薄いため実害が小さいと判断。Konsist (テスト存在) と通常単体テストで担保。将来 MutFlow (K2 compiler plugin、KMP 全 target 適合の可能性) を別 ADR で評価可能性として記録 (ADR 0015) |
+| R-11 | ローカル Claude Code ポーリング駆動のため、ユーザーがしばらく Claude Code を起動しないと KPT ループが停止する | `pr-poller` Skill 起動時に「最後の処理から N 日経過した PR」を最優先で処理するキャッチアップ動作を組み込む (ADR 0017)。長期不在後の再開で取りこぼしを防ぐ |
 | R-12 | learning ファイルが PR にまとまる前にロストするリスク (ローカル commit のみで push 忘れ) | `pr-retrospective` は ファイル生成と同時に `harness/learnings-batch-YYYY-WW` ブランチに push する。週次の learnings PR でまとめて起票するが、push 自体は逐次行う |
 | R-13 | code-reviewer の aspect が、code を書いた Generator と同じバイアスを共有するリスク | Anthropic Evaluator 独立性原則に従い、aspect ごとに別の system prompt を持たせる (`code-reviewer-aspects.md` に明文化)。さらに各 aspect は binary yes/no eval checklist を最低 5 項目持ち、yes/no 判定を強制 |
 | R-14 | implementation-workflow の fix loop が無限に回るリスク | 上限 3 回 (デフォルト) で停止し、Plan に `status: blocked` を記録、人間に通知 (`implementation-workflow.md` に明文化) |
 | R-15 | code-reviewer の自動レビューに人間が依存しすぎ、本質的な見落としを許すリスク | GitHub Agentic Workflows 原則「人間 approve なしに merge しない」を必達。code-reviewer の Ready 判定は merge を許可するだけで自動 merge しない。人間レビュアーには「code-reviewer の指摘で十分か?」を考えさせる文言を PR コメントに含める |
 | R-17 | Cloud Run の JVM Container は Cold Start に数秒かかる可能性 | C7 で cold start 計測、許容不可なら GraalVM Native Image 化を別 ADR で検討。read-heavy API なので初回のみ影響、トラフィック想定では問題小さい見込み |
 | R-18 | R2 + Litestream の実環境動作未検証 | C5 内で Testcontainers の MinIO (S3 互換) と本番 R2 の両方で integration test を実施。runbook `docs/runbooks/r2-litestream.md` に手順を残す |
-| R-19 | R2 token 流出による `users.db` 漏洩 | R2 bucket private + bucket policy で Backend Service Token のみ allow、token TTL 90 日で定期ローテーション (ADR 0025)、漏洩時のローテーション runbook を `docs/runbooks/secrets-rotation.md` に整備。DB スキーマで PII を `uid` のみに最小化することで漏洩時の影響を構造的に下げる |
+| R-19 | R2 token 流出による `users.db` 漏洩 | R2 bucket private + bucket policy で Backend Service Token のみ allow、token TTL 90 日で定期ローテーション (ADR 0024)、漏洩時のローテーション runbook を `docs/runbooks/secrets-rotation.md` に整備。DB スキーマで PII を `uid` のみに最小化することで漏洩時の影響を構造的に下げる |
 | R-20 | PR diff / リポジトリ履歴に PII / credentials が混入するリスク | trufflehog による全 PR 差分のスキャン (A6 で導入)、`.gitignore` で `data/users.db*` / `.env*` / `*-credentials.json` 等を除外、Konsist で `data/users.db*` の追跡禁止を検証 |
 | R-21 | Skill (code-reviewer / pr-retrospective / harness-meta) が PII を出力に転載するリスク | `.claude/rules/pii.md` で Skill 出力前の redaction を強制、Konsist でテストフィクスチャの `@example.com` ドメイン以外の検出、Skill 設計で CI ログ等の取り込み時に redaction フェーズを必須化 |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
@@ -937,10 +1022,12 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 - Plan の Notes は自由記述、蓄積したら template に反映。
 - 昇格時のステータスは `promoted`。
 - B0 のみ手作業、A1 以降は Skill ループ駆動。
+- **ADR の起票基準**: 4.5 節の 10 項目のうち 2 つ以上を満たすときに ADR を起こす。コーディング/命名規約は `.claude/rules/`、PR 単位の判断は Plan、Epic 内の保留→解決は `decisions.md`、運用手順は runbook で扱う。ADR 0001 と `.claude/rules/adr.md`、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙。
+- **ADR 精査結果**: 初期 ADR は **24 個** (旧 0004 state-and-uiaction-conventions は規約レベルにつき rules に統合、旧 0026 permission-roles-owner-only は ADR 0023 PII に統合)。連番に再採番済み。
 - harness-bootstrap は A3 後に `archived/` へ移動。
 - **KPT は全 PR で生成**:
   - 出力先は **ファイル** (`docs/harness/learnings/YYYY-MM-DD-pr-N.md`)、PR コメントは出さない
-  - 駆動方式は **ローカル Claude Code ポーリング** (`pr-poller` Skill が `CronCreate` / `ScheduleWakeup` で起動)。GitHub Actions では Claude API を呼ばない (コスト回避、ADR 0018)
+  - 駆動方式は **ローカル Claude Code ポーリング** (`pr-poller` Skill が `CronCreate` / `ScheduleWakeup` で起動)。GitHub Actions では Claude API を呼ばない (コスト回避、ADR 0017)
   - Skill 構成: `pr-poller` (オーケストレーター) + `pr-retrospective` (Evaluator、旧 kpt-retrospective) + `harness-meta` (Meta-Generator)
 - **harness-meta による改修 PR**:
   - 改修テーマごとに **個別 PR** を起票 (1 改修テーマ = 1 PR)
@@ -953,7 +1040,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
   - Fix loop 上限はデフォルト 3 回、超過したら Plan に `status: blocked`
   - **人間 approve なしの auto-merge は禁止** (GitHub Agentic Workflows 原則準拠)
 - **テンプレート言語**:
-  - 全 Markdown テンプレート (ADR / Epic / Plan / 要件 / 仕様 / runbook / learning / PR description / レビューコメント等) は **日本語見出し・日本語例文** で記述 (ADR 0021)
+  - 全 Markdown テンプレート (ADR / Epic / Plan / 要件 / 仕様 / runbook / learning / PR description / レビューコメント等) は **日本語見出し・日本語例文** で記述 (ADR 0020)
   - 例外: YAML frontmatter のキー、ステータス値、コマンド・パス・コード断片、識別子 (SPEC-ID / EPIC-NNN / PLAN-NNN / ADR 番号等) は英語のまま
   - Konsist で「frontmatter 外の見出しは日本語必須」を機械検証
 - **PII 保護とアクセス制御**:
@@ -961,15 +1048,15 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
   - DB に保存する PII は `uid` のみ、それ以外は GIS userinfo から都度取得 + memory cache TTL 15 分
   - `.gitignore` で `data/users.db*` / `.env*` / `*-credentials.json` 等を除外、Konsist で機械検証
   - **trufflehog** による secret-scan workflow を A6 で導入、全 PR 差分をスキャン
-  - **R2 token TTL 90 日 + 定期ローテーション** (ADR 0025)、漏洩時の runbook を整備
+  - **R2 token TTL 90 日 + 定期ローテーション** (ADR 0024)、漏洩時の runbook を整備
   - Skill (code-reviewer / pr-retrospective / harness-meta) は出力前に PII redaction フェーズを通す
-  - 権限ロールは **当面 owner 1 名のみ** (ADR 0026)、複数人体制になったら別 ADR で `developer` / `releaser` を追加
+  - 権限ロールは **当面 owner 1 名のみ** (ADR 0023)、複数人体制になったら別 ADR で `developer` / `releaser` を追加
 - テスト品質は **三層指標** で多層検証する:
   - 指標 A: **Line / Branch coverage 100%** (テスト存在の保証、CI 必達ゲート、`koverVerify minValue=100`)
   - 指標 B: **Spec coverage 100%** (仕様適合性の保証、`@Spec` annotation + Konsist 検証で CI 必達ゲート)
   - 指標 C: **Mutation score** (テスト意味的強度の計測、PITest + JVM target 経由、PR コメントで可視化、ゲートにはしない)
 - カバレッジは「指標」ではなく「テスト存在を保証する制約」と再定義し、Goodhart's law を回避。仕様適合性は指標 B、意味的強度は指標 C が直接担当する分担構造。
-- 除外対象 (指標 A) は ADR 0014 で限定列挙。Mutation testing 対象外スコープ (JS/Wasm/iOS actual 実装) は ADR 0016 で明示。
+- 除外対象 (指標 A) は ADR 0013 で限定列挙。Mutation testing 対象外スコープ (JS/Wasm/iOS actual 実装) は ADR 0015 で明示。
 - im@sparql ローカル Docker (Fuseki) は **Phase A (A8) で整備**。Phase C 着手前に backend integration test が Fuseki に対して実行可能な状態にする。
 - 既存コードの三層指標達成は **Phase A (A9) を EPIC として実施**。Phase C はこの完了をもって着手。
 
