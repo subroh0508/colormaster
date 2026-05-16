@@ -845,6 +845,157 @@ flowchart TD
 | `code-reviewer` (spec-conformance aspect) | 全 3 種と Kotlin 実装の整合性を 8 aspect の 1 つとして検証、不整合は PR コメントで指摘 | 検証 |
 | `adr-author` | 要件定義の制約 / 基本設計の構成決定で ADR 起票基準を満たすものは ADR に昇格 | 派生 |
 
+### 4.7 コミットメッセージ規約
+
+すべてのコミットメッセージは **Conventional Commits** ベース。Renovate が `extends: [:semanticCommits]` (§7) を期待するためエコシステムと整合する。`.claude/rules/commit-message.md` で機械検証可能な形に明文化し、`implementation-workflow` Phase 5 (Draft PR 作成前の commit) で本規約に従う。
+
+#### 4.7.1 形式
+
+```text
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+#### 4.7.2 type 一覧
+
+| type | 用途 |
+|---|---|
+| `feat` | 新機能追加 (要件定義 / 基本設計 / 詳細設計に対応する実装) |
+| `fix` | バグ修正 |
+| `refactor` | 振る舞いを変えないコード整理 |
+| `test` | テスト追加・修正のみ |
+| `docs` | ドキュメント更新 (plan.md / ADR / requirements / specifications / runbooks) |
+| `chore` | 雑務 (`.gitignore` / 依存追加なし設定変更等) |
+| `build` | ビルド設定 (`build.gradle.kts`、Dockerfile) |
+| `ci` | CI 設定 (`.github/workflows/*`) |
+| `perf` | 性能改善 (振る舞いは維持) |
+| `style` | フォーマットのみ (空白 / セミコロン / コメント整理等) |
+| `revert` | revert コミット |
+
+破壊的変更は subject 末尾に `!` を付与 (`feat(api)!: drop /v1/users endpoint`) し、body に `BREAKING CHANGE:` セクションを必ず含める。
+
+#### 4.7.3 各要素の規約
+
+| 要素 | 規約 |
+|---|---|
+| `<scope>` | 影響範囲。Skill 名 (`roadmap-tracker`)、モジュール (`core/data`)、機能領域 (`api`、`auth`)、フェーズ ID (`A6`) 等。複数横断時は省略可 |
+| `<subject>` | **英語**、現在形・命令形動詞で開始 (`Add` / `Drop` / `Fix` / `Trim` 等)。50 文字以内、末尾ピリオドなし。固有名詞 (パス / 識別子) はそのまま |
+| `<body>` | 1 行空けて記述。「何を変えたか」より「**なぜ変えたか / どんなトレードオフを選んだか**」を主軸。日本語可 (本計画の他 Markdown と整合)。72 文字で改行推奨。複数段落可 |
+| `<footer>` | `Refs: PLAN-NNN / EPIC-NNN / ADR-NNNN / SPEC-NNN-N` (該当時、複数可) + `Co-Authored-By: <AI モデル名> <noreply@anthropic.com>` (AI が commit した場合必須) |
+
+#### 4.7.4 例
+
+```text
+feat(roadmap-tracker): add concurrency-aware ranking
+
+Epic frontmatter に `expected_modules` を追加し、現在 in-progress 項目との
+重複が少ない順に「次の推奨着手 (並行実装観点)」を top-N で提示する。
+`expected_modules` 未記入は warning に。
+
+Refs: EPIC-A3 / ADR 0017
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
+```
+
+#### 4.7.5 機械検証
+
+- `commit-msg` Git hook (`scripts/install-git-hooks.sh` 配下) で **Conventional Commits パーサー** により subject 形式を検証
+- type が allow リスト外 / scope 不在 (省略可だが空文字列は不可) / subject が 50 文字超 / 末尾ピリオド有 でコミット失敗
+- `Co-Authored-By` 行は AI 駆動コミット時に **必須** (rule 内で AI = `claude` ユーザーを判定、`.claude/skills/*` 内から呼ばれた gh CLI 経由のコミットを対象に検証)
+
+### 4.8 PR テンプレート (`.github/pull_request_template.md`)
+
+GitHub の標準仕様 (`.github/pull_request_template.md` 単一ファイル) を採用。**種別ごとのバリエーション** (`feature` / `bugfix` / `refactor` / `dependency-upgrade` / `harness` / `docs`) は `.github/PULL_REQUEST_TEMPLATE/<type>.md` で用意するが、`implementation-workflow` Phase 5 で `gh pr create --template <type>.md` を指定して自動選択する運用に統一。
+
+#### 4.8.1 採用形式の比較
+
+| 方式 | 採用判定 | 理由 |
+|---|---|---|
+| 単一 `pull_request_template.md` のみ | △ | 汎用テンプレ + 手動セクション削除になり、AI Skill 連携で曖昧さが残る |
+| **複数 `.github/PULL_REQUEST_TEMPLATE/<type>.md`** | ◎ 採用 | Skill が PR 起票時に種別を選択できる、未使用セクションが残らない、GitHub の URL パラメータ `?template=` でも切替可 |
+| Single + frontmatter for type | × | 自由記述になりやすく機械検証が弱い |
+
+`.github/pull_request_template.md` (デフォルト) には **`harness` を割り当て** (本計画 plan.md の修正など)、他 type は明示指定。
+
+#### 4.8.2 共通セクション (全 type 共通)
+
+```markdown
+## 概要
+<1-3 行で「何を / なぜ」>
+
+## 関連
+- Plan: PLAN-NNN
+- Epic: EPIC-NNN (該当時)
+- ADR: ADR-NNNN (該当時)
+- 関連 Issue: #N
+
+## 変更内容
+| 区分 | パス | 変更 |
+|---|---|---|
+| <例: feat / refactor> | `path/to/file.kt` | <要約> |
+
+## 受け入れ基準 (AC)
+- [ ] AC-NN: <検証手段>
+
+## テスト
+- [ ] `./gradlew check` グリーン
+- [ ] 三層指標差分: line/branch 差分 100%、Spec coverage 差分 100%、mutation score +N%
+- [ ] (UI 変更時) Roborazzi baseline 比較グリーン or 承認済
+
+## レビュー観点
+<重点的に見てほしい箇所、code-reviewer の特定 aspect で注意すべき点>
+
+## チェックリスト
+- [ ] `.claude/rules/` の関連規約を確認した
+- [ ] frontmatter 必須キーを設定した (Markdown 変更時)
+- [ ] 関連 docs (要件 / 基本設計 / 詳細設計 / ADR / roadmap) を更新した
+- [ ] PII / Secrets が diff に含まれていない (trufflehog グリーン)
+```
+
+#### 4.8.3 type 別の追加セクション
+
+| type | 追加項目 |
+|---|---|
+| `feature` | スクリーンショット (UI 変更時) / 新規 API エンドポイント (`docs/api/` 更新済確認) |
+| `bugfix` | 再現手順 / ルートコーズ / リグレッションテスト ID |
+| `refactor` | Behavior Preservation 証拠 (visual regression グリーン / spec-conformance OK) / 影響範囲モジュール一覧 |
+| `dependency-upgrade` | Renovate リリースノート要約 / 影響 API 差分 / Context7 で検証した内容 |
+| `harness` | ハーネス改修テーマ / 関連 learning ファイル / harness-meta が起票した場合の feedback リンク |
+| `docs` | 更新 docs パス一覧 / 影響を受ける Skill / rule |
+
+#### 4.8.4 frontmatter (PR description 本文の冒頭)
+
+GitHub は PR description の Markdown frontmatter を解釈しないが、**Gradle カスタムタスク (§5.2) と `code-reviewer` の spec-conformance aspect が parse できるよう先頭に YAML ブロックを置く**:
+
+```markdown
+---
+type: feature | bugfix | refactor | dependency-upgrade | harness | docs
+related_plan: PLAN-NNN
+related_epic: EPIC-NNN
+related_adrs: [ADR-NNNN]
+related_specs: [SPEC-NNN-N]
+expected_modules: [feature/home, core/network]
+---
+```
+
+`expected_modules` は `roadmap-tracker` の並行実装容易性ロジック (§5.3) の入力にもなる。
+
+#### 4.8.5 機械検証
+
+- Gradle カスタムタスクで PR description の frontmatter を `gh pr view --json body` 経由で取得・JSON Schema 検証 (`type` allow リスト / 関連 ID 実在 / `expected_modules` 形式)
+- AC チェックボックスが全て `- [x]` でないと `merge-readiness.md` の規約で **Ready 昇格不可** (§4.6.8 / `.claude/rules/merge-readiness.md`)
+
+#### 4.8.6 Skill との連携
+
+| Skill | 関与 |
+|---|---|
+| `feature-request` / `bug-fix` / `refactor` | Plan / Epic 起票時に PR description のドラフトを `docs/plans/PLAN-NNN-*.md` の Notes に保存、`implementation-workflow` が引き継ぐ |
+| `implementation-workflow` | Phase 5 で `gh pr create --template <type>.md --body-file <draft>` で起票、Phase 7 で人間 approve 直前に AC チェックボックスを最終確認 |
+| `code-reviewer` | spec-conformance aspect が frontmatter の `related_specs` を読み、設計書 ⇄ 実装の整合性を検証 |
+| `roadmap-tracker` | merge 直後 (Phase 8) に PR の frontmatter から `expected_modules` を読み、ロードマップの「次の推奨着手」セクションを更新 |
+
 ---
 
 ## 5. ハーネス構造 (`.claude/`)
@@ -1369,7 +1520,7 @@ Skill が IDE / ライブラリドキュメント / Cloudflare を操作する�
 
 | # | 内容 |
 |---|---|
-| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / **`.claude/mcp.json` で JetBrains MCP + Context7 MCP + Cloudflare MCP の接続定義** / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot, harness-evolution, roadmap-tracker}` の最小版 (**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を参照、本リポジトリには配置しない**) / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation, mcp-usage, skill-authoring, harness-evolution, docs-structure, roadmap}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**、`mcp-usage.md` は **GitHub は gh CLI / IDE 操作は JetBrains MCP / ライブラリ docs は Context7 / Cloudflare 管理は Cloudflare MCP の使い分けを規定**、`skill-authoring.md` は **example-skills:skill-creator 経由 + Anthropic Complete Guide 準拠**、`harness-evolution.md` は **外部情報源ホワイトリスト + 手動起動のみ + harness-meta との責務分離**、`docs-structure.md` は **AI が docs を読む順序 + 命名規約 + 5 行 summary + lazy-load 構造**、`roadmap.md` は **ロードマップ Markdown の構造 (frontmatter / 項目一覧 / 完了根拠 / 着手順とブロック / 保留事項 / 障壁と回避策 / 着手順変更履歴) + ステータス語彙 + 入力スコープ (plan.md と Epic のみ、Plan 単体は対象外) + plan.md / Epic への逆同期禁止**) / `docs/{adr, epics, plans, harness/learnings, harness/evolution-proposals, runbooks, requirements, specifications, design/inventory, architecture, api, security}` スケルトン + **`docs/harness/roadmap.md` 骨格** (本計画 plan.md から B0/A1-A10/C1-C10 / EPIC-000 を初期取り込みした全体ロードマップ、frontmatter + 項目一覧 + 空の完了根拠/保留事項/障壁/着手順変更履歴セクション) + **`docs/epics/EPIC-000-harness-foundation/roadmap.md` 骨格** (EPIC-000 配下の PR 進捗トラッカー、template/roadmap.md と同一フォーマット、Plan 単体は列挙しない) (テンプレートは全て**日本語**、`docs/README.md` は **AI 用エントリポイント** として推奨読み順を明記、`docs/{glossary, codebase-map, traceability}.md` の骨格を配置、`docs/architecture/{overview, layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md` 骨格、`docs/api/{README, colormaster-api.yaml, auth, idols, me}.md` 骨格、`docs/security/README.md` で ADR 索引、`docs/requirements/{README, template}.md`、`docs/specifications/README.md` と `docs/specifications/{basic,detail}/template.md`、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)** / **`docs/runbooks/{local-development, testing, i18n, mcp-setup}.md` を新規追加 (骨格)**。`mcp-setup.md` は以下を記載: (1) IntelliJ IDEA / Android Studio **2025.2+ にバンドル済の MCP Server プラグイン** (`JetBrains/mcp-server-plugin`、Marketplace 26071) を `Settings | Tools | MCP Server` で有効化、(2) **旧 `@jetbrains/mcp-proxy` npm パッケージは deprecated なので使用しない** こと、(3) JetBrains MCP の **3 つの接続方式** (Copy SSE Config [推奨] / Copy Stdio Config / Copy HTTP Stream Config) の選択基準と `.claude/mcp.json` への貼り付け手順、(4) IDE 再起動で動的ポートが変わる場合の再貼り付け手順 (or `claude mcp add` 経由の登録)、(5) Context7 / Cloudflare の OAuth 接続フロー、(6) `/mcp` での接続確認、(7) トラブルシュート (IDE 未起動 / MCP Server プラグイン未有効 / ポート競合 / IDE バージョン 2025.2 未満)。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動)、**`dependency-upgrade-check.yml` も導入しない** (Renovate PR の検証は pr-poller がローカルで dependency-upgrade Skill を起動して実施、Claude API の GitHub Actions 上実行を回避) |
+| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / **`.claude/mcp.json` で JetBrains MCP + Context7 MCP + Cloudflare MCP の接続定義** / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot, harness-evolution, roadmap-tracker}` の最小版 (**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を参照、本リポジトリには配置しない**) / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation, mcp-usage, skill-authoring, harness-evolution, docs-structure, roadmap}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**、`mcp-usage.md` は **GitHub は gh CLI / IDE 操作は JetBrains MCP / ライブラリ docs は Context7 / Cloudflare 管理は Cloudflare MCP の使い分けを規定**、`skill-authoring.md` は **example-skills:skill-creator 経由 + Anthropic Complete Guide 準拠**、`harness-evolution.md` は **外部情報源ホワイトリスト + 手動起動のみ + harness-meta との責務分離**、`docs-structure.md` は **AI が docs を読む順序 + 命名規約 + 5 行 summary + lazy-load 構造**、`roadmap.md` は **ロードマップ Markdown の構造 (frontmatter / 項目一覧 / 完了根拠 / 着手順とブロック / 保留事項 / 障壁と回避策 / 着手順変更履歴) + ステータス語彙 + 入力スコープ (plan.md と Epic のみ、Plan 単体は対象外) + plan.md / Epic への逆同期禁止**) / `docs/{adr, epics, plans, harness/learnings, harness/evolution-proposals, runbooks, requirements, specifications, design/inventory, architecture, api, security}` スケルトン + **`docs/harness/roadmap.md` 骨格** (本計画 plan.md から B0/A1-A10/C1-C10 / EPIC-000 を初期取り込みした全体ロードマップ、frontmatter + 項目一覧 + 空の完了根拠/保留事項/障壁/着手順変更履歴セクション) + **`docs/epics/EPIC-000-harness-foundation/roadmap.md` 骨格** (EPIC-000 配下の PR 進捗トラッカー、template/roadmap.md と同一フォーマット、Plan 単体は列挙しない) (テンプレートは全て**日本語**、`docs/README.md` は **AI 用エントリポイント** として推奨読み順を明記、`docs/{glossary, codebase-map, traceability}.md` の骨格を配置、`docs/architecture/{overview, layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md` 骨格、`docs/api/{README, colormaster-api.yaml, auth, idols, me}.md` 骨格、`docs/security/README.md` で ADR 索引、`docs/requirements/{README, template}.md`、`docs/specifications/README.md` と `docs/specifications/{basic,detail}/template.md`、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)** / **`docs/runbooks/{local-development, testing, i18n, mcp-setup}.md` を新規追加 (骨格)** / **`.github/pull_request_template.md` (harness 用デフォルト) + `.github/PULL_REQUEST_TEMPLATE/{feature,bugfix,refactor,dependency-upgrade,docs}.md` (§4.8 共通セクション + type 別追加項目)** / **`scripts/install-git-hooks.sh` が配置する `.git/hooks/commit-msg` で Conventional Commits 検証 (§4.7)**。`mcp-setup.md` は以下を記載: (1) IntelliJ IDEA / Android Studio **2025.2+ にバンドル済の MCP Server プラグイン** (`JetBrains/mcp-server-plugin`、Marketplace 26071) を `Settings | Tools | MCP Server` で有効化、(2) **旧 `@jetbrains/mcp-proxy` npm パッケージは deprecated なので使用しない** こと、(3) JetBrains MCP の **3 つの接続方式** (Copy SSE Config [推奨] / Copy Stdio Config / Copy HTTP Stream Config) の選択基準と `.claude/mcp.json` への貼り付け手順、(4) IDE 再起動で動的ポートが変わる場合の再貼り付け手順 (or `claude mcp add` 経由の登録)、(5) Context7 / Cloudflare の OAuth 接続フロー、(6) `/mcp` での接続確認、(7) トラブルシュート (IDE 未起動 / MCP Server プラグイン未有効 / ポート競合 / IDE バージョン 2025.2 未満)。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動)、**`dependency-upgrade-check.yml` も導入しない** (Renovate PR の検証は pr-poller がローカルで dependency-upgrade Skill を起動して実施、Claude API の GitHub Actions 上実行を回避) |
 
 B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Skill 駆動 + KPT 生成の対象となる。`pr-poller` はローカル Claude Code 起動時に手動起動可能とし、A4 で `CronCreate` / `ScheduleWakeup` による自動化を完成させる。
 
@@ -1575,6 +1726,18 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **新規追�
   - 共通原則: frontmatter 必須キー / 冒頭 5 行 summary / 片方向トレーサビリティ (REQ → SPEC basic → SPEC detail → Kotlin 実装 → テスト) / 末尾に Open Questions 必置
   - 機械検証: Gradle カスタムタスク (§5.2) で「フェンス付きコードブロック `kotlin` / `java` / `sh` / `bash` / `sql` / `gradle` / `kts` 等の混入禁止」「frontmatter JSON Schema」「ID 参照の実在 (REQ ⇄ SPEC ⇄ EPIC ⇄ PLAN ⇄ ADR)」を A6 で導入
   - 実テンプレ Markdown (`docs/requirements/template.md` / `docs/specifications/basic/template.md` / `docs/specifications/detail/template.md`) は B0 で配置、§4.6 の主要セクション一覧に従って内容は実際の起票時に埋める。基本設計と詳細設計は **物理的にサブディレクトリで分離** (`docs/specifications/{basic,detail}/`)、ペア参照は frontmatter `related_basic` / `related_detail` で双方向リンク
+- **コミットメッセージ規約** (§4.7 で規定、`.claude/rules/commit-message.md` で機械検証):
+  - **Conventional Commits** 形式 `<type>(<scope>): <subject>` (Renovate `semanticCommits` と整合)
+  - type allow リスト: `feat` / `fix` / `refactor` / `test` / `docs` / `chore` / `build` / `ci` / `perf` / `style` / `revert` (破壊的変更は subject 末尾 `!` + body に `BREAKING CHANGE:`)
+  - subject は英語・現在形・命令形動詞で開始、50 文字以内、末尾ピリオドなし。body は日本語可、72 文字で改行推奨、「なぜ / トレードオフ」を主軸
+  - footer: `Refs: PLAN-NNN / EPIC-NNN / ADR-NNNN / SPEC-NNN-N` + AI 駆動時は `Co-Authored-By: <AI モデル名> <noreply@anthropic.com>` 必須
+  - 機械検証: `scripts/install-git-hooks.sh` が配置する `.git/hooks/commit-msg` で Conventional Commits パーサーによる subject 形式検証
+- **PR テンプレート** (§4.8 で規定、`.github/pull_request_template.md` + `.github/PULL_REQUEST_TEMPLATE/<type>.md`):
+  - GitHub 標準仕様の **複数テンプレ方式** を採用 (`feature` / `bugfix` / `refactor` / `dependency-upgrade` / `harness` / `docs`)。デフォルトは `harness`、他は `gh pr create --template <type>.md` で明示指定
+  - 共通セクション: 概要 / 関連 (Plan/Epic/ADR/Issue) / 変更内容テーブル / 受け入れ基準チェックリスト / テスト (三層指標差分含む) / レビュー観点 / チェックリスト
+  - 先頭に **frontmatter** (`type` / `related_plan` / `related_epic` / `related_adrs` / `related_specs` / `expected_modules`) を含め、Gradle カスタムタスクと `code-reviewer` が parse
+  - `expected_modules` は `roadmap-tracker` の並行実装容易性ロジック (§5.3) の入力にもなる
+  - 機械検証: PR description frontmatter を `gh pr view --json body` 経由で取得して JSON Schema 検証、AC チェックボックスが全て `- [x]` でないと Ready 昇格不可 (`merge-readiness.md`)
 
 ---
 
