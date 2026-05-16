@@ -282,6 +282,9 @@ docs/
     0016-mutation-testing-pitest.md
     0017-spec-coverage-traceability.md
     0018-harness-loop-local-polling.md
+    0019-implementation-workflow.md
+    0020-code-review-aspects-coordinator.md
+    0021-template-language-japanese.md
   epics/                        ─ 複数 PR の取り組み (1 epic = 1 ディレクトリ)
     INDEX.md
     template/
@@ -363,9 +366,11 @@ Epic 配下で複数 PR を出す場合の個別 Plan は、`docs/plans/` に一
     epic-author/                B0 から導入
     pr-retrospective/           B0 から最小版で稼働 (1 PR = 1 learning ファイル生成)
     pr-poller/                  B0 から導入 (ローカル Claude Code 内でポーリング、未処理 PR を検出して pr-retrospective を起動)
-    feature-request/            A3 で完成
-    bug-fix/                    A3 で完成
-    refactor/                   A3 で完成
+    implementation-workflow/    B0 で雛形、A3 で本格化 (要件読込 → 実装 → Lint/Test → AI Review → マージ判断 → レトロ起動を 8 フェーズでオーケストレート)
+    code-reviewer/              B0 で雛形、A3 で本格化 (独立 Evaluator、6 aspect 並列レビュー + Coordinator で構造化コメント)
+    feature-request/            A3 で完成 (要件・仕様生成と Plan/Epic 起票まで、実装はしない)
+    bug-fix/                    A3 で完成 (再現・ルートコーズ・仕様補強・Plan 起票まで)
+    refactor/                   A3 で完成 (影響分析・Plan/Epic 起票まで)
     dependency-upgrade/         A3 で完成
     adr-author/                 A3 で完成
     harness-meta/               A3 で完成 (改修 PR 起票 + 元 learning ファイルへの feedback 追記)
@@ -400,7 +405,6 @@ Epic 配下で複数 PR を出す場合の個別 Plan は、`docs/plans/` に一
     test-paired-class.md
     sql-delight.md
     sparql.md
-    markdown.md
     # プロセス
     pr-template.md
     commit-message.md
@@ -409,6 +413,15 @@ Epic 配下で複数 PR を出す場合の個別 Plan は、`docs/plans/` に一
     retrospective-format.md    ─ pr-retrospective が出力する learning ファイルの構造化フォーマット
     pr-poller.md               ─ ローカルポーリング規約 (起動頻度、未処理 PR 判定、CronCreate/ScheduleWakeup 使用方針)
     harness-meta-criteria.md   ─ 改修 PR 採用/見送り/撤去の判定基準 (Anthropic harness 原則を明文化)
+    # 実装ワークフロー
+    implementation-workflow.md  ─ 8 フェーズの手順、fix loop の上限 (デフォルト 3 回)、Phase 失敗時の Plan 修正提案
+    code-reviewer-aspects.md    ─ 6 aspect (spec-conformance / test-quality / architecture / security / performance / code-quality) の binary eval checklist、coordinator の構造化コメント形式
+    merge-readiness.md          ─ Merge 可否の判定基準 (CI green + 全 aspect pass + 人間 approve、auto-merge 禁止)
+    pr-draft-policy.md          ─ Draft → Ready for review の昇格条件
+    spec-living-sync.md         ─ 実装中の仕様変更時の双方向同期手順 (Spec Kit / Intent 由来)
+    # ドキュメント表記
+    markdown.md                 ─ Markdown 表記規約 (テンプレート言語ポリシーを含む)
+    template-language.md        ─ ★新規 全テンプレート Markdown は日本語で記述 (ADR 0021 を要約)
     # 同期 / Backend
     sync-job.md
     sqlite-data-file.md
@@ -457,63 +470,243 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 | `plan-author` | feature-request / bug-fix / refactor が単一 PR スコープと判定 | `docs/plans/PLAN-NNN-*.md` を 1 ファイル生成、INDEX.md 更新 |
 | `epic-author` | 同上、複数 PR スコープと判定。または Plan 昇格時 | `docs/epics/EPIC-NNN-<slug>/` を template から生成、INDEX.md 更新 |
 | **`pr-poller`** | ローカル Claude Code 起動時 + `CronCreate` 日次スケジュール + `ScheduleWakeup` ループ | gh CLI で merged / closed PR を取得 → 既に learning ファイルがある PR を除外 → 未処理 PR があれば `pr-retrospective` を起動 → 一定期間経過 (7 日) または未処理 learning 件数閾値到達で `harness-meta` を起動。詳細規約は `.claude/rules/pr-poller.md` |
-| **`pr-retrospective`** (旧 `kpt-retrospective`) | `pr-poller` から自動起動 / 手動起動 | 対象 PR の diff (`gh pr diff`) / comments / reviews / CI ログ / Skill 実行ログ / 三層指標差分 (Kover / Konsist / PITest) / 関連 Plan・Epic を収集。`docs/harness/learnings/YYYY-MM-DD-pr-<n>.md` を `.claude/rules/retrospective-format.md` の構造化フォーマットで生成。`harness/learnings-batch-YYYY-WW` ブランチに集約し、週次 (or 件数到達時) に PR としてまとめて起票 |
-| `feature-request` | ユーザー指示 or Issue | 要件 → 仕様 → ADR (必要時) → Plan / Epic 起票 → 実装 → PR |
-| `bug-fix` | Issue / 障害報告 | 再現 → ルートコーズ分析 → ADR (設計起因なら) → 修正 → 回帰テスト → PR |
-| `refactor` | 改善提案 | 影響範囲分析 → リスク評価 → 段階的リファクタ → PR |
+| **`pr-retrospective`** (旧 `kpt-retrospective`) | `pr-poller` から自動起動 / 手動起動 | 対象 PR の diff (`gh pr diff`) / comments / reviews / CI ログ / Skill 実行ログ / 三層指標差分 (Kover / Konsist / PITest) / 関連 Plan・Epic を収集。`docs/harness/learnings/YYYY-MM-DD-pr-<n>.md` を `.claude/rules/retrospective-format.md` の構造化フォーマット (**日本語見出し**) で生成。`harness/learnings-batch-YYYY-WW` ブランチに集約し、週次 (or 件数到達時) に PR としてまとめて起票 |
+| **`implementation-workflow`** | Plan / Epic 確定後、ユーザー指示で起動 | **新規 (オーケストレーター)**: 8 フェーズで全工程を統合管理 — (1) 要件/基本設計/詳細設計 Markdown 読込、(2) Spec 整合性チェック、(3) 実装 + Lint/Test 実行 + fix loop (上限 3 回)、(4) Self-Verification、(5) Draft PR 作成、(6) `code-reviewer` 呼出 → Evaluator フェーズ、(7) 人間 approve → squash merge、(8) `pr-poller` 即時起動。詳細規約は `.claude/rules/implementation-workflow.md`、`merge-readiness.md`、`pr-draft-policy.md`、`spec-living-sync.md` |
+| **`code-reviewer`** | `implementation-workflow` Phase 6 から呼出 / 手動起動 | **新規 (独立 Evaluator)**: 6 aspect を並列実行 — spec-conformance / test-quality / architecture / security / performance / code-quality。各 aspect が binary yes/no eval checklist を実行。Coordinator が重複排除して **日本語の構造化レビューコメント** を PR に post し、Merge readiness を判定。詳細規約は `.claude/rules/code-reviewer-aspects.md`。Anthropic Evaluator 独立性原則に従い、aspect ごとに別の system prompt を持たせる |
+| `feature-request` | ユーザー指示 or Issue | 要件 → 基本設計 → (必要なら詳細設計) → ADR (必要時) → Plan / Epic 起票 **まで** (実装はしない、`implementation-workflow` にバトンタッチ) |
+| `bug-fix` | Issue / 障害報告 | 再現 → ルートコーズ分析 → 仕様補強 → ADR (設計起因なら) → Plan 起票 **まで** |
+| `refactor` | 改善提案 | 影響範囲分析 → リスク評価 → Plan or Epic 起票 **まで** |
 | `dependency-upgrade` | Renovate PR | リリースノート fetch → 影響モジュール特定 → テスト → 安全なら approve、危険なら downgrade 提案 |
 | `adr-author` | 他 Skill から呼ばれる | ADR テンプレに沿って起草、関連 ADR をリンク |
 | `harness-meta` | 月次 cron or learnings 閾値超過 | learnings の `Try` / `Suggested harness changes` を集約 → ハーネス改修 PR を起票 |
 
-### 5.4 Skill + KPT ループ (Generator / Evaluator / Meta-Generator)
+### 5.4 Skill + KPT ループ (Spec Gen / Implementation / Evaluation / Merge / Retrospection / Meta)
 
-Anthropic の GAN-style harness 設計 (Generator → Evaluator → Meta-Generator のフィードバックループ) に準拠する。
+Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の specialized reviewer + coordinator + GitHub Agentic Workflows の human-in-the-loop に準拠した 6 段階ループ。
 
 ```
-┌── Generator フェーズ (実装) ──────────────────────────────┐
-│ [feature-request / bug-fix / refactor / dependency-upgrade]│
-│    → 要件/仕様生成 (docs/requirements, specifications)    │
-│    → Plan or Epic 起票 (docs/plans or docs/epics)         │
-│    → 実装 → ./gradlew check + koverVerify + pitest        │
-│    → PR 作成 → CI green → review → merge or close          │
-│    Skill 実行ログを .claude/logs/ に逐次追記              │
+┌── ① Spec Gen フェーズ ───────────────────────────────────┐
+│ [feature-request / bug-fix / refactor / dependency-upgrade] │
+│    → 要件/基本設計/詳細設計 生成 (docs/requirements,        │
+│      specifications)                                       │
+│    → ADR (必要時) / Plan / Epic 起票                       │
+│    実装は次のフェーズへ                                     │
 └────────────────────────────────────────────────────────────┘
                        │
-                       ▼ (ローカル Claude Code 内、定期 / 起動時)
-┌── Evaluator フェーズ (KPT 残し) ──────────────────────────┐
+                       ▼ Plan / Epic を引き継ぐ
+┌── ② Implementation フェーズ ─────────────────────────────┐
+│ [implementation-workflow]  (オーケストレーター)            │
+│   Phase 1: 要件/基本設計/詳細設計 Markdown を Read         │
+│   Phase 2: Spec 整合性チェック (SPEC-ID 採番確認)           │
+│   Phase 3: rules-index → 実装 + Lint + Test (fix loop ≤3) │
+│   Phase 4: Self-Verification (三層指標 + rules)            │
+│   Phase 5: Draft PR 作成 (gh pr create --draft)            │
+│   Skill 実行ログを .claude/logs/ に逐次追記                │
+└────────────────────────────────────────────────────────────┘
+                       │
+                       ▼ (Generator と独立した Evaluator を呼ぶ)
+┌── ③ Evaluation フェーズ ─────────────────────────────────┐
+│ [code-reviewer]  (独立 Evaluator)                          │
+│   spec-conformance / test-quality / architecture /         │
+│   security / performance / code-quality を並列実行         │
+│   Coordinator が日本語の構造化レビューコメントを PR に post │
+│   Merge readiness を判定                                    │
+│   - Critical findings = 0 → Ready                          │
+│   - ある場合 → implementation-workflow Phase 3 に戻る       │
+└────────────────────────────────────────────────────────────┘
+                       │
+                       ▼ Ready で人間 approve を待つ
+┌── ④ Merge フェーズ ───────────────────────────────────────┐
+│ [implementation-workflow Phase 7]                          │
+│   CI green + 全 aspect pass + 人間 approve                 │
+│   → gh pr merge --squash                                   │
+│   Auto-merge は禁止 (GitHub Agentic Workflows 原則)        │
+└────────────────────────────────────────────────────────────┘
+                       │
+                       ▼ implementation-workflow Phase 8 で即時起動
+┌── ⑤ Retrospection フェーズ ──────────────────────────────┐
 │ [pr-poller]                                                │
-│    gh pr list --state closed,merged                        │
-│    未処理 PR を検出 (learning ファイルが未生成)            │
+│   gh pr list --state closed,merged                         │
+│   未処理 PR を検出 (learning ファイルが未生成)             │
 │       │                                                    │
 │       ▼                                                    │
 │ [pr-retrospective]                                         │
-│    PR 情報・CI・Skill ログ・指標差分を収集                │
-│    docs/harness/learnings/YYYY-MM-DD-pr-N.md を生成        │
-│    harness/learnings-batch-YYYY-WW ブランチに集約          │
-│    週次 (or 件数到達) で PR 起票                            │
+│   PR 情報・CI・Skill ログ・指標差分を収集                  │
+│   docs/harness/learnings/YYYY-MM-DD-pr-N.md を生成         │
+│   (日本語の構造化フォーマット)                              │
+│   harness/learnings-batch-YYYY-WW ブランチに集約           │
 └────────────────────────────────────────────────────────────┘
                        │
                        ▼ (一定期間経過 / 件数閾値で pr-poller が起動)
-┌── Meta-Generator フェーズ (改修 PR 起票) ─────────────────┐
-│ [harness-meta]                                             │
-│    docs/harness/learnings/*.md を直接 Read                 │
-│    Suggested harness changes を集計・優先度付け            │
-│    1 改修テーマ = 1 PR で複数起票 (テーマ別粒度)            │
-│    見送り提案: 元 learning ファイルに feedback セクション追記│
-│    撤去候補: 月次まとめて cleanup PR を別建てで起票        │
+┌── ⑥ Meta フェーズ ───────────────────────────────────────┐
+│ [harness-meta]  (Meta-Generator)                           │
+│   docs/harness/learnings/*.md を直接 Read                  │
+│   Suggested harness changes を集計・優先度付け             │
+│   1 改修テーマ = 1 PR で複数起票 (テーマ別粒度)             │
+│   見送り提案: 元 learning ファイルに feedback セクション追記 │
+│   撤去候補: 月次まとめて cleanup PR を別建てで起票          │
 └────────────────────────────────────────────────────────────┘
                        │
                        ▼
-                改修 PR 群 → Generator サイクルへ
+                改修 PR 群 → ① Spec Gen フェーズへ
                 (再帰的セルフ改善ループ完成)
 ```
 
 ポイント:
 
-- **3 Skill が役割分担**: `pr-poller` (オーケストレーター) → `pr-retrospective` (Evaluator) → `harness-meta` (Meta-Generator)
-- **GitHub Actions では Claude API を呼ばない**: ローカル Claude Code 内の `CronCreate` / `ScheduleWakeup` 機能でポーリング駆動。API コストはユーザーの既存利用枠内で完結
+- **6 フェーズで責務分離**: Spec Gen / Implementation / Evaluation / Merge / Retrospection / Meta。各フェーズに専用 Skill (or オーケストレーター) を割り当て
+- **Generator と Evaluator は構造的に分離** (Anthropic 原則): `implementation-workflow` は自分で書いたコードを自分で評価しない。独立した `code-reviewer` Skill が aspect ごとに別 system prompt で動く
+- **Lint/Test pass まで Draft PR を Ready にしない** (GitHub Agentic Workflows 原則)
+- **人間 approve なしに merge しない** (GitHub Agentic Workflows 原則)
+- **GitHub Actions で Claude API を呼ばない**: ローカル Claude Code 内の `CronCreate` / `ScheduleWakeup` でポーリング駆動。API コストはユーザーの既存利用枠内で完結
 - **Learning ファイルが Single Source of Truth**: PR コメントは出さない。`docs/harness/learnings/` の Markdown が `pr-retrospective` の出力先かつ `harness-meta` の入力源
 - **対話的フィードバック**: 採用見送りや保留は元 learning ファイルに `harness-meta feedback` セクションを追記、提案 → 結果の往復ログが 1 ファイル内で完結
+- **テンプレート言語は日本語**: ADR / Plan / Epic / 要件 / 仕様 / runbook / learning / レビューコメント の全テンプレ Markdown は日本語見出し・日本語例文で記述 (ADR 0021、`.claude/rules/template-language.md`)。frontmatter のキー (`id`, `status`, `type` 等) やコマンド文字列は英語のまま
+
+### 5.5 テンプレート言語ポリシー
+
+ハーネスが生成・参照する全ての Markdown テンプレートは **日本語で記述** する (ADR 0021)。AI 駆動でも人間レビューでも認知負荷を最小化し、ユーザーが第一言語で読み書きできるようにするため。
+
+#### 日本語化対象
+
+| カテゴリ | パス例 |
+|---|---|
+| ADR | `docs/adr/template.md`、各 ADR 本体 |
+| Epic | `docs/epics/template/{README, roadmap, open-questions, decisions, progress}.md` |
+| Plan | `docs/plans/template.md`、各 Plan 本体 |
+| 要件定義 | `docs/requirements/template.md`、各機能要件 md |
+| 基本設計 / 詳細設計 | `docs/specifications/template.md`、各仕様 md |
+| Runbook | `docs/runbooks/template.md`、各 runbook md |
+| Learning | `pr-retrospective` Skill が生成する `docs/harness/learnings/YYYY-MM-DD-pr-N.md` (フォーマット定義 `retrospective-format.md`) |
+| PR description テンプレ | `.github/pull_request_template.md` |
+| code-reviewer レビューコメント | `code-reviewer` Skill が PR に post する構造化コメント (フォーマット定義 `code-reviewer-aspects.md`) |
+| ハーネス改修 PR description | `harness-meta` Skill が起票する PR の本文 |
+| INDEX.md (Epic/Plan) | 見出しと説明列を日本語 |
+
+#### 例外 (英語のまま)
+
+- YAML frontmatter のキー名 (`id`, `title`, `status`, `type`, `related_pr`, `related_epic`, `created_at`, `completed_at` 等)
+- ステータス値 (`proposed`, `in-progress`, `completed`, `abandoned`, `promoted`)
+- コマンド・ファイルパス・コード断片
+- 識別子 (SPEC-IDOL-001-3, EPIC-NNN, PLAN-NNN, ADR 0001 等)
+
+#### 規約と検証
+
+- `.claude/rules/template-language.md` で本ポリシーを明文化
+- Konsist (markdown lint) で「frontmatter 外の見出しは日本語必須」をテスト化
+- harness-bootstrap および各 Skill のテンプレート生成は本ポリシーに従う
+
+#### 例: Plan テンプレートの日本語版イメージ
+
+```markdown
+---
+id: PLAN-NNN
+title: <短いタイトル>
+type: feature | bug-fix | refactor | dep-upgrade | chore
+status: proposed | in-progress | completed | abandoned | promoted
+related_pr: null
+related_epic: null
+created_at: YYYY-MM-DD
+completed_at: null
+---
+
+## 目的
+<この PR で達成すること、1-3 行>
+
+## 背景
+<なぜ必要か、現状の問題、関連 Issue/レポート>
+<該当コードを file_path:line で参照>
+
+## アプローチ
+<実装方針、最小限のステップ>
+1. ...
+2. ...
+
+## 受け入れ基準
+- [ ] <検証可能な条件>
+- [ ] <テスト>
+- [ ] <ドキュメント更新>
+
+## スコープ外
+<やらないこと、Epic に昇格する境界>
+
+## メモ
+<実装中に発見した非自明な点。詳細は decisions.md ではなくここに残す>
+```
+
+#### 例: pr-retrospective が生成する learning ファイルの日本語見出し
+
+```markdown
+# PR #NNN レトロスペクティブ
+
+> 生成: pr-retrospective Skill (v1.0.0) at 2026-05-17T10:00:00Z
+> 関連 Plan: PLAN-NNN / 関連 Epic: EPIC-NNN
+
+## ✅ Keep (継続したいこと)
+- ...
+
+## ⚠️ Problem (詰まったこと / 制約)
+- ...
+
+## 🚀 Try (次回からの改善案)
+- ...
+
+## 📊 指標
+| 指標 | Before | After | Δ |
+|---|---|---|---|
+| Line coverage | 100.00% | 100.00% | ±0 |
+| Branch coverage | 100.00% | 100.00% | ±0 |
+| Spec coverage | 98.4% | 100.0% | +1.6 |
+| Mutation score | 86.2% | 88.1% | +1.9 |
+
+## 🤖 ハーネス改善提案
+<!-- harness-meta が parse する正規構造 -->
+- [ ] `[rule]` ...
+- [ ] `[skill]` ...
+- [ ] `[template]` ...
+- [ ] `[remove]` ...
+
+## 📝 harness-meta フィードバック
+<!-- harness-meta が後から追記 -->
+- 2026-06-01: 提案 1 採用 (PR #150)
+- 2026-06-01: 提案 2 見送り (理由: ...)
+```
+
+#### 例: code-reviewer のレビューコメント日本語版イメージ
+
+```markdown
+## 🔍 AI コードレビュー
+
+> 生成: code-reviewer Skill (v1.0.0) at 2026-05-17T11:30:00Z
+> 並列実行した aspect: spec-conformance, test-quality, architecture, security, performance, code-quality
+
+### サマリ
+| 観点 | 結果 | 重大な指摘 | 改善提案 |
+|---|---|---|---|
+| 仕様適合性 (spec-conformance) | ✅ 合格 | 0 | 0 |
+| テスト品質 (test-quality) | ⚠️ 警告 | 0 | 2 |
+| アーキテクチャ (architecture) | ✅ 合格 | 0 | 0 |
+| セキュリティ (security) | ✅ 合格 | 0 | 0 |
+| 性能 (performance) | ⚠️ 警告 | 0 | 1 |
+| コード品質 (code-quality) | ❌ 不合格 | 1 | 3 |
+
+### マージ可否: ❌ まだ不可
+- `code-quality` の重大な指摘により merge をブロック
+
+### 重大な指摘 (merge ブロック)
+1. **[code-quality]** `feature/home/HomeViewModel.kt:42` — エラーハンドリングは `Result<T>` 型で統一する規約 (rules/error-handling.md L18)。現状は try/catch で例外を握り潰している
+   - 修正案: ...
+
+### 改善提案 (non-blocking)
+- ...
+
+### Eval チェックリスト (binary yes/no)
+- [x] 仕様適合性: 全 Acceptance criteria に @Spec タグ付きテストが存在
+- [x] 仕様適合性: SPEC-ID 参照のない実装がない
+- [x] テスト品質: koverVerify が pass
+- [ ] コード品質: try-catch で Result<T> へラップせず例外を握り潰している箇所がある
+- ...
+```
 
 ---
 
@@ -523,7 +716,7 @@ Anthropic の GAN-style harness 設計 (Generator → Evaluator → Meta-Generat
 
 | # | 内容 |
 |---|---|
-| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective}` の最小版 / `.claude/rules/{rules-index, retrospective-format, pr-poller}.md` 骨格 / `docs/{adr, epics, plans, harness/learnings, runbooks, ...}` スケルトン / EPIC-000-harness-foundation 起票。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動するため) |
+| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer}` の最小版 / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects}.md` 骨格 / `docs/{adr, epics, plans, harness/learnings, runbooks, requirements, specifications}` スケルトン (テンプレートは全て**日本語**) / EPIC-000-harness-foundation 起票。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動するため) |
 
 B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Skill 駆動 + KPT 生成の対象となる。`pr-poller` はローカル Claude Code 起動時に手動起動可能とし、A4 で `CronCreate` / `ScheduleWakeup` による自動化を完成させる。
 
@@ -533,9 +726,9 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 
 | # | 単位 | 起動 Skill | 内容 |
 |---|---|---|---|
-| **A1** | Plan | `harness-bootstrap` | ADR 0001-0017 を一括起草する PR |
+| **A1** | Plan | `harness-bootstrap` | ADR 0001-0021 を一括起草する PR (全て日本語) |
 | **A2** | Plan | `harness-bootstrap` | `.claude/rules/*` 全ファイル + `docs/` 拡充 (architecture/, requirements/, specifications/ テンプレ等) |
-| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller の本格版へのアップグレード)。マージ後、`harness-bootstrap` は `archived/` へ |
+| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** の本格版へのアップグレード)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 6 aspect の binary eval checklist + coordinator を完全実装。マージ後、`harness-bootstrap` は `archived/` へ |
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
 | **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル) |
 | **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook) |
@@ -621,6 +814,9 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-10 | PITest が KMP の JS/Wasm/iOS actual 実装を mutate できない | これらは expect/actual の薄い層で本質的にロジックが薄いため実害が小さいと判断。Konsist (テスト存在) と通常単体テストで担保。将来 MutFlow (K2 compiler plugin、KMP 全 target 適合の可能性) を別 ADR で評価可能性として記録 (ADR 0016) |
 | R-11 | ローカル Claude Code ポーリング駆動のため、ユーザーがしばらく Claude Code を起動しないと KPT ループが停止する | `pr-poller` Skill 起動時に「最後の処理から N 日経過した PR」を最優先で処理するキャッチアップ動作を組み込む (ADR 0018)。長期不在後の再開で取りこぼしを防ぐ |
 | R-12 | learning ファイルが PR にまとまる前にロストするリスク (ローカル commit のみで push 忘れ) | `pr-retrospective` は ファイル生成と同時に `harness/learnings-batch-YYYY-WW` ブランチに push する。週次の learnings PR でまとめて起票するが、push 自体は逐次行う |
+| R-13 | code-reviewer の aspect が、code を書いた Generator と同じバイアスを共有するリスク | Anthropic Evaluator 独立性原則に従い、aspect ごとに別の system prompt を持たせる (`code-reviewer-aspects.md` に明文化)。さらに各 aspect は binary yes/no eval checklist を最低 5 項目持ち、yes/no 判定を強制 |
+| R-14 | implementation-workflow の fix loop が無限に回るリスク | 上限 3 回 (デフォルト) で停止し、Plan に `status: blocked` を記録、人間に通知 (`implementation-workflow.md` に明文化) |
+| R-15 | code-reviewer の自動レビューに人間が依存しすぎ、本質的な見落としを許すリスク | GitHub Agentic Workflows 原則「人間 approve なしに merge しない」を必達。code-reviewer の Ready 判定は merge を許可するだけで自動 merge しない。人間レビュアーには「code-reviewer の指摘で十分か?」を考えさせる文言を PR コメントに含める |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
 | R-6 | harness-bootstrap が万能になりすぎると専用 Skill 化が遅れる | A3 完了で必ず `archived/` へ移動、CLAUDE.md からも参照を外す |
 
@@ -652,6 +848,16 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
   - 改修テーマごとに **個別 PR** を起票 (1 改修テーマ = 1 PR)
   - 見送り提案は元 learning ファイルに `## 📝 harness-meta feedback` セクションを追記、提案 → 結果の往復ログがファイル内で完結
   - 未使用 rule / dormant Skill は **月次 cleanup PR** で別建てで撤去候補レビュー
+- **コード実装ワークフロー**:
+  - 新規 Skill `implementation-workflow` が 8 フェーズで Plan/Epic 確定後の実装着手 → Lint/Test → AI Review → マージ判断 → レトロ起動を統合管理
+  - 新規 Skill `code-reviewer` が **独立 Evaluator** として 6 aspect (spec-conformance / test-quality / architecture / security / performance / code-quality) を並列レビュー、Coordinator が日本語の構造化レビューコメントを PR に post し Merge readiness を判定
+  - 既存 `feature-request` / `bug-fix` / `refactor` の責務は **Plan / Epic 起票まで** に縮小、その後 implementation-workflow にバトンタッチ
+  - Fix loop 上限はデフォルト 3 回、超過したら Plan に `status: blocked`
+  - **人間 approve なしの auto-merge は禁止** (GitHub Agentic Workflows 原則準拠)
+- **テンプレート言語**:
+  - 全 Markdown テンプレート (ADR / Epic / Plan / 要件 / 仕様 / runbook / learning / PR description / レビューコメント等) は **日本語見出し・日本語例文** で記述 (ADR 0021)
+  - 例外: YAML frontmatter のキー、ステータス値、コマンド・パス・コード断片、識別子 (SPEC-ID / EPIC-NNN / PLAN-NNN / ADR 番号等) は英語のまま
+  - Konsist で「frontmatter 外の見出しは日本語必須」を機械検証
 - テスト品質は **三層指標** で多層検証する:
   - 指標 A: **Line / Branch coverage 100%** (テスト存在の保証、CI 必達ゲート、`koverVerify minValue=100`)
   - 指標 B: **Spec coverage 100%** (仕様適合性の保証、`@Spec` annotation + Konsist 検証で CI 必達ゲート)
