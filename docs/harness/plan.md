@@ -32,13 +32,13 @@ last_updated: 2026-05-17
 - `imas/imasparql` の更新を 1 日 1 回検知し、差分があれば PR が自動作成される。サーバ停止時もアプリは継続稼働する。
 - Kotlin Multiplatform で Android / iOS / wasmJs / JVM (backend) の 4 ターゲットに対応する。
 - Backend 経由化により Wasm でも Firestore 上のユーザーデータを読み書きできる。
-- **テスト品質は 3 種類の指標で多層検証する**:
-  - **Line / Branch Coverage 100%** (テスト存在の保証、CI 必達ゲート)
-  - **Spec Coverage 100%** (Acceptance criteria ⇄ テストのトレーサビリティ、CI 必達ゲート)
+- **テスト品質は 3 種類の指標で多層検証する** (段階的達成):
+  - **Line / Branch Coverage**: 既存コードに対する 100% 一斉達成は現実的でないため、3 段階で運用する — **(段階 1) Phase A 完了時点**: Kover が動作し `koverHtmlReport` / `koverXmlReport` が出力できる「計測可能な状態」を必達。既存コードは ADR 0013 で限定列挙する除外リストで一旦逃がす / **(段階 2) Phase C 各 PR**: 当該 PR で **新規追加・変更された Kotlin 行に対して 100%** を必達ゲート (差分カバレッジ、`koverVerify` の Coverage Rule または GitHub Actions の独自スクリプト or `codecov` patch coverage で実装、A7 で確定) / **(段階 3) Phase C 完了時点**: 除外リストを段階的に解消し、**全体 line / branch ともに 100%** を達成
+  - **Spec Coverage 100%** (Acceptance criteria ⇄ テストのトレーサビリティ): 新規機能は実装と同時に必達ゲート、既存機能の Acceptance criteria 逆生成は Phase C の各 Epic 内で段階達成
   - **Mutation Score** (テストの意味的強度の計測、PR コメントで可視化、ゲートにはしない)
-- カバレッジの 100% は「テストが存在することの指標」、Spec coverage は「仕様適合性の指標」、Mutation Score は「テストの意味的強度の指標」。三層は別々のアウトカムを目指し、互いに代替不可能。
-- 除外対象は ADR 0013 で限定列挙し、それ以外は AI による自動テスト生成で必ず充足する。
-- Phase C (本格運用) 着手時点で、テスト基盤・三層指標の達成・im@sparql ローカル Docker 環境が完全に整っている。
+- カバレッジは「テストが存在することの指標」、Spec coverage は「仕様適合性の指標」、Mutation Score は「テストの意味的強度の指標」。三層は別々のアウトカムを目指し、互いに代替不可能。
+- 除外対象は ADR 0013 で限定列挙し、それ以外は AI による自動テスト生成で必ず充足する (Phase A 時点では既存コード未カバー分を暫定除外、Phase C 各 Epic で段階解消、Phase C 完了時に ADR 0013 列挙分のみが残る)。
+- Phase C (本格運用) 着手時点で、**計測基盤と差分カバレッジゲート**・im@sparql ローカル Docker 環境が完全に整っている。**全体 100% 達成は Phase C 完了時点 (ハーネス + コード実装すべて完了) の最終目標** であり、Phase A 完了の必達ではない。
 
 ---
 
@@ -309,7 +309,7 @@ Phase C の大規模リファクタ (Decompose 撤去 / CMP Navigation 3 / Fireb
 
 AI による自動テスト生成を前提とし、テスト品質は **3 つの独立した指標** で多層検証する。それぞれが異なるアウトカムを目指し、互いに代替不可能。
 
-#### 指標 A. Line / Branch Coverage 100% (CI 必達ゲート)
+#### 指標 A. Line / Branch Coverage (段階達成、Phase A 完了時は計測可能、Phase C 各 PR で差分 100%、Phase C 完了で全体 100%)
 
 **目的**: テストが存在することの保証
 
@@ -331,16 +331,22 @@ AI による自動テスト生成を前提とし、テスト品質は **3 つの
 - エッジケース・例外パスの網羅 (→ 指標 B / C で担保)
 - テストの意味的強度 (→ 指標 C で担保)
 
-**強制方法**: `koverVerify` の minBounds で `minValue = 100`、counter は `LINE` と `BRANCH` の両方。100% を満たさない PR はマージ不可。新規ファイルも例外なし。
+**段階達成と強制方法** (既存コード一斉 100% 化は現実的でないため段階運用):
 
-**除外対象** (ADR 0013 で限定列挙):
+| 段階 | タイミング | 達成基準 | 強制方法 |
+|---|---|---|---|
+| 段階 1 | Phase A 完了時点 | **Kover 計測可能な状態** (Gradle で `koverHtmlReport` / `koverXmlReport` が出力できる、`./gradlew check` が緑) | A7 で Kover プラグインを導入、既存コードは ADR 0013 列挙の除外リストで一旦逃がす |
+| 段階 2 | Phase C 各 PR | **当該 PR で新規追加・変更された Kotlin 行に対して line / branch ともに 100%** (差分カバレッジ) | A7 で差分カバレッジゲートを設定 — `koverVerify` の Coverage Rule に PR diff 由来の includes を渡す独自 Gradle タスク、または `codecov` の patch coverage、または GitHub Actions の独自スクリプトのいずれかを A7 内で確定。100% を満たさない PR はマージ不可 |
+| 段階 3 | Phase C 完了時点 | **全体で line / branch ともに 100%** (除外は ADR 0013 列挙分のみ) | Phase C の各 Epic / Plan で対象モジュールの既存コードを段階的にカバー、Phase C 末で除外リストが ADR 0013 列挙のみになっていることを確認 |
+
+**除外対象** (ADR 0013 で限定列挙、これは最終達成 100% でも除外され続ける):
 
 - エントリポイント (`MainKt`, `Application`, `MainActivity` 等)
 - DI モジュール定義 (Koin の `module {}` ブロック)
 - 自動生成コード (SQLDelight 生成クラス、kotlinx.serialization 生成クラス、Compose Compiler 生成コード)
 - 純粋な値クラス / sealed marker (テスト不可能な合成 toString/equals のみ)
 
-除外対象を増やすには ADR 改訂が必須。Skill が勝手に除外を増やせないよう、`.claude/rules/coverage-100.md` で禁止規約として明文化する。
+除外対象を増やすには ADR 改訂が必須。Skill が勝手に除外を増やせないよう、`.claude/rules/coverage-100.md` で禁止規約として明文化する。Phase A 完了時点で除外リストに **「既存コードの未カバー分」が一時的に含まれる** ことは ADR 0013 で許容、Phase C 完了までに段階的に解消する旨を明記。
 
 #### 指標 B. Spec Coverage 100% (CI 必達ゲート)
 
@@ -390,7 +396,7 @@ AI による自動テスト生成を前提とし、テスト品質は **3 つの
 | 答える問い | 「テストが書かれているか?」 | 「仕様が表現されているか?」 | 「テストが意味的に効くか?」 |
 | 計測対象 | コード実行範囲 | 仕様 ⇄ テストの対応関係 | 実装の意味的変更の検出力 |
 | 失敗時のシグナル | テスト未記述の箇所が存在 | 仕様未実装/未検証の項目が存在 | テストが tautological |
-| CI 扱い | 必達ゲート | 必達ゲート | シグナル可視化 |
+| CI 扱い | Phase A: 計測のみ / Phase C 各 PR: 差分 100% 必達 / Phase C 完了: 全体 100% | 新規機能で必達ゲート、既存機能は Phase C 段階達成 | シグナル可視化 |
 
 カバレッジは **「指標」ではなく「テスト存在を保証する制約」** と再定義することで、Goodhart's law (測定が目標化されて指標としての意味を失う) を回避する。「仕様の指標」は指標 B が、「意味の指標」は指標 C が直接担当する分担構造。
 
@@ -602,7 +608,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 - Firebase を完全廃止して GIS に統一する (ADR 0011)
 - Backend は Cloud Run (ADR 0009)、静的配信は Cloudflare Pages、Litestream バックアップ先は R2 (ADR 0024) — 2 ADR の組合せで一体運用
 - アイドル情報を Git 内 SQLite に commit、ユーザーデータは Litestream で R2 にレプリケート (ADR 0008 / 0010)
-- Line/Branch coverage 100% を必達ゲートにする (ADR 0013)
+- Line/Branch coverage は段階達成 (Phase A: 計測可能、Phase C 各 PR: 差分 100% を必達ゲート、Phase C 完了: 全体 100%) とする (ADR 0013)
 - ハーネスループをローカル Claude Code ポーリングで駆動する (GitHub Actions で Claude API を呼ばない) (ADR 0017)
 - implementation-workflow (ADR 0018) + code-reviewer (ADR 0020) の Generator/Evaluator 二段構成、code-reviewer は 8 aspect + Coordinator
 - ハーネスを構成する Markdown は全て日本語で記述する (ADR 0027 に統合、旧 0020 単独 ADR は廃止して新 0025 内のセクションに)
@@ -1334,7 +1340,7 @@ B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Sk
 
 ### 6.2 Phase A — Skill 駆動による基盤完成
 
-Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sparql ローカル Docker を含む全ての基盤が整っている」** ことを完了条件とする。Phase C はこの完了をもって初めて着手する。
+Phase A は **「実装フェーズで必要な計測・検証基盤と im@sparql ローカル Docker が整い、以降の PR で差分カバレッジ 100% / 差分 Spec coverage 100% を強制できる状態」** を完了条件とする。**既存コードに対する line / branch 100% 達成は Phase A の責務ではなく Phase C の各 Epic / Plan で段階的に達成する** (Phase A 一斉達成は現実的でないため、§3.10 指標 A の段階達成方針を採用)。Phase C はこの完了をもって初めて着手する。
 
 | # | 単位 | 起動 Skill | 内容 |
 |---|---|---|---|
@@ -1344,16 +1350,18 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
 | **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル、**`dev.gitlive:firebase-*` 依存、`core/network/{auth,firestore}`、`firebase.json`、`.firebaserc`**) |
 | **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + **`markdownlint-cli2` (`com.github.node-gradle.node` Gradle plugin 経由 + CI で `DavidAnson/markdownlint-cli2-action`)** + **`scripts/install-git-hooks.sh` で `.git/hooks/pre-commit` に `./gradlew check` を配置** (lefthook 等の hook 管理ツールは導入しない、Gradle に集約済みで管理コスト > 便益のため) + **trufflehog による secret-scan workflow**)。検証はファイル種別ごとに別ツールで実施 (§5.2 参照):<br>● **Konsist (Kotlin code 規約)**: 「`feature/**`・`core/**` Kotlin source で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラ実装に `requireUid()` 呼び出し強制」「実装側 `@Spec` annotation の収集」<br>● **`markdownlint-cli2`**: Markdown フォーマット規約 (行長 / 見出しレベル飛び / リスト形式 / コードブロック言語タグ / リンクの妥当性等)<br>● **Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x)**: 「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「frontmatter 必須キー JSON Schema 検証」「**`docs/traceability.md` 自動生成** (Konsist で抽出した Kotlin 側 `@Spec` + 本タスクが抽出した Plan/Epic/ADR/Spec 参照を join)」「**docs/ の各 Markdown が冒頭 5 行以内の summary を持つ**」「**`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する** (PLAN-NNN は追跡対象外のため検証不要)」「**設計書本文 (`docs/{requirements,specifications}/**`) にコード断片 (フェンス付きコードブロックの kotlin / java / sh / sql / gradle / kts 等) が混入していない** (§4.6 のコード禁止原則)」 |
-| **A7** | Plan | `feature-request` | **三層テスト品質基盤の導入**:<br>● **指標 A**: Kover 導入 + `koverVerify minValue=100` 必達化 (ADR 0013 除外列挙のみ許可)<br>● **指標 B**: `@Spec` annotation の Kotlin 定義 + Konsist による Spec coverage 検証ルール導入 (ADR 0016、`.claude/rules/spec-traceability.md`)<br>● **指標 C**: PITest + pitest-kotlin + gradle-pitest-plugin 導入。JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。PR コメントで mutation score 可視化 (ADR 0015、`.claude/rules/mutation-testing.md`)<br>本 PR 時点では既存コードの未充足は除外リストで一旦逃がし、A9 完了までに全モジュールに展開する旨を rules に明記 |
+| **A7** | Plan | `feature-request` | **三層テスト品質基盤の "計測可能な状態" 導入** (§3.10 段階 1):<br>● **指標 A**: Kover プラグイン導入 + `koverHtmlReport` / `koverXmlReport` 出力可能化。**差分カバレッジゲート** (PR で新規追加・変更された Kotlin 行に対して line / branch 100% を要求) を設定 — 実装方式は (a) `koverVerify` の Coverage Rule に PR diff から生成した includes を渡す Gradle カスタムタスク、(b) `codecov` の patch coverage、(c) GitHub Actions の独自スクリプト のいずれかを本 PR 内で確定。既存コードは ADR 0013 で「Phase A 時点では除外、Phase C で段階的にカバー」と明記した除外リストで一旦逃がす<br>● **指標 B**: `@Spec` annotation の Kotlin 定義 + Konsist による Spec coverage 検証ルール導入 (ADR 0016、`.claude/rules/spec-traceability.md`)。新規機能のみゲート対象、既存機能は Phase C で段階達成<br>● **指標 C**: PITest + pitest-kotlin + gradle-pitest-plugin 導入。JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。PR コメントで mutation score 可視化 (ADR 0015、`.claude/rules/mutation-testing.md`)<br>本 PR 時点では既存コードの未充足は除外リストで一旦逃がし、**Phase C 完了までに全モジュールで line / branch 100% を達成する** 旨を `.claude/rules/coverage-100.md` および ADR 0013 に明記 |
 | **A8** | Plan | `feature-request` | **im@sparql ローカル Docker 環境構築** (Apache Jena Fuseki + RDF データ初期投入スクリプト + `docker-compose.yml` + integration test 基盤 + Testcontainers 規約)。`docs/runbooks/local-imasparql.md` を整備し、backend のローカル開発・テストを Fuseki に対して実行できる状態にする |
-| **A9** | **EPIC-A9** | `refactor` | **既存コード全体に対する三層指標の達成**。モジュールごとに段階 Plan (PLAN-NNN × 多数) を発行:<br>● 指標 A: line / branch 100% カバレッジを全モジュールで達成<br>● 指標 B: 既存機能の Acceptance criteria を `docs/specifications/<id>.md` に逆生成、テストに `@Spec` annotation を付与、Spec coverage 100% 達成<br>● 指標 C: 各モジュールの初回 mutation score をベースラインとして記録、明らかな tautological テストは learnings に蓄積し改善<br>Konsist の「実装クラス ⇄ テストクラス対応」検証を本 EPIC 完了時に enforce。backend/server / android/app / core/* / data/ 全モジュールが対象。A7 で導入した除外リストは ADR 0013 列挙分のみに整理する |
+| **A9** | **EPIC-A9** | `refactor` | **既存コードに対する baseline 記録 + Spec coverage 適用準備** (line / branch 100% 一斉達成は本 EPIC の責務から外し、Phase C の各 Epic / Plan で段階達成):<br>● **指標 A baseline**: 全モジュールの現状 line / branch カバレッジを `koverXmlReport` で記録し、Phase A 完了時点の "解消すべき除外行数" として ADR 0013 列挙の除外リストに具体化 (Phase C で減らしていく対象)<br>● **指標 B Spec coverage 準備**: 既存機能の Acceptance criteria を `docs/specifications/basic/SPEC-NNN-<slug>.md` に逆生成 (重要画面 / 主要 API を優先、全部一斉ではなく Phase C で段階拡張)、テストに `@Spec` annotation を **可能な範囲で** 付与し、Konsist の Spec coverage 検証は **新規機能のみ強制** を A7 ルールから維持<br>● **指標 C baseline**: 各モジュールの初回 mutation score をベースラインとして記録、明らかな tautological テストは learnings に蓄積し改善<br>本 EPIC 完了時点では「Phase C で何をカバーすべきか」が明確化されている状態が達成基準。実装クラス ⇄ テストクラス対応の Konsist 検証は新規分のみ enforce |
 | **A10** | **EPIC-A10** | `ui-snapshot` + `refactor` | **UI/UX 現状記録 EPIC (Phase C のリファクタ前に Behavior Preservation を確立)**:<br>● Roborazzi (Compose Desktop + Android Robolectric) を導入<br>● Konsist で全 Composable をスキャン、`@Preview` 不在を検出して Plan で追加 (段階的)<br>● 各 Preview に対応する screenshot baseline を **4 パターン** (mobile-light/mobile-dark/desktop-light/desktop-dark) で生成し `docs/design/inventory/screenshots/` に commit<br>● **`DESIGN.md` を repo root に生成**: 色・タイポ・スペーシング・radii を実コードから抽出 + Rationale を AI 起草 → 人間レビュー必須<br>● **UI Inventory** (`docs/design/inventory/{screens,components,states,flows}/*.md`) を全件生成<br>● `.claude/rules/{design-tokens,ui-snapshot,ui-inventory,behavior-preservation}.md` を本格化、Konsist で「実装クラスに対応する Preview と screenshot baseline がある」「DESIGN.md に存在しない hex code がコードに混入していない」を機械検証<br>● code-reviewer の **visual-regression / design-tokens aspect を enable** |
 
 **Phase A 完了条件**:
 
-- 全モジュールで `./gradlew check koverVerify` がグリーン (指標 A: line / branch ともに 100%、除外は ADR 0013 列挙分のみ)。
-- Konsist の Spec coverage 検証がグリーン (指標 B: 全 Acceptance criteria に対応する `@Spec` 付きテストが存在)。
-- `./gradlew pitest` が JVM target で実行可能、初回 mutation score が記録されている (指標 C)。
+- 全モジュールで `./gradlew check` がグリーン、**Kover が動作し `koverHtmlReport` / `koverXmlReport` が出力可能** な「計測可能な状態」を達成 (指標 A 段階 1)。
+- **差分カバレッジゲート** が有効化されており、Phase C 各 PR で新規追加・変更された Kotlin 行に対して line / branch 100% を要求できる (A7 で確定した実装方式が稼働) (指標 A 段階 2 の準備完了)。
+- 既存コードに対する line / branch 100% は **Phase A の責務から外し、Phase C 各 Epic で段階達成**。A9 で baseline を記録済み、ADR 0013 の除外リストに「Phase C で解消する既存未カバー行」が具体化されている。
+- Konsist の Spec coverage 検証が **新規機能に対して** グリーン (指標 B: 新規 Acceptance criteria に対応する `@Spec` 付きテストが存在)。既存機能の逆生成は A9 で着手済み、完成は Phase C 段階達成。
+- `./gradlew pitest` が JVM target で実行可能、初回 mutation score がベースラインとして記録されている (指標 C)。
 - `docker compose up imasparql` でローカル Fuseki が起動し、backend integration test が Fuseki に対して実行可能。
 - **`./gradlew verifyRoborazziDebug` (or 相当) がグリーン**: 全 Composable に対する 4 パターンの screenshot baseline が一致 (A10 完了)。
 - **`DESIGN.md` が repo root に存在し、UI Inventory が全画面・全主要コンポーネント・全状態を網羅** (A10 完了)。
@@ -1363,7 +1371,7 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 
 ### 6.3 Phase C — 本格運用 (Epic / Plan 管理 + Skill ループ + KPT)
 
-Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバレッジ達成を前提条件として書く**。新規ファイルは作成と同時にテストが書かれている状態でないとマージ不可。
+Phase A 完了後の本格運用フェーズ。すべての PR は **新規追加・変更された Kotlin 行に対して差分カバレッジ 100% を必達 (§3.10 指標 A 段階 2)** とし、新規ファイルは作成と同時にテストが書かれている状態でないとマージ不可。**既存コードの未カバー分は ADR 0013 の除外リストで一時的に許容され、Phase C 各 Epic / Plan の中で対象モジュールの既存コードも段階的にカバーする**。Phase C 完了時点 (=ハーネス + コード実装すべて完了時) で **全体 line / branch 100% を達成し、ADR 0013 除外リストが ADR 0013 列挙分のみ** に整理されている状態を最終達成目標 (§3.10 指標 A 段階 3) とする。
 
 | # | 単位 | 起動 Skill | 内容 |
 |---|---|---|---|
@@ -1388,6 +1396,16 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 - C6 (同期パイプライン) を C7 (デプロイ) より前に: `data/idols.db` 初期データがリポジトリに乗らないと Cloud Run コンテナイメージが空になる。
 - C8 (iOS) を C9 (wasmJs) より前に: 先に iOS でアーキ全体を検証してから wasmJs の重い切替に進む方が安全。**Firebase 切り離しは C5 で既に完了している** ため、C9 は wasmJs ターゲット有効化に集中可能。
 
+**Phase C 完了条件 (= ハーネス + コード実装すべて完了時の最終達成状態)**:
+
+- C1〜C10 の全 Epic / Plan が `completed`、`docs/harness/roadmap.md` の全項目が `completed` または ADR 0013 列挙の正当な除外。
+- **全モジュールで `./gradlew check koverVerify` がグリーン (line / branch ともに 100%、除外は ADR 0013 列挙分のみ)** ─ §3.10 指標 A 段階 3 達成。A7 で導入した「Phase A 時点で除外、Phase C で段階的にカバー」の暫定除外リストはすべて解消済み。
+- **Konsist の Spec coverage 検証がグリーン (全 Acceptance criteria に対応する `@Spec` 付きテストが存在)** ─ 指標 B 完成、既存機能の Acceptance criteria 逆生成も含む。
+- `./gradlew pitest` が JVM target で実行可能、mutation score baseline が継続記録されており、KPT で改善されてきた履歴が learnings に蓄積されている (指標 C は最終 100% を強制しないが、無意味テストの可視化が機能している)。
+- Cloud Run + Cloudflare Pages + R2 + GIS の本番デプロイが稼働、KMP iOS / wasmJs / Android / JVM 全 4 target が動作。
+- Firebase 依存が完全撤廃 (`dev.gitlive:firebase-*` / `core/network/{auth,firestore}` / `firebase.json` / `.firebaserc` が repo に存在しない)。
+- ハーネスループ (Spec Gen → Implementation → Evaluation → Merge → Retrospection → Meta) が `harness-meta` の改修 PR を生み出している実績がある (= 自己改善ループが回っている)。
+
 ---
 
 ## 7. 依存ライブラリのバージョンアップ自動化
@@ -1406,13 +1424,16 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 
 テスト品質は **3.10 節で定義した三層指標** で多層検証する。詳細は 3.10 節を参照。本節では運用面の補足を記す。
 
-- **指標 A (Line/Branch Coverage 100%)**: Kover を導入、`./gradlew check` に `koverXmlReport` / `koverVerify` を組み込む。`koverVerify` の minBounds: `minValue = 100`、counter = `LINE` と `BRANCH` の両方を必達ゲートとする。除外対象は ADR 0013 で限定列挙のみ、除外追加は ADR 改訂が必須。
-- **指標 B (Spec Coverage 100%)**: `@Spec("SPEC-NNN-N")` annotation をテスト関数に付与し、`docs/specifications/<id>.md` の Acceptance criteria と双方向対応させる。Konsist で「全 Acceptance criteria に対応する `@Spec` が存在する」「`@Spec` ID が specifications に実在する」を機械検証。詳細は ADR 0016。
+- **指標 A (Line / Branch Coverage、段階達成)**: Kover を導入、`./gradlew check` に `koverXmlReport` を組み込む。
+  - **Phase A 完了時点 (段階 1)**: 計測可能な状態を達成。`koverVerify` は全体 100% を要求せず、既存コードは ADR 0013 の暫定除外リストに含める。
+  - **Phase C 各 PR (段階 2)**: 新規追加・変更された Kotlin 行に対して line / branch 100% を要求 (差分カバレッジゲート、A7 で実装方式を確定)。
+  - **Phase C 完了時点 (段階 3)**: 暫定除外リストを段階解消し、全体で line / branch 100% を達成。除外対象は ADR 0013 列挙分のみ、除外追加は ADR 改訂が必須。
+- **指標 B (Spec Coverage 100%)**: `@Spec("SPEC-NNN-N")` annotation をテスト関数に付与し、`docs/specifications/basic/SPEC-NNN-<slug>.md` の Acceptance criteria と双方向対応させる。Konsist で「全 Acceptance criteria に対応する `@Spec` が存在する」「`@Spec` ID が specifications に実在する」を機械検証。新規機能は Phase C 各 PR で必達、既存機能の Acceptance criteria 逆生成と `@Spec` 付与は Phase C 各 Epic で段階達成、Phase C 完了時点で全体 100% に到達。詳細は ADR 0016。
 - **指標 C (Mutation Score)**: PITest + pitest-kotlin + gradle-pitest-plugin を採用し、JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。`jsMain` / `wasmJsMain` / `iosMain` の actual 実装は対象外 (これらは Konsist + 通常単体テストで担保)。CI ではゲートにせず PR コメントで可視化。詳細は ADR 0015。
-- **Konsist でペアリング検証**: 各実装クラスに対応するテストクラス (`*Spec.kt` / `*Test.kt` / `*ScreenshotTest.kt`) の存在を機械的に強制する (`.claude/rules/test-paired-class.md`)。
+- **Konsist でペアリング検証**: 各実装クラスに対応するテストクラス (`*Spec.kt` / `*Test.kt` / `*ScreenshotTest.kt`) の存在を機械的に強制する (`.claude/rules/test-paired-class.md`)。Phase A 時点では新規分のみ enforce、Phase C で全コードに展開。
 - **UI モジュール (Compose)** は **Compose UI Test + screenshot test (Paparazzi / Roborazzi)** で指標 A を達成。
 - **AI 自動生成テストの質の担保**: 指標 B (仕様トレーサビリティ) と指標 C (mutation score) がそれぞれ別軸で抑制効果を持つ。さらに Konsist で「テストクラスは最低 1 つの assert を含む」「Mock のみで実装を呼ばないテストは禁止」等のメタ規約を加える。KPT で発見された無意味テストパターンは harness-meta が `kotlin-test.md` ルールに追加していくフォールバックループで対処。
-- **Phase A (A7-A9) で全モジュールに三層指標を導入** し、Phase C 以降は維持 + 新規分の即時 100% / Spec coverage 100% を CI で必達とする。
+- **Phase A (A7-A9) で計測基盤と差分ゲートを導入**、**Phase C で各 Epic / Plan が新規分の即時 100% + 既存コード段階達成を担う**、**Phase C 完了時点で全体 100% を達成** という 3 段階運用 (§3.10 指標 A 段階達成テーブル参照)。
 
 ---
 
@@ -1425,7 +1446,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-3 | `data/idols.db` のバイナリ管理によるリポジトリサイズ膨張 | アイドル情報は数百〜千行のため当面は通常 commit。MB 級になったら Git LFS 移行を別 ADR で |
 | R-4 | Cloud Run JVM コールドスタート | Phase C 完了後に GraalVM Native Image を別 ADR で検討 |
 | R-7 | AI 自動生成テストが「網羅性はあるが意味のないテスト」になる可能性 | 三層指標で多層対処: 指標 B (Spec coverage) で仕様トレーサビリティを強制、指標 C (Mutation score) で意味的強度を計測可視化、Konsist メタ規約 + KPT 学習 + `kotlin-test.md` 強化のフォールバックループで担保 (3.10 節参照) |
-| R-8 | A9 (既存コード三層指標達成 EPIC) の作業量が想定を超える可能性 | モジュール単位で Plan を切り、PR を細粒度に分割。完了見込みが立たない場合は除外対象の見直しを ADR 改訂で対応 (ただし安易な除外追加は禁止)。指標 C は初回 baseline 記録のみで完了とし、改善は継続課題に |
+| R-8 | 既存コードの line / branch 100% 達成作業量が想定を超える可能性 | A9 EPIC を「既存コード一斉 100% 達成」から「baseline 記録 + Spec coverage 適用準備」に縮小し、**Phase A 完了条件から既存コード 100% 達成を外して Phase C 各 Epic / Plan で段階達成** する方針に修正済 (§3.10 / §6.2 / §6.3 参照)。差分カバレッジゲート (A7) で新規分は確実にカバー、既存分は Phase C の各 Epic 内で対象モジュールを並行カバーする。完了見込みが立たない場合は除外対象の見直しを ADR 改訂で対応 (ただし安易な除外追加は禁止)。指標 C は初回 baseline 記録のみで完了とし、改善は継続課題に |
 | R-9 | Fuseki に投入する RDF データの著作権・ライセンス確認 | A8 でデータ取得元 (`imas/imasparql` リポジトリ) のライセンスを確認し ADR 0014 に明記。条件次第ではダミー RDF + テスト専用データ構成にする |
 | R-10 | PITest が KMP の JS/Wasm/iOS actual 実装を mutate できない | これらは expect/actual の薄い層で本質的にロジックが薄いため実害が小さいと判断。Konsist (テスト存在) と通常単体テストで担保。将来 MutFlow (K2 compiler plugin、KMP 全 target 適合の可能性) を別 ADR で評価可能性として記録 (ADR 0015) |
 | R-11 | ローカル Claude Code ポーリング駆動のため、ユーザーがしばらく Claude Code を起動しないと KPT ループが停止する | `pr-poller` Skill 起動時に「最後の処理から N 日経過した PR」を最優先で処理するキャッチアップ動作を組み込む (ADR 0017)。長期不在後の再開で取りこぼしを防ぐ |
@@ -1510,14 +1531,14 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
   - **R2 token TTL 90 日 + 定期ローテーション** (ADR 0021)、漏洩時の runbook を整備
   - Skill (code-reviewer / pr-retrospective / harness-meta) は出力前に PII redaction フェーズを通す
   - 権限ロールは **当面 owner 1 名のみ** (ADR 0020)、複数人体制になったら別 ADR で `developer` / `releaser` を追加
-- テスト品質は **三層指標** で多層検証する:
-  - 指標 A: **Line / Branch coverage 100%** (テスト存在の保証、CI 必達ゲート、`koverVerify minValue=100`)
-  - 指標 B: **Spec coverage 100%** (仕様適合性の保証、`@Spec` annotation + Konsist 検証で CI 必達ゲート)
+- テスト品質は **三層指標** で多層検証する (段階達成、§3.10 参照):
+  - 指標 A: **Line / Branch coverage** ─ Phase A 完了時は「計測可能」、Phase C 各 PR で「差分 100% を必達ゲート」、Phase C 完了時 (= ハーネス + コード実装すべて完了時) に「全体 100%」を最終達成
+  - 指標 B: **Spec coverage 100%** (仕様適合性の保証、`@Spec` annotation + Konsist 検証)。新規機能は Phase C 各 PR で必達、既存機能は Phase C 各 Epic で段階達成、Phase C 完了時に全体 100%
   - 指標 C: **Mutation score** (テスト意味的強度の計測、PITest + JVM target 経由、PR コメントで可視化、ゲートにはしない)
 - カバレッジは「指標」ではなく「テスト存在を保証する制約」と再定義し、Goodhart's law を回避。仕様適合性は指標 B、意味的強度は指標 C が直接担当する分担構造。
-- 除外対象 (指標 A) は ADR 0013 で限定列挙。Mutation testing 対象外スコープ (JS/Wasm/iOS actual 実装) は ADR 0015 で明示。
+- 除外対象 (指標 A) は ADR 0013 で限定列挙。Phase A 時点では既存コード未カバー分を「Phase C で解消する暫定除外」として明記、Phase C 完了時に ADR 0013 列挙分のみが残る。Mutation testing 対象外スコープ (JS/Wasm/iOS actual 実装) は ADR 0015 で明示。
 - im@sparql ローカル Docker (Fuseki) は **Phase A (A8) で整備**。Phase C 着手前に backend integration test が Fuseki に対して実行可能な状態にする。
-- 既存コードの三層指標達成は **Phase A (A9) を EPIC として実施**。Phase C はこの完了をもって着手。
+- **既存コードの line / branch 100% 達成は Phase A の必達ではなく Phase C 各 Epic / Plan で段階達成** (A9 EPIC は baseline 記録 + Spec coverage 適用準備に縮小)。Phase A の完了条件は「計測可能 + 差分カバレッジゲート稼働」。
 - **ロードマップ管理** (`.claude/rules/roadmap.md` で規定、ADR 化は見送り):
   - 新規 Skill `roadmap-tracker` が **plan.md と `docs/epics/EPIC-NNN-*/`** を入力に `docs/harness/roadmap.md` (全体) および `docs/epics/<id>/roadmap.md` (Epic 別) を生成・更新
   - **Plan は 1 PR で完結するボリュームのためロードマップ追跡対象外** (PR レビュー & merge で完結、`docs/plans/*.md` は走査しない)
@@ -1546,4 +1567,4 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
    - 内容: 第 4 章 ドキュメント構造 + 第 5 章 ハーネス構造のスケルトン + EPIC-000-harness-foundation 起票
    - レビュー: 唯一の例外として人間レビュー (Skill ループ外)
 2. B0 マージ後、A1 (ADR 起草) から Skill 駆動 + KPT ループを稼働させる。
-3. **Phase C 着手は A9 完了 (既存コード三層指標 (line/branch 100% + spec coverage 100% + mutation score baseline) 達成 EPIC 完了 + im@sparql ローカル Docker 整備 + Lint/Test 基盤完成) 後**。これにより Phase C の実装作業は最初からセーフティネットと統合テスト環境の上で進む。
+3. **Phase C 着手は A9 完了 (既存コード baseline 記録 + Spec coverage 適用準備 + im@sparql ローカル Docker 整備 + Lint/Test 基盤 + 差分カバレッジゲート稼働) 後**。これにより Phase C の実装作業は最初から計測可能 + 差分 100% ゲート + 統合テスト環境の上で進む。**既存コード line / branch 100% 達成は Phase C 各 Epic / Plan で段階的に進め、Phase C 完了時 (ハーネス + コード実装すべて完了時) に全体 100% を達成する**。
