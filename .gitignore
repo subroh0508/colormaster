@@ -1,12 +1,76 @@
+# ----------------------------------------------------------------------------
+# IDE / OS
+# ----------------------------------------------------------------------------
 *.iml
-*.db
-.gradle
 .idea
 .kotlin
-/local.properties
 .DS_Store
+
+# ----------------------------------------------------------------------------
+# Build
+# ----------------------------------------------------------------------------
+.gradle
 build
-/public
 /captures
 .externalNativeBuild
 /node_modules
+kotlin-js-store/
+
+# ----------------------------------------------------------------------------
+# Local config
+# ----------------------------------------------------------------------------
+/local.properties
+/public
+
+# ----------------------------------------------------------------------------
+# SQLite (デフォルトで全 .db 除外、コミット対象の data/idols.db は明示的に解除)
+# ADR 0008 / 0010 / 0020 / db-protection.md
+# ----------------------------------------------------------------------------
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+# アイドル情報マスタはリポジトリ commit + コンテナイメージ焼込 (ADR 0010)
+# (C6 で導入時に有効化)
+# !data/idols.db
+
+# ユーザーデータ DB (PII を含む、絶対 commit 禁止、明示的に再除外)
+# ADR 0020 / 0008 / db-protection.md / pii.md
+data/users.db
+data/users.db-shm
+data/users.db-wal
+data/*.db-journal
+
+# ----------------------------------------------------------------------------
+# Secrets / Credentials (ADR 0021 / secrets.md)
+# ----------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+*-credentials.json
+service-account*.json
+.cloudflare/credentials
+.gcloud/credentials
+
+# MCP OAuth tokens (ADR 0024 / mcp-usage.md)
+.claude/oauth-tokens
+.claude/oauth-tokens.*
+
+# Skill 実行スクラッチ
+.claude/locks/*
+!.claude/locks/.gitkeep
+.claude/logs/*
+!.claude/logs/.gitkeep
+
+# ----------------------------------------------------------------------------
+# Terraform (本リポジトリでは Terraform 不使用、§3.5 / §3.6)
+# ローカル探索の artifact が紛れ込んでも commit されないように除外
+# ----------------------------------------------------------------------------
+terraform/
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
