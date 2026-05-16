@@ -415,148 +415,182 @@ AI による自動テスト生成を前提とし、テスト品質は **3 つの
 
 > AI が自律的に実装を進めるために必要な情報を `docs/` に体系化する (ADR 0027)。各 docs は **冒頭 5 行以内の summary + 詳細 lazy-load** の構造を必須化し、AI のコンテキストを圧迫しないようにする (R-32)。重複・矛盾は `traceability.md` と Konsist で機械検証 (R-33)。
 
-```
-DESIGN.md                       ← リポジトリ root に配置 (Google Stitch 標準準拠)
-                                  上部: design tokens (machine-readable, 3 階層)
-                                  下部: rationale (human-readable, アクセシビリティ含む)
-CHANGELOG.md                    ← (将来) 運用後追加、dependency-upgrade Skill が更新
+#### 4.0.1 骨格
 
+```text
+DESIGN.md                     ★
+CHANGELOG.md
 docs/
-  README.md                     ─ ★AI 用エントリポイント。全 docs 索引 + 推奨読み順 (CLAUDE.md → このファイル → 関連ディレクトリ)
-  glossary.md                   ─ ★新規 ドメイン用語集 (im@sparql / RDF / アイドル / ブランド / カラー / 担当 / 推し / SPARQL prefix 等。日本語 + 英訳 + 関連リンク)
-  codebase-map.md               ─ ★新規 主要パス → 責務 / 関連 SPEC-ID / 関連 ADR の対応表 (rules-index と相補)
-  traceability.md               ─ ★新規 Plan ⇄ Epic ⇄ ADR ⇄ Spec ⇄ 実装 のクロスリンク表。A6 で Konsist による自動生成導入
-
-  architecture/                 ─ ★大幅拡充 (旧 overview.md 1 つから分割)
-    overview.md                 ─ モジュール依存図 (Mermaid)
-    layers.md                   ─ ★新規 層別責務 (feature/* / core/* / backend/*)
-    data-flow.md                ─ ★新規 im@sparql → backend → frontend の流れ + Litestream/R2
-    domain-model.md             ─ ★新規 RDF (im@sparql) ⇄ SQLite ⇄ Kotlin model の三層マッピング
-    state-machines.md           ─ ★新規 主要 UiState 遷移 (Mermaid stateDiagram)
-    sequences.md                ─ ★新規 認証 / API 呼出 / 同期パイプライン (Mermaid sequence)
-    infrastructure.md           ─ ★新規 Cloud Run + Cloudflare Pages + R2 + GIS の構成図
-
-  api/                          ─ ★新規ディレクトリ
-    README.md                   ─ API 全体像
-    colormaster-api.yaml        ─ OpenAPI 3.1 (機械可読、code-reviewer の spec-conformance aspect が参照)
-    auth.md                     ─ GIS ID Token 検証フロー詳細
-    idols.md                    ─ /api/idols/* (アイドルマスタ参照)
-    me.md                       ─ /api/me/* (ユーザーデータ CRUD、PII redaction 規約)
-
-  security/                     ─ ★新規ディレクトリ
-    README.md                   ─ ADR 0011 (Firebase 廃止) / 0023 (PII + 権限ロール) / 0024 (Secrets) / 0028 (Skill authoring) / 0030 (docs structure) の索引
-
-  requirements/                 ─ 機能要件
-    README.md                   ─ ★新規 命名規約 (REQ-NNN) + SPEC-ID 採番ルール + 状態遷移
-    template.md                 ─ ★新規 日本語テンプレ
-    REQ-NNN-<slug>.md           ─ 機能ごと
-
-  specifications/               ─ 仕様詳細 (基本設計と詳細設計をサブディレクトリで物理分離)
-    README.md                   ─ ★新規 基本設計 / 詳細設計の使い分けガイド + サブディレクトリ構造の説明
-    basic/                      ─ ★新規 基本設計サブディレクトリ
-      template.md               ─ ★新規 基本設計テンプレ (§4.6.4、Acceptance criteria + SPEC-NNN 採番、Mermaid graph/sequence/state/erDiagram)
-      SPEC-<id>-<slug>.md       ─ 機能ごとの基本設計 (frontmatter `id: SPEC-NNN-basic`、`related_detail: SPEC-NNN-detail`)
-    detail/                     ─ ★新規 詳細設計サブディレクトリ
-      template.md               ─ ★新規 詳細設計テンプレ (§4.6.5、モジュール配置 + 状態遷移 + シーケンス + 論理スキーマ、コード断片禁止)
-      SPEC-<id>-<slug>.md       ─ 機能ごとの詳細設計 (frontmatter `id: SPEC-NNN-detail`、`related_basic: SPEC-NNN-basic`)
-
-  adr/                          ─ Architecture Decision Records (起票基準は ADR 0001 と .claude/rules/adr.md に明文化)
-    README.md                   ─ ADR 起票基準と運用ガイド (判断フロー図、ADR にすべき例/他の方法にすべき例)
-    template.md                 ─ MADR + 日本語化された雛形 (巻末に「ADR 化すべき例」「他の記録方法にすべき例」を列挙)
-    0001-record-architecture-decisions.md                       ─ ADR 運用基準・書式・起票判断フロー (本計画 4.5 節を要約)
-    0002-app-architecture-cmp-viewmodel-nav3.md
-    0003-module-structure-feature-first.md
-    0004-test-strategy-and-coverage.md                          ─ テスト戦略総論 (三層指標へのインデックス)
-    0005-decompose-removal.md
-    0006-i18n-compose-resources.md
-    0007-imasparql-sync-upstream-driven.md
-    0008-user-data-backend-sqlite-litestream-r2.md
-    0009-backend-hosting-cloud-run.md                           ─ Backend ホスティングは Cloud Run、代替候補 Koyeb、Cloudflare Containers は $5/月で不採用
-    0010-idol-master-sqlite-in-repo.md
-    0011-auth-stack-migration-from-firebase-to-gis.md           ─ ★統合 (旧 0011 Firebase 廃止 + 旧 0021 GIS 統一)。認証スタック転換を 1 ADR で表裏一体に記録、dev.gitlive:firebase-* と core/network/{auth,firestore} を撤去し全 target で GIS に統一、Backend で JWKS 検証
-    0012-remove-js-app.md
-    0013-line-branch-coverage-100-percent.md
-    0014-imasparql-local-docker-fuseki.md
-    0015-mutation-testing-pitest.md
-    0016-spec-coverage-traceability.md
-    0017-harness-loop-local-polling.md
-    0018-implementation-workflow.md                             ─ implementation-workflow Skill の 10 フェーズ設計 (Phase 0 worktree 作成 / Phase 9 worktree 削除を含む、Generator 側)
-    0019-code-review-aspects-coordinator.md                     ─ code-reviewer Skill の 8 aspect + Coordinator 設計 (Evaluator 側)
-    0020-pii-protection-and-permission-roles.md
-    0021-secrets-management-policy.md
-    0022-cloudflare-pages-and-r2.md                             ─ 静的配信は Cloudflare Pages、Litestream バックアップ先は R2。Cloud Run (ADR 0009) と組み合わせてハイブリッドホスティングを構成
-    0023-ui-design-freeze-with-visual-regression.md             ─ ★統合 (旧 0025 UI 凍結三本柱 + 旧 0026 Roborazzi)。DESIGN.md + UI Inventory + Roborazzi baseline、Compose Desktop で commonMain を screenshot、解像度マトリックス (mobile + PC 16:9) × Light/Dark、wasmJs 未対応への対処
-    0024-mcp-servers-jetbrains-context7-cloudflare.md           ─ JetBrains MCP + Context7 MCP + Cloudflare MCP の採用、GitHub MCP は gh CLI で代替、Sourcegraph / Serena MCP は不採用、Figma / Sentry は将来検討
-    0025-skill-authoring-with-skill-creator.md                  ─ Skill 作成は example-skills:skill-creator を経由、Anthropic Complete Guide 準拠 (description=trigger, Gotchas 必須, MUST/ALWAYS/NEVER 禁止)
-    0026-harness-evolution-from-external-research.md            ─ 外部研究 / ベストプラクティス駆動の改善ループ、手動起動のみ、harness-meta (内部 KPT) と二系統補完
-    0027-documentation-structure-and-language.md                ─ ★統合 (旧 0030 documentation-structure + 旧 0020 template-language)。AI 駆動実装の docs 構造 + 命名規約 + 5 行 summary + lazy-load + **ハーネスを構成する Markdown は全て日本語で記述する** 方針
-    # 統合・削除の履歴
-    #   旧 0004 state-and-uiaction-conventions     → .claude/rules/{viewmodel,ui-state}.md に統合
-    #   旧 0011 firebase-removal-complete           → 新 0011 (GIS と統合)
-    #   旧 0020 template-language-japanese          → 新 0027 (documentation-structure と統合)
-    #   旧 0021 gis-unified-authentication          → 新 0011 (Firebase 廃止と統合)
-    #   旧 0025 ui-design-snapshot-before-refactor  → 新 0023 (Roborazzi と統合)
-    #   旧 0026 visual-regression-testing-roborazzi → 新 0023 (UI 凍結三本柱と統合)
-    #   旧 0026 permission-roles-owner-only         → 新 0020 内のセクション
-    #   旧 0030 documentation-structure-for-ai-autonomy → 新 0027 (日本語化方針と統合)
-    # 一度統合したが取り消したもの (現在は独立維持)
-    #   旧 0009 (Cloud Run) と 旧 0022 (Cloudflare Pages + R2) は独立 ADR (ベンダー別、片方の変更が他方に波及しない)
-    #   旧 0018 (implementation-workflow) と 旧 0019 (code-reviewer) は独立 ADR (各論が大きく独立 ADR の方が読みやすい)
-  epics/                        ─ 複数 PR の取り組み (1 epic = 1 ディレクトリ)
+  README.md                   ★
+  glossary.md                 ★
+  codebase-map.md             ★
+  traceability.md             ★
+  architecture/               ★
+    overview.md
+    layers.md                 ★
+    data-flow.md              ★
+    domain-model.md           ★
+    state-machines.md         ★
+    sequences.md              ★
+    infrastructure.md         ★
+  api/                        ★
+    README.md
+    colormaster-api.yaml
+    auth.md
+    idols.md
+    me.md
+  security/                   ★
+    README.md
+  requirements/
+    README.md                 ★
+    template.md               ★
+    REQ-NNN-<slug>.md
+  specifications/             ★
+    README.md                 ★
+    basic/                    ★
+      template.md             ★
+      SPEC-<id>-<slug>.md
+    detail/                   ★
+      template.md             ★
+      SPEC-<id>-<slug>.md
+  adr/
+    README.md
+    template.md
+    0001-0027 ─ 個別 ADR (詳細は §4.0.3)
+  epics/
     INDEX.md
     template/
-      README.md
-      roadmap.md                ─ Epic 配下の進捗・完了根拠・保留事項・障壁・着手順変更履歴。`roadmap-tracker` Skill が Epic 配下 PR と Epic 内の progress.md / decisions.md / open-questions.md を統合して更新 (フォーマットは `docs/harness/roadmap.md` と共通テンプレート、Plan ファイル単体は走査対象外)
-      open-questions.md
-      decisions.md
-      progress.md
     EPIC-000-harness-foundation/
-      README.md
-      roadmap.md
-      open-questions.md
-      decisions.md
-      progress.md
     archive/
-  plans/                        ─ 単一 PR の取り組み (1 plan = 1 ファイル)
+  plans/
     INDEX.md
     template.md
     archive/
-  harness/                      ─ ハーネス本体に関するドキュメント
-    plan.md                     ─ 本ドキュメント
-    roadmap.md                  ─ ★新規 全体ロードマップ (plan.md 由来の B0/A1-A10/C1-C10 等のフェーズ項目と Epic の進捗一覧、完了根拠、保留事項、技術的障壁と回避策、着手順変更履歴)。`roadmap-tracker` Skill が plan.md / docs/epics を入力に更新 (一方向ミラー、逆同期はしない、**Plan 単体は 1 PR 完結のため追跡対象外**)
+  harness/
+    plan.md                   (本ドキュメント)
+    roadmap.md                ★
     overview.md
     workflow.md
     skills.md
     kpt-template.md
-    learnings/                  ─ PR ごとの KPT 出力 (1 PR = 1 ファイル、Single Source of Truth)
-      YYYY-MM-DD-pr-NNN.md      ─ pr-retrospective が生成、harness-meta が "feedback" セクションを追記
-    evolution-proposals/        ─ ★新規 harness-evolution が生成する外部研究駆動の改善提案
-      INDEX.md
-      YYYY-MM-DD.md             ─ 1 実行 = 1 ファイル、出典 URL + 引用日付 + 構造化改善案 (採用 → Plan/EPIC 起票へリンク)
+    learnings/                ─ YYYY-MM-DD-pr-NNN.md
+    evolution-proposals/      ★ ─ INDEX.md, YYYY-MM-DD.md
   runbooks/
-    local-development.md        ─ ★新規 環境構築 (JDK / Gradle / IntelliJ 2025.2+ / Docker / Node.js / wrangler / gcloud / Roborazzi 等の前提環境 + setup 手順)
-    local-imasparql.md          ─ Fuseki Docker でローカル im@sparql 起動 (A8 で本格化)
-    sync-imasparql.md           ─ 同期パイプライン操作・手動再実行・失敗対応
-    release.md                  ─ Cloud Run + Cloudflare Pages + R2 デプロイ手順 (B0 骨格、C7 で本格化)
-    secrets-rotation.md         ─ R2 token / GIS Client Secret 等のローテーション履歴
-    mcp-setup.md                ─ JetBrains / Context7 / Cloudflare MCP の接続手順
-    testing.md                  ─ ★新規 三層指標の運用 + Roborazzi baseline 操作
-    i18n.md                     ─ ★新規 composeResources 運用、文言 ID 命名、locale 追加手順
-    troubleshooting.md          ─ (将来追加) 既知問題 / エラーカタログ / FAQ
-  design/                       ─ ★新規 UI/UX デザインの現状記録 (ADR 0023 で定義)
-    README.md                   ─ DESIGN.md / Inventory / Baseline の運用ガイドと参照リンク
-    inventory/
-      INDEX.md
-      screens/                  ─ 画面ごと (home.md, search.md, preview.md, myidols.md, ...)
-      components/               ─ コンポーネントごと (idol-card.md, brand-chip.md, ...)
-      states/                   ─ 状態別パターン (empty.md, loading.md, error.md, ...)
-      flows/                    ─ ユーザーフロー (login.md, add-favorite.md, ...)
-      screenshots/              ─ Roborazzi が生成する baseline PNG 群
-        <composable>-mobile-light.png
-        <composable>-mobile-dark.png
-        <composable>-desktop-light.png
-        <composable>-desktop-dark.png
+    local-development.md      ★
+    local-imasparql.md
+    sync-imasparql.md
+    release.md
+    secrets-rotation.md
+    mcp-setup.md
+    testing.md                ★
+    i18n.md                   ★
+    troubleshooting.md
+  design/                     ★
+    README.md
+    inventory/                ─ INDEX.md, screens/, components/, states/, flows/, screenshots/
 ```
+
+#### 4.0.2 トップレベル / 主要ディレクトリの責務
+
+| パス | 状態 | 責務 | 関連 ADR / rules |
+|---|---|---|---|
+| `DESIGN.md` (repo root) | ★新規 | Google Stitch 標準準拠の design tokens (3 階層、上部 machine-readable) + Rationale (下部 human-readable、アクセシビリティ含む) | ADR 0023 |
+| `CHANGELOG.md` | (将来) | 運用後追加、`dependency-upgrade` Skill が更新 | — |
+| `docs/README.md` | ★新規 | AI 用エントリポイント、全 docs 索引 + 推奨読み順 (CLAUDE.md → このファイル → 関連ディレクトリ) | ADR 0027 / `docs-structure.md` |
+| `docs/glossary.md` | ★新規 | ドメイン用語集 (im@sparql / RDF / アイドル / ブランド / カラー / 担当 / 推し / SPARQL prefix 等。日本語 + 英訳 + 関連リンク) | ADR 0027 |
+| `docs/codebase-map.md` | ★新規 | 主要パス → 責務 / 関連 SPEC-ID / 関連 ADR の対応表 (rules-index と相補) | ADR 0027 |
+| `docs/traceability.md` | ★新規 | Plan ⇄ Epic ⇄ ADR ⇄ Spec ⇄ 実装 のクロスリンク表。A6 で Gradle カスタムタスクによる自動生成導入 | §5.2 / §6.2 A6 |
+| `docs/architecture/` | ★大幅拡充 | モジュール依存 / 層別責務 / データフロー / ドメインモデル / 状態遷移 / シーケンス / インフラ構成図の集合 (旧 overview.md 1 つから 7 ファイルに分割) | ADR 0002, 0003 |
+| `docs/api/` | ★新規 | API 全体像 + OpenAPI 3.1 (`colormaster-api.yaml`) + auth / idols / me 各エンドポイント詳細 | ADR 0011 / `code-reviewer` spec-conformance aspect |
+| `docs/security/README.md` | ★新規 | ADR 0011 / 0020 / 0021 / 0024 / 0025 / 0027 の索引 | — |
+| `docs/requirements/` | 既存 | 機能要件 (REQ-NNN)、`template.md` + 機能ごとの REQ ファイル | ADR 0027 / §4.6.3 |
+| `docs/specifications/` | ★新規構造 | 仕様詳細を `basic/` (基本設計) と `detail/` (詳細設計) のサブディレクトリで物理分離。frontmatter `related_basic` / `related_detail` で双方向リンク | ADR 0027 / §4.6 |
+| `docs/adr/` | 既存 | Architecture Decision Records。起票基準は ADR 0001 と `.claude/rules/adr.md` に明文化 | ADR 0001 / §4.5 |
+| `docs/epics/` | 既存 | 複数 PR の取り組み (1 epic = 1 ディレクトリ、`README.md` / `roadmap.md` / `open-questions.md` / `decisions.md` / `progress.md`) | §4.1 / §4.4 |
+| `docs/plans/` | 既存 | 単一 PR の取り組み (1 plan = 1 ファイル) | §4.1 |
+| `docs/harness/` | 既存 | ハーネス本体に関するドキュメント (plan.md / roadmap.md / overview / workflow / skills / kpt-template / learnings / evolution-proposals) | §5 |
+| `docs/harness/roadmap.md` | ★新規 | 全体ロードマップ (plan.md 由来の B0/A1-A10/C1-C10 等のフェーズ項目と Epic の進捗一覧、完了根拠、保留事項、技術的障壁と回避策、着手順変更履歴)。`roadmap-tracker` Skill が plan.md / docs/epics を入力に更新 (一方向ミラー、Plan 単体は対象外) | §5.3 / `roadmap.md` rule |
+| `docs/harness/evolution-proposals/` | ★新規 | `harness-evolution` Skill が生成する外部研究駆動の改善提案 (出典 URL + 引用日付 + 構造化改善案) | ADR 0026 |
+| `docs/runbooks/` | 既存 | 環境構築 / 同期 / デプロイ / secrets ローテーション / MCP セットアップ / テスト / i18n / troubleshooting の手順書 | — |
+| `docs/design/` | ★新規 | UI/UX デザインの現状記録 (DESIGN.md / Inventory / Baseline)。`inventory/` 配下に screens / components / states / flows / screenshots (Roborazzi 生成 PNG) | ADR 0023 |
+
+#### 4.0.3 ADR 一覧 (0001-0027)
+
+| ADR | 状態 | 内容 |
+|---|---|---|
+| 0001 | 既存 | ADR 運用基準・書式・起票判断フロー (本計画 §4.5 を要約) |
+| 0002 | 既存 | Compose Multiplatform + 共通 ViewModel + Navigation 3 |
+| 0003 | 既存 | モジュール構造 feature-first |
+| 0004 | 既存 | テスト戦略総論 (三層指標へのインデックス) |
+| 0005 | 既存 | Decompose 撤去 |
+| 0006 | 既存 | i18n compose-multiplatform-resources |
+| 0007 | 既存 | im@sparql upstream-driven 同期 |
+| 0008 | 既存 | ユーザーデータ Backend SQLite + Litestream + R2 |
+| 0009 | 既存 | Backend ホスティングは Cloud Run、代替候補 Koyeb、Cloudflare Containers は $5/月で不採用 |
+| 0010 | 既存 | アイドル情報マスタ SQLite を repo 内に commit |
+| 0011 | ★統合 | 認証スタック転換 (旧 Firebase 廃止 + 旧 GIS 統一)。`dev.gitlive:firebase-*` と `core/network/{auth,firestore}` を撤去し全 target で GIS 統一、Backend で JWKS 検証 |
+| 0012 | 既存 | js/app 撤去 |
+| 0013 | 既存 | Line/Branch coverage 段階達成 (§3.10 / §1.2 参照) |
+| 0014 | 既存 | im@sparql ローカル Docker (Apache Jena Fuseki) |
+| 0015 | 既存 | Mutation testing (PITest) |
+| 0016 | 既存 | Spec coverage / `@Spec` annotation トレーサビリティ |
+| 0017 | 既存 | ハーネスループのローカル Claude Code ポーリング駆動 (GitHub Actions で Claude API 呼ばない) |
+| 0018 | 既存 | `implementation-workflow` Skill の 10 フェーズ設計 (Phase 0 worktree / Phase 9 cleanup、Generator 側) |
+| 0019 | 既存 | `code-reviewer` Skill の 8 aspect + Coordinator 設計 (Evaluator 側) |
+| 0020 | 既存 | PII 保護と権限ロール |
+| 0021 | 既存 | Secrets 管理ポリシー |
+| 0022 | 既存 | Cloudflare Pages + R2。Cloud Run (ADR 0009) と組み合わせてハイブリッドホスティングを構成 |
+| 0023 | ★統合 | UI 凍結三本柱 (DESIGN.md + UI Inventory + Roborazzi baseline、Compose Desktop で commonMain を screenshot、解像度マトリックス × Light/Dark、wasmJs 未対応への対処) |
+| 0024 | 既存 | MCP サーバ採用 (JetBrains + Context7 + Cloudflare)、GitHub MCP は `gh` CLI で代替、Sourcegraph / Serena は不採用、Figma / Sentry は将来検討 |
+| 0025 | 既存 | Skill 作成は `example-skills:skill-creator` 経由、Anthropic Complete Guide 準拠 (description=trigger、Gotchas 必須、MUST/ALWAYS/NEVER 禁止) |
+| 0026 | 既存 | `harness-evolution` Skill (外部研究駆動の改善ループ、手動起動のみ、`harness-meta` (内部 KPT) と二系統補完) |
+| 0027 | ★統合 | docs 構造 + 命名規約 + 5 行 summary + lazy-load + ハーネスを構成する Markdown は全て日本語で記述する方針 |
+
+##### 統合・削除の履歴
+
+| 旧 ADR | 統合先 / 削除理由 |
+|---|---|
+| 旧 0004 state-and-uiaction-conventions | `.claude/rules/{viewmodel,ui-state}.md` に統合 |
+| 旧 0011 firebase-removal-complete | 新 0011 (GIS と統合) |
+| 旧 0020 template-language-japanese | 新 0027 (documentation-structure と統合) |
+| 旧 0021 gis-unified-authentication | 新 0011 (Firebase 廃止と統合) |
+| 旧 0025 ui-design-snapshot-before-refactor | 新 0023 (Roborazzi と統合) |
+| 旧 0026 visual-regression-testing-roborazzi | 新 0023 (UI 凍結三本柱と統合) |
+| 旧 0026 permission-roles-owner-only | 新 0020 内のセクション |
+| 旧 0030 documentation-structure-for-ai-autonomy | 新 0027 (日本語化方針と統合) |
+
+**一度統合したが取り消したもの (現在は独立維持)**:
+
+- 旧 0009 (Cloud Run) と 旧 0022 (Cloudflare Pages + R2): 独立 ADR (ベンダー別、片方の変更が他方に波及しない)
+- 旧 0018 (implementation-workflow) と 旧 0019 (code-reviewer): 独立 ADR (各論が大きく独立 ADR の方が読みやすい)
+
+#### 4.0.4 Epic / Plan / harness 配下のファイル一覧
+
+| パス | 状態 | 責務 |
+|---|---|---|
+| `docs/epics/template/roadmap.md` | 既存 | Epic 配下の進捗・完了根拠・保留事項・障壁・着手順変更履歴。`roadmap-tracker` Skill が Epic 配下 PR と Epic 内の progress.md / decisions.md / open-questions.md を統合して更新 (Plan ファイル単体は走査対象外) |
+| `docs/harness/learnings/YYYY-MM-DD-pr-NNN.md` | 既存 | PR ごとの KPT 出力 (1 PR = 1 ファイル、Single Source of Truth)。`pr-retrospective` が生成、`harness-meta` が "feedback" セクションを追記 |
+| `docs/harness/evolution-proposals/YYYY-MM-DD.md` | ★新規 | 1 実行 = 1 ファイル、出典 URL + 引用日付 + 構造化改善案 (採用 → Plan/EPIC 起票へリンク) |
+
+#### 4.0.5 runbooks / design/inventory 詳細
+
+| パス | 状態 | 責務 |
+|---|---|---|
+| `docs/runbooks/local-development.md` | ★新規 | 環境構築 (JDK / Gradle / IntelliJ 2025.2+ / Docker / Node.js / wrangler / gcloud / Roborazzi 等の前提環境 + setup 手順) |
+| `docs/runbooks/local-imasparql.md` | 既存 | Fuseki Docker でローカル im@sparql 起動 (A8 で本格化) |
+| `docs/runbooks/sync-imasparql.md` | 既存 | 同期パイプライン操作・手動再実行・失敗対応 |
+| `docs/runbooks/release.md` | 既存 | Cloud Run + Cloudflare Pages + R2 デプロイ手順 (B0 骨格、C7 で本格化) |
+| `docs/runbooks/secrets-rotation.md` | 既存 | R2 token / GIS Client Secret 等のローテーション履歴 |
+| `docs/runbooks/mcp-setup.md` | 既存 | JetBrains / Context7 / Cloudflare MCP の接続手順 (§5.6 から詳細を移譲) |
+| `docs/runbooks/testing.md` | ★新規 | 三層指標の運用 + Roborazzi baseline 操作 |
+| `docs/runbooks/i18n.md` | ★新規 | composeResources 運用、文言 ID 命名、locale 追加手順 |
+| `docs/runbooks/troubleshooting.md` | (将来) | 既知問題 / エラーカタログ / FAQ |
+| `docs/design/README.md` | ★新規 | DESIGN.md / Inventory / Baseline の運用ガイドと参照リンク |
+| `docs/design/inventory/screens/` | ★新規 | 画面ごと (home.md, search.md, preview.md, myidols.md, ...) |
+| `docs/design/inventory/components/` | ★新規 | コンポーネントごと (idol-card.md, brand-chip.md, ...) |
+| `docs/design/inventory/states/` | ★新規 | 状態別パターン (empty.md, loading.md, error.md, ...) |
+| `docs/design/inventory/flows/` | ★新規 | ユーザーフロー (login.md, add-favorite.md, ...) |
+| `docs/design/inventory/screenshots/` | ★新規 | Roborazzi が生成する baseline PNG 群 (`<composable>-{mobile,desktop}-{light,dark}.png`) |
 
 ### 4.1 Epic と Plan の区別
 
@@ -815,101 +849,131 @@ flowchart TD
 
 ## 5. ハーネス構造 (`.claude/`)
 
-```
+#### 5.0.1 骨格
+
+```text
 .claude/
   settings.json
-  mcp.json                      ─ ★新規 MCP サーバ接続定義 (GitHub / Cloudflare、Figma は将来)
+  mcp.json                      ★
   skills/
-    harness-bootstrap/          B0 の唯一の Skill。A3 完了後に archived/ へ
-    plan-author/                B0 から導入
-    epic-author/                B0 から導入
-    roadmap-tracker/            B0 で雛形、A3 で本格化 (plan.md と Epic を入力に docs/harness/roadmap.md と docs/epics/<id>/roadmap.md を生成・更新、進捗・完了根拠・Open Questions・障壁・着手順変更履歴を一元管理、plan.md / Epic への逆同期はしない、**Plan は 1 PR 完結のため対象外**)
-    pr-retrospective/           B0 から最小版で稼働 (1 PR = 1 learning ファイル生成)
-    pr-poller/                  B0 から導入 (ローカル Claude Code 内でポーリング、未処理 PR を検出して pr-retrospective を起動)
-    implementation-workflow/    B0 で雛形、A3 で本格化 (worktree 作成 → 要件読込 → 実装 → Lint/Test → AI Review → マージ判断 → レトロ起動 → worktree 削除 を 10 フェーズでオーケストレート、Phase 0 / 9 で並行実装の物理分離)
-    code-reviewer/              B0 で雛形、A3 で本格化 (独立 Evaluator、★8 aspect 並列レビュー + Coordinator で構造化コメント)
-    ui-snapshot/                B0 で雛形、A10 で本格化 (Preview スキャン、Roborazzi baseline 生成、DESIGN.md / UI Inventory 起草)
-    feature-request/            A3 で完成 (要件・仕様生成と Plan/Epic 起票まで、実装はしない)
-    bug-fix/                    A3 で完成 (再現・ルートコーズ・仕様補強・Plan 起票まで)
-    refactor/                   A3 で完成 (影響分析・Plan/Epic 起票まで)
-    dependency-upgrade/         A3 で完成 (pr-poller がローカルで Renovate PR を検出して起動)
-    adr-author/                 A3 で完成
-    harness-meta/               A3 で完成 (改修 PR 起票 + 元 learning ファイルへの feedback 追記、内部 KPT 駆動)
-    harness-evolution/          A3 で完成 (★新規、外部研究 / ベストプラクティス駆動、手動起動のみ)
-    # skill-creator は本プロジェクトには配置しない (Claude Code ユーザースコープ example-skills:skill-creator を参照)
-    archived/                   引退した Skill (harness-bootstrap など)
+    harness-bootstrap/
+    plan-author/
+    epic-author/
+    roadmap-tracker/            ★
+    pr-retrospective/
+    pr-poller/
+    implementation-workflow/
+    code-reviewer/
+    ui-snapshot/
+    feature-request/
+    bug-fix/
+    refactor/
+    dependency-upgrade/
+    adr-author/
+    harness-meta/
+    harness-evolution/          ★
+    archived/
   rules/
     rules-index.md
     # 計画・記録
-    plan.md
-    epic.md
-    roadmap.md                  ─ ★新規 `roadmap-tracker` Skill の操作規約。ロードマップ Markdown の構造 (frontmatter / 項目一覧 / 完了根拠 / 着手順とブロック / 保留事項 / 障壁と回避策 / 着手順変更履歴)、ステータス語彙 (proposed/in-progress/completed/blocked/abandoned)、入力スコープ (plan.md と Epic のみ、**Plan 単体は対象外**)、Gradle カスタムタスク (commonmark-java + SnakeYAML、§5.2) による項目 ID 実在検証、plan.md / Epic への逆同期禁止を明文化
-    adr.md                      ─ ADR 起票基準 / 採番 / ステータス遷移 / ADR 化すべき例・他の記録方法にすべき例の列挙 (4.5 節を要約)
+    plan.md, epic.md, roadmap.md (★), adr.md
     # アーキテクチャ層別
-    viewmodel.md
-    ui-state.md
-    composable.md
-    navigation.md
-    repository.md
-    network-client.md
+    viewmodel.md, ui-state.md, composable.md, navigation.md, repository.md, network-client.md
     # 横断的関心事
-    naming.md
-    error-handling.md
-    logging.md
-    i18n.md
-    wasm-compat.md
-    firebase-boundary.md
+    naming.md, error-handling.md, logging.md, i18n.md, wasm-compat.md, firebase-boundary.md
     # ファイルタイプ別 / テスト
-    gradle.md
-    kotlin-test.md
-    screenshot-test.md         ─ Roborazzi 運用規約: JVM (Compose Desktop) + Android、解像度マトリックス (mobile + PC 16:9) × Light/Dark、wasmJs 固有 actual は対象外
-    coverage-100.md            ─ Line/Branch 100% 規約 (指標 A)
-    spec-traceability.md       ─ @Spec annotation / Spec coverage 規約 (指標 B)
-    mutation-testing.md        ─ PITest 運用規約 (指標 C)
-    test-paired-class.md
-    sql-delight.md
-    sparql.md
-    # UI/UX デザイン (新規)
-    design-tokens.md           ─ DESIGN.md 構造 (Primitive/Semantic/Component 3 階層)、hex/sp/dp ハードコード禁止
-    ui-snapshot.md             ─ Preview + screenshot baseline 維持、baseline 更新は human approve 必須
-    ui-inventory.md            ─ docs/design/inventory/ のファイル構造と更新規約 (screens/components/states/flows)
-    behavior-preservation.md   ─ リファクタ時の振る舞い維持原則 (visual regression + spec-conformance 両輪)
-    # MCP (新規)
-    mcp-usage.md               ─ MCP サーバ (GitHub / Cloudflare / 将来 Figma) の使い分け、認証情報の取り扱い、Skill 別の使用パターン
+    gradle.md, kotlin-test.md, screenshot-test.md, coverage-100.md (★),
+    spec-traceability.md (★), mutation-testing.md (★), test-paired-class.md,
+    sql-delight.md, sparql.md
+    # UI/UX デザイン
+    design-tokens.md (★), ui-snapshot.md (★), ui-inventory.md (★), behavior-preservation.md (★)
+    # MCP
+    mcp-usage.md (★)
     # プロセス
-    pr-template.md
-    commit-message.md
-    branch-naming.md            ─ ブランチ命名規約。`<種別>/<ID>-<slug>` 形式: `feature/PLAN-NNN-<slug>` (機能追加 Plan) / `bugfix/PLAN-NNN-<slug>` (バグ修正) / `refactor/PLAN-NNN-<slug>` (リファクタ) / `epic/EPIC-NNN-<slug>-pr-NN` (Epic 配下の PR 連番) / `harness/<purpose>` (B0 等のハーネス自体) / `chore/<purpose>` (CI / 依存更新等)。**worktree path の `<branch-slug>` はブランチ名のスラッシュをハイフン化** した形 (例: `feature/PLAN-007-add-search` → `../<repo-name>-worktrees/feature-PLAN-007-add-search`)
+    pr-template.md, commit-message.md, branch-naming.md
     # ハーネス改善ループ
-    retrospective-format.md    ─ pr-retrospective が出力する learning ファイルの構造化フォーマット
-    pr-poller.md               ─ ローカルポーリング規約 (CronCreate/ScheduleWakeup、未処理 PR 判定、Renovate ラベル PR の検出と dependency-upgrade 起動も担当)
-    harness-meta-criteria.md   ─ 改修 PR 採用/見送り/撤去の判定基準 (Anthropic harness 原則を明文化)
-    skill-authoring.md         ─ ★新規 Skill 作成は example-skills:skill-creator を経由、SKILL.md 構造 (description trigger / Gotchas 必須 / MUST/ALWAYS/NEVER 禁止) を Anthropic Complete Guide 準拠
-    harness-evolution.md       ─ ★新規 外部情報源ホワイトリスト、出力フォーマット、harness-meta との責務分離、出典 URL + 引用日付の必須化、Context7 MCP で API 引用検証
-    docs-structure.md          ─ ★新規 docs/ の歩き方 (AI が読む順序)、各ディレクトリの責務、命名規約、5 行 summary + lazy-load 構造、code-reviewer / implementation-workflow が参照する場面
+    retrospective-format.md, pr-poller.md, harness-meta-criteria.md,
+    skill-authoring.md (★), harness-evolution.md (★), docs-structure.md (★)
     # 実装ワークフロー
-    implementation-workflow.md  ─ 10 フェーズの手順 (Phase 0 worktree 作成 / Phase 1-5 実装 + Draft PR / Phase 6 code-reviewer / Phase 7 merge / Phase 8 retrospective + roadmap-tracker 起動 / Phase 9 worktree 削除)、fix loop の上限 (デフォルト 3 回)、Phase 失敗時の Plan 修正提案、worktree 未マージ検知時の人間通知
-    code-reviewer-aspects.md    ─ 8 aspect (spec-conformance / test-quality / architecture / security / performance / code-quality / visual-regression / design-tokens) の binary eval checklist、coordinator の構造化コメント形式
-    merge-readiness.md          ─ Merge 可否の判定基準 (CI green + 全 aspect pass + 人間 approve、auto-merge 禁止)
-    pr-draft-policy.md          ─ Draft → Ready for review の昇格条件
-    spec-living-sync.md         ─ 実装中の仕様変更時の双方向同期手順 (Spec Kit / Intent 由来)
+    implementation-workflow.md, code-reviewer-aspects.md, merge-readiness.md,
+    pr-draft-policy.md, spec-living-sync.md
     # ドキュメント表記
-    markdown.md                 ─ Markdown 表記規約 (テンプレート言語ポリシーを含む)
-    template-language.md        ─ ★新規 全テンプレート Markdown は日本語で記述 (ADR 0027 を要約)
+    markdown.md, template-language.md (★)
     # 同期 / Backend
-    sync-job.md
-    sqlite-data-file.md
-    backend-auth.md             ─ GIS ID Token 検証 + JWKS + uid 抽出 規約
-    cloud-run-deploy.md
-    removed-modules.md
+    sync-job.md, sqlite-data-file.md, backend-auth.md, cloud-run-deploy.md, removed-modules.md
     # セキュリティ / 個人情報
-    pii.md                      ─ ★新規 PII の定義・最小化・redaction 強制
-    secrets.md                  ─ ★新規 Secrets 管理 (.env / GitHub Secrets / Secret Manager)
-    db-protection.md            ─ ★新規 users.db の commit / イメージ焼込み禁止、R2 private、access policy
-    no-firebase.md              ─ ★新規 (旧 firebase-boundary.md を改名) Firebase 系 import 禁止
-    cloudflare-pages.md         ─ ★新規 Cloudflare Pages デプロイ規約
-    r2-litestream.md            ─ ★新規 Litestream replicate / restore、R2 endpoint、TTL ローテーション
+    pii.md (★), secrets.md (★), db-protection.md (★), no-firebase.md (★),
+    cloudflare-pages.md (★), r2-litestream.md (★)
 ```
+
+#### 5.0.2 Skill 一覧
+
+| Skill | 状態 | 導入時期 | 概要 |
+|---|---|---|---|
+| `harness-bootstrap` | 既存 | B0 のみ、A3 完了後に `archived/` | A1〜A10 の汎用起票 Skill。タスク種別判別は入力パスから自動判定 (§5.3 参照) |
+| `plan-author` | 既存 | B0 から | `docs/plans/PLAN-NNN-*.md` を 1 ファイル生成、INDEX.md 更新 |
+| `epic-author` | 既存 | B0 から | `docs/epics/EPIC-NNN-<slug>/` を template から生成、INDEX.md 更新 |
+| `roadmap-tracker` | ★新規 | B0 雛形 / A3 本格化 | plan.md と Epic を入力に `docs/harness/roadmap.md` と `docs/epics/<id>/roadmap.md` を生成・更新。進捗・完了根拠・Open Questions・障壁・着手順変更履歴を一元管理。plan.md / Epic への逆同期はしない。**Plan は 1 PR 完結のため対象外** |
+| `pr-retrospective` | 既存 | B0 最小版 | 1 PR = 1 learning ファイル生成 |
+| `pr-poller` | 既存 | B0 から | ローカル Claude Code 内でポーリング、未処理 PR を検出して `pr-retrospective` を起動。Renovate ラベル PR で `dependency-upgrade` を起動。`.claude/locks/pr-poller.lock` で排他制御 (3 起動経路に対応) |
+| `implementation-workflow` | 既存 | B0 雛形 / A3 本格化 | 10 フェーズ (Phase 0 worktree → Phase 1-5 実装 + Draft PR → Phase 6 review → Phase 7 merge → Phase 8 retrospective + roadmap → Phase 9 worktree 削除) |
+| `code-reviewer` | 既存 | B0 雛形 / A3 本格化 | 独立 Evaluator、8 aspect をローカル Claude Code のサブエージェントで並列実行 + Coordinator (Claude API 直接呼び出しはしない、R-37) |
+| `ui-snapshot` | 既存 | B0 雛形 / A10 本格化 | Preview スキャン、Roborazzi baseline 生成、DESIGN.md / UI Inventory 起草 |
+| `feature-request` | 既存 | A3 で完成 | 要件・仕様生成と Plan/Epic 起票まで、実装はしない |
+| `bug-fix` | 既存 | A3 で完成 | 再現・ルートコーズ・仕様補強・Plan 起票まで |
+| `refactor` | 既存 | A3 で完成 | 影響分析・Plan/Epic 起票まで |
+| `dependency-upgrade` | 既存 | A3 で完成 | `pr-poller` がローカルで Renovate PR を検出して起動 |
+| `adr-author` | 既存 | A3 で完成 | ADR テンプレに沿って起草、関連 ADR をリンク |
+| `harness-meta` | 既存 | A3 で完成 | 改修 PR 起票 + 元 learning ファイルへの feedback 追記、内部 KPT 駆動 |
+| `harness-evolution` | ★新規 | A3 で完成 | 外部研究 / ベストプラクティス駆動、手動起動のみ |
+| `archived/` | 既存 | — | 引退した Skill (`harness-bootstrap` など) を移動 |
+| `example-skills:skill-creator` | (外部) | — | Claude Code ユーザースコープを参照、本プロジェクトには配置しない |
+
+#### 5.0.3 rules 一覧 (★ = 新規追加)
+
+| 区分 | ファイル | 状態 | 主な責務 |
+|---|---|---|---|
+| 計画・記録 | `rules-index.md` | 既存 | rules の索引 |
+|  | `plan.md` | 既存 | Plan ファイルの命名規約 / 状態遷移 |
+|  | `epic.md` | 既存 | Epic ディレクトリの構成 / 状態遷移 |
+|  | `roadmap.md` | ★新規 | `roadmap-tracker` Skill の操作規約。ロードマップ Markdown 構造 / ステータス語彙 / 入力スコープ (plan.md と Epic のみ) / Gradle カスタムタスクによる項目 ID 実在検証 / 逆同期禁止 |
+|  | `adr.md` | 既存 | ADR 起票基準 / 採番 / ステータス遷移 / 起票すべき例・他の記録方法にすべき例 (§4.5 を要約) |
+| アーキテクチャ層別 | `viewmodel.md`, `ui-state.md`, `composable.md`, `navigation.md`, `repository.md`, `network-client.md` | 既存 | 層ごとの実装規約 |
+| 横断的関心事 | `naming.md`, `error-handling.md`, `logging.md`, `i18n.md`, `wasm-compat.md`, `firebase-boundary.md` | 既存 | 横断的なコーディング規約 |
+| ファイルタイプ別 / テスト | `gradle.md`, `kotlin-test.md`, `sql-delight.md`, `sparql.md` | 既存 | 各ファイル種別の規約 |
+|  | `screenshot-test.md` | 既存 | Roborazzi 運用規約 (JVM Compose Desktop + Android、解像度 × Light/Dark、wasmJs 固有 actual は対象外) |
+|  | `coverage-100.md` | ★新規 | Line/Branch 段階達成規約 (指標 A、§3.10 参照) |
+|  | `spec-traceability.md` | ★新規 | `@Spec` annotation / Spec coverage 規約 (指標 B) |
+|  | `mutation-testing.md` | ★新規 | PITest 運用規約 (指標 C) |
+|  | `test-paired-class.md` | 既存 | 実装 ⇄ テストクラスペアリング検証 |
+| UI/UX デザイン | `design-tokens.md` | ★新規 | DESIGN.md 構造 (Primitive/Semantic/Component 3 階層)、hex/sp/dp ハードコード禁止 |
+|  | `ui-snapshot.md` | ★新規 | Preview + screenshot baseline 維持、baseline 更新は human approve 必須 |
+|  | `ui-inventory.md` | ★新規 | `docs/design/inventory/` のファイル構造と更新規約 |
+|  | `behavior-preservation.md` | ★新規 | リファクタ時の振る舞い維持原則 (visual regression + spec-conformance 両輪) |
+| MCP | `mcp-usage.md` | ★新規 | MCP サーバの使い分け、認証情報の取り扱い、Skill 別の使用パターン |
+| プロセス | `pr-template.md`, `commit-message.md` | 既存 | PR / コミットメッセージ規約 |
+|  | `branch-naming.md` | 既存 | ブランチ命名規約 `<種別>/<ID>-<slug>` (例: `feature/PLAN-NNN-<slug>` / `epic/EPIC-NNN-<slug>-pr-NN` / `harness/<purpose>` / `chore/<purpose>`)。worktree path の `<branch-slug>` はブランチ名のスラッシュをハイフン化 (`feature/PLAN-007-add-search` → `../<repo-name>-worktrees/feature-PLAN-007-add-search`) |
+| ハーネス改善ループ | `retrospective-format.md` | 既存 | `pr-retrospective` 出力 learning ファイルの構造化フォーマット |
+|  | `pr-poller.md` | 既存 | ローカルポーリング規約 (CronCreate / ScheduleWakeup、未処理 PR 判定、Renovate ラベル PR の検出と `dependency-upgrade` 起動、`.claude/locks/pr-poller.lock` 排他制御) |
+|  | `harness-meta-criteria.md` | 既存 | 改修 PR 採用/見送り/撤去の判定基準 (起動閾値: 未処理 learning 10 件 or 7 日経過) |
+|  | `skill-authoring.md` | ★新規 | Skill 作成は `example-skills:skill-creator` 経由、SKILL.md 構造を Anthropic Complete Guide 準拠 |
+|  | `harness-evolution.md` | ★新規 | 外部情報源ホワイトリスト、出力フォーマット、`harness-meta` との責務分離、出典 URL + 引用日付の必須化、Context7 MCP で API 引用検証 |
+|  | `docs-structure.md` | ★新規 | `docs/` の歩き方 (AI が読む順序)、各ディレクトリの責務、命名規約、5 行 summary + lazy-load 構造 |
+| 実装ワークフロー | `implementation-workflow.md` | 既存 | 10 フェーズの手順 (Phase 0 worktree / 1-5 実装 + Draft / 6 review / 7 merge / 8 retrospective + roadmap / 9 worktree 削除)、fix loop 上限 (デフォルト 3 回)、worktree 未マージ検知時の人間通知 |
+|  | `code-reviewer-aspects.md` | 既存 | 8 aspect の binary eval checklist、Coordinator の構造化コメント形式 |
+|  | `merge-readiness.md` | 既存 | Merge 可否判定 (CI green + 全 aspect pass + 人間 approve、auto-merge 禁止) |
+|  | `pr-draft-policy.md` | 既存 | Draft → Ready for review の昇格条件 |
+|  | `spec-living-sync.md` | 既存 | 実装中の仕様変更時の双方向同期手順 |
+| ドキュメント表記 | `markdown.md` | 既存 | Markdown 表記規約 (テンプレート言語ポリシーを含む) |
+|  | `template-language.md` | ★新規 | 全テンプレート Markdown は日本語で記述 (ADR 0027 を要約) |
+| 同期 / Backend | `sync-job.md`, `sqlite-data-file.md`, `cloud-run-deploy.md`, `removed-modules.md` | 既存 | Backend / 同期 / 撤去モジュールの規約 |
+|  | `backend-auth.md` | 既存 | GIS ID Token 検証 + JWKS + uid 抽出 規約 |
+| セキュリティ / 個人情報 | `pii.md` | ★新規 | PII の定義・最小化・redaction 強制 |
+|  | `secrets.md` | ★新規 | Secrets 管理 (`.env` / GitHub Secrets / Secret Manager) |
+|  | `db-protection.md` | ★新規 | `users.db` の commit / イメージ焼込み禁止、R2 private、access policy |
+|  | `no-firebase.md` | ★新規 | (旧 `firebase-boundary.md` を改名) Firebase 系 import 禁止 |
+|  | `cloudflare-pages.md` | ★新規 | Cloudflare Pages デプロイ規約 |
+|  | `r2-litestream.md` | ★新規 | Litestream replicate / restore、R2 endpoint、TTL ローテーション |
 
 ### 5.1 ルール参照の階層構造
 
