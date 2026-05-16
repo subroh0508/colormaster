@@ -360,7 +360,7 @@ AI による自動テスト生成を前提とし、テスト品質は **3 つの
 
 **実現方法**:
 
-- `docs/specifications/<id>.md` の Acceptance criteria を `SPEC-NNN-N` 形式で ID 付与
+- `docs/specifications/basic/SPEC-NNN-<slug>.md` の Acceptance criteria を `SPEC-NNN-N` 形式で ID 付与
 - テスト関数に `@Spec("SPEC-NNN-N")` annotation を付与
 - Konsist で「全 Acceptance criteria に対応する `@Spec` annotation が存在する」ことを機械検証
 - 詳細は ADR 0016、規約は `.claude/rules/spec-traceability.md`
@@ -471,7 +471,7 @@ docs/
     0015-mutation-testing-pitest.md
     0016-spec-coverage-traceability.md
     0017-harness-loop-local-polling.md
-    0018-implementation-workflow.md                             ─ implementation-workflow Skill の 8 フェーズ設計 (Generator 側)
+    0018-implementation-workflow.md                             ─ implementation-workflow Skill の 10 フェーズ設計 (Phase 0 worktree 作成 / Phase 9 worktree 削除を含む、Generator 側)
     0019-code-review-aspects-coordinator.md                     ─ code-reviewer Skill の 8 aspect + Coordinator 設計 (Evaluator 側)
     0020-pii-protection-and-permission-roles.md
     0021-secrets-management-policy.md
@@ -610,7 +610,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 - アイドル情報を Git 内 SQLite に commit、ユーザーデータは Litestream で R2 にレプリケート (ADR 0008 / 0010)
 - Line/Branch coverage は段階達成 (Phase A: 計測可能、Phase C 各 PR: 差分 100% を必達ゲート、Phase C 完了: 全体 100%) とする (ADR 0013)
 - ハーネスループをローカル Claude Code ポーリングで駆動する (GitHub Actions で Claude API を呼ばない) (ADR 0017)
-- implementation-workflow (ADR 0018) + code-reviewer (ADR 0020) の Generator/Evaluator 二段構成、code-reviewer は 8 aspect + Coordinator
+- implementation-workflow (ADR 0018) + code-reviewer (ADR 0019) の Generator/Evaluator 二段構成、code-reviewer は 8 aspect + Coordinator
 - ハーネスを構成する Markdown は全て日本語で記述する (ADR 0027 に統合、旧 0020 単独 ADR は廃止して新 0025 内のセクションに)
 - PII の DB スキーマは `uid` のみ、権限ロールは当面 owner のみ (ADR 0020)
 - UI/UX をリファクタ前に DESIGN.md + UI Inventory + Roborazzi baseline で凍結する (ADR 0023)
@@ -817,7 +817,7 @@ flowchart TD
     roadmap-tracker/            B0 で雛形、A3 で本格化 (plan.md と Epic を入力に docs/harness/roadmap.md と docs/epics/<id>/roadmap.md を生成・更新、進捗・完了根拠・Open Questions・障壁・着手順変更履歴を一元管理、plan.md / Epic への逆同期はしない、**Plan は 1 PR 完結のため対象外**)
     pr-retrospective/           B0 から最小版で稼働 (1 PR = 1 learning ファイル生成)
     pr-poller/                  B0 から導入 (ローカル Claude Code 内でポーリング、未処理 PR を検出して pr-retrospective を起動)
-    implementation-workflow/    B0 で雛形、A3 で本格化 (要件読込 → 実装 → Lint/Test → AI Review → マージ判断 → レトロ起動を 8 フェーズでオーケストレート)
+    implementation-workflow/    B0 で雛形、A3 で本格化 (worktree 作成 → 要件読込 → 実装 → Lint/Test → AI Review → マージ判断 → レトロ起動 → worktree 削除 を 10 フェーズでオーケストレート、Phase 0 / 9 で並行実装の物理分離)
     code-reviewer/              B0 で雛形、A3 で本格化 (独立 Evaluator、★8 aspect 並列レビュー + Coordinator で構造化コメント)
     ui-snapshot/                B0 で雛形、A10 で本格化 (Preview スキャン、Roborazzi baseline 生成、DESIGN.md / UI Inventory 起草)
     feature-request/            A3 で完成 (要件・仕様生成と Plan/Epic 起票まで、実装はしない)
@@ -870,7 +870,7 @@ flowchart TD
     # プロセス
     pr-template.md
     commit-message.md
-    branch-naming.md
+    branch-naming.md            ─ ブランチ命名規約。`<種別>/<ID>-<slug>` 形式: `feature/PLAN-NNN-<slug>` (機能追加 Plan) / `bugfix/PLAN-NNN-<slug>` (バグ修正) / `refactor/PLAN-NNN-<slug>` (リファクタ) / `epic/EPIC-NNN-<slug>-pr-NN` (Epic 配下の PR 連番) / `harness/<purpose>` (B0 等のハーネス自体) / `chore/<purpose>` (CI / 依存更新等)。**worktree path の `<branch-slug>` はブランチ名のスラッシュをハイフン化** した形 (例: `feature/PLAN-007-add-search` → `../<repo-name>-worktrees/feature-PLAN-007-add-search`)
     # ハーネス改善ループ
     retrospective-format.md    ─ pr-retrospective が出力する learning ファイルの構造化フォーマット
     pr-poller.md               ─ ローカルポーリング規約 (CronCreate/ScheduleWakeup、未処理 PR 判定、Renovate ラベル PR の検出と dependency-upgrade 起動も担当)
@@ -879,7 +879,7 @@ flowchart TD
     harness-evolution.md       ─ ★新規 外部情報源ホワイトリスト、出力フォーマット、harness-meta との責務分離、出典 URL + 引用日付の必須化、Context7 MCP で API 引用検証
     docs-structure.md          ─ ★新規 docs/ の歩き方 (AI が読む順序)、各ディレクトリの責務、命名規約、5 行 summary + lazy-load 構造、code-reviewer / implementation-workflow が参照する場面
     # 実装ワークフロー
-    implementation-workflow.md  ─ 8 フェーズの手順、fix loop の上限 (デフォルト 3 回)、Phase 失敗時の Plan 修正提案
+    implementation-workflow.md  ─ 10 フェーズの手順 (Phase 0 worktree 作成 / Phase 1-5 実装 + Draft PR / Phase 6 code-reviewer / Phase 7 merge / Phase 8 retrospective + roadmap-tracker 起動 / Phase 9 worktree 削除)、fix loop の上限 (デフォルト 3 回)、Phase 失敗時の Plan 修正提案、worktree 未マージ検知時の人間通知
     code-reviewer-aspects.md    ─ 8 aspect (spec-conformance / test-quality / architecture / security / performance / code-quality / visual-regression / design-tokens) の binary eval checklist、coordinator の構造化コメント形式
     merge-readiness.md          ─ Merge 可否の判定基準 (CI green + 全 aspect pass + 人間 approve、auto-merge 禁止)
     pr-draft-policy.md          ─ Draft → Ready for review の昇格条件
@@ -965,14 +965,14 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 
 | Skill | 起動契機 | 主な動作 |
 |---|---|---|
-| `harness-bootstrap` | B0 のみ。手動起動 | 専用 Skill 群が揃うまでの汎用 Skill。タスク種別 (ADR 起草 / rules 追加 / docs 拡充 / モジュール撤去 / Lint 導入) に応じた汎用手順を実行。A3 完了後に `archived/` へ |
+| `harness-bootstrap` | B0 のみ + Phase A の A1〜A10 起票時。手動起動 | 専用 Skill 群が揃うまでの汎用 Skill。**タスク種別判別** は入力 (人間指示 + 対象パス) から以下のルールで自動判定: (1) `docs/adr/*.md` を作成・更新 → ADR 起草モード、(2) `.claude/rules/*.md` を作成・更新 → rules 拡充モード、(3) `docs/{requirements,specifications,architecture,api,security,runbooks}/**` を作成・更新 → docs 拡充モード、(4) `.claude/skills/*/` を作成 → Skill 実装モード (`example-skills:skill-creator` を呼び出す)、(5) モジュールディレクトリ削除指示 → 撤去モード、(6) `build.gradle.kts` / lint 設定追加 → Lint 導入モード。複数該当時はユーザーに確認。A3 完了後に `archived/` へ移動 |
 | `plan-author` | feature-request / bug-fix / refactor が単一 PR スコープと判定 | `docs/plans/PLAN-NNN-*.md` を 1 ファイル生成、INDEX.md 更新 |
 | `epic-author` | 同上、複数 PR スコープと判定。または Plan 昇格時 | `docs/epics/EPIC-NNN-<slug>/` を template から生成、INDEX.md 更新 |
 | **`roadmap-tracker`** | (a) `epic-author` が新規 Epic を起票した直後 (**Plan は 1 PR で完結するためロードマップ追跡対象外**)、(b) `implementation-workflow` Phase 7 (Merge 後) で Epic 配下 PR / B-A-C フェーズ項目の完了根拠を登録、(c) 人間 / 他 Skill から「ロードマップ更新」「進捗可視化」「着手順入れ替え」「障壁記録」「保留事項追加」「次の推奨着手を出して」の指示 | **新規**: 入力に応じてロードマップ Markdown を生成・更新。(1) 計画 Markdown (`docs/harness/plan.md` 等) を読み取り B0/A1-A10/C1-C10 等の項目を抽出、(2) `docs/epics/EPIC-NNN-*/` を走査して frontmatter から ID/タイトル/status/**想定変更モジュール (`expected_modules`)** を読む (`docs/plans/` は走査対象外)、(3) `docs/harness/roadmap.md` または `docs/epics/<id>/roadmap.md` を更新。完了根拠は `gh pr view` で PR メタ情報を取得して PR 番号 + マージ日 + 主要ファイルパスを記録。Open Questions / 障壁 / 着手順変更履歴は append-only で蓄積。**plan.md や Epic 本体への逆同期はしない** (片方向ミラー)。<br>**(4) 並行実装容易性に基づく次の推奨着手 (top-N) を出力**: 各候補 (proposed / blocked-解除済) について、(a) 依存関係 (Mermaid gantt の `after` 句) が解決済みであること、(b) 現在 `in-progress` な項目の `expected_modules` 集合と **重複モジュールが少ない順** に並べ替えて roadmap.md の「次の推奨着手 (並行実装観点)」セクションに出力。重複が完全に無い候補が複数あれば優先度 (must/should/could) で二次ソート。`expected_modules` が未記入の候補は「並行可否不明 (要記入)」として warning 出力。詳細規約は `.claude/rules/roadmap.md` |
-| **`pr-poller`** | ローカル Claude Code 起動時 + `CronCreate` 日次スケジュール + `ScheduleWakeup` ループ | gh CLI で merged / closed PR を取得 → 既に learning ファイルがある PR を除外 → 未処理 PR があれば `pr-retrospective` を起動 → 一定期間経過 (7 日) または未処理 learning 件数閾値到達で `harness-meta` を起動。**さらに open PR で `labels:renovate` が付くものを検出して `dependency-upgrade` Skill を起動** (GitHub Actions で Claude API を呼ばないためのローカル化)。詳細規約は `.claude/rules/pr-poller.md` |
+| **`pr-poller`** | ローカル Claude Code 起動時 + `CronCreate` 日次スケジュール + `ScheduleWakeup` ループ | gh CLI で merged / closed PR を取得 → 既に learning ファイルがある PR を除外 → 未処理 PR があれば `pr-retrospective` を起動 → 一定期間経過 (7 日) または未処理 learning 件数 (デフォルト 10 件) 到達で `harness-meta` を起動。**さらに open PR で `labels:renovate` が付くものを検出して `dependency-upgrade` Skill を起動** (GitHub Actions で Claude API を呼ばないためのローカル化)。**起動経路が 3 系統あるため重複起動防止が必要**: 起動時に `.claude/locks/pr-poller.lock` を排他取得 (PID 記録)、既存ロックが N 分以内なら no-op で終了、N 分超過なら stale lock と判定して上書き取得。詳細規約は `.claude/rules/pr-poller.md` |
 | **`pr-retrospective`** (旧 `kpt-retrospective`) | `pr-poller` から自動起動 / 手動起動 | 対象 PR の diff (`gh pr diff`) / comments / reviews / CI ログ / Skill 実行ログ / 三層指標差分 (Kover / Konsist / PITest) / 関連 Plan・Epic を収集。`docs/harness/learnings/YYYY-MM-DD-pr-<n>.md` を `.claude/rules/retrospective-format.md` の構造化フォーマット (**日本語見出し**) で生成。`harness/learnings-batch-YYYY-WW` ブランチに集約し、週次 (or 件数到達時) に PR としてまとめて起票 |
 | **`implementation-workflow`** | Plan / Epic 確定後、ユーザー指示で起動 | **新規 (オーケストレーター)**: **10 フェーズ**で全工程を統合管理、複数 Claude Code セッションでの並行実装に備え **Git worktree** で作業ディレクトリを物理分離する — **(0) Worktree 作成** (`git worktree add ../<repo-name>-worktrees/<branch-slug> -b <branch-name>`、ブランチ命名は `.claude/rules/branch-naming.md` に従う、以降の全 Phase はこの worktree 内で実行)、(1) 要件/基本設計/詳細設計 Markdown 読込、(2) Spec 整合性チェック、(3) 実装 + Lint/Test 実行 + fix loop (上限 3 回)、(4) Self-Verification、(5) Draft PR 作成、(6) `code-reviewer` 呼出 → Evaluator フェーズ、(7) 人間 approve → squash merge、(8) `pr-poller` 即時起動 + `roadmap-tracker` 起動で完了根拠登録、**(9) Worktree 削除** (merge 済みを `git branch --merged main` で確認 → `git worktree remove ../<repo-name>-worktrees/<branch-slug>` + `git branch -d <branch-name>`、未マージなら停止して人間に通知)。詳細規約は `.claude/rules/implementation-workflow.md`、`merge-readiness.md`、`pr-draft-policy.md`、`spec-living-sync.md`、`branch-naming.md` |
-| **`code-reviewer`** | `implementation-workflow` Phase 6 から呼出 / 手動起動 | **新規 (独立 Evaluator)**: 8 aspect を並列実行 — spec-conformance / test-quality / architecture / security / performance / code-quality / **visual-regression** / **design-tokens** (後ろ 2 つは A10 完了後に有効化)。各 aspect が binary yes/no eval checklist を実行。Coordinator が重複排除して **日本語の構造化レビューコメント** を PR に post し、Merge readiness を判定。詳細規約は `.claude/rules/code-reviewer-aspects.md`。Anthropic Evaluator 独立性原則に従い、aspect ごとに別の system prompt を持たせる |
+| **`code-reviewer`** | `implementation-workflow` Phase 6 から呼出 / 手動起動 | **新規 (独立 Evaluator)**: 8 aspect を **ローカル Claude Code のサブエージェント (Agent ツール) で並列実行** (Claude API への直接呼び出しはしない、ADR 0017 / R-37) — spec-conformance / test-quality / architecture / security / performance / code-quality / **visual-regression** / **design-tokens** (後ろ 2 つは A10 完了後に有効化)。各 aspect が binary yes/no eval checklist を実行。Coordinator が同セッション内で重複排除して **日本語の構造化レビューコメント** を PR に post し、Merge readiness を判定。詳細規約は `.claude/rules/code-reviewer-aspects.md`。Anthropic Evaluator 独立性原則に従い、aspect ごとに別の system prompt を持たせる |
 | **`ui-snapshot`** | A10 内の Plan、Phase C 各リファクタ後の visual regression 検証 | **新規**: Konsist で Composable をスキャン → `@Preview` 不在を検出 → Plan 起票、Roborazzi で 4 パターン (mobile/desktop × Light/Dark) baseline 生成、DESIGN.md と UI Inventory のドラフトを起草、hex / sp / dp ハードコードを検出して tokens 化提案 |
 | `feature-request` | ユーザー指示 or Issue | 要件 → 基本設計 → (必要なら詳細設計) → ADR (必要時) → Plan / Epic 起票 **まで** (実装はしない、`implementation-workflow` にバトンタッチ) |
 | `bug-fix` | Issue / 障害報告 | 再現 → ルートコーズ分析 → 仕様補強 → ADR (設計起因なら) → Plan 起票 **まで** |
@@ -1346,7 +1346,7 @@ Phase A は **「実装フェーズで必要な計測・検証基盤と im@sparq
 |---|---|---|---|
 | **A1** | Plan | `harness-bootstrap` | ADR 0001-0027 を一括起草する PR (全て日本語) |
 | **A2** | EPIC-A2 | `harness-bootstrap` | **`.claude/rules/*` 全ファイル本格化 + `docs/` 全面拡充**: docs/README.md (AI エントリポイント・推奨読み順)、glossary.md、codebase-map.md (初版、A10 / Phase C で随時更新)、architecture/{layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md、api/README.md + colormaster-api.yaml (骨格、内容は C5 で本格化)、security/README.md (ADR 索引)、requirements/{README, template}.md、specifications/README.md + specifications/{basic,detail}/template.md、runbooks/{local-development, testing, i18n}.md を完成。各 docs は冒頭 5 行 summary + 詳細 lazy-load 構造 (ADR 0027) |
-| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** / **ui-snapshot** / **harness-evolution** / **roadmap-tracker** の本格版へのアップグレード、**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を採用しリポジトリには配置しない**)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 8 aspect の binary eval checklist + coordinator を完全実装 (visual-regression / design-tokens は A10 完了後に enable)。pr-poller は **Renovate ラベル PR の検出と dependency-upgrade 起動** も担当。**roadmap-tracker は plan.md / Epic 走査 (Plan 単体は対象外) → ロードマップ生成・更新ロジック / `gh pr view` での完了根拠取得 / Open Questions・障壁・着手順変更履歴の append-only 追記 / `.claude/rules/roadmap.md` 規約準拠を完全実装。`epic-author` / `implementation-workflow` (Phase 7、Epic 配下 PR または B-A-C フェーズ項目に該当時のみ) から自動起動するフックも整備**。マージ後、`harness-bootstrap` は `archived/` へ |
+| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** / **ui-snapshot** / **harness-evolution** / **roadmap-tracker** の本格版へのアップグレード、**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を採用しリポジトリには配置しない**)。implementation-workflow は 10 フェーズ (Phase 0 worktree / Phase 9 cleanup を含む) の fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 8 aspect の binary eval checklist + coordinator を完全実装 (visual-regression / design-tokens は A10 完了後に enable)。pr-poller は **Renovate ラベル PR の検出と dependency-upgrade 起動** も担当。**roadmap-tracker は plan.md / Epic 走査 (Plan 単体は対象外) → ロードマップ生成・更新ロジック / `gh pr view` での完了根拠取得 / Open Questions・障壁・着手順変更履歴の append-only 追記 / `.claude/rules/roadmap.md` 規約準拠を完全実装。`epic-author` / `implementation-workflow` (Phase 7、Epic 配下 PR または B-A-C フェーズ項目に該当時のみ) から自動起動するフックも整備**。マージ後、`harness-bootstrap` は `archived/` へ |
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
 | **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル、**`dev.gitlive:firebase-*` 依存、`core/network/{auth,firestore}`、`firebase.json`、`.firebaserc`**) |
 | **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + **`markdownlint-cli2` (`com.github.node-gradle.node` Gradle plugin 経由 + CI で `DavidAnson/markdownlint-cli2-action`)** + **`scripts/install-git-hooks.sh` で `.git/hooks/pre-commit` に `./gradlew check` を配置** (lefthook 等の hook 管理ツールは導入しない、Gradle に集約済みで管理コスト > 便益のため) + **trufflehog による secret-scan workflow**)。検証はファイル種別ごとに別ツールで実施 (§5.2 参照):<br>● **Konsist (Kotlin code 規約)**: 「`feature/**`・`core/**` Kotlin source で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラ実装に `requireUid()` 呼び出し強制」「実装側 `@Spec` annotation の収集」<br>● **`markdownlint-cli2`**: Markdown フォーマット規約 (行長 / 見出しレベル飛び / リスト形式 / コードブロック言語タグ / リンクの妥当性等)<br>● **Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x)**: 「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「frontmatter 必須キー JSON Schema 検証」「**`docs/traceability.md` 自動生成** (Konsist で抽出した Kotlin 側 `@Spec` + 本タスクが抽出した Plan/Epic/ADR/Spec 参照を join)」「**docs/ の各 Markdown が冒頭 5 行以内の summary を持つ**」「**`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する** (PLAN-NNN は追跡対象外のため検証不要)」「**設計書本文 (`docs/{requirements,specifications}/**`) にコード断片 (フェンス付きコードブロックの kotlin / java / sh / sql / gradle / kts 等) が混入していない** (§4.6 のコード禁止原則)」 |
@@ -1474,6 +1474,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **新規追�
 | R-34 | `docs/harness/roadmap.md` と plan.md / Epic で進捗が二重管理になり乖離するリスク | roadmap.md は **片方向ミラー** (plan.md / Epic 本体への逆同期はしない、`.claude/rules/roadmap.md` で明文化)。`roadmap-tracker` Skill は Read のみで取り込み、進捗・完了根拠・障壁の記録は roadmap.md 側にのみ追記。**Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x)** で「roadmap.md の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する」を A6 で検証 (Konsist は Kotlin file 専用のため不可、§5.2 参照)。`epic-author` の起票直後と `implementation-workflow` Phase 7 (Merge 直後、Epic 配下 PR または B-A-C フェーズ項目に該当する場合) に自動同期するフックで人手の二重編集を抑制。**Plan は 1 PR で完結するためロードマップ追跡対象外** (PR レビュー & merge で完結) |
 | R-35 | `roadmap-tracker` が `gh pr view` の取得に失敗した場合に完了根拠が空のまま放置されるリスク | gh CLI 失敗時はユーザーから渡された PR 番号 / 関連ファイルパスのみで暫定登録、後段で再取得を試みる旨を roadmap.md の該当項目に `<!-- evidence:pending-fetch -->` コメントで残す。`pr-poller` が定期的に pending-fetch 項目を再走査する責務を `.claude/rules/roadmap.md` に明文化 |
 | R-36 | `roadmap-tracker` が補助 Skill で ADR を持たないため、運用方針の重大変更を ADR として残せず歴史を辿りにくくなるリスク | 運用方針の重大変更が発生した場合は §4.5 ADR 起票基準を再評価し、基準を 2 項目以上満たす状態になったら **新規 ADR を起こして格上げ** する。それまでは `.claude/rules/roadmap.md` の改訂履歴 (frontmatter `last_updated` + 変更コミットメッセージ) を辿る運用で代替 |
+| R-37 | `code-reviewer` の 8 aspect 並列実行が Claude API へ直接呼び出しになると 1 PR あたりのコストが嵩むリスク | **本計画は GitHub Actions / ハーネス本体から Claude API を呼ばない方針** (ADR 0017)。`code-reviewer` の 8 aspect 並列はローカル Claude Code セッション内の **サブエージェント (Agent ツール) で並列起動** する形に統一し、課金はユーザーの既存 Claude Code 利用枠で完結させる。Coordinator も同じセッション内で動作。GitHub Actions 上では `code-reviewer` を直接呼ばず、CI は Lint / Test / Roborazzi のみ実行 |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
 | R-6 | harness-bootstrap が万能になりすぎると専用 Skill 化が遅れる | A3 完了で必ず `archived/` へ移動、CLAUDE.md からも参照を外す |
 
@@ -1502,19 +1503,21 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **新規追�
 - 昇格時のステータスは `promoted`。
 - B0 のみ手作業、A1 以降は Skill ループ駆動。
 - **ADR の起票基準**: 4.5 節の 10 項目のうち 2 つ以上を満たすときに ADR を起こす。コーディング/命名規約は `.claude/rules/`、PR 単位の判断は Plan、Epic 内の保留→解決は `decisions.md`、運用手順は runbook で扱う。ADR 0001 と `.claude/rules/adr.md`、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙。
-- **ADR 精査結果**: 初期 ADR は **24 個** (旧 0004 state-and-uiaction-conventions は規約レベルにつき rules に統合、旧 0026 permission-roles-owner-only は ADR 0020 PII に統合)。連番に再採番済み。
+- **ADR 精査結果**: 初期 ADR は **27 個** (連番 0001-0027)。統合・削除済みの旧採番 (旧 0004 state-and-uiaction-conventions は rules に統合、旧 0026 permission-roles-owner-only は ADR 0020 PII に統合、旧 0030 documentation-structure は 0027 に統合、その他) は §4.5 ADR 一覧の「統合・削除の履歴」コメントブロックで追跡。連番に再採番済み。
 - harness-bootstrap は A3 後に `archived/` へ移動。
 - **KPT は全 PR で生成**:
   - 出力先は **ファイル** (`docs/harness/learnings/YYYY-MM-DD-pr-N.md`)、PR コメントは出さない
   - 駆動方式は **ローカル Claude Code ポーリング** (`pr-poller` Skill が `CronCreate` / `ScheduleWakeup` で起動)。GitHub Actions では Claude API を呼ばない (コスト回避、ADR 0017)
-  - Skill 構成: `pr-poller` (オーケストレーター) + `pr-retrospective` (Evaluator、旧 kpt-retrospective) + `harness-meta` (Meta-Generator)
+  - 重複起動防止: `pr-poller` は `.claude/locks/pr-poller.lock` で排他取得 (3 系統起動経路に対応)
+  - **`harness-meta` の起動閾値 (デフォルト値)**: 未処理 learning が **10 件** 蓄積、または **前回 harness-meta 実行から 7 日経過**、のいずれかを満たしたら自動起動。手動起動も可。詳細は `.claude/rules/pr-poller.md` および `harness-meta-criteria.md` で上書き可能
+  - Skill 構成: `pr-poller` (オーケストレーター) + `pr-retrospective` (Evaluator) + `harness-meta` (Meta-Generator)
 - **harness-meta による改修 PR**:
   - 改修テーマごとに **個別 PR** を起票 (1 改修テーマ = 1 PR)
   - 見送り提案は元 learning ファイルに `## 📝 harness-meta feedback` セクションを追記、提案 → 結果の往復ログがファイル内で完結
   - 未使用 rule / dormant Skill は **月次 cleanup PR** で別建てで撤去候補レビュー
 - **コード実装ワークフロー**:
   - 新規 Skill `implementation-workflow` が **10 フェーズ**で Plan/Epic 確定後の実装着手 → Lint/Test → AI Review → マージ判断 → レトロ起動 → クリーンアップ を統合管理。**Phase 0 で Git worktree を作成 (`git worktree add ../<repo-name>-worktrees/<branch-slug>`)、Phase 9 で削除 (merge 済み確認後 `git worktree remove` + `git branch -d`)**、複数 Claude Code セッションでの並行実装でも作業ディレクトリが物理分離され Git コンフリクトリスクを構造的に下げる
-  - 新規 Skill `code-reviewer` が **独立 Evaluator** として 8 aspect (spec-conformance / test-quality / architecture / security / performance / code-quality / visual-regression / design-tokens) を並列レビュー、Coordinator が日本語の構造化レビューコメントを PR に post し Merge readiness を判定
+  - 新規 Skill `code-reviewer` が **独立 Evaluator** として 8 aspect 並列レビュー + Coordinator で Merge readiness を判定。詳細は §5.3 / §5.4 / R-37 参照 (Claude API への直接呼び出しはせず、ローカル Claude Code のサブエージェントで並列実行)
   - 既存 `feature-request` / `bug-fix` / `refactor` の責務は **Plan / Epic 起票まで** に縮小、その後 implementation-workflow にバトンタッチ
   - Fix loop 上限はデフォルト 3 回、超過したら Plan に `status: blocked`
   - **人間 approve なしの auto-merge は禁止** (GitHub Agentic Workflows 原則準拠)
