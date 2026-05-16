@@ -27,6 +27,8 @@
 - `imas/imasparql` の更新を 1 日 1 回検知し、差分があれば PR が自動作成される。サーバ停止時もアプリは継続稼働する。
 - Kotlin Multiplatform で Android / iOS / wasmJs / JVM (backend) の 4 ターゲットに対応する。
 - Backend 経由化により Wasm でも Firestore 上のユーザーデータを読み書きできる。
+- **テストカバレッジは line coverage / branch coverage いずれも 100%**。除外対象は ADR 0014 で限定列挙し、それ以外は AI による自動テスト生成で必ず充足する。
+- Phase C (本格運用) 着手時点で、テスト基盤・カバレッジ 100% の達成・im@sparql ローカル Docker 環境が完全に整っている。
 
 ---
 
@@ -155,6 +157,27 @@
 
 Web 配信は wasmJs ターゲット完成まで **一時停止** することを許容する。
 
+### 3.7 テストカバレッジ方針 — 即時 100% 必達
+
+AI による自動テスト生成を前提とし、**段階目標は採用しない**。Phase A 終了時点でリポジトリ全体が以下を満たす状態にする:
+
+- **Line coverage / branch coverage いずれも 100%** を CI 上で `koverVerify` が強制する (minValue = 100、counter = LINE / BRANCH 両方)。
+- 100% を満たさない PR はマージ不可。新規ファイルも例外なし。
+- **除外対象は ADR 0014 で限定列挙** し、それ以外は必ずテストを書く:
+  - エントリポイント (`MainKt`, `Application`, `MainActivity` 等)
+  - DI モジュール定義 (Koin の `module {}` ブロック)
+  - 自動生成コード (SQLDelight 生成クラス、kotlinx.serialization 生成クラス、Compose Compiler 生成コード)
+  - 純粋な値クラス / sealed marker（テスト不可能な合成 toString/equals のみ）
+- 除外対象を増やすには ADR 改訂が必須。Skill が勝手に除外を増やせないよう、`.claude/rules/coverage-100.md` で禁止規約として明文化。
+- UI 層 (Compose) は **Compose UI Test + Roborazzi / Paparazzi (screenshot test)** で達成。ViewModel / Repository / Network Client / Mapper は通常の Kotest で達成。
+- **Konsist でペアリング検証**: 実装クラスごとに対応する `*Spec.kt` / `*Test.kt` の存在を機械的にチェックする。
+
+採用根拠:
+
+- AI による自動生成があるため「テストを書くコストが高いから段階目標に」という前提が成り立たない。むしろ初期に 100% を取り切る方が、その後のリファクタや機能追加のリグレッション検出が即時かつ厳密に効く。
+- Phase C で大規模リファクタ (Decompose 撤去、フィーチャ再編、Firebase 切り離し) を行うため、その前にセーフティネットを完成させておく価値が大きい。
+- 線形カバレッジが 100% でも、AI 生成テストは「網羅性はあるが意味のないテスト」になる可能性がある。これに対しては **Konsist でアサート数や前提条件の存在を機械検証**、KPT で「無意味テスト」を learnings 蓄積し harness-meta が `.claude/rules/kotlin-test.md` を強化していくフォールバックループで担保する。
+
 ---
 
 ## 4. ドキュメント構造
@@ -181,6 +204,8 @@ docs/
     0011-sqlite-file-in-repo.md
     0012-firebase-boundary.md
     0013-remove-js-app.md
+    0014-test-coverage-100-percent.md
+    0015-imasparql-local-docker-fuseki.md
   epics/                        ─ 複数 PR の取り組み (1 epic = 1 ディレクトリ)
     INDEX.md
     template/
@@ -288,6 +313,8 @@ Epic 配下で複数 PR を出す場合の個別 Plan は、`docs/plans/` に一
     gradle.md
     kotlin-test.md
     screenshot-test.md
+    coverage-100.md
+    test-paired-class.md
     sql-delight.md
     sparql.md
     markdown.md
@@ -376,16 +403,30 @@ B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Sk
 
 ### 6.2 Phase A — Skill 駆動による基盤完成
 
-| # | 起動 Skill | 内容 |
-|---|---|---|
-| **A1** | `harness-bootstrap` | ADR 0001-0013 を一括起草する PR |
-| **A2** | `harness-bootstrap` | `.claude/rules/*` 全ファイル + `docs/` 拡充 (architecture/, requirements/, specifications/ テンプレ等) |
-| **A3** | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および kpt-retrospective の本格版へのアップグレード)。マージ後、`harness-bootstrap` は `archived/` へ |
-| **A4** | `feature-request` | post-merge workflow 本格化 (`kpt-retrospective.yml` 実装一致 / `harness-meta.yml` 月次 cron) |
-| **A5** | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル) |
-| **A6** | `feature-request` | Lint/Test 基盤 (Spotless + ktlint + detekt + Konsist + Kover + lefthook) |
+Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sparql ローカル Docker を含む全ての基盤が整っている」** ことを完了条件とする。Phase C はこの完了をもって初めて着手する。
+
+| # | 単位 | 起動 Skill | 内容 |
+|---|---|---|---|
+| **A1** | Plan | `harness-bootstrap` | ADR 0001-0015 を一括起草する PR |
+| **A2** | Plan | `harness-bootstrap` | `.claude/rules/*` 全ファイル + `docs/` 拡充 (architecture/, requirements/, specifications/ テンプレ等) |
+| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および kpt-retrospective の本格版へのアップグレード)。マージ後、`harness-bootstrap` は `archived/` へ |
+| **A4** | Plan | `feature-request` | post-merge workflow 本格化 (`kpt-retrospective.yml` 実装一致 / `harness-meta.yml` 月次 cron) |
+| **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル) |
+| **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook) |
+| **A7** | Plan | `feature-request` | **Kover 導入 + 100% 強制設定の最初のバージョン** (除外対象は ADR 0014 で定義済みのものに限定、CI で `koverVerify` を必須化)。この PR 時点では既存コードの未充足は除外リストで一旦逃がすが、A8 完了までに全モジュールへ展開する旨を rules に明記 |
+| **A8** | Plan | `feature-request` | **im@sparql ローカル Docker 環境構築** (Apache Jena Fuseki + RDF データ初期投入スクリプト + `docker-compose.yml` + integration test 基盤 + Testcontainers 規約)。`docs/runbooks/local-imasparql.md` を整備し、backend のローカル開発・テストを Fuseki に対して実行できる状態にする |
+| **A9** | **EPIC-A9** | `refactor` | **既存コード全体に対する 100% line / branch coverage 達成**。モジュールごとに段階 Plan (PLAN-NNN × 多数) を発行し、すべてグリーン化。Konsist の「実装クラス ⇄ テストクラス対応」検証を本 EPIC 完了時に enforce。backend/server / android/app / core/* / data/ 全モジュールが対象。A7 で導入した除外リストは ADR 0014 列挙分のみに整理する |
+
+**Phase A 完了条件**:
+
+- 全モジュールで `./gradlew check koverVerify` がグリーン (line / branch ともに 100%、除外は ADR 0014 列挙分のみ)。
+- `docker compose up imasparql` でローカル Fuseki が起動し、backend integration test が Fuseki に対して実行可能。
+- `harness-bootstrap` は `archived/` へ移動済み、全専用 Skill が稼働。
+- KPT ループが post-merge workflow + 月次 harness-meta で完全自動稼働。
 
 ### 6.3 Phase C — 本格運用 (Epic / Plan 管理 + Skill ループ + KPT)
+
+Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバレッジ達成を前提条件として書く**。新規ファイルは作成と同時にテストが書かれている状態でないとマージ不可。
 
 | # | 単位 | 起動 Skill | 内容 |
 |---|---|---|---|
@@ -393,23 +434,22 @@ B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Sk
 | C2 | Plan | `harness-meta` | C1 KPT を受けたハーネス改修 |
 | C3 | **EPIC-001** | `refactor` | フィーチャ再編 + Decompose 撤去 + CMP Navigation 3 + 共通 ViewModel |
 | C4 | **EPIC-002** | `refactor` | i18n 移植 (`public/locale/` → compose-multiplatform-resources) |
-| C5 | Plan | `feature-request` | im@sparql ローカル Docker (Fuseki) + integration test |
-| C6 | **EPIC-003** | `feature-request` | Backend 強化 (`colormaster-api` モジュール、Firebase Admin SDK、ID Token 検証、`/api/me/*` エンドポイント) |
-| C7 | **EPIC-004** | `feature-request` | upstream-driven 同期パイプライン (`imas/imasparql` SHA 監視、日次 cron、初期データ投入) |
-| C8 | Plan | `feature-request` | Cloud Run デプロイ (GitHub Actions + gcloud CLI、Artifact Registry) |
-| C9 | **EPIC-005** | `feature-request` | KMP - iOS ターゲット有効化 + Xcode プロジェクト雛形 |
-| C10 | **EPIC-006** | `feature-request` | KMP - wasmJs + GIS 認証代替 + Firebase 切り離し完成 |
-| C11 | Plan | `feature-request` | Web 配信再開 (wasmJs ビルドを Firebase Hosting にデプロイ) |
-| C12 | Plan × N | `feature-request` | テストカバレッジ段階引き上げ + screenshot test 導入 |
+| C5 | **EPIC-003** | `feature-request` | Backend 強化 (`colormaster-api` モジュール、Firebase Admin SDK、ID Token 検証、`/api/me/*` エンドポイント) |
+| C6 | **EPIC-004** | `feature-request` | upstream-driven 同期パイプライン (`imas/imasparql` SHA 監視、日次 cron、初期データ投入) |
+| C7 | Plan | `feature-request` | Cloud Run デプロイ (GitHub Actions + gcloud CLI、Artifact Registry) |
+| C8 | **EPIC-005** | `feature-request` | KMP - iOS ターゲット有効化 + Xcode プロジェクト雛形 |
+| C9 | **EPIC-006** | `feature-request` | KMP - wasmJs + GIS 認証代替 + Firebase 切り離し完成 |
+| C10 | Plan | `feature-request` | Web 配信再開 (wasmJs ビルドを Firebase Hosting にデプロイ) |
+
+旧計画にあった「C5 im@sparql ローカル Docker」「C12 テストカバレッジ段階引き上げ」は本改訂で **Phase A (A7-A9)** に前倒した結果、Phase C からは消えている。
 
 依存順序の根拠:
 
 - C3 を先頭に: 以降の実装が `feature/*` 構造前提になる。
 - C4 を C3 直後に: 新 `feature/*` に composeResources を組み込みたい。
-- C5 を C6/C7 より前に: Backend 強化と同期パイプラインの integration test は Fuseki 起動が前提。
-- C6 を C7/C8/C10 より前に: Firestore 経由化エンドポイントが揃わないと Cloud Run と wasmJs の意味が薄い。
-- C7 を C8 より前に: `data/idols.db` 初期データがリポジトリに乗らないと Cloud Run コンテナイメージが空になる。
-- C9 (iOS) を C10 (wasmJs) より前に: iOS は Firebase JS SDK の制約に当たらず、先に iOS でアーキ全体を検証してから wasmJs の重い切り離しに進む方が安全。
+- C5 (Backend 強化) を C6/C7/C9 より前に: Firestore 経由化エンドポイントが揃わないと Cloud Run と wasmJs の意味が薄い。Backend integration test は A8 で整備済の Fuseki 環境を利用。
+- C6 (同期パイプライン) を C7 (Cloud Run デプロイ) より前に: `data/idols.db` 初期データがリポジトリに乗らないと Cloud Run コンテナイメージが空になる。
+- C8 (iOS) を C9 (wasmJs) より前に: iOS は Firebase JS SDK の制約に当たらず、先に iOS でアーキ全体を検証してから wasmJs の重い切り離しに進む方が安全。
 
 ---
 
@@ -428,11 +468,14 @@ B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Sk
 ## 8. テストカバレッジ戦略
 
 - Kover を導入、`./gradlew check` に `koverXmlReport` / `koverVerify` を組み込む。
-- 「100%」を即時目的化せず、**段階目標** を ADR 0005 に明文化。
-  - 初期: `koverVerify` のしきい値を「現状値 + α」で開始。
-  - 月次 +5pt を目標、`koverHtmlReport` を PR コメントに添付。
-  - UI モジュール (Compose) は **screenshot test (Paparazzi / Roborazzi)** で実質カバー。
-  - 「100%」は line coverage ではなく **branch + 重要パス** で評価。
+- **「即時 100%」を目的化する**。段階目標は採用しない (ADR 0005 / 0014)。
+  - `koverVerify` の minBounds: `minValue = 100`、counter = `LINE` と `BRANCH` の両方。
+  - 除外対象は ADR 0014 で限定列挙 (エントリポイント / DI モジュール / 自動生成コード / 純データクラス)。除外追加は ADR 改訂が必須。
+  - UI モジュール (Compose) は **Compose UI Test + screenshot test (Paparazzi / Roborazzi)** で 100% を達成。
+  - line / branch coverage いずれも 100% を必達とする (`branch + 重要パス` のような曖昧な目標は採らない)。
+- **Konsist でペアリング検証**: 各実装クラスに対応するテストクラス (`*Spec.kt` / `*Test.kt` / `*ScreenshotTest.kt`) の存在を機械的に強制する (`.claude/rules/test-paired-class.md`)。
+- **AI 自動生成テストの質の担保**: Konsist で「テストクラスは最低 1 つの `should` / `test` / `assert*` を含む」「Mock のみで実装を呼ばずに通過するテストは禁止」等のメタ規約を加え、無意味テストの混入を防ぐ。KPT で発見された無意味テストパターンは harness-meta が `kotlin-test.md` ルールに追加していく。
+- **Phase A (A7-A9) で全モジュールを 100% 化** し、Phase C 以降は維持 + 新規分の即時 100% を CI で必達とする。
 
 ---
 
@@ -443,7 +486,10 @@ B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Sk
 | R-1 | iOS Compose Multiplatform は Stable 到達済みだが、scroll physics 等の挙動差異が残る可能性 | C9 で限定機能から検証、ADR に「実験的採用」を残す |
 | R-2 | wasmJs での Firebase Auth 代替 (GIS) は実装パターンの公式リファレンスが薄い | C10 で spike PR を最初に切る。Open question として EPIC-006 に記録 |
 | R-3 | `data/idols.db` のバイナリ管理によるリポジトリサイズ膨張 | アイドル情報は数百〜千行のため当面は通常 commit。MB 級になったら Git LFS 移行を別 ADR で |
-| R-4 | Cloud Run JVM コールドスタート | C12 完了後に GraalVM Native Image を別 ADR で検討 |
+| R-4 | Cloud Run JVM コールドスタート | Phase C 完了後に GraalVM Native Image を別 ADR で検討 |
+| R-7 | AI 自動生成テストが「網羅性はあるが意味のないテスト」になる可能性 | Konsist のメタ規約 + KPT 学習 + `kotlin-test.md` 強化のフォールバックループで担保 (3.7 節参照) |
+| R-8 | A9 (既存コード 100% 達成 EPIC) の作業量が想定を超える可能性 | モジュール単位で Plan を切り、PR を細粒度に分割。完了見込みが立たない場合は除外対象の見直しを ADR 改訂で対応 (ただし安易な除外追加は禁止) |
+| R-9 | Fuseki に投入する RDF データの著作権・ライセンス確認 | A8 でデータ取得元 (`imas/imasparql` リポジトリ) のライセンスを確認し ADR 0015 に明記。条件次第ではダミー RDF + テスト専用データ構成にする |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
 | R-6 | harness-bootstrap が万能になりすぎると専用 Skill 化が遅れる | A3 完了で必ず `archived/` へ移動、CLAUDE.md からも参照を外す |
 
@@ -468,6 +514,9 @@ B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Sk
 - B0 のみ手作業、A1 以降は Skill ループ駆動。
 - harness-bootstrap は A3 後に `archived/` へ移動。
 - KPT は全 PR で生成、harness-meta は月次集約。
+- テストカバレッジは **line / branch ともに即時 100%**。段階目標は採用しない。除外対象は ADR 0014 で限定列挙。
+- im@sparql ローカル Docker (Fuseki) は **Phase A (A8) で整備**。Phase C 着手前に backend integration test が Fuseki に対して実行可能な状態にする。
+- 既存コードの 100% 達成は **Phase A (A9) を EPIC として実施**。Phase C はこの完了をもって着手。
 
 ---
 
@@ -480,4 +529,4 @@ B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Sk
    - 内容: 第 4 章 ドキュメント構造 + 第 5 章 ハーネス構造のスケルトン + EPIC-000-harness-foundation 起票
    - レビュー: 唯一の例外として人間レビュー (Skill ループ外)
 2. B0 マージ後、A1 (ADR 起草) から Skill 駆動 + KPT ループを稼働させる。
-3. Phase C 着手は A6 完了 (Lint/Test 基盤完成) 後。
+3. **Phase C 着手は A9 完了 (既存コード 100% カバレッジ達成 EPIC 完了 + im@sparql ローカル Docker 整備 + Lint/Test 基盤完成) 後**。これにより Phase C の実装作業は最初からセーフティネットと統合テスト環境の上で進む。
