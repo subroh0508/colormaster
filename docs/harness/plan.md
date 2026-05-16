@@ -429,7 +429,9 @@ docs/
     0024-secrets-management-policy.md           (旧 0025)
     0025-ui-design-snapshot-before-refactor.md  ─ ★新規 DESIGN.md + UI Inventory + Visual Regression Baseline の三本柱
     0026-visual-regression-testing-roborazzi.md ─ ★新規 Roborazzi + Compose Desktop で commonMain を screenshot、解像度マトリックス (mobile + PC 16:9) × テーママトリックス
-    0027-mcp-servers-jetbrains-context7-cloudflare.md ─ ★新規 JetBrains MCP + Context7 MCP + Cloudflare MCP の採用。GitHub MCP は gh CLI で代替、Sourcegraph MCP は JetBrains MCP の IDE indexing で代替、Figma/Sentry/他は将来検討
+    0027-mcp-servers-jetbrains-context7-cloudflare.md ─ ★新規 JetBrains MCP + Context7 MCP + Cloudflare MCP の採用。GitHub MCP は gh CLI で代替、Sourcegraph MCP は JetBrains MCP の IDE indexing で代替、Figma/Sentry/Serena は将来検討
+    0028-skill-authoring-with-skill-creator.md  ─ ★新規 Skill 作成は Claude Code ユーザースコープの example-skills:skill-creator を経由、SKILL.md は Anthropic Complete Guide 準拠 (description=trigger, Gotchas 必須, MUST/ALWAYS/NEVER 禁止)
+    0029-harness-evolution-from-external-research.md  ─ ★新規 外部研究 / ベストプラクティス駆動の改善ループ、手動起動のみ (cron 不採用、Claude API コスト抑制)、harness-meta (内部 KPT 駆動) と二系統で補完
     # 削除済 (起票基準に照らして規約レベル → rules/ に統合)
     #   旧 0004 state-and-uiaction-conventions   → .claude/rules/{viewmodel,ui-state}.md
     #   旧 0026 permission-roles-owner-only       → ADR 0023 内のセクション
@@ -460,6 +462,9 @@ docs/
     kpt-template.md
     learnings/                  ─ PR ごとの KPT 出力 (1 PR = 1 ファイル、Single Source of Truth)
       YYYY-MM-DD-pr-NNN.md      ─ pr-retrospective が生成、harness-meta が "feedback" セクションを追記
+    evolution-proposals/        ─ ★新規 harness-evolution が生成する外部研究駆動の改善提案
+      INDEX.md
+      YYYY-MM-DD.md             ─ 1 実行 = 1 ファイル、出典 URL + 引用日付 + 構造化改善案 (採用 → Plan/EPIC 起票へリンク)
   runbooks/
     local-imasparql.md
     sync-imasparql.md
@@ -557,6 +562,9 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
   - **Sourcegraph MCP は採用見送り**、JetBrains MCP の IDE indexing で代替
   - **Serena MCP は採用見送り**、JetBrains MCP + Context7 MCP で代替 (Kotlin は "Indirect Support" にとどまり Compose MP / KMP / wasmJs 解析で IntelliJ Kotlin Plugin に劣る、JetBrains backend は有料、30 分のセットアップ + 初回インデックスのオーバーヘッド)。ただし IDE 非起動環境 (CI 上 agent) で fallback が必要になったら別 Plan で再評価
   - 将来検討: Figma MCP (Figma 資産を作る場合) / Code Pathfinder (高度なコード検索が必要なら) / Serena MCP (上記条件成立時) / Sentry MCP (本番後)
+- **Skill 作成は `example-skills:skill-creator` 経由**: Claude Code ユーザースコープにインストール済の Anthropic 公式 Skill を使用、本リポジトリには配置しない。SKILL.md は Anthropic "Complete Guide to Building Skills for Claude" 準拠 (description=trigger、Gotchas 必須、MUST/ALWAYS/NEVER 禁止)、AgentSkills 2026 spec + 100-point rubric (ADR 0028)
+- **ハーネス進化は内部 + 外部の二系統**: `harness-meta` (内部 KPT 駆動、週次 cron + 閾値 + 手動) と `harness-evolution` (外部研究 / ベストプラクティス駆動、**手動起動のみ**、Claude API コスト抑制のため cron 不採用) を補完併用 (ADR 0029)。harness-evolution の出力は `docs/harness/evolution-proposals/YYYY-MM-DD.md`
+- **GitHub Actions 上での Claude API 実行はゼロ**: 既存方針 (pr-poller / pr-retrospective / harness-meta のローカル化) に加え、**`dependency-upgrade` Skill 起動も pr-poller がローカルで Renovate ラベル PR を検出して実行** に統一。`upstream-driven 同期`・CI・trufflehog secret-scan は Claude API を使わないため GitHub Actions のまま運用
 
 #### ADR にすべきでない例 (他の記録方法を使う)
 
@@ -631,9 +639,11 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
     feature-request/            A3 で完成 (要件・仕様生成と Plan/Epic 起票まで、実装はしない)
     bug-fix/                    A3 で完成 (再現・ルートコーズ・仕様補強・Plan 起票まで)
     refactor/                   A3 で完成 (影響分析・Plan/Epic 起票まで)
-    dependency-upgrade/         A3 で完成
+    dependency-upgrade/         A3 で完成 (pr-poller がローカルで Renovate PR を検出して起動)
     adr-author/                 A3 で完成
-    harness-meta/               A3 で完成 (改修 PR 起票 + 元 learning ファイルへの feedback 追記)
+    harness-meta/               A3 で完成 (改修 PR 起票 + 元 learning ファイルへの feedback 追記、内部 KPT 駆動)
+    harness-evolution/          A3 で完成 (★新規、外部研究 / ベストプラクティス駆動、手動起動のみ)
+    # skill-creator は本プロジェクトには配置しない (Claude Code ユーザースコープ example-skills:skill-creator を参照)
     archived/                   引退した Skill (harness-bootstrap など)
   rules/
     rules-index.md
@@ -678,8 +688,10 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
     branch-naming.md
     # ハーネス改善ループ
     retrospective-format.md    ─ pr-retrospective が出力する learning ファイルの構造化フォーマット
-    pr-poller.md               ─ ローカルポーリング規約 (起動頻度、未処理 PR 判定、CronCreate/ScheduleWakeup 使用方針)
+    pr-poller.md               ─ ローカルポーリング規約 (CronCreate/ScheduleWakeup、未処理 PR 判定、Renovate ラベル PR の検出と dependency-upgrade 起動も担当)
     harness-meta-criteria.md   ─ 改修 PR 採用/見送り/撤去の判定基準 (Anthropic harness 原則を明文化)
+    skill-authoring.md         ─ ★新規 Skill 作成は example-skills:skill-creator を経由、SKILL.md 構造 (description trigger / Gotchas 必須 / MUST/ALWAYS/NEVER 禁止) を Anthropic Complete Guide 準拠
+    harness-evolution.md       ─ ★新規 外部情報源ホワイトリスト、出力フォーマット、harness-meta との責務分離、出典 URL + 引用日付の必須化、Context7 MCP で API 引用検証
     # 実装ワークフロー
     implementation-workflow.md  ─ 8 フェーズの手順、fix loop の上限 (デフォルト 3 回)、Phase 失敗時の Plan 修正提案
     code-reviewer-aspects.md    ─ 8 aspect (spec-conformance / test-quality / architecture / security / performance / code-quality / visual-regression / design-tokens) の binary eval checklist、coordinator の構造化コメント形式
@@ -743,7 +755,7 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 | `harness-bootstrap` | B0 のみ。手動起動 | 専用 Skill 群が揃うまでの汎用 Skill。タスク種別 (ADR 起草 / rules 追加 / docs 拡充 / モジュール撤去 / Lint 導入) に応じた汎用手順を実行。A3 完了後に `archived/` へ |
 | `plan-author` | feature-request / bug-fix / refactor が単一 PR スコープと判定 | `docs/plans/PLAN-NNN-*.md` を 1 ファイル生成、INDEX.md 更新 |
 | `epic-author` | 同上、複数 PR スコープと判定。または Plan 昇格時 | `docs/epics/EPIC-NNN-<slug>/` を template から生成、INDEX.md 更新 |
-| **`pr-poller`** | ローカル Claude Code 起動時 + `CronCreate` 日次スケジュール + `ScheduleWakeup` ループ | gh CLI で merged / closed PR を取得 → 既に learning ファイルがある PR を除外 → 未処理 PR があれば `pr-retrospective` を起動 → 一定期間経過 (7 日) または未処理 learning 件数閾値到達で `harness-meta` を起動。詳細規約は `.claude/rules/pr-poller.md` |
+| **`pr-poller`** | ローカル Claude Code 起動時 + `CronCreate` 日次スケジュール + `ScheduleWakeup` ループ | gh CLI で merged / closed PR を取得 → 既に learning ファイルがある PR を除外 → 未処理 PR があれば `pr-retrospective` を起動 → 一定期間経過 (7 日) または未処理 learning 件数閾値到達で `harness-meta` を起動。**さらに open PR で `labels:renovate` が付くものを検出して `dependency-upgrade` Skill を起動** (GitHub Actions で Claude API を呼ばないためのローカル化)。詳細規約は `.claude/rules/pr-poller.md` |
 | **`pr-retrospective`** (旧 `kpt-retrospective`) | `pr-poller` から自動起動 / 手動起動 | 対象 PR の diff (`gh pr diff`) / comments / reviews / CI ログ / Skill 実行ログ / 三層指標差分 (Kover / Konsist / PITest) / 関連 Plan・Epic を収集。`docs/harness/learnings/YYYY-MM-DD-pr-<n>.md` を `.claude/rules/retrospective-format.md` の構造化フォーマット (**日本語見出し**) で生成。`harness/learnings-batch-YYYY-WW` ブランチに集約し、週次 (or 件数到達時) に PR としてまとめて起票 |
 | **`implementation-workflow`** | Plan / Epic 確定後、ユーザー指示で起動 | **新規 (オーケストレーター)**: 8 フェーズで全工程を統合管理 — (1) 要件/基本設計/詳細設計 Markdown 読込、(2) Spec 整合性チェック、(3) 実装 + Lint/Test 実行 + fix loop (上限 3 回)、(4) Self-Verification、(5) Draft PR 作成、(6) `code-reviewer` 呼出 → Evaluator フェーズ、(7) 人間 approve → squash merge、(8) `pr-poller` 即時起動。詳細規約は `.claude/rules/implementation-workflow.md`、`merge-readiness.md`、`pr-draft-policy.md`、`spec-living-sync.md` |
 | **`code-reviewer`** | `implementation-workflow` Phase 6 から呼出 / 手動起動 | **新規 (独立 Evaluator)**: 8 aspect を並列実行 — spec-conformance / test-quality / architecture / security / performance / code-quality / **visual-regression** / **design-tokens** (後ろ 2 つは A10 完了後に有効化)。各 aspect が binary yes/no eval checklist を実行。Coordinator が重複排除して **日本語の構造化レビューコメント** を PR に post し、Merge readiness を判定。詳細規約は `.claude/rules/code-reviewer-aspects.md`。Anthropic Evaluator 独立性原則に従い、aspect ごとに別の system prompt を持たせる |
@@ -751,7 +763,9 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 | `feature-request` | ユーザー指示 or Issue | 要件 → 基本設計 → (必要なら詳細設計) → ADR (必要時) → Plan / Epic 起票 **まで** (実装はしない、`implementation-workflow` にバトンタッチ) |
 | `bug-fix` | Issue / 障害報告 | 再現 → ルートコーズ分析 → 仕様補強 → ADR (設計起因なら) → Plan 起票 **まで** |
 | `refactor` | 改善提案 | 影響範囲分析 → リスク評価 → Plan or Epic 起票 **まで** |
-| `dependency-upgrade` | Renovate PR | リリースノート fetch → 影響モジュール特定 → テスト → 安全なら approve、危険なら downgrade 提案 |
+| `dependency-upgrade` | **`pr-poller` が `labels:renovate` 付き open PR を検出** (ローカル Claude Code) / 手動起動 | Context7 MCP でリリースノート fetch → JetBrains MCP で影響モジュール特定 → `./gradlew check` でテスト → `gh pr comment` で結果サマリ投稿 → 安全なら `approve` ラベル付与、危険なら downgrade 提案 / Plan 起票 |
+| **`skill-creator`** | 他 Skill (harness-bootstrap / harness-meta / harness-evolution) や人間からの「新規 Skill 作成 / 既存 Skill 改修」要求 | **Claude Code のユーザースコープにインストールされている `example-skills:skill-creator`** を呼び出して使用 (本プロジェクトリポジトリ内に mirror しない)。SKILL.md scaffolding、description を trigger 含めて適正化、Gotchas セクション必須化、AgentSkills 2026 spec + Anthropic "Complete Guide to Building Skills for Claude" 準拠、100-point rubric 評価 |
+| **`harness-evolution`** | **手動起動のみ** (ユーザーが必要時に Claude Code で起動、cron は採用しない) | (1) WebSearch / WebFetch + Context7 MCP で外部ベストプラクティス取得 (Anthropic engineering blog / anthropics/skills の更新 / Claude Code docs / MCP spec / awesome-harness-engineering / arxiv / Martin Fowler / Red Hat Developer / HumanLayer / Augment Code 等のホワイトリスト)、(2) 既存 `.claude/skills/` / `.claude/rules/` / `docs/` と gap 分析、(3) 改善提案 (新規 Skill / 既存 Skill 改修 / rules 強化 / 廃止候補 / 新 MCP 採用余地) を構造化リスト化、(4) `docs/harness/evolution-proposals/YYYY-MM-DD.md` 生成、(5) 重要案は `skill-creator` 経由で Skill scaffold or Plan/EPIC 起票 (人間 approve 必須) |
 | `adr-author` | 他 Skill から呼ばれる | ADR テンプレに沿って起草、関連 ADR をリンク |
 | `harness-meta` | 月次 cron or learnings 閾値超過 | learnings の `Try` / `Suggested harness changes` を集約 → ハーネス改修 PR を起票 |
 
@@ -813,13 +827,23 @@ Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の spec
 └────────────────────────────────────────────────────────────┘
                        │
                        ▼ (一定期間経過 / 件数閾値で pr-poller が起動)
-┌── ⑥ Meta フェーズ ───────────────────────────────────────┐
-│ [harness-meta]  (Meta-Generator)                           │
+┌── ⑥ Meta フェーズ (内部 + 外部の二系統) ────────────────┐
+│ [harness-meta] (内部 KPT 駆動、週次 cron + 閾値 + 手動)    │
 │   docs/harness/learnings/*.md を直接 Read                  │
 │   Suggested harness changes を集計・優先度付け             │
 │   1 改修テーマ = 1 PR で複数起票 (テーマ別粒度)             │
 │   見送り提案: 元 learning ファイルに feedback セクション追記 │
 │   撤去候補: 月次まとめて cleanup PR を別建てで起票          │
+│                                                            │
+│ [harness-evolution] (外部研究駆動、手動起動のみ)           │
+│   WebSearch/WebFetch + Context7 MCP で外部ベストプラクティス取得 │
+│   既存 ハーネスと gap 分析 → docs/harness/evolution-proposals/ 出力 │
+│   重要案は example-skills:skill-creator 経由で Skill scaffold │
+│   または Plan/EPIC 起票 (人間 approve 必須)                 │
+│                                                            │
+│ [skill-creator] (ユーザースコープ example-skills:skill-creator) │
+│   新規/改修 Skill の SKILL.md scaffolding、Gotchas 必須化、 │
+│   Anthropic Complete Guide + 100-point rubric 準拠         │
 └────────────────────────────────────────────────────────────┘
                        │
                        ▼
@@ -830,6 +854,7 @@ Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の spec
 ポイント:
 
 - **6 フェーズで責務分離**: Spec Gen / Implementation / Evaluation / Merge / Retrospection / Meta。各フェーズに専用 Skill (or オーケストレーター) を割り当て
+- **Meta フェーズは二系統**: 内部 (harness-meta、KPT 駆動) と 外部 (harness-evolution、外部研究駆動、**手動起動のみ**) を補完併用。Skill 作成は **`example-skills:skill-creator`** (Claude Code ユーザースコープ) を経由
 - **Generator と Evaluator は構造的に分離** (Anthropic 原則): `implementation-workflow` は自分で書いたコードを自分で評価しない。独立した `code-reviewer` Skill が aspect ごとに別 system prompt で動く
 - **Lint/Test pass まで Draft PR を Ready にしない** (GitHub Agentic Workflows 原則)
 - **人間 approve なしに merge しない** (GitHub Agentic Workflows 原則)
@@ -1098,7 +1123,7 @@ Remote HTTP + OAuth。初回接続時に Claude Code がブラウザで認証フ
 
 | # | 内容 |
 |---|---|
-| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / **`.claude/mcp.json` で JetBrains MCP + Context7 MCP + Cloudflare MCP の接続定義** / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot}` の最小版 / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation, mcp-usage}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**、`mcp-usage.md` は **GitHub は gh CLI / IDE 操作は JetBrains MCP / ライブラリ docs は Context7 / Cloudflare 管理は Cloudflare MCP の使い分けを規定**) / `docs/{adr, epics, plans, harness/learnings, runbooks, requirements, specifications, design/inventory}` スケルトン (テンプレートは全て**日本語**、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)** / **`docs/runbooks/mcp-setup.md` を新規追加** — 以下を記載: (1) IntelliJ IDEA / Android Studio **2025.2+ にバンドル済の MCP Server プラグイン** (`JetBrains/mcp-server-plugin`、Marketplace 26071) を `Settings | Tools | MCP Server` で有効化、(2) **旧 `@jetbrains/mcp-proxy` npm パッケージは deprecated なので使用しない** こと、(3) JetBrains MCP の **3 つの接続方式** (Copy SSE Config [推奨] / Copy Stdio Config / Copy HTTP Stream Config) の選択基準と `.claude/mcp.json` への貼り付け手順、(4) IDE 再起動で動的ポートが変わる場合の再貼り付け手順 (or `claude mcp add` 経由の登録)、(5) Context7 / Cloudflare の OAuth 接続フロー、(6) `/mcp` での接続確認、(7) トラブルシュート (IDE 未起動 / MCP Server プラグイン未有効 / ポート競合 / IDE バージョン 2025.2 未満)。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動するため) |
+| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / **`.claude/mcp.json` で JetBrains MCP + Context7 MCP + Cloudflare MCP の接続定義** / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot, harness-evolution}` の最小版 (**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を参照、本リポジトリには配置しない**) / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation, mcp-usage, skill-authoring, harness-evolution}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**、`mcp-usage.md` は **GitHub は gh CLI / IDE 操作は JetBrains MCP / ライブラリ docs は Context7 / Cloudflare 管理は Cloudflare MCP の使い分けを規定**、`skill-authoring.md` は **example-skills:skill-creator 経由 + Anthropic Complete Guide 準拠**、`harness-evolution.md` は **外部情報源ホワイトリスト + 手動起動のみ + harness-meta との責務分離**) / `docs/{adr, epics, plans, harness/learnings, harness/evolution-proposals, runbooks, requirements, specifications, design/inventory}` スケルトン (テンプレートは全て**日本語**、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)** / **`docs/runbooks/mcp-setup.md` を新規追加** — 以下を記載: (1) IntelliJ IDEA / Android Studio **2025.2+ にバンドル済の MCP Server プラグイン** (`JetBrains/mcp-server-plugin`、Marketplace 26071) を `Settings | Tools | MCP Server` で有効化、(2) **旧 `@jetbrains/mcp-proxy` npm パッケージは deprecated なので使用しない** こと、(3) JetBrains MCP の **3 つの接続方式** (Copy SSE Config [推奨] / Copy Stdio Config / Copy HTTP Stream Config) の選択基準と `.claude/mcp.json` への貼り付け手順、(4) IDE 再起動で動的ポートが変わる場合の再貼り付け手順 (or `claude mcp add` 経由の登録)、(5) Context7 / Cloudflare の OAuth 接続フロー、(6) `/mcp` での接続確認、(7) トラブルシュート (IDE 未起動 / MCP Server プラグイン未有効 / ポート競合 / IDE バージョン 2025.2 未満)。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動)、**`dependency-upgrade-check.yml` も導入しない** (Renovate PR の検証は pr-poller がローカルで dependency-upgrade Skill を起動して実施、Claude API の GitHub Actions 上実行を回避) |
 
 B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Skill 駆動 + KPT 生成の対象となる。`pr-poller` はローカル Claude Code 起動時に手動起動可能とし、A4 で `CronCreate` / `ScheduleWakeup` による自動化を完成させる。
 
@@ -1108,9 +1133,9 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 
 | # | 単位 | 起動 Skill | 内容 |
 |---|---|---|---|
-| **A1** | Plan | `harness-bootstrap` | ADR 0001-0027 を一括起草する PR (全て日本語) |
+| **A1** | Plan | `harness-bootstrap` | ADR 0001-0029 を一括起草する PR (全て日本語) |
 | **A2** | Plan | `harness-bootstrap` | `.claude/rules/*` 全ファイル + `docs/` 拡充 (architecture/, requirements/, specifications/ テンプレ等) |
-| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** / **ui-snapshot** の本格版へのアップグレード)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 8 aspect の binary eval checklist + coordinator を完全実装 (visual-regression / design-tokens は A10 完了後に enable)。マージ後、`harness-bootstrap` は `archived/` へ |
+| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** / **ui-snapshot** / **harness-evolution** の本格版へのアップグレード、**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を採用しリポジトリには配置しない**)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 8 aspect の binary eval checklist + coordinator を完全実装 (visual-regression / design-tokens は A10 完了後に enable)。pr-poller は **Renovate ラベル PR の検出と dependency-upgrade 起動** も担当。マージ後、`harness-bootstrap` は `archived/` へ |
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
 | **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル、**`dev.gitlive:firebase-*` 依存、`core/network/{auth,firestore}`、`firebase.json`、`.firebaserc`**) |
 | **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook + **trufflehog による secret-scan workflow**)。Konsist で「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「`feature/**`・`core/**` で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラに `requireUid()` 強制」を検証 |
@@ -1163,12 +1188,12 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 ## 7. 依存ライブラリのバージョンアップ自動化
 
 - Renovate 強化 (C1):
-  - `groupName` で kotlin / ktor / compose / firebase / sqldelight 等を束ねる。
+  - `groupName` で kotlin / ktor / compose / sqldelight 等を束ねる。
   - `prCreation: approval`、`dependencyDashboard: true`、`extends: [:semanticCommits]`。
-- GitHub Actions の `dependency-upgrade-check.yml`:
-  - Renovate 起点 PR (`labels:renovate`) で発火。
-  - `dependency-upgrade` Skill を起動し、リリースノートを WebFetch、影響モジュールを git grep、テストを実行、結果サマリを PR コメントに記録。
-  - 安全と判定したら `approve` ラベル付与、危険なら downgrade 提案。
+- **`dependency-upgrade` Skill の起動は GitHub Actions ではなく `pr-poller` (ローカル Claude Code) から行う**。GitHub Actions 上で Claude API を呼ぶと課金が発生するため、ローカル Claude Code 内で完結させる方針 (ADR 0017 / 0027 のローカルポーリング駆動と一貫)。
+  - `pr-poller` がローカルポーリングで **Renovate ラベル付き open PR** を検出 → `dependency-upgrade` Skill を起動。
+  - `dependency-upgrade` Skill は **Context7 MCP** で最新リリースノート取得、**JetBrains MCP** で影響モジュール特定、**`gh` CLI** で PR 状態取得、`./gradlew check` でテスト、結果サマリを `gh pr comment` で投稿。安全と判定したら `approve` ラベル付与、危険なら downgrade 提案 / Plan 起票。
+- GitHub Actions では Renovate 起点 PR に対する **CI (Lint / Test / Roborazzi) の通常実行のみ**。Claude API は呼ばない。
 
 ---
 
@@ -1215,6 +1240,9 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-26 | Skill が MCP の結果に含まれる secret / PII を learning / レビューコメントに転載 | `.claude/rules/mcp-usage.md` で出力前の redaction を強制、Konsist で Skill 実装ファイル内の secret パターン (`/^GHP_/`, `/^sk_/` 等) を検出 (ADR 0023 / 0027) |
 | R-27 | IntelliJ IDEA が起動していない / バージョンが 2025.2 未満 / MCP Server プラグインが無効 / 動的ポートが IDE 再起動で変わって `.claude/mcp.json` が古い、で JetBrains MCP が利用不可 | `docs/runbooks/mcp-setup.md` に IDE バージョン要件 (2025.2+) と MCP Server プラグイン有効化手順、Copy SSE Config の再貼り付け / `claude mcp add` 経由の再登録手順を明記。Skill 起動時に JetBrains MCP の接続失敗を検出したら、警告を出しつつ `gh` CLI / `git grep` などの代替手段にフォールバック。長期的・恒常的に IDE 非起動環境 (CI 上 agent 実行など) で運用したい場合は **Serena MCP の採用を別 Plan で再評価** (ADR 0027 の将来検討に記載) |
 | R-28 | Context7 MCP が古い / 取得不能 / 別のライブラリの API を返すリスク | Context7 は公開ライブラリ docs のため、AI が取得した内容を Konsist / detekt / 型チェッカーで二重検証。「Context7 で確認した」だけで実装を確定させない (rules/mcp-usage.md 明記) |
+| R-29 | harness-evolution が古い / 信頼性の低い情報源を追従するリスク | 情報源は `.claude/rules/harness-evolution.md` の **ホワイトリスト方式**、提案には必ず出典 URL + 引用日付、Context7 MCP で API 引用検証 (ADR 0029) |
+| R-30 | `example-skills:skill-creator` の公式アップデートに追従できないと SKILL.md 仕様 drift する | harness-evolution の手動実行時に `anthropics/skills` の更新を確認する責務に組み込み (`.claude/rules/harness-evolution.md` のホワイトリスト先頭に明記)。月次相当の頻度で手動実行を奨励 |
+| R-31 | harness-evolution が harness-meta と提案重複 | 重複検出ルール (`.claude/rules/harness-evolution.md`): 既に learning ファイルで指摘済の提案は harness-evolution 側を見送り。改修 PR は `harness-meta` / `harness-evolution` の **ラベル分離** で運用、harness-meta 側を優先 |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
 | R-6 | harness-bootstrap が万能になりすぎると専用 Skill 化が遅れる | A3 完了で必ず `archived/` へ移動、CLAUDE.md からも参照を外す |
 
