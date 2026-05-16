@@ -393,13 +393,51 @@ AI による自動テスト生成を前提とし、テスト品質は **3 つの
 
 ## 4. ドキュメント構造
 
+> AI が自律的に実装を進めるために必要な情報を `docs/` に体系化する (ADR 0030)。各 docs は **冒頭 5 行以内の summary + 詳細 lazy-load** の構造を必須化し、AI のコンテキストを圧迫しないようにする (R-32)。重複・矛盾は `traceability.md` と Konsist で機械検証 (R-33)。
+
 ```
+DESIGN.md                       ← リポジトリ root に配置 (Google Stitch 標準準拠)
+                                  上部: design tokens (machine-readable, 3 階層)
+                                  下部: rationale (human-readable, アクセシビリティ含む)
+CHANGELOG.md                    ← (将来) 運用後追加、dependency-upgrade Skill が更新
+
 docs/
-  README.md
-  architecture/
+  README.md                     ─ ★AI 用エントリポイント。全 docs 索引 + 推奨読み順 (CLAUDE.md → このファイル → 関連ディレクトリ)
+  glossary.md                   ─ ★新規 ドメイン用語集 (im@sparql / RDF / アイドル / ブランド / カラー / 担当 / 推し / SPARQL prefix 等。日本語 + 英訳 + 関連リンク)
+  codebase-map.md               ─ ★新規 主要パス → 責務 / 関連 SPEC-ID / 関連 ADR の対応表 (rules-index と相補)
+  traceability.md               ─ ★新規 Plan ⇄ Epic ⇄ ADR ⇄ Spec ⇄ 実装 のクロスリンク表。A6 で Konsist による自動生成導入
+
+  architecture/                 ─ ★大幅拡充 (旧 overview.md 1 つから分割)
     overview.md                 ─ モジュール依存図 (Mermaid)
-  requirements/                 ─ 機能要件 (機能ごとに 1 md)
-  specifications/               ─ 仕様詳細 (機能ごとに 1 md)
+    layers.md                   ─ ★新規 層別責務 (feature/* / core/* / backend/*)
+    data-flow.md                ─ ★新規 im@sparql → backend → frontend の流れ + Litestream/R2
+    domain-model.md             ─ ★新規 RDF (im@sparql) ⇄ SQLite ⇄ Kotlin model の三層マッピング
+    state-machines.md           ─ ★新規 主要 UiState 遷移 (Mermaid stateDiagram)
+    sequences.md                ─ ★新規 認証 / API 呼出 / 同期パイプライン (Mermaid sequence)
+    infrastructure.md           ─ ★新規 Cloud Run + Cloudflare Pages + R2 + GIS の構成図
+
+  api/                          ─ ★新規ディレクトリ
+    README.md                   ─ API 全体像
+    colormaster-api.yaml        ─ OpenAPI 3.1 (機械可読、code-reviewer の spec-conformance aspect が参照)
+    auth.md                     ─ GIS ID Token 検証フロー詳細
+    idols.md                    ─ /api/idols/* (アイドルマスタ参照)
+    me.md                       ─ /api/me/* (ユーザーデータ CRUD、PII redaction 規約)
+
+  security/                     ─ ★新規ディレクトリ
+    README.md                   ─ ADR 0011 (Firebase 廃止) / 0023 (PII + 権限ロール) / 0024 (Secrets) / 0028 (Skill authoring) / 0030 (docs structure) の索引
+
+  requirements/                 ─ 機能要件
+    README.md                   ─ ★新規 命名規約 (REQ-NNN) + SPEC-ID 採番ルール + 状態遷移
+    template.md                 ─ ★新規 日本語テンプレ
+    REQ-NNN-<slug>.md           ─ 機能ごと
+
+  specifications/               ─ 仕様詳細
+    README.md                   ─ ★新規 基本設計 / 詳細設計の使い分けガイド
+    basic-template.md           ─ ★新規 基本設計テンプレ (Acceptance criteria + SPEC-NNN-N 採番)
+    detail-template.md          ─ ★新規 詳細設計テンプレ (実装パス + シーケンス + データ構造)
+    SPEC-<id>-basic.md          ─ 機能ごと、基本設計
+    SPEC-<id>-detail.md         ─ 機能ごと、詳細設計
+
   adr/                          ─ Architecture Decision Records (起票基準は ADR 0001 と .claude/rules/adr.md に明文化)
     README.md                   ─ ADR 起票基準と運用ガイド (判断フロー図、ADR にすべき例/他の方法にすべき例)
     template.md                 ─ MADR + 日本語化された雛形 (巻末に「ADR 化すべき例」「他の記録方法にすべき例」を列挙)
@@ -432,6 +470,7 @@ docs/
     0027-mcp-servers-jetbrains-context7-cloudflare.md ─ ★新規 JetBrains MCP + Context7 MCP + Cloudflare MCP の採用。GitHub MCP は gh CLI で代替、Sourcegraph MCP は JetBrains MCP の IDE indexing で代替、Figma/Sentry/Serena は将来検討
     0028-skill-authoring-with-skill-creator.md  ─ ★新規 Skill 作成は Claude Code ユーザースコープの example-skills:skill-creator を経由、SKILL.md は Anthropic Complete Guide 準拠 (description=trigger, Gotchas 必須, MUST/ALWAYS/NEVER 禁止)
     0029-harness-evolution-from-external-research.md  ─ ★新規 外部研究 / ベストプラクティス駆動の改善ループ、手動起動のみ (cron 不採用、Claude API コスト抑制)、harness-meta (内部 KPT 駆動) と二系統で補完
+    0030-documentation-structure-for-ai-autonomy.md   ─ ★新規 AI 駆動実装に必要な docs 構造を体系化 (architecture 6 分割 / API は OpenAPI 3.1 / glossary / codebase-map / traceability)、命名規約 (REQ-NNN / SPEC-NNN-N / EPIC-NNN / PLAN-NNN / ADR-NNNN)、各 docs は冒頭 5 行 summary + 詳細 lazy-load
     # 削除済 (起票基準に照らして規約レベル → rules/ に統合)
     #   旧 0004 state-and-uiaction-conventions   → .claude/rules/{viewmodel,ui-state}.md
     #   旧 0026 permission-roles-owner-only       → ADR 0023 内のセクション
@@ -466,10 +505,15 @@ docs/
       INDEX.md
       YYYY-MM-DD.md             ─ 1 実行 = 1 ファイル、出典 URL + 引用日付 + 構造化改善案 (採用 → Plan/EPIC 起票へリンク)
   runbooks/
-    local-imasparql.md
-    sync-imasparql.md
-    release.md
-    secrets-rotation.md
+    local-development.md        ─ ★新規 環境構築 (JDK / Gradle / IntelliJ 2025.2+ / Docker / Node.js / wrangler / gcloud / Roborazzi 等の前提環境 + setup 手順)
+    local-imasparql.md          ─ Fuseki Docker でローカル im@sparql 起動 (A8 で本格化)
+    sync-imasparql.md           ─ 同期パイプライン操作・手動再実行・失敗対応
+    release.md                  ─ Cloud Run + Cloudflare Pages + R2 デプロイ手順 (B0 骨格、C7 で本格化)
+    secrets-rotation.md         ─ R2 token / GIS Client Secret 等のローテーション履歴
+    mcp-setup.md                ─ JetBrains / Context7 / Cloudflare MCP の接続手順
+    testing.md                  ─ ★新規 三層指標の運用 + Roborazzi baseline 操作
+    i18n.md                     ─ ★新規 composeResources 運用、文言 ID 命名、locale 追加手順
+    troubleshooting.md          ─ (将来追加) 既知問題 / エラーカタログ / FAQ
   design/                       ─ ★新規 UI/UX デザインの現状記録 (ADR 0025 / 0026 で定義)
     README.md                   ─ DESIGN.md / Inventory / Baseline の運用ガイドと参照リンク
     inventory/
@@ -483,10 +527,6 @@ docs/
         <composable>-mobile-dark.png
         <composable>-desktop-light.png
         <composable>-desktop-dark.png
-
-DESIGN.md                       ─ ★リポジトリ root に配置 (Google Stitch 標準準拠)
-                                  上部: design tokens (machine-readable, 3 階層)
-                                  下部: rationale (human-readable, アクセシビリティ含む)
 ```
 
 ### 4.1 Epic と Plan の区別
@@ -565,6 +605,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 - **Skill 作成は `example-skills:skill-creator` 経由**: Claude Code ユーザースコープにインストール済の Anthropic 公式 Skill を使用、本リポジトリには配置しない。SKILL.md は Anthropic "Complete Guide to Building Skills for Claude" 準拠 (description=trigger、Gotchas 必須、MUST/ALWAYS/NEVER 禁止)、AgentSkills 2026 spec + 100-point rubric (ADR 0028)
 - **ハーネス進化は内部 + 外部の二系統**: `harness-meta` (内部 KPT 駆動、週次 cron + 閾値 + 手動) と `harness-evolution` (外部研究 / ベストプラクティス駆動、**手動起動のみ**、Claude API コスト抑制のため cron 不採用) を補完併用 (ADR 0029)。harness-evolution の出力は `docs/harness/evolution-proposals/YYYY-MM-DD.md`
 - **GitHub Actions 上での Claude API 実行はゼロ**: 既存方針 (pr-poller / pr-retrospective / harness-meta のローカル化) に加え、**`dependency-upgrade` Skill 起動も pr-poller がローカルで Renovate ラベル PR を検出して実行** に統一。`upstream-driven 同期`・CI・trufflehog secret-scan は Claude API を使わないため GitHub Actions のまま運用
+- **AI 駆動実装のための docs 構造**: `docs/` に **glossary / codebase-map / traceability / architecture (6 分割) / api (OpenAPI 3.1) / security / requirements / specifications (basic + detail)** を体系化 (ADR 0030)。各 docs は **冒頭 5 行 summary + 詳細 lazy-load** 構造、命名規約 (REQ-NNN / SPEC-NNN-N / EPIC-NNN / PLAN-NNN / ADR-NNNN) を `.claude/rules/docs-structure.md` で明文化。`docs/traceability.md` は A6 で Konsist 自動生成。`docs/README.md` を **AI 用エントリポイント** として推奨読み順を明記
 
 #### ADR にすべきでない例 (他の記録方法を使う)
 
@@ -692,6 +733,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
     harness-meta-criteria.md   ─ 改修 PR 採用/見送り/撤去の判定基準 (Anthropic harness 原則を明文化)
     skill-authoring.md         ─ ★新規 Skill 作成は example-skills:skill-creator を経由、SKILL.md 構造 (description trigger / Gotchas 必須 / MUST/ALWAYS/NEVER 禁止) を Anthropic Complete Guide 準拠
     harness-evolution.md       ─ ★新規 外部情報源ホワイトリスト、出力フォーマット、harness-meta との責務分離、出典 URL + 引用日付の必須化、Context7 MCP で API 引用検証
+    docs-structure.md          ─ ★新規 docs/ の歩き方 (AI が読む順序)、各ディレクトリの責務、命名規約、5 行 summary + lazy-load 構造、code-reviewer / implementation-workflow が参照する場面
     # 実装ワークフロー
     implementation-workflow.md  ─ 8 フェーズの手順、fix loop の上限 (デフォルト 3 回)、Phase 失敗時の Plan 修正提案
     code-reviewer-aspects.md    ─ 8 aspect (spec-conformance / test-quality / architecture / security / performance / code-quality / visual-regression / design-tokens) の binary eval checklist、coordinator の構造化コメント形式
@@ -733,6 +775,9 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 | **/*Spec.kt, **/*Test.kt                       | kotlin-test.md                          |
 | **/build.gradle.kts                            | gradle.md                               |
 | docs/adr/*.md                                  | adr.md                                  |
+| docs/{requirements,specifications,architecture,api,security}/**  | docs-structure.md                        |
+| docs/api/colormaster-api.yaml                  | docs-structure.md, network-client.md, backend-auth.md |
+| docs/glossary.md, docs/codebase-map.md, docs/traceability.md     | docs-structure.md                        |
 | docs/epics/**/                                 | epic.md                                 |
 | docs/plans/*.md                                | plan.md                                 |
 ```
@@ -1123,7 +1168,7 @@ Remote HTTP + OAuth。初回接続時に Claude Code がブラウザで認証フ
 
 | # | 内容 |
 |---|---|
-| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / **`.claude/mcp.json` で JetBrains MCP + Context7 MCP + Cloudflare MCP の接続定義** / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot, harness-evolution}` の最小版 (**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を参照、本リポジトリには配置しない**) / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation, mcp-usage, skill-authoring, harness-evolution}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**、`mcp-usage.md` は **GitHub は gh CLI / IDE 操作は JetBrains MCP / ライブラリ docs は Context7 / Cloudflare 管理は Cloudflare MCP の使い分けを規定**、`skill-authoring.md` は **example-skills:skill-creator 経由 + Anthropic Complete Guide 準拠**、`harness-evolution.md` は **外部情報源ホワイトリスト + 手動起動のみ + harness-meta との責務分離**) / `docs/{adr, epics, plans, harness/learnings, harness/evolution-proposals, runbooks, requirements, specifications, design/inventory}` スケルトン (テンプレートは全て**日本語**、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)** / **`docs/runbooks/mcp-setup.md` を新規追加** — 以下を記載: (1) IntelliJ IDEA / Android Studio **2025.2+ にバンドル済の MCP Server プラグイン** (`JetBrains/mcp-server-plugin`、Marketplace 26071) を `Settings | Tools | MCP Server` で有効化、(2) **旧 `@jetbrains/mcp-proxy` npm パッケージは deprecated なので使用しない** こと、(3) JetBrains MCP の **3 つの接続方式** (Copy SSE Config [推奨] / Copy Stdio Config / Copy HTTP Stream Config) の選択基準と `.claude/mcp.json` への貼り付け手順、(4) IDE 再起動で動的ポートが変わる場合の再貼り付け手順 (or `claude mcp add` 経由の登録)、(5) Context7 / Cloudflare の OAuth 接続フロー、(6) `/mcp` での接続確認、(7) トラブルシュート (IDE 未起動 / MCP Server プラグイン未有効 / ポート競合 / IDE バージョン 2025.2 未満)。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動)、**`dependency-upgrade-check.yml` も導入しない** (Renovate PR の検証は pr-poller がローカルで dependency-upgrade Skill を起動して実施、Claude API の GitHub Actions 上実行を回避) |
+| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / **`.claude/mcp.json` で JetBrains MCP + Context7 MCP + Cloudflare MCP の接続定義** / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective, implementation-workflow, code-reviewer, ui-snapshot, harness-evolution}` の最小版 (**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を参照、本リポジトリには配置しない**) / `.claude/rules/{rules-index, retrospective-format, pr-poller, template-language, implementation-workflow, code-reviewer-aspects, pii, secrets, db-protection, adr, design-tokens, ui-snapshot, ui-inventory, behavior-preservation, mcp-usage, skill-authoring, harness-evolution, docs-structure}.md` 骨格 (`adr.md` は **ADR 起票基準と例列挙を含む**、`mcp-usage.md` は **GitHub は gh CLI / IDE 操作は JetBrains MCP / ライブラリ docs は Context7 / Cloudflare 管理は Cloudflare MCP の使い分けを規定**、`skill-authoring.md` は **example-skills:skill-creator 経由 + Anthropic Complete Guide 準拠**、`harness-evolution.md` は **外部情報源ホワイトリスト + 手動起動のみ + harness-meta との責務分離**、`docs-structure.md` は **AI が docs を読む順序 + 命名規約 + 5 行 summary + lazy-load 構造**) / `docs/{adr, epics, plans, harness/learnings, harness/evolution-proposals, runbooks, requirements, specifications, design/inventory, architecture, api, security}` スケルトン (テンプレートは全て**日本語**、`docs/README.md` は **AI 用エントリポイント** として推奨読み順を明記、`docs/{glossary, codebase-map, traceability}.md` の骨格を配置、`docs/architecture/{overview, layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md` 骨格、`docs/api/{README, colormaster-api.yaml, auth, idols, me}.md` 骨格、`docs/security/README.md` で ADR 索引、`docs/requirements/{README, template}.md`、`docs/specifications/{README, basic-template, detail-template}.md`、`docs/adr/{README,template}.md` に **ADR 化すべき例 / 他の記録方法にすべき例** を列挙、`docs/design/README.md` に DESIGN.md / Inventory / Baseline 運用ガイド) / **`DESIGN.md` の骨格を repo root に配置** (tokens セクションは空、A10 で生成) / EPIC-000-harness-foundation 起票 / **`.gitignore` 最終形 (`data/users.db*`, `.env*`, `*-credentials.json` 等を網羅)** / **`docs/runbooks/{local-development, testing, i18n, mcp-setup}.md` を新規追加 (骨格)**。`mcp-setup.md` は以下を記載: (1) IntelliJ IDEA / Android Studio **2025.2+ にバンドル済の MCP Server プラグイン** (`JetBrains/mcp-server-plugin`、Marketplace 26071) を `Settings | Tools | MCP Server` で有効化、(2) **旧 `@jetbrains/mcp-proxy` npm パッケージは deprecated なので使用しない** こと、(3) JetBrains MCP の **3 つの接続方式** (Copy SSE Config [推奨] / Copy Stdio Config / Copy HTTP Stream Config) の選択基準と `.claude/mcp.json` への貼り付け手順、(4) IDE 再起動で動的ポートが変わる場合の再貼り付け手順 (or `claude mcp add` 経由の登録)、(5) Context7 / Cloudflare の OAuth 接続フロー、(6) `/mcp` での接続確認、(7) トラブルシュート (IDE 未起動 / MCP Server プラグイン未有効 / ポート競合 / IDE バージョン 2025.2 未満)。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動)、**`dependency-upgrade-check.yml` も導入しない** (Renovate PR の検証は pr-poller がローカルで dependency-upgrade Skill を起動して実施、Claude API の GitHub Actions 上実行を回避) |
 
 B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Skill 駆動 + KPT 生成の対象となる。`pr-poller` はローカル Claude Code 起動時に手動起動可能とし、A4 で `CronCreate` / `ScheduleWakeup` による自動化を完成させる。
 
@@ -1133,12 +1178,12 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 
 | # | 単位 | 起動 Skill | 内容 |
 |---|---|---|---|
-| **A1** | Plan | `harness-bootstrap` | ADR 0001-0029 を一括起草する PR (全て日本語) |
-| **A2** | Plan | `harness-bootstrap` | `.claude/rules/*` 全ファイル + `docs/` 拡充 (architecture/, requirements/, specifications/ テンプレ等) |
+| **A1** | Plan | `harness-bootstrap` | ADR 0001-0030 を一括起草する PR (全て日本語) |
+| **A2** | EPIC-A2 | `harness-bootstrap` | **`.claude/rules/*` 全ファイル本格化 + `docs/` 全面拡充**: docs/README.md (AI エントリポイント・推奨読み順)、glossary.md、codebase-map.md (初版、A10 / Phase C で随時更新)、architecture/{layers, data-flow, domain-model, state-machines, sequences, infrastructure}.md、api/README.md + colormaster-api.yaml (骨格、内容は C5 で本格化)、security/README.md (ADR 索引)、requirements/{README, template}.md、specifications/{README, basic-template, detail-template}.md、runbooks/{local-development, testing, i18n}.md を完成。各 docs は冒頭 5 行 summary + 詳細 lazy-load 構造 (ADR 0030) |
 | **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** / **ui-snapshot** / **harness-evolution** の本格版へのアップグレード、**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を採用しリポジトリには配置しない**)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 8 aspect の binary eval checklist + coordinator を完全実装 (visual-regression / design-tokens は A10 完了後に enable)。pr-poller は **Renovate ラベル PR の検出と dependency-upgrade 起動** も担当。マージ後、`harness-bootstrap` は `archived/` へ |
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
 | **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル、**`dev.gitlive:firebase-*` 依存、`core/network/{auth,firestore}`、`firebase.json`、`.firebaserc`**) |
-| **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook + **trufflehog による secret-scan workflow**)。Konsist で「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「`feature/**`・`core/**` で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラに `requireUid()` 強制」を検証 |
+| **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook + **trufflehog による secret-scan workflow**)。Konsist で「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「`feature/**`・`core/**` で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラに `requireUid()` 強制」「**`docs/traceability.md` を Konsist で自動生成** (Plan/Epic/ADR/Spec/実装ファイルのクロスリンク表)」「**docs/ の各 Markdown が冒頭 5 行以内の summary を持つ**」を検証 |
 | **A7** | Plan | `feature-request` | **三層テスト品質基盤の導入**:<br>● **指標 A**: Kover 導入 + `koverVerify minValue=100` 必達化 (ADR 0013 除外列挙のみ許可)<br>● **指標 B**: `@Spec` annotation の Kotlin 定義 + Konsist による Spec coverage 検証ルール導入 (ADR 0016、`.claude/rules/spec-traceability.md`)<br>● **指標 C**: PITest + pitest-kotlin + gradle-pitest-plugin 導入。JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。PR コメントで mutation score 可視化 (ADR 0015、`.claude/rules/mutation-testing.md`)<br>本 PR 時点では既存コードの未充足は除外リストで一旦逃がし、A9 完了までに全モジュールに展開する旨を rules に明記 |
 | **A8** | Plan | `feature-request` | **im@sparql ローカル Docker 環境構築** (Apache Jena Fuseki + RDF データ初期投入スクリプト + `docker-compose.yml` + integration test 基盤 + Testcontainers 規約)。`docs/runbooks/local-imasparql.md` を整備し、backend のローカル開発・テストを Fuseki に対して実行できる状態にする |
 | **A9** | **EPIC-A9** | `refactor` | **既存コード全体に対する三層指標の達成**。モジュールごとに段階 Plan (PLAN-NNN × 多数) を発行:<br>● 指標 A: line / branch 100% カバレッジを全モジュールで達成<br>● 指標 B: 既存機能の Acceptance criteria を `docs/specifications/<id>.md` に逆生成、テストに `@Spec` annotation を付与、Spec coverage 100% 達成<br>● 指標 C: 各モジュールの初回 mutation score をベースラインとして記録、明らかな tautological テストは learnings に蓄積し改善<br>Konsist の「実装クラス ⇄ テストクラス対応」検証を本 EPIC 完了時に enforce。backend/server / android/app / core/* / data/ 全モジュールが対象。A7 で導入した除外リストは ADR 0013 列挙分のみに整理する |
@@ -1243,6 +1288,8 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-29 | harness-evolution が古い / 信頼性の低い情報源を追従するリスク | 情報源は `.claude/rules/harness-evolution.md` の **ホワイトリスト方式**、提案には必ず出典 URL + 引用日付、Context7 MCP で API 引用検証 (ADR 0029) |
 | R-30 | `example-skills:skill-creator` の公式アップデートに追従できないと SKILL.md 仕様 drift する | harness-evolution の手動実行時に `anthropics/skills` の更新を確認する責務に組み込み (`.claude/rules/harness-evolution.md` のホワイトリスト先頭に明記)。月次相当の頻度で手動実行を奨励 |
 | R-31 | harness-evolution が harness-meta と提案重複 | 重複検出ルール (`.claude/rules/harness-evolution.md`): 既に learning ファイルで指摘済の提案は harness-evolution 側を見送り。改修 PR は `harness-meta` / `harness-evolution` の **ラベル分離** で運用、harness-meta 側を優先 |
+| R-32 | docs/ が肥大化して AI のコンテキストを圧迫 | 各 docs に **冒頭 5 行以内の summary + 詳細 lazy-load** 構造を必須化、`.claude/rules/docs-structure.md` で規定、Konsist で機械検証 (ADR 0030 / A6) |
+| R-33 | 複数 docs 間の重複・矛盾 (例: api.md と OpenAPI yaml、spec と requirements、ADR と rules の重複指摘) | `docs/traceability.md` を Konsist で自動生成し Plan/Epic/ADR/Spec/実装のクロスリンクを機械維持 (A6)。code-reviewer の architecture aspect で docs 間の矛盾も検出対象に |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
 | R-6 | harness-bootstrap が万能になりすぎると専用 Skill 化が遅れる | A3 完了で必ず `archived/` へ移動、CLAUDE.md からも参照を外す |
 
