@@ -281,6 +281,7 @@ docs/
     0015-imasparql-local-docker-fuseki.md
     0016-mutation-testing-pitest.md
     0017-spec-coverage-traceability.md
+    0018-harness-loop-local-polling.md
   epics/                        ─ 複数 PR の取り組み (1 epic = 1 ディレクトリ)
     INDEX.md
     template/
@@ -306,7 +307,8 @@ docs/
     workflow.md
     skills.md
     kpt-template.md
-    learnings/                  ─ PR ごとの KPT 出力
+    learnings/                  ─ PR ごとの KPT 出力 (1 PR = 1 ファイル、Single Source of Truth)
+      YYYY-MM-DD-pr-NNN.md      ─ pr-retrospective が生成、harness-meta が "feedback" セクションを追記
   runbooks/
     local-imasparql.md
     sync-imasparql.md
@@ -342,8 +344,11 @@ Epic 配下で複数 PR を出す場合の個別 Plan は、`docs/plans/` に一
 
 ### 4.4 KPT learnings との関係
 
-- 各 PR マージ後に `kpt-retrospective` Skill が `docs/harness/learnings/YYYY-MM-DD-pr-<n>.md` を生成。
-- 月次 (または閾値超過時) に `harness-meta` Skill が learnings を集約し、CLAUDE.md / rules / skills / Lint への改修 PR を起票。
+- **Single Source of Truth はファイル**: 各 PR マージ / クローズ後に `pr-retrospective` Skill が `docs/harness/learnings/YYYY-MM-DD-pr-<n>.md` を生成 (PR コメントは出さない)。
+- ファイル内に Keep / Problem / Try / Metrics / Suggested harness changes のセクションを構造化フォーマットで記録 (`.claude/rules/retrospective-format.md`)。
+- **生成タイミング**: ローカル Claude Code 上で `pr-poller` Skill がポーリング起動 (詳細は 5.3 節)。
+- **harness-meta による後追記**: `harness-meta` Skill が改修 PR を起票するたびに、元 learning ファイルの末尾に `## 📝 harness-meta feedback` セクションを追記 (採用/見送り/保留の判定理由)。これにより learning ファイルが「提案 → 結果」の往復ログを担う Single Source of Truth として完結する。
+- ファイル commit 方法: `pr-retrospective` が `harness/learnings-batch` 等のブランチに集約し、週次 (or 一定件数到達時) に PR としてまとめて起票。人間レビューを通してマージ。
 
 ---
 
@@ -356,13 +361,14 @@ Epic 配下で複数 PR を出す場合の個別 Plan は、`docs/plans/` に一
     harness-bootstrap/          B0 の唯一の Skill。A3 完了後に archived/ へ
     plan-author/                B0 から導入
     epic-author/                B0 から導入
-    kpt-retrospective/          B0 から最小版で稼働
+    pr-retrospective/           B0 から最小版で稼働 (1 PR = 1 learning ファイル生成)
+    pr-poller/                  B0 から導入 (ローカル Claude Code 内でポーリング、未処理 PR を検出して pr-retrospective を起動)
     feature-request/            A3 で完成
     bug-fix/                    A3 で完成
     refactor/                   A3 で完成
     dependency-upgrade/         A3 で完成
     adr-author/                 A3 で完成
-    harness-meta/               A3 で完成
+    harness-meta/               A3 で完成 (改修 PR 起票 + 元 learning ファイルへの feedback 追記)
     archived/                   引退した Skill (harness-bootstrap など)
   rules/
     rules-index.md
@@ -399,6 +405,10 @@ Epic 配下で複数 PR を出す場合の個別 Plan は、`docs/plans/` に一
     pr-template.md
     commit-message.md
     branch-naming.md
+    # ハーネス改善ループ
+    retrospective-format.md    ─ pr-retrospective が出力する learning ファイルの構造化フォーマット
+    pr-poller.md               ─ ローカルポーリング規約 (起動頻度、未処理 PR 判定、CronCreate/ScheduleWakeup 使用方針)
+    harness-meta-criteria.md   ─ 改修 PR 採用/見送り/撤去の判定基準 (Anthropic harness 原則を明文化)
     # 同期 / Backend
     sync-job.md
     sqlite-data-file.md
@@ -446,7 +456,8 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 | `harness-bootstrap` | B0 のみ。手動起動 | 専用 Skill 群が揃うまでの汎用 Skill。タスク種別 (ADR 起草 / rules 追加 / docs 拡充 / モジュール撤去 / Lint 導入) に応じた汎用手順を実行。A3 完了後に `archived/` へ |
 | `plan-author` | feature-request / bug-fix / refactor が単一 PR スコープと判定 | `docs/plans/PLAN-NNN-*.md` を 1 ファイル生成、INDEX.md 更新 |
 | `epic-author` | 同上、複数 PR スコープと判定。または Plan 昇格時 | `docs/epics/EPIC-NNN-<slug>/` を template から生成、INDEX.md 更新 |
-| `kpt-retrospective` | PR マージ後の workflow から自動起動 | 直近 PR の diff / コメント / CI ログ / Skill 実行ログを集約し `docs/harness/learnings/` に出力 |
+| **`pr-poller`** | ローカル Claude Code 起動時 + `CronCreate` 日次スケジュール + `ScheduleWakeup` ループ | gh CLI で merged / closed PR を取得 → 既に learning ファイルがある PR を除外 → 未処理 PR があれば `pr-retrospective` を起動 → 一定期間経過 (7 日) または未処理 learning 件数閾値到達で `harness-meta` を起動。詳細規約は `.claude/rules/pr-poller.md` |
+| **`pr-retrospective`** (旧 `kpt-retrospective`) | `pr-poller` から自動起動 / 手動起動 | 対象 PR の diff (`gh pr diff`) / comments / reviews / CI ログ / Skill 実行ログ / 三層指標差分 (Kover / Konsist / PITest) / 関連 Plan・Epic を収集。`docs/harness/learnings/YYYY-MM-DD-pr-<n>.md` を `.claude/rules/retrospective-format.md` の構造化フォーマットで生成。`harness/learnings-batch-YYYY-WW` ブランチに集約し、週次 (or 件数到達時) に PR としてまとめて起票 |
 | `feature-request` | ユーザー指示 or Issue | 要件 → 仕様 → ADR (必要時) → Plan / Epic 起票 → 実装 → PR |
 | `bug-fix` | Issue / 障害報告 | 再現 → ルートコーズ分析 → ADR (設計起因なら) → 修正 → 回帰テスト → PR |
 | `refactor` | 改善提案 | 影響範囲分析 → リスク評価 → 段階的リファクタ → PR |
@@ -454,17 +465,55 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 | `adr-author` | 他 Skill から呼ばれる | ADR テンプレに沿って起草、関連 ADR をリンク |
 | `harness-meta` | 月次 cron or learnings 閾値超過 | learnings の `Try` / `Suggested harness changes` を集約 → ハーネス改修 PR を起票 |
 
-### 5.4 Skill + KPT ループ
+### 5.4 Skill + KPT ループ (Generator / Evaluator / Meta-Generator)
+
+Anthropic の GAN-style harness 設計 (Generator → Evaluator → Meta-Generator のフィードバックループ) に準拠する。
 
 ```
-[Skill 起動]
-   → 要件/仕様生成 (docs/requirements, specifications)
-   → Plan or Epic 起票 (docs/plans or docs/epics)
-   → 実装 → ./gradlew check + koverVerify
-   → PR 作成 → CI green → review → merge
-   → kpt-retrospective が docs/harness/learnings/YYYY-MM-DD-pr-N.md 出力
-   → 月次で harness-meta が集約 → ハーネス改修 PR
+┌── Generator フェーズ (実装) ──────────────────────────────┐
+│ [feature-request / bug-fix / refactor / dependency-upgrade]│
+│    → 要件/仕様生成 (docs/requirements, specifications)    │
+│    → Plan or Epic 起票 (docs/plans or docs/epics)         │
+│    → 実装 → ./gradlew check + koverVerify + pitest        │
+│    → PR 作成 → CI green → review → merge or close          │
+│    Skill 実行ログを .claude/logs/ に逐次追記              │
+└────────────────────────────────────────────────────────────┘
+                       │
+                       ▼ (ローカル Claude Code 内、定期 / 起動時)
+┌── Evaluator フェーズ (KPT 残し) ──────────────────────────┐
+│ [pr-poller]                                                │
+│    gh pr list --state closed,merged                        │
+│    未処理 PR を検出 (learning ファイルが未生成)            │
+│       │                                                    │
+│       ▼                                                    │
+│ [pr-retrospective]                                         │
+│    PR 情報・CI・Skill ログ・指標差分を収集                │
+│    docs/harness/learnings/YYYY-MM-DD-pr-N.md を生成        │
+│    harness/learnings-batch-YYYY-WW ブランチに集約          │
+│    週次 (or 件数到達) で PR 起票                            │
+└────────────────────────────────────────────────────────────┘
+                       │
+                       ▼ (一定期間経過 / 件数閾値で pr-poller が起動)
+┌── Meta-Generator フェーズ (改修 PR 起票) ─────────────────┐
+│ [harness-meta]                                             │
+│    docs/harness/learnings/*.md を直接 Read                 │
+│    Suggested harness changes を集計・優先度付け            │
+│    1 改修テーマ = 1 PR で複数起票 (テーマ別粒度)            │
+│    見送り提案: 元 learning ファイルに feedback セクション追記│
+│    撤去候補: 月次まとめて cleanup PR を別建てで起票        │
+└────────────────────────────────────────────────────────────┘
+                       │
+                       ▼
+                改修 PR 群 → Generator サイクルへ
+                (再帰的セルフ改善ループ完成)
 ```
+
+ポイント:
+
+- **3 Skill が役割分担**: `pr-poller` (オーケストレーター) → `pr-retrospective` (Evaluator) → `harness-meta` (Meta-Generator)
+- **GitHub Actions では Claude API を呼ばない**: ローカル Claude Code 内の `CronCreate` / `ScheduleWakeup` 機能でポーリング駆動。API コストはユーザーの既存利用枠内で完結
+- **Learning ファイルが Single Source of Truth**: PR コメントは出さない。`docs/harness/learnings/` の Markdown が `pr-retrospective` の出力先かつ `harness-meta` の入力源
+- **対話的フィードバック**: 採用見送りや保留は元 learning ファイルに `harness-meta feedback` セクションを追記、提案 → 結果の往復ログが 1 ファイル内で完結
 
 ---
 
@@ -474,9 +523,9 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 
 | # | 内容 |
 |---|---|
-| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / `.claude/skills/{harness-bootstrap, plan-author, epic-author, kpt-retrospective}` の最小版 / `.claude/rules/rules-index.md` 骨格 / `docs/{adr, epics, plans, harness, runbooks, ...}` スケルトン / EPIC-000-harness-foundation 起票 / `.github/workflows/kpt-retrospective.yml` |
+| **B0** | 最小ブートストラップ PR。CLAUDE.md 骨格 / AGENTS.md 骨格 / `.claude/settings.json` / `.claude/skills/{harness-bootstrap, plan-author, epic-author, pr-poller, pr-retrospective}` の最小版 / `.claude/rules/{rules-index, retrospective-format, pr-poller}.md` 骨格 / `docs/{adr, epics, plans, harness/learnings, runbooks, ...}` スケルトン / EPIC-000-harness-foundation 起票。**GitHub Actions の post-merge workflow は導入しない** (KPT ループはローカル Claude Code ポーリングで駆動するため) |
 
-B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Skill 駆動 + KPT 生成の対象となる。
+B0 完了時点で Skill ループが稼働開始する。以降の全 PR が Skill 駆動 + KPT 生成の対象となる。`pr-poller` はローカル Claude Code 起動時に手動起動可能とし、A4 で `CronCreate` / `ScheduleWakeup` による自動化を完成させる。
 
 ### 6.2 Phase A — Skill 駆動による基盤完成
 
@@ -486,8 +535,8 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 |---|---|---|---|
 | **A1** | Plan | `harness-bootstrap` | ADR 0001-0017 を一括起草する PR |
 | **A2** | Plan | `harness-bootstrap` | `.claude/rules/*` 全ファイル + `docs/` 拡充 (architecture/, requirements/, specifications/ テンプレ等) |
-| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および kpt-retrospective の本格版へのアップグレード)。マージ後、`harness-bootstrap` は `archived/` へ |
-| **A4** | Plan | `feature-request` | post-merge workflow 本格化 (`kpt-retrospective.yml` 実装一致 / `harness-meta.yml` 月次 cron) |
+| **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller の本格版へのアップグレード)。マージ後、`harness-bootstrap` は `archived/` へ |
+| **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
 | **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル) |
 | **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook) |
 | **A7** | Plan | `feature-request` | **三層テスト品質基盤の導入**:<br>● **指標 A**: Kover 導入 + `koverVerify minValue=100` 必達化 (ADR 0014 除外列挙のみ許可)<br>● **指標 B**: `@Spec` annotation の Kotlin 定義 + Konsist による Spec coverage 検証ルール導入 (ADR 0017、`.claude/rules/spec-traceability.md`)<br>● **指標 C**: PITest + pitest-kotlin + gradle-pitest-plugin 導入。JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。PR コメントで mutation score 可視化 (ADR 0016、`.claude/rules/mutation-testing.md`)<br>本 PR 時点では既存コードの未充足は除外リストで一旦逃がし、A9 完了までに全モジュールに展開する旨を rules に明記 |
@@ -570,6 +619,8 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-8 | A9 (既存コード三層指標達成 EPIC) の作業量が想定を超える可能性 | モジュール単位で Plan を切り、PR を細粒度に分割。完了見込みが立たない場合は除外対象の見直しを ADR 改訂で対応 (ただし安易な除外追加は禁止)。指標 C は初回 baseline 記録のみで完了とし、改善は継続課題に |
 | R-9 | Fuseki に投入する RDF データの著作権・ライセンス確認 | A8 でデータ取得元 (`imas/imasparql` リポジトリ) のライセンスを確認し ADR 0015 に明記。条件次第ではダミー RDF + テスト専用データ構成にする |
 | R-10 | PITest が KMP の JS/Wasm/iOS actual 実装を mutate できない | これらは expect/actual の薄い層で本質的にロジックが薄いため実害が小さいと判断。Konsist (テスト存在) と通常単体テストで担保。将来 MutFlow (K2 compiler plugin、KMP 全 target 適合の可能性) を別 ADR で評価可能性として記録 (ADR 0016) |
+| R-11 | ローカル Claude Code ポーリング駆動のため、ユーザーがしばらく Claude Code を起動しないと KPT ループが停止する | `pr-poller` Skill 起動時に「最後の処理から N 日経過した PR」を最優先で処理するキャッチアップ動作を組み込む (ADR 0018)。長期不在後の再開で取りこぼしを防ぐ |
+| R-12 | learning ファイルが PR にまとまる前にロストするリスク (ローカル commit のみで push 忘れ) | `pr-retrospective` は ファイル生成と同時に `harness/learnings-batch-YYYY-WW` ブランチに push する。週次の learnings PR でまとめて起票するが、push 自体は逐次行う |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
 | R-6 | harness-bootstrap が万能になりすぎると専用 Skill 化が遅れる | A3 完了で必ず `archived/` へ移動、CLAUDE.md からも参照を外す |
 
@@ -593,7 +644,14 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 - 昇格時のステータスは `promoted`。
 - B0 のみ手作業、A1 以降は Skill ループ駆動。
 - harness-bootstrap は A3 後に `archived/` へ移動。
-- KPT は全 PR で生成、harness-meta は月次集約。
+- **KPT は全 PR で生成**:
+  - 出力先は **ファイル** (`docs/harness/learnings/YYYY-MM-DD-pr-N.md`)、PR コメントは出さない
+  - 駆動方式は **ローカル Claude Code ポーリング** (`pr-poller` Skill が `CronCreate` / `ScheduleWakeup` で起動)。GitHub Actions では Claude API を呼ばない (コスト回避、ADR 0018)
+  - Skill 構成: `pr-poller` (オーケストレーター) + `pr-retrospective` (Evaluator、旧 kpt-retrospective) + `harness-meta` (Meta-Generator)
+- **harness-meta による改修 PR**:
+  - 改修テーマごとに **個別 PR** を起票 (1 改修テーマ = 1 PR)
+  - 見送り提案は元 learning ファイルに `## 📝 harness-meta feedback` セクションを追記、提案 → 結果の往復ログがファイル内で完結
+  - 未使用 rule / dormant Skill は **月次 cleanup PR** で別建てで撤去候補レビュー
 - テスト品質は **三層指標** で多層検証する:
   - 指標 A: **Line / Branch coverage 100%** (テスト存在の保証、CI 必達ゲート、`koverVerify minValue=100`)
   - 指標 B: **Spec coverage 100%** (仕様適合性の保証、`@Spec` annotation + Konsist 検証で CI 必達ゲート)
