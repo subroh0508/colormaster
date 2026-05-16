@@ -627,7 +627,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 | テスト fixture に `@example.com` ドメインを使う規約 | `.claude/rules/pii.md` |
 | Compose Preview の表記揺れを統一する | `.claude/rules/composable.md` (KPT 起点で追記) |
 | 「Skill 実行時のログを `.claude/logs/` に追記する」運用 | `.claude/rules/pr-poller.md` などの該当 Skill 規約 |
-| `roadmap-tracker` Skill の操作規約 (ロードマップ Markdown の構造、ステータス語彙、Konsist 検証、逆同期禁止) | `.claude/rules/roadmap.md`。ハーネス中核フェーズには直接組み込まない補助 Skill であり、撤回コストも低い (Skill / rule / 出力 md を削除すれば完結) ため ADR 起票基準を満たさない |
+| `roadmap-tracker` Skill の操作規約 (ロードマップ Markdown の構造、ステータス語彙、Gradle カスタムタスクによる項目 ID 実在検証 §5.2、逆同期禁止) | `.claude/rules/roadmap.md`。ハーネス中核フェーズには直接組み込まない補助 Skill であり、撤回コストも低い (Skill / rule / 出力 md を削除すれば完結) ため ADR 起票基準を満たさない |
 | Cloud Run の `min-instances` を 0 から 1 に変更する | runbook (`docs/runbooks/release.md`) + Plan |
 | 開発者がローカルで Fuseki Docker を起動する手順 | runbook (`docs/runbooks/local-imasparql.md`) |
 | im@sparql 同期 PR の自動マージ可否 | sync workflow の設定 + 該当 Skill 規約 |
@@ -700,7 +700,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
     # 計画・記録
     plan.md
     epic.md
-    roadmap.md                  ─ ★新規 `roadmap-tracker` Skill の操作規約。ロードマップ Markdown の構造 (frontmatter / 項目一覧 / 完了根拠 / 着手順とブロック / 保留事項 / 障壁と回避策 / 着手順変更履歴)、ステータス語彙 (proposed/in-progress/completed/blocked/abandoned)、入力スコープ (plan.md と Epic のみ、**Plan 単体は対象外**)、Konsist による項目 ID 実在検証、plan.md / Epic への逆同期禁止を明文化
+    roadmap.md                  ─ ★新規 `roadmap-tracker` Skill の操作規約。ロードマップ Markdown の構造 (frontmatter / 項目一覧 / 完了根拠 / 着手順とブロック / 保留事項 / 障壁と回避策 / 着手順変更履歴)、ステータス語彙 (proposed/in-progress/completed/blocked/abandoned)、入力スコープ (plan.md と Epic のみ、**Plan 単体は対象外**)、Gradle カスタムタスク (commonmark-java + SnakeYAML、§5.2) による項目 ID 実在検証、plan.md / Epic への逆同期禁止を明文化
     adr.md                      ─ ADR 起票基準 / 採番 / ステータス遷移 / ADR 化すべき例・他の記録方法にすべき例の列挙 (4.5 節を要約)
     # アーキテクチャ層別
     viewmodel.md
@@ -795,14 +795,36 @@ CLAUDE.md (常時ロード) に lookup table を持ち、編集対象ファイ�
 
 ### 5.2 機械的ガード (二重化)
 
-- **Konsist**: 構造的制約をテスト化。
+検証対象のファイル種別ごとに別ツールを使い、Konsist は **Kotlin source 専用**に限定する。Konsist 公式の `KoScope` は Kotlin file のみを対象とし、Markdown / YAML / frontmatter は parse できないため (公式 [docs.konsist.lemonappdev.com/writing-tests/koscope](https://docs.konsist.lemonappdev.com/writing-tests/koscope) で「Scope represents a set of Kotlin files」と明示)、別系統を併用する。
+
+- **Konsist (Kotlin code 規約)**: 構造的制約をテスト化。
   - `feature/**/*ViewModel.kt` は `androidx.lifecycle.ViewModel` を継承する。
   - `feature/**/*Screen.kt` の最上位 `@Composable fun *Screen(` 引数に `uiState: *UiState` を含む。
   - `core/network/{auth,firestore}/` 以外で `dev.gitlive.firebase.*` の import を禁止。
+  - 実装クラス ⇄ テストクラスのペアリング (`*Spec.kt` / `*Test.kt` の存在)。
+  - 実装側に付与された `@Spec("SPEC-NNN-N")` annotation の収集 (traceability 生成の入力)。
 - **detekt**: 文字列リテラル直書き検出、命名規約。
-- **Gradle カスタムタスク**: `firebase-boundary.md` 等の境界違反を git grep で簡易チェック。
+- **`markdownlint-cli2`** (David Anson、Node 製、業界デファクトの Markdown lint ルール集) で **Markdown フォーマット規約** (行長 / 見出しレベルの飛び / リスト形式 / コードブロック言語タグ / リンクの妥当性等) を検証。Gradle 連携は `com.github.node-gradle.node` Gradle plugin 経由でローカル実行、加えて CI では `DavidAnson/markdownlint-cli2-action` を併用 (trufflehog と同じく独立ツールとして CI 上で実行する方針と整合)。
+- **Gradle カスタムタスク (Kotlin、`docs/**/*.md` 走査)** で `org.commonmark:commonmark` + `org.commonmark:commonmark-ext-yaml-front-matter` を使い、本文を AST 化 + frontmatter を抽出。`org.yaml:snakeyaml` (2.x、CVE-2022-1471 対策済み) で frontmatter YAML 値を厳密 parse。プロジェクト固有の以下を検証 / 生成:
+  - frontmatter 必須キーの存在 (`id`, `status`, `type`, `last_updated` 等) と JSON Schema 検証。
+  - frontmatter 外の見出しは日本語必須 (ADR 0027 / `template-language.md`)。
+  - `docs/` 各 Markdown が冒頭 5 行以内の summary を持つ (ADR 0027 / `docs-structure.md`)。
+  - `docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する (R-34)。
+  - `docs/traceability.md` を Konsist が抽出した Kotlin 側 `@Spec` 一覧 + 本タスクが抽出した Plan/Epic/ADR/Spec 参照を join して自動生成。
+  - `data/users.db*` の追跡禁止、Dockerfile 内 `COPY data/users.db` の禁止、`feature/**`・`core/**` Kotlin source に `dev.gitlive.firebase.*` import が無いこと (後者は Konsist と二重化)。
+- **`firebase-boundary.md` 等の境界違反**: 上記 Gradle カスタムタスク内で `git grep` 系の簡易チェックも統合。
+- **trufflehog**: secret-scan workflow (A6 で CI 導入、Claude API を使わない GitHub Actions の本来用途)。
 
-これにより「AI がルールを読んだ/読まない」に依存しない安全網を作る。
+採用ライブラリの根拠 (active かつ採用実例豊富なものを優先):
+
+- **`org.commonmark:commonmark`** (atlassian 起源、現在 `commonmark` org): Stars 2.5k+、2026/3 リリース継続中、Java 11+、CommonMark 仕様準拠
+- **`org.yaml:snakeyaml` 2.x**: JVM YAML パーサーのデファクト、Maven dependent 無数、Spring Boot を含む Java エコ全体で採用、2.x で CVE 対策と Safe Loader 化済み
+- **`markdownlint-cli2`**: David Anson の markdownlint (Stars 5k+) エコの CLI、365 日中 285 日で活動、`markdownlint-cli2-action` で GitHub Actions 直接呼び出しも可能
+- **`com.github.node-gradle.node`**: gradle-node-plugin (Stars 1k+)、Kotlin/Gradle プロジェクトで Node ツール統合の定番
+- **`kaml` (charleskorn) は採用見送り**: 2025 に archived 化、本人がメンテ撤退を表明済み (artifact は公開継続だが新規採用はリスク)
+- **`flexmark-java` も採用見送り**: Stars 2.6k と多いが v0.64.8 (2023) 以降メンテ鈍化、commonmark-java の方が active
+
+これにより「AI がルールを読んだ/読まない」に依存しない安全網を、ファイル種別ごとに適切なツールで構築する。
 
 ### 5.3 Skill の責務
 
@@ -952,7 +974,7 @@ Anthropic の Planner / Generator / Evaluator パターン + Cloudflare の spec
 #### 規約と検証
 
 - `.claude/rules/template-language.md` で本ポリシーを明文化
-- Konsist (markdown lint) で「frontmatter 外の見出しは日本語必須」をテスト化
+- Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `org.commonmark:commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x) で「frontmatter 外の見出しは日本語必須」を検証 (§5.2 参照、Konsist は Kotlin file 専用のため Markdown 検証には使えない)
 - harness-bootstrap および各 Skill のテンプレート生成は本ポリシーに従う
 
 #### 例: Plan テンプレートの日本語版イメージ
@@ -1197,7 +1219,7 @@ Phase A は **「実装フェーズ前にテストカバレッジ 100% と im@sp
 | **A3** | Plan | `harness-bootstrap` | 専用 Skill 群実装 PR (feature-request, bug-fix, refactor, dependency-upgrade, adr-author, harness-meta、および pr-retrospective / pr-poller / **implementation-workflow** / **code-reviewer** / **ui-snapshot** / **harness-evolution** / **roadmap-tracker** の本格版へのアップグレード、**`skill-creator` は Claude Code ユーザースコープの `example-skills:skill-creator` を採用しリポジトリには配置しない**)。implementation-workflow は 8 フェーズの fix loop / spec-living-sync / merge-readiness を完全実装。code-reviewer は 8 aspect の binary eval checklist + coordinator を完全実装 (visual-regression / design-tokens は A10 完了後に enable)。pr-poller は **Renovate ラベル PR の検出と dependency-upgrade 起動** も担当。**roadmap-tracker は plan.md / Epic 走査 (Plan 単体は対象外) → ロードマップ生成・更新ロジック / `gh pr view` での完了根拠取得 / Open Questions・障壁・着手順変更履歴の append-only 追記 / `.claude/rules/roadmap.md` 規約準拠を完全実装。`epic-author` / `implementation-workflow` (Phase 7、Epic 配下 PR または B-A-C フェーズ項目に該当時のみ) から自動起動するフックも整備**。マージ後、`harness-bootstrap` は `archived/` へ |
 | **A4** | Plan | `feature-request` | **ローカルポーリング機構の本格化**: `pr-poller` Skill が `CronCreate` (日次 09:00 JST) と `ScheduleWakeup` (継続ループ) を自動設定する仕組みを実装。`harness-meta-criteria.md` を完成させ、harness-meta の起動閾値 (例: 未処理 learning が 10 件 or 7 日経過) を `pr-poller.md` に明文化。GitHub Actions による Claude API 呼び出しは行わない (コスト回避方針 / ADR で記録) |
 | **A5** | Plan | `refactor` | 不要モジュール撤去 (`js/app`, `js/material`, `kotlin-js-store`, `web-build-and-deploy.yml`, `public/` 内 js 専用ファイル、**`dev.gitlive:firebase-*` 依存、`core/network/{auth,firestore}`、`firebase.json`、`.firebaserc`**) |
-| **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + lefthook + **trufflehog による secret-scan workflow**)。Konsist で「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「`feature/**`・`core/**` で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラに `requireUid()` 強制」「**`docs/traceability.md` を Konsist で自動生成** (Plan/Epic/ADR/Spec/実装ファイルのクロスリンク表)」「**docs/ の各 Markdown が冒頭 5 行以内の summary を持つ**」「**`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する** (PLAN-NNN は追跡対象外のため検証不要)」を検証 |
+| **A6** | Plan | `feature-request` | Lint / Format 基盤 (Spotless + ktlint + detekt + Konsist + **`markdownlint-cli2` (`com.github.node-gradle.node` Gradle plugin 経由 + CI で `DavidAnson/markdownlint-cli2-action`)** + lefthook + **trufflehog による secret-scan workflow**)。検証はファイル種別ごとに別ツールで実施 (§5.2 参照):<br>● **Konsist (Kotlin code 規約)**: 「`feature/**`・`core/**` Kotlin source で `dev.gitlive.firebase.*` import 禁止」「`/api/me/*` ハンドラ実装に `requireUid()` 呼び出し強制」「実装側 `@Spec` annotation の収集」<br>● **`markdownlint-cli2`**: Markdown フォーマット規約 (行長 / 見出しレベル飛び / リスト形式 / コードブロック言語タグ / リンクの妥当性等)<br>● **Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x)**: 「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」「frontmatter 必須キー JSON Schema 検証」「**`docs/traceability.md` 自動生成** (Konsist で抽出した Kotlin 側 `@Spec` + 本タスクが抽出した Plan/Epic/ADR/Spec 参照を join)」「**docs/ の各 Markdown が冒頭 5 行以内の summary を持つ**」「**`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する** (PLAN-NNN は追跡対象外のため検証不要)」 |
 | **A7** | Plan | `feature-request` | **三層テスト品質基盤の導入**:<br>● **指標 A**: Kover 導入 + `koverVerify minValue=100` 必達化 (ADR 0013 除外列挙のみ許可)<br>● **指標 B**: `@Spec` annotation の Kotlin 定義 + Konsist による Spec coverage 検証ルール導入 (ADR 0016、`.claude/rules/spec-traceability.md`)<br>● **指標 C**: PITest + pitest-kotlin + gradle-pitest-plugin 導入。JVM target 経由で `commonMain` + `jvmMain` + `androidMain` を mutate。PR コメントで mutation score 可視化 (ADR 0015、`.claude/rules/mutation-testing.md`)<br>本 PR 時点では既存コードの未充足は除外リストで一旦逃がし、A9 完了までに全モジュールに展開する旨を rules に明記 |
 | **A8** | Plan | `feature-request` | **im@sparql ローカル Docker 環境構築** (Apache Jena Fuseki + RDF データ初期投入スクリプト + `docker-compose.yml` + integration test 基盤 + Testcontainers 規約)。`docs/runbooks/local-imasparql.md` を整備し、backend のローカル開発・テストを Fuseki に対して実行できる状態にする |
 | **A9** | **EPIC-A9** | `refactor` | **既存コード全体に対する三層指標の達成**。モジュールごとに段階 Plan (PLAN-NNN × 多数) を発行:<br>● 指標 A: line / branch 100% カバレッジを全モジュールで達成<br>● 指標 B: 既存機能の Acceptance criteria を `docs/specifications/<id>.md` に逆生成、テストに `@Spec` annotation を付与、Spec coverage 100% 達成<br>● 指標 C: 各モジュールの初回 mutation score をベースラインとして記録、明らかな tautological テストは learnings に蓄積し改善<br>Konsist の「実装クラス ⇄ テストクラス対応」検証を本 EPIC 完了時に enforce。backend/server / android/app / core/* / data/ 全モジュールが対象。A7 で導入した除外リストは ADR 0013 列挙分のみに整理する |
@@ -1304,7 +1326,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 | R-31 | harness-evolution が harness-meta と提案重複 | 重複検出ルール (`.claude/rules/harness-evolution.md`): 既に learning ファイルで指摘済の提案は harness-evolution 側を見送り。改修 PR は `harness-meta` / `harness-evolution` の **ラベル分離** で運用、harness-meta 側を優先 |
 | R-32 | docs/ が肥大化して AI のコンテキストを圧迫 | 各 docs に **冒頭 5 行以内の summary + 詳細 lazy-load** 構造を必須化、`.claude/rules/docs-structure.md` で規定、Konsist で機械検証 (ADR 0027 / A6) |
 | R-33 | 複数 docs 間の重複・矛盾 (例: api.md と OpenAPI yaml、spec と requirements、ADR と rules の重複指摘) | `docs/traceability.md` を Konsist で自動生成し Plan/Epic/ADR/Spec/実装のクロスリンクを機械維持 (A6)。code-reviewer の architecture aspect で docs 間の矛盾も検出対象に |
-| R-34 | `docs/harness/roadmap.md` と plan.md / Epic で進捗が二重管理になり乖離するリスク | roadmap.md は **片方向ミラー** (plan.md / Epic 本体への逆同期はしない、`.claude/rules/roadmap.md` で明文化)。`roadmap-tracker` Skill は Read のみで取り込み、進捗・完了根拠・障壁の記録は roadmap.md 側にのみ追記。Konsist で「roadmap.md の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する」を A6 で検証。`epic-author` の起票直後と `implementation-workflow` Phase 7 (Merge 直後、Epic 配下 PR または B-A-C フェーズ項目に該当する場合) に自動同期するフックで人手の二重編集を抑制。**Plan は 1 PR で完結するためロードマップ追跡対象外** (PR レビュー & merge で完結) |
+| R-34 | `docs/harness/roadmap.md` と plan.md / Epic で進捗が二重管理になり乖離するリスク | roadmap.md は **片方向ミラー** (plan.md / Epic 本体への逆同期はしない、`.claude/rules/roadmap.md` で明文化)。`roadmap-tracker` Skill は Read のみで取り込み、進捗・完了根拠・障壁の記録は roadmap.md 側にのみ追記。**Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x)** で「roadmap.md の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する」を A6 で検証 (Konsist は Kotlin file 専用のため不可、§5.2 参照)。`epic-author` の起票直後と `implementation-workflow` Phase 7 (Merge 直後、Epic 配下 PR または B-A-C フェーズ項目に該当する場合) に自動同期するフックで人手の二重編集を抑制。**Plan は 1 PR で完結するためロードマップ追跡対象外** (PR レビュー & merge で完結) |
 | R-35 | `roadmap-tracker` が `gh pr view` の取得に失敗した場合に完了根拠が空のまま放置されるリスク | gh CLI 失敗時はユーザーから渡された PR 番号 / 関連ファイルパスのみで暫定登録、後段で再取得を試みる旨を roadmap.md の該当項目に `<!-- evidence:pending-fetch -->` コメントで残す。`pr-poller` が定期的に pending-fetch 項目を再走査する責務を `.claude/rules/roadmap.md` に明文化 |
 | R-36 | `roadmap-tracker` が補助 Skill で ADR を持たないため、運用方針の重大変更を ADR として残せず歴史を辿りにくくなるリスク | 運用方針の重大変更が発生した場合は §4.5 ADR 起票基準を再評価し、基準を 2 項目以上満たす状態になったら **新規 ADR を起こして格上げ** する。それまでは `.claude/rules/roadmap.md` の改訂履歴 (frontmatter `last_updated` + 変更コミットメッセージ) を辿る運用で代替 |
 | R-5 | Skill が rules を読み飛ばすリスク | Konsist / detekt / Gradle カスタムタスクで機械的ガードを二重化 |
@@ -1354,7 +1376,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
 - **テンプレート言語**:
   - 全 Markdown テンプレート (ADR / Epic / Plan / 要件 / 仕様 / runbook / learning / PR description / レビューコメント等) は **日本語見出し・日本語例文** で記述 (ADR 0027)
   - 例外: YAML frontmatter のキー、ステータス値、コマンド・パス・コード断片、識別子 (SPEC-ID / EPIC-NNN / PLAN-NNN / ADR 番号等) は英語のまま
-  - Konsist で「frontmatter 外の見出しは日本語必須」を機械検証
+  - Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x) で「frontmatter 外の見出しは日本語必須」を機械検証 (§5.2 参照、Konsist は Kotlin file 専用のため Markdown 検証には使えない)
 - **PII 保護とアクセス制御**:
   - PII の定義: メアド / Google Account ID / Display Name / プロフィール画像 URL / IP アドレス。`uid` は内部識別子だが PII 同等の取扱
   - DB に保存する PII は `uid` のみ、それ以外は GIS userinfo から都度取得 + memory cache TTL 15 分
@@ -1375,7 +1397,7 @@ Phase A 完了後の本格運用フェーズ。すべての PR は **100% カバ
   - 新規 Skill `roadmap-tracker` が **plan.md と `docs/epics/EPIC-NNN-*/`** を入力に `docs/harness/roadmap.md` (全体) および `docs/epics/<id>/roadmap.md` (Epic 別) を生成・更新
   - **Plan は 1 PR で完結するボリュームのためロードマップ追跡対象外** (PR レビュー & merge で完結、`docs/plans/*.md` は走査しない)
   - 管理項目: (1) 項目一覧 (B0/A1-A10/C1-C10/EPIC-NNN) と ステータス (proposed/in-progress/completed/blocked/abandoned)、(2) 完了根拠 (PR 番号 + マージ日 + 主要ファイル `file_path[:line]`)、(3) 着手順とブロック関係 (Mermaid gantt)、(4) 保留中の意思決定・不明事項 (Open Questions)、(5) 技術的障壁と回避策 (Blockers and Workarounds、解決日 / 解決方法を必ず設けて未解決放置を可視化)、(6) 着手順変更履歴 (append-only)
-  - **plan.md / Epic 本体への逆同期はしない** (片方向ミラー)。Konsist で「roadmap.md の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する」を A6 で検証
+  - **plan.md / Epic 本体への逆同期はしない** (片方向ミラー)。Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x) で「roadmap.md の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する」を A6 で検証 (§5.2 参照、Konsist は Kotlin file 専用のため不可)
   - 自動起動フック: `epic-author` の Epic 起票直後、`implementation-workflow` Phase 7 (Merge 直後、Epic 配下 PR または B-A-C フェーズ項目に該当時のみ)、`pr-poller` の pending-fetch 再走査
   - 手動起動契機: 「ロードマップ更新」「進捗可視化」「着手順入れ替え」「障壁記録」「保留事項追加」等の人間 / 他 Skill からの指示
   - **ADR 化は見送り** (§4.5 ADR にすべきでない例の表で根拠を明示): ハーネス中核フェーズには直接組み込まない補助 Skill、撤回コストが低い、複数代替案の本格比較未実施、のため 10 項目中 2 項目以上を満たさない。重大な運用方針変更が起きた場合は ADR 起票基準を再評価して格上げ (R-36)
