@@ -31,7 +31,7 @@ last_updated: 2026-05-17
 - 月次（または閾値超過時）に KPT を集約したハーネス改修 PR が自動起票される。
 - `imas/imasparql` の更新を 1 日 1 回検知し、差分があれば PR が自動作成される。サーバ停止時もアプリは継続稼働する。
 - Kotlin Multiplatform で Android / iOS / wasmJs / JVM (backend) の 4 ターゲットに対応する。
-- Backend 経由化により Wasm でも Firestore 上のユーザーデータを読み書きできる。
+- Backend 経由化により Wasm でも Backend 内蔵 SQLite (`users.db`、Litestream で R2 にレプリケート) 上のユーザーデータを読み書きできる。
 - **テスト品質は 3 種類の指標で多層検証する** (段階的達成):
   - **Line / Branch Coverage**: 既存コードに対する 100% 一斉達成は現実的でないため、3 段階で運用する — **(段階 1) Phase A 完了時点**: Kover が動作し `koverHtmlReport` / `koverXmlReport` が出力できる「計測可能な状態」を必達。既存コードは ADR 0013 で限定列挙する除外リストで一旦逃がす / **(段階 2) Phase C 各 PR**: 当該 PR で **新規追加・変更された Kotlin 行に対して 100%** を必達ゲート (差分カバレッジ、`koverVerify` の Coverage Rule または GitHub Actions の独自スクリプト or `codecov` patch coverage で実装、A7 で確定) / **(段階 3) Phase C 完了時点**: 除外リストを段階的に解消し、**全体 line / branch ともに 100%** を達成
   - **Spec Coverage 100%** (Acceptance criteria ⇄ テストのトレーサビリティ): 新規機能は実装と同時に必達ゲート、既存機能の Acceptance criteria 逆生成は Phase C の各 Epic 内で段階達成
@@ -176,7 +176,7 @@ Web 配信は wasmJs ターゲット完成まで **一時停止** すること�
 
 ### 3.7 .gitignore に必須で含める項目
 
-PII 保護および credentials 漏洩防止のため、以下を `.gitignore` に明示する (ADR 0020 / 0024):
+PII 保護および credentials 漏洩防止のため、以下を `.gitignore` に明示する (ADR 0020 / 0021):
 
 ```
 # ユーザーデータ (PII を含む、絶対 commit 禁止)
@@ -649,7 +649,7 @@ Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録�
 - Compose Multiplatform + 共通 ViewModel + Navigation 3 を採用する (ADR 0002)
 - Decompose を撤去する (ADR 0005)
 - Firebase を完全廃止して GIS に統一する (ADR 0011)
-- Backend は Cloud Run (ADR 0009)、静的配信は Cloudflare Pages、Litestream バックアップ先は R2 (ADR 0024) — 2 ADR の組合せで一体運用
+- Backend は Cloud Run (ADR 0009)、静的配信は Cloudflare Pages、Litestream バックアップ先は R2 (ADR 0022) — 2 ADR の組合せで一体運用
 - アイドル情報を Git 内 SQLite に commit、ユーザーデータは Litestream で R2 にレプリケート (ADR 0008 / 0010)
 - Line/Branch coverage は段階達成 (Phase A: 計測可能、Phase C 各 PR: 差分 100% を必達ゲート、Phase C 完了: 全体 100%) とする (ADR 0013)
 - ハーネスループをローカル Claude Code ポーリングで駆動する (GitHub Actions で Claude API を呼ばない) (ADR 0017)
