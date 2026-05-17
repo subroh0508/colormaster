@@ -26,7 +26,7 @@ related_plan: docs/harness/plan.md §5.3 / §5.4.2 / R-14 / R-15
 | 2 | Spec 整合チェック | 整合性レポート | ID 重複・dangling リンクゼロ |
 | 3 | 実装 + Lint + Test | commit (fix loop ≤3 回) | `./gradlew check` green |
 | 4 | Self-Verification | 三層指標差分 + rule 違反チェック | `@Spec` 整合 + PII / secrets ゼロ |
-| 5 | Draft PR 作成 | `gh pr create --draft --template <type>.md` | PR URL 取得 |
+| 5 | Draft PR 作成 | `gh pr create --draft --body-file <path>` (`--template` と排他、本格 description 起草必須) | PR URL 取得 |
 | 6 | code-reviewer 呼出 | Coordinator レビューコメント | Critical = 0 (fix loop 後) |
 | 7 | 人間 approve → squash merge | merge commit | 3 条件充足 (CI/Critical/approve) |
 | 8 | pr-poller + roadmap-tracker | learning ファイル + roadmap 更新 | (該当時) mirror PR 起票 |

@@ -16,9 +16,11 @@ related_plan: docs/harness/plan.md §4.8 / §5.4.2
 
 # pr-template.md — PR テンプレート選択と gh pr create 運用規約
 
-> 本リポジトリの全 PR は `.github/PULL_REQUEST_TEMPLATE/<type>.md` から該当 type を
-> 選択し、`gh pr create --template <type>.md` で起票する。デフォルト
-> `.github/pull_request_template.md` は最小フォールバックのみ。詳細運用は本 rule で SoT 化。
+> 本リポジトリの全 PR は `.github/PULL_REQUEST_TEMPLATE/<type>.md` の type 別必須セクション
+> を満たす本格 PR description を起草し、`/tmp/<unique-prefix>-pr-body.md` 経由で
+> `gh pr create --body-file <path>` で起票する (`--template` と `--body-file` は **排他**、
+> 詳細は §gh pr create 必須パラメータ 参照)。デフォルト `.github/pull_request_template.md`
+> は最小フォールバックのみ。詳細運用は本 rule で SoT 化。
 
 ## 6 種類のテンプレート
 
