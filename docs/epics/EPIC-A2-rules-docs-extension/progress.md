@@ -30,6 +30,8 @@ source_epic: EPIC-A2
 | 2026-05-17 | A2-5 code-reviewer 4 aspect (spec-conformance / architecture / security / code-quality) 並列 review 完了 → architecture Critical 4 件検出 (DIP 違反方向 / `core/database` 未定義 / restore 主体誤り / Mermaid 非対称) | A2-5 PR #126 |
 | 2026-05-17 | A2-5 fix loop 実施 (commit `de2b1f8`、Critical 4 件解消) → Coordinator が Ready 判定 | A2-5 PR #126 |
 | 2026-05-17 | A2-4 PR #123 merge 完了 → master 取得 → A2-5 PR #126 を rebase (`progress.md` / `roadmap.md` 衝突を A2-4 完了反映と A2-5 着手記録の統合で解決) | A2-5 PR #126 |
+| 2026-05-17 | A2-5 PR #126 Ready 昇格 + merge 完了 (commit `168ef5d`、squash merge、`gh pr merge --squash --admin` で orchestrator 委任 / R-15 代替) | A2-5 PR #126 |
+| 2026-05-17 | A2-5 Phase 8 (roadmap-tracker 手動代替) 実施 → 本 PR (`harness/roadmap-mirror-a2-5`) で EPIC-A2 roadmap.md / progress.md / 全体 roadmap.md の A2-5 完了反映 | 本 PR (A2-5 mirror) |
 
 ## マイルストーン
 
@@ -39,6 +41,7 @@ source_epic: EPIC-A2
 | 2026-05-17 | A2-1 マージ → A2-2 / A2-4 / A2-5 並走着手の前提整備 | ✅ 達成 (PR #121 merge commit `feb41b5`、PR #122 で roadmap mirror) |
 | 2026-05-17 | A2-4 マージ (docs/ コア + runbooks 拡充) | ✅ 達成 (PR #123) |
 | 2026-05-17 | A2-5 PR ドラフト起票 | ✅ 達成 (PR #126) |
-| (未定) | A2-2 / A2-3 マージ (rules 全本格化完了) | 未達 |
-| (未定) | A2-5 マージ (docs/architecture + api 拡充) | (本 PR Ready 昇格 + merge 予定) |
-| (未定) | EPIC-A2 status → completed | 未達 |
+| 2026-05-17 | A2-5 マージ (docs/architecture + api 拡充) | ✅ 達成 (PR #126、commit `168ef5d`) |
+| (未定) | A2-2 マージ (rules 実装・コード系本格化) | 進行中 (PR #125 DRAFT) |
+| (未定) | A2-3 マージ (rules プロセス・ハーネス・UI 系本格化) | 未達 (A2-2 完了後着手予定) |
+| (未定) | EPIC-A2 status → completed | 未達 (3/5 マージ済、残り A2-2 / A2-3) |
