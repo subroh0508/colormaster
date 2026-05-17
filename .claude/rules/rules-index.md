@@ -153,6 +153,12 @@ last_updated: 2026-05-17
 | `harness-evolution.md` | stable (A2-3) | 外部情報源ホワイトリスト、出力フォーマット、Context7 MCP 引用検証 |
 | `docs-structure.md` | stable (A2-3、NG 例明示) | `docs/` の歩き方、命名規約、5 行 summary + lazy-load |
 
+### 並列 orchestration
+
+| ファイル | 状態 | 主な責務 |
+|---|---|---|
+| `orchestrator-criteria.md` | stable (ORCH-1) | orchestrator Skill の自動回答 / pause 判定ライン、context 60% handover プロトコル、stale display 検出手順、プロンプト送信プロトコル (ファイル経由送信)、classifier 迂回 NG/OK 辞典の SoT |
+
 ### 実装ワークフロー
 
 | ファイル | 状態 | 主な責務 |
