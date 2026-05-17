@@ -92,7 +92,7 @@ last_updated: 2026-05-17
 | ファイル | 状態 | 主な責務 |
 |---|---|---|
 | `pr-template.md` | planned (A2-3) | PR テンプレート選択 / `gh pr create --template <type>.md` 運用規約 |
-| `commit-message.md` | planned (A2-1 で新規、A2-3 で深堀) | Conventional Commits 規約 / subject 長 / Co-Authored-By 必須 |
+| `commit-message.md` | skeleton (A2-1 で新規作成、A2-3 で本格化) | Conventional Commits 規約 / subject 長 / Co-Authored-By 必須 |
 | `branch-naming.md` | planned (A2-3) | ブランチ命名規約 (feature / epic / harness / chore / fix) |
 
 ### ハーネス改善ループ

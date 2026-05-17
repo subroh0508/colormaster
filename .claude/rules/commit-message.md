@@ -52,7 +52,7 @@ related_adrs:
 | 要素 | 規約 |
 |---|---|
 | `<scope>` | 影響範囲。Skill 名 (`roadmap-tracker`)、モジュール (`core/data`)、機能領域 (`api`, `auth`)、フェーズ ID (`A6`, `A2-1`) 等。複数横断時は省略可。空 `()` は不可 |
-| `<subject>` | **英語**、現在形・命令形動詞で開始 (`Add` / `Drop` / `Fix` / `Trim` 等)。**72 文字以内推奨、100 文字 hard limit**、末尾ピリオドなし。固有名詞 (パス / 識別子) はそのまま |
+| `<subject>` | **英語推奨** (Phase A 期間中は日本語混在を許容、詳細は Gotchas)、現在形・命令形動詞で開始 (`Add` / `Drop` / `Fix` / `Trim` / `起草` / `消化` 等)。**72 文字以内推奨、100 文字 hard limit**、末尾ピリオドなし。固有名詞 (パス / 識別子) はそのまま |
 | `<body>` | 1 行空けて記述。「何を変えたか」より「**なぜ変えたか / どんなトレードオフを選んだか**」を主軸。日本語可 (本計画の他 Markdown と整合)。72 文字で改行推奨。複数段落可 |
 | `<footer>` | `Refs: PLAN-NNN / EPIC-NNN / ADR-NNNN / SPEC-NNN-N` (該当時、複数可) + `Co-Authored-By: <AI モデル名> <noreply@anthropic.com>` (AI が commit した場合必須) |
 
@@ -110,9 +110,12 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 
 - **`--no-verify` で commit hook をスキップしない** (R-26 同等)。hook 失敗は新規 commit で修正、`--amend` 禁止 (Co-Authored-By が消える)
 - **Merge / Revert / fixup! / squash! コミットは検証スキップ** (`commit-msg` hook 冒頭で除外)
-- subject を日本語で書きたい誘惑があるが、**英語固定** (Conventional Commits 公式 / Renovate 自動 PR との整合 / GitHub web UI での視認性)
+- subject 言語ポリシー:
+  - **英語推奨** (Conventional Commits 公式 / Renovate 自動 PR との整合 / GitHub web UI での視認性)
+  - **Phase A (A1〜A10) 期間中は日本語混在を許容** (経過措置): 過去コミット `feat(harness): A1 ADR 0001-0027 一括起草` / `feat(harness): A2-1 A1 レトロ即時消化` 等の実体と整合。本 rule は Phase A の期間中、subject 中の英語動詞 (`add` / `drop` / `fix` 等) の代わりに日本語動詞・名詞 (`〜起草` / `〜消化` / `〜本格化` 等) を含むことを許容する
+  - **Phase B (A6 で `commit-msg` hook 拡張時) に英語強制を機械検証で本格化** する判断は A6 着手時に再評価。一律強制が現実的でなければ、`docs(harness)` / `feat(harness)` の `harness` scope のみ日本語可など段階導入も検討
 - body は日本語可。AI 駆動の場合は body にも「なぜこの判断にしたか」を残すこと (人間レビュアーが PR description だけで完結しない場合の補助情報)
-- subject 長 50 → 72/100 字緩和は A2-1 マージ時に `scripts/install-git-hooks.sh` も同時更新 (整合性確保)
+- subject 長 50 → 72/100 字緩和は A2-1 マージ時に `scripts/install-git-hooks.sh` も同時更新済 (整合性確保)
 
 ## 関連
 

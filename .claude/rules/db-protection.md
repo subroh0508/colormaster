@@ -81,8 +81,9 @@ node_modules/
 ```
 
 検証は Gradle カスタムタスク (A6 で導入) で「`.dockerignore` が `data/users.db*` /
-`.env*` / `*-credentials.json` を全て含む」を機械検証する。Dockerfile 配置 PR の AC に
-本項目を必ず含めること。
+`.env*` / `*-credentials.json` / `service-account*.json` / `.claude/oauth-tokens*` を
+全て含む」を機械検証する (上記必須項目セクションと同一の 5 項目)。Dockerfile 配置 PR の
+AC に本項目を必ず含めること。
 
 ## 関連
 

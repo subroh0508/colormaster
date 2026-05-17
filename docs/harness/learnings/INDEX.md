@@ -16,7 +16,7 @@ last_updated: 2026-05-17
 
 | 日付 | PR # | 関連 Plan | 関連 Epic | actionable 提案数 | 採用提案数 |
 |---|---|---|---|---|---|
-| 2026-05-17 | [#117](https://github.com/subroh0508/colormaster/pull/117) | — | EPIC-000-harness-foundation | 15 | 7 (A2-1 PR で消化見込み: rules-index 正規化 / template-language paths 削除 / harness.md PR テンプレ / mcp-usage Gotchas / db-protection `.dockerignore` TODO / code-reviewer SKILL.md PII redaction / commit-message rule + 50→72/100 緩和 / ADR README 索引拡充 / flaky-tests.md 起票) |
+| 2026-05-17 | [#117](https://github.com/subroh0508/colormaster/pull/117) | — | EPIC-000-harness-foundation | 15 | 11 (A2-1 PR で消化、本 PR `📝 harness-meta フィードバック` の採用 11 件と一致: rules-index 正規化 / template-language paths 削除 / harness.md PR テンプレ / mcp-usage Gotchas / db-protection `.dockerignore` TODO / code-reviewer SKILL.md PII redaction + visual-regression enable 手順 / commit-message rule 新規 + 50→72/100 緩和 / ADR README 索引拡充 / flaky-tests.md 起票 / roadmap rule 手動マージ時更新 / feature.md, bugfix.md 三層指標差分注記) |
 
 ## 横断的 learnings (1 PR = 1 ファイルとは別建て)
 
