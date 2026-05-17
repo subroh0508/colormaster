@@ -18,6 +18,7 @@ source_epic: EPIC-A3
 |---|---|---|
 | 2026-05-18 | EPIC-A3 起票着手 (worktree `harness/EPIC-A3-bootstrap`、orchestrator (subroh0508) 委任で per-task pane 起動) | A3-0 PR (起票時点) |
 | 2026-05-18 | EPIC-A3 5 ファイル (`README` / `roadmap` / `open-questions` / `decisions` / `progress`) を起草、`docs/epics/INDEX.md` に EPIC-A3 行追加、`docs/harness/roadmap.md` A3 行 status を proposed → in-progress に更新 | A3-0 (本 PR) |
+| 2026-05-18 | Draft PR [#146](https://github.com/subroh0508/colormaster/pull/146) 起票 (`harness/EPIC-A3-bootstrap`、`harness.md` テンプレ準拠 body)、後続で code-reviewer 4 aspect 並列 review → Critical 0 達成 → `gh pr ready` で Ready 化を予定 | [#146](https://github.com/subroh0508/colormaster/pull/146) |
 
 ## マイルストーン
 

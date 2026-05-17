@@ -85,7 +85,7 @@ related_specs: []
 
 | PR # | タイトル | status | merge 日 | 主要ファイル |
 |---|---|---|---|---|
-| (A3-0) | docs(harness): EPIC-A3 (専用 Skill 群実装 Epic) を起票 | in-progress | — | `docs/epics/EPIC-A3-skill-suite-extension/{README,roadmap,open-questions,decisions,progress}.md` / `docs/epics/INDEX.md` / `docs/harness/roadmap.md` (A3 in-progress) |
+| [#146](https://github.com/subroh0508/colormaster/pull/146) (A3-0) | docs(harness): EPIC-A3 (専用 Skill 群実装 Epic) を起票 | in-progress | — | `docs/epics/EPIC-A3-skill-suite-extension/{README,roadmap,open-questions,decisions,progress}.md` / `docs/epics/INDEX.md` / `docs/harness/roadmap.md` (A3 in-progress) |
 | (A3-1) | feat(harness): A3-1 feature-request Skill 完成 | proposed | — | `.claude/skills/feature-request/SKILL.md` (新規) |
 | (A3-2) | feat(harness): A3-2 bug-fix Skill 完成 | proposed | — | `.claude/skills/bug-fix/SKILL.md` (新規) |
 | (A3-3) | feat(harness): A3-3 refactor Skill 完成 | proposed | — | `.claude/skills/refactor/SKILL.md` (新規) |
