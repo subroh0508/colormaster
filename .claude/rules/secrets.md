@@ -34,8 +34,13 @@ related_adrs:
 - `users.db*`
 - `service-account*.json`
 - `.claude/oauth-tokens*`
+- **`*.pem`** (PEM 形式の秘密鍵 / 証明書、PR #119 レトロ Try)
+- **`*.key`** (秘密鍵 / API キー、同上)
+- **`*.p12`** (PKCS#12 形式の秘密鍵 + 証明書バンドル、同上)
+- **`.cloudflare/credentials`** (Cloudflare CLI / wrangler 認証情報、同上)
+- **`.gcloud/credentials`** (gcloud CLI 認証情報、同上)
 
-詳細は `.gitignore` 最終形を参照。
+詳細は `.gitignore` 最終形を参照。ADR-0021 「絶対 commit してはいけないもの」リストとも同期 (PR #119 レトロ Try で項目追加、`secrets.md` と ADR-0021 の SoT 整合化)。
 
 ## ローテーション
 

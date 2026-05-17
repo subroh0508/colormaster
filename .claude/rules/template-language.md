@@ -42,6 +42,12 @@ related_adrs:
 - 識別子 (SPEC-IDOL-001-3, EPIC-NNN, PLAN-NNN, ADR 0001 等)
 - Conventional Commits の type / scope (`feat` / `fix` / `refactor` / `docs(harness)` 等、`.claude/rules/commit-message.md` 参照)
 - ブランチ名 prefix (`feature/` / `harness/` / `chore/` 等、`.claude/rules/branch-naming.md` 参照)
+- **固定セクション名 (harness 内で安定して使われる section 名)** — 以下を英語のまま許容 (PR #123 レトロ Try):
+  - `Open Questions` (`docs/harness/plan.md` §4.6.3-4.6.5 で canonical 規定、Epic / roadmap / template でも使用)
+  - `Gotchas` (各 rule / Skill / docs の末尾セクション、`.claude/rules/markdown.md` 等で canonical)
+  - `Keep` / `Problem` / `Try` (`pr-retrospective` learning ファイルの KPT セクション、`.claude/rules/retrospective-format.md` で canonical)
+  - `Blockers` / `Workarounds` (`docs/harness/roadmap.md` 等の障壁記録セクション)
+  - 上記の section 名は日本語訳すると plan.md / template / 他 docs との表記分裂を生むため英訳しない (人間 / AI の認知負荷増を予防)
 
 ## Phase A 期間中の経過措置
 

@@ -98,13 +98,56 @@ fun Route.protectedRoutes() {
   - `core/network/auth/*` に Firebase Authentication SDK の import がない (`firebase-boundary.md`)
 - **OpenAPI spec** (`docs/api/colormaster-api.yaml`、A2-5 で本格化) と Ktor route の整合検証 (将来)
 
+## JWKS cache の stale-while-revalidate (PR #126 レトロ Try)
+
+- **stale-while-revalidate grace 秒数**: 60 秒 (`JwkProvider` の cache miss + 取得失敗時に stale cache を 60 秒間継続使用)、その後 503 Service Unavailable で fail-fast
+- **Phase C5 着手時に runbook で確定**: `docs/runbooks/r2-litestream.md` 等の関連 runbook と一体で grace 秒数を最終確定 (Cloud Run / Cloudflare のネットワーク特性に応じて 30-120 秒の幅で再評価)
+- **挙動**: (a) cache hit → 即時返却、(b) cache miss + JWKS 取得成功 → 取得結果を cache 更新して返却、(c) cache miss + JWKS 取得失敗 → stale cache を grace 期間 (60 秒) 継続使用、(d) grace 期間超過 → 503 Service Unavailable
+
+## mock JWKS モードのガード (PR #126 レトロ Try)
+
+ローカル開発時に mock JWKS endpoint を使う場合の本番漏洩リスク対策:
+
+```kotlin
+fun Application.installAuth() {
+    val isMockMode = BuildConfig.IS_DEBUG && System.getenv("MOCK_JWKS_ENABLED") == "true"
+    if (isMockMode) {
+        log.warn("MOCK JWKS ENABLED — never run this configuration in stage/production")
+    }
+    install(Authentication) {
+        jwt("gis") {
+            verifier(
+                if (isMockMode) MockJwkProvider() else JwkProvider(URL(jwksUrl)),
+                audience,
+            ) { ... }
+        }
+    }
+}
+
+fun Route.healthRoute() {
+    get("/health") {
+        call.respond(mapOf(
+            "status" to "ok",
+            "mock_auth" to isMockMode,  // stage/production では必ず false
+        ))
+    }
+}
+```
+
+- **mock モード起動時に `WARN: MOCK JWKS ENABLED` ログを強制出力** (起動時 1 回)
+- **`/health` レスポンスで `mock_auth: true|false` を返却**、stage / production では false が確認できる
+- **`BuildConfig.IS_DEBUG` + 環境変数 `MOCK_JWKS_ENABLED=true` の AND 条件**: 単一 flag では誤起動リスクあり、二重ガードで本番混入を予防
+- **CI で `/health` の `mock_auth: false` を assertion**: stage / production deploy 後の smoke test で必須
+
 ## Gotchas
 
 - **GIS ID Token の `aud` は GIS Client ID** (Backend が発行した token ではない、Google が発行)
 - **`acceptIssuer` で `accounts.google.com` (https 無し) と `https://accounts.google.com` の両方を許可** する (Google が両方 issue する場合あり)
 - **JWKS cache**: `JwkProvider` 内蔵 cache (TTL 10 分) を使う、毎回 fetch するとレイテンシ悪化
+- **JWKS stale-while-revalidate grace 60 秒** (PR #126 レトロ Try): cache miss + 取得失敗時の挙動を明示、`docs/runbooks/r2-litestream.md` 等の runbook で C5 着手時に最終確定
 - **ID Token のリフレッシュ**: GIS は ID Token のみ提供 (Access Token / Refresh Token は別 API)。期限切れ時は再 sign-in flow
 - **Backend が ClientApp の認証情報を log に出さない** (`pii.md` / `secrets.md` redaction、Authorization header sanitize)
+- **mock JWKS モード起動時の警告ログ + `/health` `mock_auth: true` ガード必須** (PR #126 レトロ Try): stage / production 漏洩リスク対策
 - ローカル開発時の GIS Client ID は **dev 用 OAuth Client** を別途作成 (本番 Client ID を流用しない)
 
 ## 関連

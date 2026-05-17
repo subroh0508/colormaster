@@ -30,6 +30,8 @@ last_updated: 2026-05-17
 | ファイル | 用途 |
 |---|---|
 | `flaky-tests.md` | 再現性が低いテストの発生条件・回避策・恒久対策メモを蓄積 (A1 レトロ Try で起票) |
+| `classifier-denials.md` | classifier (Safety-Check layer) の block / preemptive denial 記録を蓄積、A3 / A6 で運用ガイダンス反映材料化 (PR #129 レトロ Try で起票) |
+| `template.md` | 1 PR = 1 learning ファイルの暫定テンプレ (pr-retrospective Skill 本格化前、A3 完了で自動生成切替) |
 
 ## ファイル運用
 

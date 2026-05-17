@@ -96,6 +96,35 @@ data class IdolDto(
 - spec 変更時は DTO を同 PR 内で更新、CI で diff 検証 (将来の Lint 候補)
 - 認証 endpoint は `backend-auth.md` 参照 (GIS ID Token / JWKS)
 
+### OpenAPI yaml の response header 宣言 (PR #126 レトロ Try)
+
+`Cache-Control` / `ETag` 等の response header は **OpenAPI yaml の各 path に `headers:` 節で宣言** し、散文 docs (`docs/api/README.md` / `auth.md` / `idols.md` 等) との二重管理を回避:
+
+```yaml
+paths:
+  /api/idols:
+    get:
+      responses:
+        '200':
+          description: OK
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: "public, max-age=300, stale-while-revalidate=60"
+            ETag:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdolList'
+```
+
+- **散文 docs での重複記載は禁止**: OpenAPI yaml が SoT、散文 docs は要約のみ
+- **generated client (Ktor / openapi-generator) に反映可**: 自動生成された client が response header を扱えるようになる
+- **C5 着手時に全 path で headers 節を整備**: 現状 (B0 段階) は skeleton、Phase C5 で `0.1.0-alpha` bump 時に本格化
+
 ## im@sparql endpoint (ADR 0014)
 
 - ローカル開発時は Fuseki Docker (`docker-compose.local.yml` / runbook)

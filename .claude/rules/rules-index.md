@@ -41,12 +41,32 @@ last_updated: 2026-05-17
 | `planned (X)` | まだ実体なし。フェーズ X (例: A3、A6、A7、Phase C) で新規作成予定 |
 | `living` | 索引・ロードマップ等で常に更新される文書 |
 
-**A2-3 (本 PR) で `stable (A2-3)` に正規化されたファイル一覧** (18 件 + 索引 1 件):
+### `stable (X、〜)` 括弧内コメントの parser 仕様 (PR #135 レトロ Try)
+
+`stable (A2-3、Skill 本格実装は A3)` のような括弧内付記は **人間向け補足情報** であり、A6 機械検証で status 列を parse する際は以下のルールで正規化対象を取り出す:
+
+- **正規化対象**: 括弧内の最初の `、` または `)` までのキーワード (例: `A2-3`)
+- **括弧内コメント**: 機械検証では無視 (人間レビュー時の追加コンテキスト)
+- **例**: `stable (A2-3、Skill 本格実装は A3)` → 正規化結果 `stable (A2-3)`、付記 `Skill 本格実装は A3` は警告 / エラー判定に使用しない
+
+機械検証 (A6) の Gradle カスタムタスクで本仕様を JSON Schema / regex として実装する際の参考。
+
+**A2-3 (PR #135) で `stable (A2-3)` に正規化されたファイル一覧** (18 件 + 索引 1 件):
 
 - 新規 6: `pr-template` / `branch-naming` / `merge-readiness` / `pr-draft-policy` / `spec-living-sync` / `harness-meta-criteria`
 - skeleton 本格化 11: `retrospective-format` / `pr-poller` / `skill-authoring` / `harness-evolution` / `implementation-workflow` / `code-reviewer-aspects` / `design-tokens` / `ui-snapshot` / `ui-inventory` / `behavior-preservation` / `docs-structure`
 - 微調整 2: `template-language` (Phase A 経過措置を本文化) / `commit-message` (subject 言語ポリシーをセクション化、PR #121 レトロ Try 反映)
 - 索引更新 1: 本ファイル `rules-index.md` (status 正規化、上記 18 件を `stable (A2-3)` 表記に統一)
+
+**A2-3 正規化内訳表** (PR #135 レトロ Try、harness-meta が parse しやすい形式):
+
+| 区分 | 件数 | ファイル |
+|---|---|---|
+| 新規追加 | 6 | `pr-template` / `branch-naming` / `merge-readiness` / `pr-draft-policy` / `spec-living-sync` / `harness-meta-criteria` |
+| skeleton 本格化 | 11 | `retrospective-format` / `pr-poller` / `skill-authoring` / `harness-evolution` / `implementation-workflow` / `code-reviewer-aspects` / `design-tokens` / `ui-snapshot` / `ui-inventory` / `behavior-preservation` / `docs-structure` |
+| 微調整 | 2 | `template-language` / `commit-message` |
+| 索引更新 | 1 | `rules-index` (本ファイル) |
+| 合計 | 20 | |
 
 ## カテゴリ別索引
 

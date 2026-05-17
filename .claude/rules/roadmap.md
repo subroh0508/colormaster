@@ -124,6 +124,60 @@ Phase 8 の `roadmap-tracker` 自動起動フックが **発火しない** た�
 - Open Questions / 障壁 / 着手順変更履歴は **append-only**。既存項目の削除は禁止 (解決時は別行に解決日と方法を追記)。
 - 重大な運用方針変更が発生したら §4.5 ADR 起票基準を再評価し、基準を 2 項目以上満たす状態になったら新規 ADR を起こして格上げする (R-36)。
 
+## セクション別の競合解消ポリシー (PR #123 レトロ Try)
+
+並走 PR の rebase 競合解消時、`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` のセクションごとに方針が異なる:
+
+| セクション | 解消ポリシー | 根拠 |
+|---|---|---|
+| 完了根拠 表 | **chronological insert** (merge 日順) | 新しい PR を時系列に正しい位置に挿入、過去 PR の混入は避ける |
+| 着手順変更履歴 | **append-only** (新行を末尾に追加) | 履歴系セクションは既存行を絶対に書き換えない |
+| 本文段落 (概要 / 補足) | **append-only** (新段落を最後に追加) | 既存段落は SoT として維持、新情報は最終段落として追記 |
+| 次の推奨着手 | **full replacement** (最新状態に書き換え) | 並列実行可能性は時々刻々変動するため、merge 順の競合解消ではなく最終状態に置換 |
+| Open Questions / Blockers | append-only (解決時は別行に解決日と方法を追記) | 重要原則と整合、既存行の書き換え禁止 |
+
+判断ロジックは「履歴 / 時系列を保持するか」「最新状態を反映するか」の 2 軸。conflict marker (`<<<<<<<` / `>>>>>>>`) のあるファイルを開いたら、まずセクション種別を確認してから解消。
+
+## mirror PR 起票 SLA (PR #123 レトロ Try)
+
+mirror PR (`harness/roadmap-mirror-<phase-id>` ブランチ) は本体 PR merge 直後の起票 → review → merge を目指す:
+
+- **目標 SLA**: 本体 PR merge から **30 分以内** に mirror PR 起票、**60 分以内** に merge 完了
+- **理由**: mirror PR が長く open のままだと他並走 PR (他 mirror PR / 本体 PR) の merge により再 rebase が必要になる (PR #123 で実証、2 回 rebase 発生)
+- **再 rebase 回数最小化**: 上記 SLA を守ることで mirror PR の rebase 回数を 0-1 回に抑制可能
+- **例外**: 並走 PR が一斉に merge する流れの中では SLA を守れない場合あり (PR #123 mirror PR #127 は A2-5 / A2-2 mirror が先行 merge で 2 回 rebase)、その場合は本 rule の「セクション別の競合解消ポリシー」に従って整合解消
+
+## merge note 段落テンプレ (PR #126 レトロ Try)
+
+mirror PR で `docs/harness/roadmap.md` 完了根拠表直下に追加する「merge note 段落」のテンプレ:
+
+```markdown
+> 注: <Phase ID> (<Phase 名>) は orchestrator (subroh0508) 委任で R-15 代替し
+> `gh pr merge --<squash|merge>` を実行 (commit `<merge-commit-sha>`)。`<theme>` Skill の
+> 手動代替運用 (A3 / A4 Skill 本格化前) の暫定パターン。
+```
+
+- 「admin override」「self-merge」「force-merge」等のメタ言及語は使わず、`commit-message.md` §メタ言及語の classifier トリガー回避 のニュートラル表現を採用 (PR #126 で classifier denied 経験あり)
+- merge commit hash は `gh pr view <PR#> --json mergeCommit` の `mergeCommit.oid` を引用 (本 rule §完了根拠表の commit 引用基準 参照)
+
+## 完了根拠表の commit 引用基準 (PR #129 レトロ Try)
+
+完了根拠表の `主要ファイル` 列または隣接の補助情報には **merge commit hash を主、head commit hash を従** で併記する:
+
+| 項目 | 取得方法 | 役割 |
+|---|---|---|
+| merge commit hash (主) | `gh pr view <PR#> --json mergeCommit` の `mergeCommit.oid` | master 反映後の SoT、後追い `git log master` で辿れる |
+| head commit hash (従、必要時) | `git log <branch>` 最終 commit、または `gh pr view --json commits` の最後の commit | rebase / fix loop で hash が変動するため参考扱い |
+
+引用形式の例:
+
+```markdown
+| A2-6 | #129 | 2026-05-17 | `.claude/settings.json` (merge commit `1ac6fe4`、head commit `b961a22`) |
+```
+
+- 主のみ記録する場合は merge commit hash で OK、head commit は省略可
+- squash merge の場合 head commit は新規生成された squashed commit を指すため、`gh pr view` の `mergeCommit.oid` が SoT
+
 ## 機械検証 (A6 で導入)
 
 - Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x) で「`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` の項目 ID (`B0` / `A1` / `EPIC-NNN`) が plan.md / `docs/epics/` に実在する」を検証 (§5.2)

@@ -7,6 +7,7 @@ paths:
   - ".github/PULL_REQUEST_TEMPLATE/**"
   - ".github/pull_request_template.md"
   - ".claude/skills/implementation-workflow/**"
+  - "scripts/install-git-hooks.sh"
 related_adrs:
   - ADR-0024
   - ADR-0027
@@ -130,6 +131,7 @@ A7 完了前は **三層指標 (Kover / Konsist Spec coverage / PITest) が未�
 - **三層指標差分セクションは A7 完了まで `N/A` 必須記載** (空欄での暗黙了解は禁止、A1 レトロ Problem の防止)
 - **mirror PR は harness.md 必須**: `roadmap-tracker` Phase 8 自動同期の手動代替 PR (`harness/roadmap-mirror-<phase-id>`) は harness.md を選択、対象フェーズ ID と完了根拠表更新内容を本文に明記
 - **draft / ready の昇格条件**: `.claude/rules/pr-draft-policy.md` 参照、本 rule では「Phase 5 で `--draft` 起票が既定」のみ規定
+- **PR description frontmatter / `expected_modules` に PII / secrets / 追跡禁止パスを混入させない** (PR #135 レトロ Try): `expected_modules` 等の glob 欄に `data/users.db` / `.env*` / `*-credentials.json` 等を誤投入しないこと。詳細は `.claude/rules/pii.md` / `.claude/rules/secrets.md` 参照、`code-reviewer` security aspect でも検証
 
 ## 関連
 

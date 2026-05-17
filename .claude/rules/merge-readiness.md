@@ -43,6 +43,45 @@ related_plan: docs/harness/plan.md §5.4.3 / R-15
 - 代替パスでも **3 条件 (CI green + Critical 0 + 事前承認テキスト) は全て必須**: 事前承認は 3 条件目「人間 approve」の同等物として扱う
 - **GitHub Approve review は不要** (orchestrator がコメントで approve を兼ねる)、ただし PR description / merge commit message に「orchestrator 明示承認による R-15 代替」を必ず記録
 
+## 権限拡大 PR の self-merge 禁止 (PR #129 レトロ Try)
+
+以下の touch ファイルを含む PR は **orchestrator 事前承認下でも AI 自身による self-merge を禁止**、orchestrator pane の人間が手動で `gh pr ready` + `gh pr merge` を実行する path に固定:
+
+| touch ファイルパターン | 禁止理由 |
+|---|---|
+| `.claude/settings.json` (`permissions.allow` / `permissions.deny` / `hooks` 改修) | AI 自身の merge / push 権限拡張、二重 self-modification リスク |
+| `.github/workflows/**/*.yml` (`permissions:` / `secrets:` 改修) | CI 権限境界の改変、検証は人間レビュー必須 |
+| GIS / R2 / GCP OAuth scope 改修 | 外部 service 権限境界の改変、漏洩時の blast radius が大きい |
+| GitHub branch protection / Required Reviewer 設定改修 | 承認フロー自体の改変、AI 自走 merge は循環参照 |
+
+- **検出方法**: `code-reviewer` / `merge-readiness` aspect で diff を grep し、上記パターンマッチで `self-merge: forbidden` ラベルを立てる仕組みを A3 / A4 で実装検討。詳細パターンは `.claude/rules/harness-meta-criteria.md` §classifier ブロック対応 迂回パターン辞典 (Edit / Bash / pbcopy 各経由の挙動) と `.claude/rules/implementation-workflow.md` Phase 7 §classifier ブロック発生時の運用 3 ステップ を参照
+- **現状運用**: AI 自身が diff を確認して該当時は Phase 7 の `gh pr merge` を実行せず、orchestrator pane への手動実行依頼に切替
+- **実績**: PR #129 で本ルールを確立、AI 自身は commit + push + PR 起票まで実行し、`gh pr ready` + `gh pr merge` を orchestrator pane の subroh0508 が手動実行
+
+## 大規模 PR (30+ ファイル) の aspect スコープ自動削減 (PR #125 レトロ Try)
+
+code-reviewer 8 aspect のうち、touch ファイル種別と PR 規模に応じて最初から削減対象を明示する:
+
+| 条件 | 推奨 aspect セット | 削減 aspect | 根拠 |
+|---|---|---|---|
+| Markdown only PR (`.claude/rules/**` / `docs/**`) | spec-conformance / architecture / security / code-quality (4 aspect) | test-quality / performance / visual-regression / design-tokens | 実装コード変更ゼロ、UI 変更ゼロのため適用外 |
+| Kotlin code touch あり (実装 PR) | 上記 + test-quality / performance (6 aspect) | visual-regression / design-tokens | A10 完了前は UI aspect 未 enable |
+| `feature/**` touch あり (UI 変更含む) | 上記 + visual-regression / design-tokens (8 aspect) | — | A10 完了後の本格運用、現状は skeleton |
+| `.claude/settings.json` / `.github/workflows/**` touch | spec-conformance / architecture / security (3 aspect) | code-quality / test-quality / performance / visual-regression / design-tokens | 権限改修 / CI 改修は code-quality / test より architecture / security 重視 |
+| mirror PR (roadmap docs のみ) | spec-conformance / architecture / security (3 aspect) | code-quality / test-quality / performance / visual-regression / design-tokens | code-quality は本体 PR で実施済 |
+
+- **30+ ファイル PR では削減対象を明示的に Coordinator コメントに記載** (skip 妥当判定を透明化)
+- 詳細は `.claude/rules/code-reviewer-aspects.md` の「aspect 動的選択ルール」セクションを参照
+
+## 権限拡大 PR の merge timing 制約 (PR #129 レトロ Try)
+
+`.claude/settings.json` / `.github/workflows/**` 等の touch を含む PR は、並走 PR ゼロ or touch ファイル分離確認のタイミングで merge する:
+
+- **理由**: permission 拡張 PR が merge されると後続 PR の挙動 (classifier 通過 / 拒否) が変動するため、並走 PR にとって invalidate される可能性あり
+- **運用**: `gh pr list --state open --search "is:open"` で並走 PR を確認、`.claude/settings.json` / `.github/workflows/**` 等の touch ファイル重複があれば該当 PR 完了 (merge / close) 後に着手
+- **例外**: 並走 PR が本 PR の touch ファイルと無関係 (例: `docs/**` のみ) なら同時 merge 可
+- **実績**: PR #129 (`.claude/settings.json` 改修) は touch ファイルが他並走 PR (A2-3 worktree 着手中) と衝突しなかったため問題なし、原則として記述
+
 ## squash merge vs merge commit
 
 | 種別 | コマンド | 採用基準 |

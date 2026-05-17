@@ -38,11 +38,20 @@ related_plan: docs/harness/plan.md §5.3 / §5.4.2 / R-14 / R-15
 # 1. master を最新化 (本 worktree とは別の作業ディレクトリで実行)
 git fetch origin master
 
-# 2. worktree + ブランチ作成 (origin/master ベース)
-git worktree add ../<repo-name>-worktrees/<branch-slug> -b <branch-name> origin/master
+# 2. unstaged changes があれば stash (PR #135 レトロ Try)
+git status --short  # 確認
+git stash push -u   # 必要時のみ
+
+# 3. worktree + ブランチ作成 (絶対パス推奨、PR #135 レトロ Try)
+git worktree add /Users/<user>/IdeaProjects/<repo-name>-worktrees/<branch-slug> -b <branch-name> origin/master
+
+# 4. stash していたら pop (worktree 内ではなく元 worktree で)
+git stash pop  # 必要時のみ
 ```
 
 - **`git fetch origin master` を必ず Phase 0 冒頭で実行** (PR #121 レトロ Try、PR #120 との rebase 競合再発防止)
+- **`git worktree add` のパスは絶対パス推奨** (PR #135 レトロ Try): 相対パス `..` は cwd 起点で解決されるため、別 worktree 内から実行すると `colormaster-worktrees/colormaster-worktrees/...` のような nested path が生成される。cwd がメイン worktree の場合のみ `../<repo-name>-worktrees/<branch-slug>` が正解
+- **unstaged changes ありなら `git stash push -u` 後 worktree add + rebase** (PR #135 レトロ Try): `git rebase origin/master` が `error: cannot rebase: You have unstaged changes` で fail するケースを予防、stash → rebase → stash pop の 3 ステップ fallback
 - `<branch-name>` は `.claude/rules/branch-naming.md` に従う (`feature/PLAN-NNN-<slug>` / `feature/EPIC-NNN-<slug>-pr-NN` / `harness/<purpose>` 等)
 - `<branch-slug>` はブランチ名のスラッシュをハイフン化 (`feature/PLAN-007-add-search` → `feature-PLAN-007-add-search`)
 - **以降の全 Phase はこの worktree 内で実行** (chdir または cwd 指定)
@@ -83,20 +92,42 @@ git worktree add ../<repo-name>-worktrees/<branch-slug> -b <branch-name> origin/
   - 日本語見出し / 命名規約準拠か
 - harness PR は `rules-index.md` の status 整合を再確認
 
+### Scope 縮小 redirect 受領時の soft reset 3 段階手順 (PR #129 レトロ Try)
+
+ユーザーから「ADR-NNNN 起票 + R-15 緩和 + roadmap 追加」→「config 1 ファイルのみ」のような scope 縮小指示を受けた場合、前 commit を完全に取り消して新規 commit を起票する:
+
+```bash
+# 1. 前 commit を soft reset (working tree は維持、staged 化)
+git reset --soft HEAD~1
+
+# 2. staged 状態を解除
+git restore --staged .
+
+# 3. 元に戻すファイルを個別 restore (working tree を master 同期)
+git restore <unwanted-file-1> <unwanted-file-2> ...
+#   または全 restore: git restore .
+```
+
+その後、新 scope 範囲のファイルのみ再編集 → `git add <files>` → 新 commit。前 PR 番号を維持しつつ branch / PR 内容を差し替える場合は `git push --force-with-lease` + `gh pr edit --body-file <new-body>`。
+
 ## Phase 5: Draft PR 作成
 
 ```bash
+# commit message と PR body を /tmp ファイル経由で渡す (PR #129 レトロ Try)
+git commit -F /tmp/<unique-prefix>-commit-msg.txt
 gh pr create --draft \
   --base master \
   --head <branch-name> \
   --title "<conventional-commits-subject>" \
-  --template <type>.md
+  --template <type>.md \
+  --body-file /tmp/<unique-prefix>-pr-body.md
 ```
 
 - `--template` は **必須** (`pr-template.md` 規約)
 - `--draft` は **既定** (`pr-draft-policy.md` 規約)、orchestrator 明示指示時のみ即 Ready で起票可
 - PR description frontmatter (HTML コメント `<!-- pr-frontmatter ... -->`) に必須キー (`type` / `related_plan` / `related_epic` / `related_specs` / `related_adrs` / `expected_modules`) を埋める
 - mirror PR は `--draft` 省略可 (`pr-draft-policy.md` Gotchas 参照)
+- **`/tmp` 経由の HEREDOC 回避パターン** (PR #129 レトロ Try): HEREDOC ネストが深いと zsh paste で escape 事故が起きうるため、commit message を `/tmp/<unique-prefix>-commit-msg.txt`、PR body を `/tmp/<unique-prefix>-pr-body.md` に Write してから `git commit -F` / `gh pr edit --body-file` / `gh pr create --body-file` で参照する。ユーザー手動実行時のコピペ事故も予防
 
 ## Phase 6: code-reviewer 呼出 (Evaluation)
 
@@ -108,6 +139,21 @@ gh pr create --draft \
 - Critical findings あり → Phase 3 に戻る (fix loop)、累計 fix loop 上限 3 回 (R-14)
 - Critical findings = 0 → Phase 7 へ
 
+### Phase 6 直後の二段 fetch + mergeable 確認 (PR #123 / #125 / #126 レトロ Try)
+
+review 待ち中に master が再進化して rebase が必要になるケースを事前検出するため、Phase 6 完了後に `git fetch origin master` + `gh pr view` mergeable 確認を実施:
+
+```bash
+git fetch origin master
+gh pr view <PR#> --json mergeable,mergeStateStatus
+# mergeable: MERGEABLE / CONFLICTING / UNKNOWN
+# mergeStateStatus: CLEAN / DIRTY / BEHIND / BLOCKED / DRAFT / HAS_HOOKS / UNKNOWN / UNSTABLE
+```
+
+- `mergeable: CONFLICTING` または `mergeStateStatus: DIRTY` → rebase 必須 (`git rebase origin/master` + `git push --force-with-lease`)
+- `mergeStateStatus: BEHIND` → master 取り込みのみで足る場合あり、conflict なしなら `git pull --rebase`
+- `mergeable: MERGEABLE` + `mergeStateStatus: CLEAN` → Phase 7 へ進む
+
 ## Phase 7: 人間 approve → squash merge
 
 - **3 条件** (`merge-readiness.md`):
@@ -116,6 +162,16 @@ gh pr create --draft \
   3. 人間 approve または orchestrator 事前承認テキスト
 - 3 条件充足後に `gh pr ready` → `gh pr merge --squash` (または `--merge`)
 - **auto-merge は禁止** (`merge-readiness.md` R-15)、orchestrator 明示承認による R-15 代替パスは許可
+
+### classifier ブロック発生時の運用 3 ステップ (PR #125 / #129 レトロ Try)
+
+orchestrator 事前承認下でも、classifier (auto mode safety layer) は別 layer で動作するため `gh pr ready` / `gh pr merge` / `git push` 等が denied されることがある。発生時の対応:
+
+1. **denied メッセージを丸ごと報告して停止**: 「Reason: ...」「対象コマンド」「permission allow リストの状態」を抜粋しユーザー (orchestrator) に提示
+2. **迂回せず人間判断を仰ぐ**: pbcopy 経由 / commit message 中立化 / sleep-and-retry のような機械的迂回を **しない** (CLAUDE.md「destructive shortcut を避ける」原則)
+3. **ユーザー指示に従う**: (a) orchestrator pane で手動実行 / (b) commit message / PR body を中立表現に書き換えて再試行 / (c) 本 PR 中止、の 3 択から選択
+
+詳細パターンは `.claude/rules/harness-meta-criteria.md` の「classifier ブロック対応 迂回パターン辞典」を参照。
 
 ## Phase 8: pr-poller 即時起動 + roadmap-tracker
 
@@ -127,16 +183,29 @@ gh pr create --draft \
 ## Phase 9: Worktree 削除
 
 ```bash
-# 1. マージ済確認
-git branch --merged origin/master | grep <branch-name>
+# 1. マージ済確認 (PR state ベース、PR #123 / #135 レトロ Try)
+gh pr view <PR#> --json state,mergedAt
+# state: MERGED かつ mergedAt が non-null であることを確認
 
-# 2. worktree 削除 + ブランチ削除
-git worktree remove ../<repo-name>-worktrees/<branch-slug>
-git branch -d <branch-name>
+# 2. worktree 削除 + ブランチ削除 (merge 方式別に分岐)
+git worktree remove /Users/<user>/IdeaProjects/<repo-name>-worktrees/<branch-slug>
+
+# 3a. squash merge の場合: branch -d は失敗するため -D で強制削除
+git branch -D <branch-name>
+
+# 3b. merge commit (--merge) の場合: branch -d で OK のケース / NG のケースあり
+git branch --merged origin/master | grep <branch-name>  # 検出されれば -d
+git branch -d <branch-name>  # 検出されなければ -D に切替
+
+# 3c. rebase merge は本リポジトリで未採用
 ```
 
-- **未マージなら停止して人間に通知** (worktree / branch を残す)
-- `branch -d` (`-D` ではない) でマージ確認、未マージ時はエラー出力で警告
+- **未マージなら停止して人間に通知** (worktree / branch を残す): `gh pr view --json state` で `MERGED` 以外なら絶対に `-D` で強制削除しない
+- **merge 方式別に branch cleanup を分岐** (PR #123 / #135 レトロ Try):
+  - `--squash` で merge した PR は新しい commit hash が生成されるため git 視点で「unmerged」扱い → `git branch -d` が拒否される → `gh pr view --json state=MERGED` 確認後に `-D` で強制削除
+  - `--merge` (merge commit) でも親 commit が異なるため `--merged origin/master` で検出されないケースあり → 同様に `-D` 許容
+  - `-D` を使うのは **PR state が MERGED であることを確認した後** に限定
+- `branch -d` で先にトライし、失敗時のみ `-D` に切り替える順序を守る (PR state 未確認のまま `-D` を使うと未マージ work が消滅するリスク)
 
 ## Fix loop の上限と blocked 判定
 
@@ -161,12 +230,18 @@ git branch -d <branch-name>
 ## Gotchas
 
 - **Phase 0 で `git fetch origin master` を省略しない** (PR #121 レトロ Try、PR #120 との rebase 競合再発防止)
+- **Phase 0 の `git worktree add` パスは絶対表記推奨** (PR #135 レトロ Try): cwd 依存の `..` 指定で nested path が生成されるケースを予防
+- **Phase 0 で unstaged changes がある場合は `git stash push -u` 後 rebase** (PR #135 レトロ Try): `git rebase origin/master` の `error: cannot rebase: You have unstaged changes` を予防
 - **Phase 0 と Phase 9 はペア**、Phase 9 を忘れると worktree が肥大化
 - **Phase 3 fix loop 上限 3 回** (R-14)、超過時は blocked + 人間通知
+- **Phase 4 の Scope 縮小 redirect は soft reset 3 段階で完全取り消し** (PR #129 レトロ Try): `git reset --soft HEAD~1` + `git restore --staged .` + `git restore <files>` の順、`--hard` は使わない
+- **Phase 5 で commit message / PR body は `/tmp` ファイル経由** (PR #129 レトロ Try): HEREDOC ネストの quoting 事故予防、`git commit -F` / `gh pr edit --body-file` / `gh pr create --body-file` を採用
 - **Phase 6 の code-reviewer は Claude API 直接呼び出しではなくサブエージェント並列** (R-37 / ADR 0017)
+- **Phase 6 完了後に二段 fetch + `gh pr view --json mergeable,mergeStateStatus` 確認** (PR #123 / #125 / #126 レトロ Try): review 待ち中の master 再進化で発生する rebase 必要状態を事前検出
 - **Phase 7 で auto-merge 禁止** (R-15)、orchestrator 明示承認テキストでの代替パスは許可
+- **Phase 7 で classifier ブロック発生時は迂回せず人間判断を仰ぐ** (PR #125 / #129 レトロ Try): denied メッセージ全文報告 → ユーザー指示待ち、機械的迂回は禁止
 - **Phase 8 で `roadmap-tracker` を呼ぶのは Epic 配下 PR / B-A-C フェーズ項目のみ**、Plan 単体は対象外 (R-34)
-- **Phase 9 の `branch -d` は `-D` 禁止** (未マージ強制削除を防ぐ)、未マージ検知時は worktree / branch を残して人間判断
+- **Phase 9 の `branch -d` を先にトライし、失敗時のみ `-D` に切替** (PR #123 / #135 レトロ Try): squash merge / merge commit のいずれも `--merged origin/master` で検出されないケースがある。`gh pr view --json state=MERGED` 確認後に `-D` 許容、PR state 未確認のまま `-D` は禁止 (未マージ work 消滅リスク)
 - **worktree path の slug は `branch-naming.md` 規約に厳密に従う**: スラッシュをハイフンに置換、特殊文字なし
 - **並走中の rules-index.md / roadmap.md / progress.md の rebase 競合** は EPIC-A2 で頻発、mirror PR で統合解消するパターンを A2-2 / A2-4 / A2-5 で確立
 

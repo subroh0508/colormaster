@@ -75,6 +75,27 @@ related_adrs:
 - 採番欠番は実装前なら整理可、運用後は番号維持で `withdrawn` を許容
 - **言語は日本語** (ADR 0027)
 
+## ADR ⇄ rule の SoT 方向 (PR #119 レトロ Try)
+
+- **ADR = 決定の Single Source of Truth、rule = 運用詳細 (ADR を参照、逆方向 SSoT 宣言は禁止)**
+- 各 rule の冒頭文言は「詳細は ADR NNNN を SoT とする」のように **rule → ADR の一方向** でのみ参照する
+- ADR 側に「`.claude/rules/<name>.md` は本 ADR の SoT」のような **双方向 SSoT 宣言は書かない** (循環参照になり A6 機械検証時にトレーサビリティが弱まる)
+- 例外: ADR が「運用詳細は rule に委譲する」と書くのは OK (委譲先の明示)、ただし「rule が SoT」とは書かない
+
+## ADR 化見送りの理由テンプレ (PR #129 レトロ Try)
+
+ADR 起票基準 (§起票基準 2 項目以上) を満たさないが意思決定の経緯を残したい場合、以下の 3 条件を満たすことで ADR 化を見送り、EPIC `decisions.md` / PR description / Plan で記録する:
+
+| 条件 | チェック内容 |
+|---|---|
+| **撤回コスト低** | 1-2 PR で撤回可能、外部 service / DB schema / API 契約への影響なし |
+| **scope が config N ファイル限定** | `.claude/settings.json` / `.github/workflows/**` / `.claude/mcp.json` 等の config 単位の改修で、複数 rule 横断改定なし |
+| **既存 rule 本体の改定なし** | 既存 rule の規約変更が伴わない (rule の Gotchas / 関連リンクへの追記程度は OK) |
+
+3 条件すべて満たす場合: 「ADR 起票基準 (§起票基準) を満たさないため見送り、撤回コスト低 / scope は `<files>` 限定 / 既存 rule 本体の改定なし」と PR description / EPIC `decisions.md` に明記し、ADR を起票しない。
+
+実績: PR #129 (`.claude/settings.json` の `permissions.allow` 拡張) で本テンプレを適用、ADR-0028 起票を見送り EPIC-A2 `decisions.md` に判断ログを記録。
+
 ## 本文構造 (`docs/adr/template.md` と整合)
 
 ```markdown

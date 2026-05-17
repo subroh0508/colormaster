@@ -31,6 +31,16 @@ related_plan: docs/harness/plan.md §4.7 / §5.4.2
 | `chore/` | 軽微な雑務 (`.gitignore` 更新、設定ファイル等) | `<purpose>` (自由形) | `chore/install-git-hooks` |
 | `dependency/` | Renovate 系 (将来検討、現状は `renovate/*` が Renovate 側で自動付与) | — | `renovate/koin-major` (Renovate 自動) |
 
+### `dependency-upgrade` ブランチ prefix の整合 (PR #135 レトロ Try)
+
+`pr-template.md` の `dependency-upgrade.md` テンプレに対応するブランチ prefix:
+
+- **Renovate 自動 PR**: `renovate/*` (Renovate 側で自動付与、本リポジトリ側でリネームしない)
+- **手動 dependency upgrade PR**: `chore/<slug>` をフォールバック採用 (例: `chore/kotlin-2-1-21-upgrade`、`chore/gradle-8-9`)
+- **`dependency/` prefix は予約のみ、現状未使用**: 将来 Renovate 以外の自動更新を導入する際に有効化検討、現状は `renovate/*` + `chore/<slug>` の二系統で運用
+
+本 rule (`branch-naming.md`) が SoT、`pr-template.md` 側は本 rule を参照する一方向構成。
+
 ## ID と slug の構築規約
 
 - **ID 部**: `PLAN-NNN` / `EPIC-NNN` / フェーズ ID (`A2-3`) を **大文字 + ハイフン** で記述、ゼロパディングを保持
@@ -76,7 +86,11 @@ related_plan: docs/harness/plan.md §4.7 / §5.4.2
 
 ## 機械検証 (A6 で導入予定)
 
-- **Git hook (`scripts/install-git-hooks.sh` 拡張)**: `pre-push` で現在ブランチが正規表現 `^(feature|fix|refactor|docs|chore|harness|epic|renovate|master|main)/.+$` (または `master` / `main` 自体) に合致するかチェック
+- **Git hook (`scripts/install-git-hooks.sh` 拡張)** の `pre-push` 規約 (PR #135 レトロ Try):
+  - **許可形式**: `^(feature|fix|refactor|docs|chore|harness|epic|renovate)/.+$` (prefix + `/` + 1 文字以上の slug)
+  - **`master` / `main` 直 push reject**: 上記正規表現にマッチしない `^(master|main)$` への push を reject、エラーメッセージで「PR 経由必須 (R-15)」を提示
+  - **マージコミット push の許容**: PR merge コマンド (`gh pr merge`) 経由の merge commit push は `master` / `main` 直 push 扱いで reject、`gh` CLI が server-side で別経路を使うため hook 側は気にしない
+  - **正規表現の曖昧さ予防**: prefix と reject ルールを別正規表現で記述 (連結すると negative lookbehind が必要になり可読性悪化)
 - **GitHub Actions**: PR open 時に `head_ref` を検証、`branch-naming.md` の prefix allow リストに合致しない場合は warning コメント (A6 / detekt 導入と同時)
 - **JetBrains MCP**: rename refactoring で生成されるブランチ名候補に上記 prefix を提案 (将来検討)
 

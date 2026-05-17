@@ -52,6 +52,10 @@
 | `**/composeResources/**/strings.xml` | i18n.md |
 | `core/data/**/*Repository*.kt` | repository.md, error-handling.md |
 | `core/network/**/*Client*.kt` | network-client.md, error-handling.md |
+| `core/network/auth/**/*.kt`, `backend/**/auth/**/*.kt` | backend-auth.md, network-client.md, pii.md, secrets.md |
+| `backend/**/*.kt` (Cloud Run service) | cloud-run-deploy.md, backend-auth.md, secrets.md, db-protection.md |
+| `**/Litestream*` 関連, R2 endpoint 設定 | r2-litestream.md, secrets.md, db-protection.md |
+| `**/users.db*` schema (sqldelight) | sqlite-data-file.md, backend-auth.md, pii.md |
 | `**/*.sq` | sql-delight.md |
 | `**/*Spec.kt`, `**/*Test.kt` | kotlin-test.md |
 | `**/build.gradle.kts` | gradle.md |

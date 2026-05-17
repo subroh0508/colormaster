@@ -46,7 +46,9 @@ related_rules:
 - Coordinator も同セッション内で動作。
 - 各 aspect は **binary yes/no eval checklist を最低 5 項目** 持つ (R-13)。
 - **PR コメント post 前に `.claude/rules/pii.md` の redaction を必ず通す** (R-26、A1 レトロ Problem #3 対応): CI ログ / 差分内に含まれるメアド / `googleusercontent.com` URL / IP / `sub` claim 値などを `[REDACTED-*]` で置換してから `gh pr comment` する。redaction を通さずに post してしまった場合は **即時編集 or 削除し、漏洩した PII を learnings に記録** (`docs/harness/learnings/<date>-pr-<n>.md` Problem セクション)。
+- **`code-quality` aspect agent prompt に CommonMark / GFM 仕様の明示参照** (PR #125 レトロ Try、MD040 35+ 件誤検出再発防止): 各 markdownlint rule の対象範囲を agent prompt 冒頭で明文化する。`code-reviewer-aspects.md` §MD040 / CommonMark / GFM 仕様の明示 セクションを SoT として agent prompt に引用、特に **MD040 は開始フェンスのみ対象、閉じフェンス (` ``` ` 単独) は対象外** であることを明示。
 - **`visual-regression` / `design-tokens` aspect は A10 完了後に有効化**: 有効化手順は (1) `.claude/skills/code-reviewer/SKILL.md` の 8 aspect 表で該当行の「状態」を `A10 完了後 enable` → `active` に書き換え、(2) Coordinator の並列起動対象に追加、(3) `code-reviewer-aspects.md` の対応セクションで binary yes/no eval checklist (最低 5 項目) を確定、(4) A10 EPIC のマージコミットを参照する ADR 0023 / 0027 更新を ADR 側にリンクバック、の 4 ステップ。A10 完了前は誤って enable しないよう、サブエージェント起動時に `status != "active"` で skip するガードを Coordinator に実装する (A3 本格化時)。
+- **aspect 動的選択ルール** (PR #126 / #125 / #135 レトロ Try): PR の touch ファイル種別に応じて `code-reviewer-aspects.md` §aspect 動的選択ルール 表に従い aspect セットを選択。Markdown only PR は 4 aspect (spec-conformance / architecture / security / code-quality)、`.claude/settings.json` 等の権限改修 PR は 3 aspect (spec-conformance / architecture / security) など、skip aspect を明示して Coordinator コメントに記載 (透明性確保)。
 
 ## 関連
 

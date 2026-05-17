@@ -102,6 +102,7 @@ roborazzi {
 - **`changeThreshold` のデフォルトは 0.01**、core 画面は 0.0 で厳格化、補助コンポーネントは 0.05 まで緩和可
 - **動的色 Preview は代表ブランド固定 + バリエーション Preview 別建て**、ハードコード回避と網羅を両立 (`design-tokens.md` と整合)
 - **Roborazzi baseline 生成コマンド**: `./gradlew recordRoborazziDebug` (生成) / `./gradlew verifyRoborazziDebug` (検証)、誤って record を CI で実行しないよう注意
+- **`docs/design/inventory/screenshots/` パスは複数 rule で多重参照** (PR #135 レトロ Try): 本 rule (`paths` + 本文 + 命名規約) / `design-tokens.md` / `ui-inventory.md` / `code-reviewer-aspects.md` (visual-regression aspect の baseline 検証) で参照。A10 で本格化時にパス変更が発生する場合は **4 rule + Skill 群を同 PR で更新**、片方だけ変更すると参照漏れが発生
 
 ## 関連
 
