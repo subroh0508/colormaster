@@ -7,6 +7,7 @@ description: |
   議論 / approve / merge は人間レビューに委ねる (Skill は merge を実行しない)。
 status: active
 phase: A3
+last_updated: 2026-05-18
 related_plan: docs/harness/plan.md §A3 / §4.5
 related_rules:
   - .claude/rules/adr.md
@@ -75,8 +76,13 @@ related_adrs:
 - `.claude/rules/adr.md` §起票基準 10 項目を逐一チェック、2 つ以上満たすか判定
 - 満たさない場合は §他の記録方法 (rules / Epic decisions.md / Plan / learning / runbook) から
   最適な記録先を提案し、本 Skill は停止 (ADR ファイル / INDEX 更新は行わない)
-  - 補助判定: §ADR 化見送りの理由テンプレ (3 条件: 撤回コスト低 / config N ファイル限定 /
-    既存 rule 本体改定なし) に該当するなら EPIC `decisions.md` 記録を推奨
+  - 補助判定: `.claude/rules/adr.md` §ADR 化見送りの理由テンプレ 3 条件 (撤回コスト低 /
+    scope が config N ファイル限定 / 既存 rule 本体の改定なし) を順に確認し、3 条件すべて
+    満たす場合のみ ADR 化見送りが正当と判定。該当する場合は EPIC `decisions.md` / PR
+    description / Plan に「ADR 起票基準 (§起票基準) を満たさないため見送り、撤回コスト低 /
+    scope は `<files>` 限定 / 既存 rule 本体の改定なし」と明記して記録を推奨 (PR #129 で
+    `.claude/settings.json` の permissions.allow 拡張時に本テンプレを適用し、ADR-0028 起票を
+    見送って EPIC-A2 `decisions.md` に判断ログを残した実績)
 - 満たす場合は Phase 2 へ進む
 
 ### Phase 2: 採番 + テンプレ copy + frontmatter 埋め
@@ -101,7 +107,7 @@ related_adrs:
     採用しなかった理由) を埋める
   - **帰結**: Positive / Negative / Neutral の 3 区分で列挙、トレードオフを明示
 - 冒頭 5 行以内 summary (`> **5 行以内 summary**: ...`) を必須記入 (`.claude/rules/docs-structure.md` §各 docs 構造)
-- §4.5 起票基準充足チェック表で該当項目に `[x]` をマーク (2 つ以上充足が条件)
+- §4.5 起票基準充足チェック表 (`docs/adr/template.md` §ADR 起票基準 (§4.5) の充足 / SoT は `.claude/rules/adr.md` §起票基準 + `docs/harness/plan.md` §4.5) で該当項目に `[x]` をマーク (2 つ以上充足が条件)
 - §ADR 化すべき例 / すべきでない例 の自己チェックボックスにも `[x]` を付与
 - 言語は日本語 (ADR 0027 / `.claude/rules/template-language.md`)、コード断片は英語 / プレーン
   テキストは ` ```text ` 言語指定 (`.claude/rules/markdown.md`)
@@ -112,9 +118,14 @@ related_adrs:
 - 新 ADR の frontmatter に block 形式で記入 (要素ゼロは `[]` 明示、`docs-structure.md`
   frontmatter 規約)
 - `supersedes: ADR-MMMM` を宣言する場合、対向 ADR (ADR-MMMM) の frontmatter `superseded_by`
-  を新 ADR ID に書き換え + `status` を `superseded` に更新
-- `related_adrs` は双方向リンクが望ましいが、対向 ADR が `accepted` 以降で immutable な場合は
-  対向側を改変せず、新 ADR 側のみリンク (`.claude/rules/adr.md` §Gotchas)
+  を新 ADR ID に書き換え + `status` を `superseded` に更新 (supersede は新旧の決定差し替えを
+  明示する操作のため、`accepted` immutable 原則の例外として対向 frontmatter 改変が許容される)
+- `related_adrs` は双方向リンクが望ましいが、対向 ADR が `accepted` 以降で immutable な場合
+  (= supersede 以外の単純参照関係の場合) は対向側を改変せず、新 ADR 側のみ
+  `related_adrs: [ADR-MMMM]` を記入する片方向リンクに留める。例: 新 ADR が ADR-0017 (ハーネス
+  ローカル Claude Code ポーリング駆動、`accepted`) を参照したいが新旧差し替え関係ではない場合、
+  ADR-0017 側の `related_adrs` には追記せず新 ADR 側のみ参照を記入 (`.claude/rules/adr.md`
+  §Gotchas「`accepted` 以降は本文を改変しない」原則と整合)
 
 ### Phase 5: INDEX 更新
 
