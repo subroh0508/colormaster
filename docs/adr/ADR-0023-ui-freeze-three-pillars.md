@@ -49,6 +49,15 @@ Phase C のリファクタを着手する前に、UI/UX 現状を構造化デー
 (UI Inventory) + 構造化バイナリ (screenshot baseline) の三層で凍結し、リファクタ後に diff 0
 であることを `code-reviewer` のサブエージェントで自動判定できるようにする必要がある。
 
+本 ADR は、本リポジトリの草案段階に存在した 2 つの先行決定 (旧 "ui-inventory-management" と
+旧 "roborazzi-visual-regression-baseline") を **統合した経緯** で起票する。前身 ADR は
+物理化されていないため `supersedes` には記載しないが、UI Inventory (構造化文書) と Roborazzi
+baseline (構造化バイナリ) は Behavior Preservation の機械検証を構成する 2 軸であり、別 ADR で
+分割すると三層 (DESIGN.md + Inventory + Roborazzi) のどれかが欠落しても気付けない構造となるため、
+本 ADR で一本化する。加えて code-reviewer aspect 拡張 (6 → 8) と `ui-snapshot` Skill 新設も
+本 ADR の決定範囲に含め、三本柱と Evaluator 層 / 自動化 Skill 層を一体的に運用する
+(PR #119 レトロ Try「★統合の経緯本文補足が ADR-0011 同水準まで薄め」を解消)。
+
 ## 決定
 
 リファクタ着手前の Phase A 末尾 (A10) で、以下の三本柱と code-reviewer 拡張、`ui-snapshot`

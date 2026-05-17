@@ -88,8 +88,13 @@ R2 token (Litestream の write 用) は ColorMaster のユーザーデータ
 - **R2 token は TTL 90 日** で定期ローテーション。期限切れ前に新 token を
   発行し、GitHub Secrets / Cloud Run Secret Manager を更新後に旧 token を
   失効させる (ゼロダウンタイム手順)。
-- **GIS client secret** は Google Cloud Console での発行・失効に従う。
-  漏洩疑い時は即時ローテーション。
+- **GIS client secret** は **Public Client Flow を採用するため使用しない** (ID Token
+  検証のみで認証が成立、`.claude/rules/secrets.md` の「GIS Client Secret | ローテ不要
+  (Public Client Flow)」と整合)。仮に backend で Client Secret を使う経路 (Refresh Token
+  取得や Confidential Client Flow への切替等) を追加する場合は、Google Cloud Console での
+  発行・失効に従い、TTL なし運用は Google 側のローテーション機構に委譲する。漏洩疑い時のみ
+  Google Cloud Console で即時再発行 (PR #119 レトロ Try「R2 token (TTL 90 日) との
+  ローテ非対称性の根拠 1 行欠落」を補強)。
 - **GitHub Actions OIDC token** は Actions 実行ごとに自動発行・失効。
   手動ローテーション対象外。
 - **漏洩時 / 退職時 / 漏洩疑い時** は即時ローテーションし、history に

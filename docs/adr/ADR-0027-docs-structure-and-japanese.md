@@ -39,6 +39,16 @@ Merge → Retrospection → Meta) を稼働させる予定で、その入力と�
 加えて、Google Stitch / Anthropic の AI 駆動 UI 開発でも Markdown ベースの仕様書が
 de facto standard になりつつあり、AI が最も読みやすい形に揃える価値は高い。
 
+本 ADR は、本リポジトリの草案段階に存在した 2 つの先行決定 (旧 "docs-directory-structure" と
+旧 "japanese-localization-policy") を **統合した経緯** で起票する。前身 ADR は物理化されて
+いないため `supersedes` には記載しないが、docs 構造規約と日本語化方針は AI が docs を
+生成・参照する際に同時適用される規約であり、別 ADR で分割すると参照漏れと SoT 重複のリスクが
+発生する (例: 日本語化対象範囲 ↔ docs ディレクトリ構造の整合を別 ADR で 2 重メンテする
+コスト)。命名規約 (REQ / SPEC / EPIC / PLAN / ADR の採番形式) と 5 行 summary 規約も同一の
+「AI が docs を読む際の入力規約」群として一体化する方が認知負荷とドリフトを最小化できるため、
+本 ADR で 4 規約 (構造 + 命名 + summary + 日本語化) を一本化する (PR #119 レトロ Try
+「★統合の経緯本文補足が ADR-0011 同水準まで薄め」を解消)。
+
 ## 決定
 
 以下を統一規約とする。
