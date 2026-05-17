@@ -29,12 +29,24 @@ source_epic: EPIC-A3
 - merge 順: PR #148 (A3-2) → PR #149 (A3-1) → PR #150 (A3-4) → PR #151 (A3-3)
 - 全 4 PR で touch ファイル重複ゼロ、並走完走の SKILL.md scaffold 並列パターンを実証
 
+## 2026-05-18 (Group 2 完走)
+
+- orchestrator (subroh0508) が cmux 3 per-task pane (workspace:30-32) を並列 spawn
+- A3-5 `harness-meta` (新規) / A3-6 `harness-evolution` (skeleton 本格化) / A3-7 `dependency-upgrade` (新規) の 3 Skill SKILL.md を独立 worktree で並走実装
+- code-reviewer 4 aspect (spec-conformance / architecture / security / code-quality):
+  - A3-6 / A3-7: Critical 0 / High 0 / fix loop なし
+  - A3-5: code-quality High 1 件 (related_rules 欠落) + AC-3 ❌ (summary 6 行) → fix loop 1 で commit `9b8f194` 即時消化
+- merge 方式は `--merge` (merge commit 保持、Group 1 と統一)
+- merge 順: PR #154 (A3-6) → PR #155 (A3-7) → PR #156 (A3-5)
+- 全 3 PR で touch ファイル重複ゼロ、Group 1 と同じ並走完走パターンを実証
+- A3-6 は既存 skeleton 本格化 (B0 配置の skeleton から +155 行 / -25 行)、新規 Skill ではない
+
 ## マイルストーン
 
 | 日付 | マイルストーン | 達成 / 未達 |
 |---|---|---|
 | 2026-05-18 | EPIC-A3 起票 (A3-0 Draft PR 起票 + code-reviewer 4 aspect Critical 0 通過 + Ready 化) | 進行中 |
 | 2026-05-18 | Group 1 (A3-1 / A3-2 / A3-3 / A3-4) 並列実装完了 | 達成 (PR #148 / #149 / #150 / #151 全 merge 完了) |
-| TBD | Group 2 (A3-5 / A3-6 / A3-7) 並列実装完了 | 未達 |
+| 2026-05-18 | Group 2 (A3-5 / A3-6 / A3-7) 並列実装完了 | 達成 (PR #154 / #155 / #156 全 merge 完了) |
 | TBD | Group 3 (A3-8 / A3-9 / A3-10 / A3-11 / A3-12 / A3-13) 並列実装完了 | 未達 |
 | TBD | A3-14 (`harness-bootstrap` archived 化) 完了 → EPIC-A3 status を in-progress → completed に昇格 | 未達 |
