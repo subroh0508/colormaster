@@ -19,6 +19,9 @@ related_rules:
   - .claude/rules/template-language.md
   - .claude/rules/branch-naming.md
   - .claude/rules/pr-template.md
+  - .claude/rules/merge-readiness.md
+  - .claude/rules/pii.md
+  - .claude/rules/secrets.md
 related_adrs:
   - ADR-0017
   - ADR-0024
@@ -31,10 +34,9 @@ related_adrs:
 
 > **5 行以内 summary**: pr-retrospective が生成した learning ファイルの「🤖 ハーネス改善提案」
 > セクション (`[rule]` / `[skill]` / `[template]` / `[remove]` プレフィックス) を集約 parse し、
-> harness-meta-criteria の採用判定基準 1-5 / 見送り判定基準 1-5 / 撤去判定基準 (全 3 充足) で
-> 分岐する内部 KPT 駆動 Skill。採用は改修 PR (`harness/<purpose>` ブランチ + `harness.md` テンプレ)、
-> 見送りは元 learning への「📝 harness-meta フィードバック」追記、撤去は 2 段階運用 (status `removed`
-> → cooldown 1 週間 → 物理削除) を実行。dry-run 必須条件該当時は `docs/harness/dry-runs/` 先行。
+> harness-meta-criteria の採用 1-5 / 見送り 1-5 / 撤去 3 項目で 3 分岐する内部 KPT 駆動 Skill。
+> 採用は改修 PR 起票 (`harness/<purpose>` + `harness.md` テンプレ)、見送りは元 learning に feedback 追記、
+> 撤去は 2 段階運用 (status removed → cooldown 1 週間 → 物理削除)。dry-run 必須条件該当時は先行。
 
 ## 役割
 
