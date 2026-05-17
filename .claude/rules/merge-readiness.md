@@ -54,7 +54,7 @@ related_plan: docs/harness/plan.md §5.4.3 / R-15
 | GIS / R2 / GCP OAuth scope 改修 | 外部 service 権限境界の改変、漏洩時の blast radius が大きい |
 | GitHub branch protection / Required Reviewer 設定改修 | 承認フロー自体の改変、AI 自走 merge は循環参照 |
 
-- **検出方法**: `code-reviewer` / `merge-readiness` aspect で diff を grep し、上記パターンマッチで `self-merge: forbidden` ラベルを立てる仕組みを A3 / A4 で実装検討
+- **検出方法**: `code-reviewer` / `merge-readiness` aspect で diff を grep し、上記パターンマッチで `self-merge: forbidden` ラベルを立てる仕組みを A3 / A4 で実装検討。詳細パターンは `.claude/rules/harness-meta-criteria.md` §classifier ブロック対応 迂回パターン辞典 (Edit / Bash / pbcopy 各経由の挙動) と `.claude/rules/implementation-workflow.md` Phase 7 §classifier ブロック発生時の運用 3 ステップ を参照
 - **現状運用**: AI 自身が diff を確認して該当時は Phase 7 の `gh pr merge` を実行せず、orchestrator pane への手動実行依頼に切替
 - **実績**: PR #129 で本ルールを確立、AI 自身は commit + push + PR 起票まで実行し、`gh pr ready` + `gh pr merge` を orchestrator pane の subroh0508 が手動実行
 
