@@ -3,63 +3,453 @@ info:
   title: colormaster-api
   version: 0.0.0-skeleton
   description: |
-    ColorMaster Backend API (skeleton). 本格定義は C5 (EPIC-003) で実装。
+    ColorMaster Backend API (skeleton)。本格実装は C5 (EPIC-003) 完了時に
+    info.version を 0.1.0-alpha に bump、1.0 達成は Phase C 全体完了時。
     認証は GIS ID Token (Bearer) 必須 (/api/me/*)、/api/idols/* は公開マスタ。
+    詳細は docs/api/README.md と関連 .md (auth/idols/me) を参照。
 servers:
   - url: https://colormaster-api.example.com
     description: 本番 (Cloud Run、C7 でデプロイ予定)
   - url: http://localhost:8080
-    description: ローカル開発
+    description: ローカル開発 (./gradlew :backend:server:run)
+
+tags:
+  - name: idols
+    description: アイドル / ブランド / カラーパレット (公開 read-only マスタ)
+  - name: me
+    description: ユーザー個人データ (担当・推し / プロファイル、GIS 認証必須)
+  - name: health
+    description: ヘルスチェック
+
 paths:
+  /health:
+    get:
+      tags: [health]
+      summary: ヘルスチェック
+      operationId: health
+      responses:
+        '200':
+          description: 健全
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+
   /api/idols:
     get:
-      summary: アイドル一覧取得 (公開、骨格)
+      tags: [idols]
+      summary: アイドル一覧取得 (公開)
       operationId: listIdols
+      parameters:
+        - $ref: '#/components/parameters/BrandFilter'
+        - $ref: '#/components/parameters/ColorFilter'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
       responses:
         '200':
           description: アイドル一覧
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  idols:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                        name:
-                          type: string
-  /api/me/favorites:
+                $ref: '#/components/schemas/IdolList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/idols/{id}:
     get:
-      summary: ユーザーの担当・推し一覧取得 (要認証、骨格)
-      operationId: listMyFavorites
-      security:
-        - bearerAuth: []
+      tags: [idols]
+      summary: 個別アイドル詳細取得 (公開)
+      operationId: getIdol
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: IdolId (im@sparql RDF 識別子 slug)
       responses:
         '200':
-          description: 担当一覧
+          description: アイドル詳細
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Idol'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/idols/search:
+    get:
+      tags: [idols]
+      summary: アイドル検索 (公開、name / nameRuby / brand / colorName 全文)
+      operationId: searchIdols
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+          description: 検索クエリ (必須)
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: 検索結果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdolList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/brands:
+    get:
+      tags: [idols]
+      summary: ブランド一覧取得 (公開)
+      operationId: listBrands
+      responses:
+        '200':
+          description: ブランド一覧
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  favorites:
+                  brands:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        idolId:
-                          type: string
-                        addedAt:
-                          type: string
-                          format: date-time
+                      $ref: '#/components/schemas/Brand'
+
+  /api/colors:
+    get:
+      tags: [idols]
+      summary: カラーパレット一覧取得 (公開)
+      operationId: listColors
+      responses:
+        '200':
+          description: カラーパレット一覧
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  colors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ColorPalette'
+
+  /api/me/profile:
+    get:
+      tags: [me]
+      summary: 自身のプロフィール取得 (uid + GIS userinfo cache 経由)
+      operationId: getMyProfile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: プロフィール
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/me/favorites:
+    get:
+      tags: [me]
+      summary: 担当・推し一覧取得
+      operationId: listMyFavorites
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: kind
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [tantou, oshi]
+          description: フィルタ (省略時は両方)
+      responses:
+        '200':
+          description: 担当・推し一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavoriteList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [me]
+      summary: 担当・推し追加
+      operationId: addMyFavorite
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FavoriteCreateRequest'
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorite'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/me/favorites/{idolId}:
+    delete:
+      tags: [me]
+      summary: 担当・推し削除
+      operationId: deleteMyFavorite
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: idolId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 削除成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/me:
+    delete:
+      tags: [me]
+      summary: ユーザー削除 (users.db から uid と favorites を物理削除)
+      operationId: deleteMyAccount
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: 削除成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: GIS ID Token (Backend で JWKS 検証して sub 抽出)
+      description: |
+        GIS ID Token。Backend で Google JWKS (https://www.googleapis.com/oauth2/v3/certs)
+        により署名 + iss / aud / exp を検証し、sub claim を uid として抽出。
+        詳細は docs/api/auth.md を参照。
+
+  parameters:
+    BrandFilter:
+      name: brand
+      in: query
+      required: false
+      schema:
+        type: string
+      description: ブランド ID でフィルタ (例 765AS / CG / ML / SC / SS / SP)
+
+    ColorFilter:
+      name: color
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: '^#[0-9a-fA-F]{6}$'
+      description: カラー (Hex) でフィルタ
+
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      description: ページ番号 (1-origin)
+
+    PageSize:
+      name: pageSize
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 200
+        default: 50
+      description: 1 ページあたり件数
+
+  responses:
+    BadRequest:
+      description: リクエスト不正
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: 認証必要 / 失敗
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: リソース不存在
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    Idol:
+      type: object
+      required: [id, brandId, name, nameRuby, color]
+      properties:
+        id:
+          type: string
+          description: IdolId (im@sparql RDF 識別子 slug)
+        brandId:
+          type: string
+          description: 所属ブランド ID
+        name:
+          type: string
+          description: アイドル名 (表示用)
+        nameRuby:
+          type: string
+          description: フリガナ (ソート / 検索用)
+        color:
+          $ref: '#/components/schemas/ColorPalette'
+
+    IdolList:
+      type: object
+      required: [idols, page, pageSize, total]
+      properties:
+        idols:
+          type: array
+          items:
+            $ref: '#/components/schemas/Idol'
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+
+    Brand:
+      type: object
+      required: [id, name, nameEn]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        nameEn:
+          type: string
+
+    ColorPalette:
+      type: object
+      required: [primary, onPrimary]
+      properties:
+        primary:
+          type: string
+          pattern: '^#[0-9a-fA-F]{6}$'
+          description: イメージカラー本体 (#RRGGBB)
+        name:
+          type: string
+          description: カラー名称 (im@sparql に存在する場合のみ)
+        onPrimary:
+          type: string
+          pattern: '^#[0-9a-fA-F]{6}$'
+          description: primary に重ねる文字色 (WCAG コントラスト計算済)
+
+    Profile:
+      type: object
+      required: [uid]
+      properties:
+        uid:
+          type: string
+          description: Google sub claim (内部識別子、表示しない)
+        name:
+          type: string
+          description: GIS userinfo の name (memory cache TTL 15 分)
+        picture:
+          type: string
+          format: uri
+          description: GIS userinfo の picture URL (memory cache TTL 15 分)
+
+    Favorite:
+      type: object
+      required: [idolId, addedAt, kind]
+      properties:
+        idolId:
+          type: string
+        addedAt:
+          type: string
+          format: date-time
+        kind:
+          type: string
+          enum: [tantou, oshi]
+
+    FavoriteList:
+      type: object
+      required: [favorites]
+      properties:
+        favorites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Favorite'
+
+    FavoriteCreateRequest:
+      type: object
+      required: [idolId, kind]
+      properties:
+        idolId:
+          type: string
+        kind:
+          type: string
+          enum: [tantou, oshi]
+
+    Health:
+      type: object
+      required: [status, checks]
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded, down]
+        checks:
+          type: object
+          properties:
+            users_db:
+              type: string
+              enum: [ok, error]
+            litestream_lag_seconds:
+              type: integer
+            jwks_cache_age_seconds:
+              type: integer
+
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              description: machine-readable code (unauthorized / token_expired / forbidden / not_found / bad_request / validation_failed / internal_error / service_unavailable)
+            message:
+              type: string
+              description: human-readable message (日本語)
+            details:
+              type: object
+              description: 任意の追加情報 (PII 含めない)
