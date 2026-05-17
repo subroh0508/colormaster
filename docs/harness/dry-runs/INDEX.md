@@ -17,7 +17,7 @@ last_updated: 2026-05-18
 
 | 日付 | PR # | 関連 retrospective | 対象提案数 | 採用 / 破棄 / エスカレーション | 備考 |
 |---|---|---|---|---|---|
-| 2026-05-18 | 本 PR (feature/orchestrator-skill、起票後に番号確定) | 本 PR merge 後に起票 (`harness/learnings-batch-2026-W20-part4` 等) | 2 (`[skill]` orchestrator + `[rule]` orchestrator-criteria.md) | adopt (Case A 採用、Case B 破棄) | ORCH-1 (cmux 並列 orchestration、仕様 1-8 + 教訓 10 系統)、skill-creator 経由生成 + 100-point rubric 97/100、dry-run 自体が本 INDEX 起票第 1 件 |
+| 2026-05-18 | [#144](https://github.com/subroh0508/colormaster/pull/144) | 本 PR merge 後に起票 (`harness/learnings-batch-2026-W20-part4` 等) | 2 (`[skill]` orchestrator + `[rule]` orchestrator-criteria.md) | adopt (Case A 採用、Case B 破棄) | ORCH-1 (cmux 並列 orchestration、仕様 1-8 + 教訓 10 系統)、skill-creator 経由生成 + 100-point rubric 97/100、dry-run 自体が本 INDEX 起票第 1 件 |
 
 ## ファイル運用
 
