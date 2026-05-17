@@ -111,7 +111,7 @@ related_adrs:
 
 ## Phase C 持ち越し (機能実装で本格化)
 
-| 持ち越し項目 | 持ち越し先フェーズ | 理由 |
+| 持ち越し項目 | 持ち越し先 | 理由 |
 |---|---|---|
 | `feature/` 配下の各モジュール詳細 (Home / Search / MyIdols / Preview / Settings) | C3 (feature/ モジュール再構成) | C3 で旧 `core/features/**` を `feature/**` へ移行 |
 | `core/data/**/*Repository.kt` の各 Repository 責務一覧 | C5 (`core/data` 本格化) | Repository / Datasource の責務確定後 |
@@ -120,7 +120,7 @@ related_adrs:
 | `core/network/imasparql/**/*.rq` の SPARQL クエリ一覧と責務 | C9 (im@sparql 同期実装) | クエリセット確定後 |
 | `core/design-system/` (デザイントークン参照層) | A10 / C3 (DESIGN.md 本格生成後) | A10 で DESIGN.md 確定後 |
 
-## Gotchas
+## 注意事項
 
 - **撤去対象** の `js/` / `public/` / `firebase.json` などを編集する PR は `.claude/rules/removed-modules.md` (A2-2 で本格化) の認定を経て撤去 Plan として起票する
 - `core/network/auth/` / `core/network/firestore/` は **新規 import 禁止** (`.claude/rules/no-firebase.md`)、Konsist の `firebase-boundary.md` で検出
