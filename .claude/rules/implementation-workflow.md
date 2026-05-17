@@ -112,22 +112,46 @@ git restore <unwanted-file-1> <unwanted-file-2> ...
 
 ## Phase 5: Draft PR 作成
 
+### gh pr create 実行手順 (PR #146 / #156 / #158 レトロ Try 反映、改修候補 #5 + #8 統合)
+
+`gh pr create` で Draft PR を起票する。**`--template` と `--body-file` / `--body` は排他** (gh CLI 実仕様、同時指定すると Exit 1 でエラー `` `--template` is not supported when using `--body` or `--body-file` ``、PR #158 dogfooding で実証)。本リポジトリの全 PR は **本格 PR description 起草が必須** (PR レビュー観点 / AC / 関連 ADR 等を構造化記載するため、`.claude/rules/pr-template.md` §必須セクション参照) なので、実運用上は **`--body-file` 一択** で `--template` は使用しない。
+
+**既定 (本格 PR description を起草する場合、本リポジトリ全 PR で採用)**:
+
 ```bash
 # commit message と PR body を /tmp ファイル経由で渡す (PR #129 レトロ Try)
 git commit -F /tmp/<unique-prefix>-commit-msg.txt
+
+# PR body は --body-file 経由 (--template は指定しない、排他のため)
 gh pr create --draft \
   --base master \
   --head <branch-name> \
   --title "<conventional-commits-subject>" \
-  --template <type>.md \
   --body-file /tmp/<unique-prefix>-pr-body.md
 ```
 
-- `--template` は **必須** (`pr-template.md` 規約)
-- `--draft` は **既定** (`pr-draft-policy.md` 規約)、orchestrator 明示指示時のみ即 Ready で起票可
+- PR body 文面は `.github/PULL_REQUEST_TEMPLATE/<type>.md` の内容を `/tmp/<unique-prefix>-pr-body.md` に コピー → 該当 PR 用にカスタマイズ → `--body-file` で渡す (テンプレ構造は手動で揃える、`.claude/rules/pr-template.md` §起票コマンド §「`--body-file` 代替」参照)
+- 対応する `<type>.md` の選択は `.claude/rules/pr-template.md` §6 種類のテンプレート + §gh pr create 必須パラメータ を参照 (`feature.md` / `bugfix.md` / `refactor.md` / `dependency-upgrade.md` / `docs.md` / `harness.md` の 6 種)
+- **`--draft` は既定** (`pr-draft-policy.md` 規約)、orchestrator 明示指示時のみ即 Ready で起票可、mirror PR は `--draft` 省略可
 - PR description frontmatter (HTML コメント `<!-- pr-frontmatter ... -->`) に必須キー (`type` / `related_plan` / `related_epic` / `related_specs` / `related_adrs` / `expected_modules`) を埋める
-- mirror PR は `--draft` 省略可 (`pr-draft-policy.md` Gotchas 参照)
-- **`/tmp` 経由の HEREDOC 回避パターン** (PR #129 レトロ Try): HEREDOC ネストが深いと zsh paste で escape 事故が起きうるため、commit message を `/tmp/<unique-prefix>-commit-msg.txt`、PR body を `/tmp/<unique-prefix>-pr-body.md` に Write してから `git commit -F` / `gh pr edit --body-file` / `gh pr create --body-file` で参照する。ユーザー手動実行時のコピペ事故も予防
+
+**例外 (テンプレ default fill、body 起草を省く trivial chore PR のみ)**:
+
+```bash
+gh pr create --draft \
+  --base master \
+  --head <branch-name> \
+  --title "<conventional-commits-subject>" \
+  --template <type>.md
+# --body-file / --body は指定しない (排他)
+```
+
+**禁止パターン** (PR #146 / #158 で Exit 1 を実証):
+
+- `--body "$(cat <<EOF...)"` heredoc 直送 (PR #146 で Exit 1 実証): cmux + zsh + heredoc の三重解釈で truncate / escape 不全リスク → **`--body-file` を使用**
+- `--template <type>.md --body-file <path>` 同時指定 (PR #158 dogfooding で Exit 1 実証): gh CLI 実仕様で排他 → **どちらか一方のみ指定**
+
+**`/tmp` ファイル経由パターン** (PR #129 / #146 レトロ Try 反映): HEREDOC ネストが深いと zsh paste で escape 事故が起きうるため、commit message を `/tmp/<unique-prefix>-commit-msg.txt`、PR body を `/tmp/<unique-prefix>-pr-body.md` に Write してから `git commit -F` / `gh pr edit --body-file` / `gh pr create --body-file` で参照する。ユーザー手動実行時のコピペ事故も予防。`<unique-prefix>` は branch slug + timestamp 推奨 (例: `harness-harness-meta-batch-20260518`)。
 
 ## Phase 6: code-reviewer 呼出 (Evaluation)
 
@@ -236,6 +260,8 @@ git branch -d <branch-name>  # 検出されなければ -D に切替
 - **Phase 3 fix loop 上限 3 回** (R-14)、超過時は blocked + 人間通知
 - **Phase 4 の Scope 縮小 redirect は soft reset 3 段階で完全取り消し** (PR #129 レトロ Try): `git reset --soft HEAD~1` + `git restore --staged .` + `git restore <files>` の順、`--hard` は使わない
 - **Phase 5 で commit message / PR body は `/tmp` ファイル経由** (PR #129 レトロ Try): HEREDOC ネストの quoting 事故予防、`git commit -F` / `gh pr edit --body-file` / `gh pr create --body-file` を採用
+- **Phase 5 で `gh pr create --template <type>.md --body-file <path>` の同時指定は禁止** (PR #146 / #158 レトロ Try 反映): gh CLI 実仕様で排他 (`` `--template` is not supported when using `--body` or `--body-file` `` Exit 1)、本リポジトリは本格 PR description 起草必須のため **`--body-file` 一択** で `--template` は使用しない。詳細は §gh pr create 実行手順 参照
+- **Phase 5 で `--body "$(cat <<EOF...)"` heredoc 直送は禁止** (PR #146 レトロ Try): cmux + zsh + heredoc の三重解釈で truncate / escape 不全リスク、`--body-file <path>` を使用
 - **Phase 6 の code-reviewer は Claude API 直接呼び出しではなくサブエージェント並列** (R-37 / ADR 0017)
 - **Phase 6 完了後に二段 fetch + `gh pr view --json mergeable,mergeStateStatus` 確認** (PR #123 / #125 / #126 レトロ Try): review 待ち中の master 再進化で発生する rebase 必要状態を事前検出
 - **Phase 7 で auto-merge 禁止** (R-15)、orchestrator 明示承認テキストでの代替パスは許可
