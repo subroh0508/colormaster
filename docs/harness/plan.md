@@ -1122,7 +1122,7 @@ expected_modules: [feature/home, core/network]
 | セキュリティ / 個人情報 | `pii.md` | ★新規 | PII の定義・最小化・redaction 強制 |
 |  | `secrets.md` | ★新規 | Secrets 管理 (`.env` / GitHub Secrets / Secret Manager) |
 |  | `db-protection.md` | ★新規 | `users.db` の commit / イメージ焼込み禁止、R2 private、access policy |
-|  | `no-firebase.md` | ★新規 | (旧 `firebase-boundary.md` を改名) Firebase 系 import 禁止 |
+|  | `no-firebase.md` | ★新規 | Firebase 系の **新規追加禁止** 規約 (既存 import 検出は `firebase-boundary.md`、二段運用、改名は A3 で再評価。EPIC-A2 `decisions.md` 参照) |
 |  | `cloudflare-pages.md` | ★新規 | Cloudflare Pages デプロイ規約 |
 |  | `r2-litestream.md` | ★新規 | Litestream replicate / restore、R2 endpoint、TTL ローテーション |
 

@@ -17,9 +17,9 @@ source_epic: EPIC-000
 
 | ID | タイトル | status | expected_modules | 完了根拠 |
 |---|---|---|---|---|
-| **B0** | ブートストラップ PR (本 PR) | in-progress | `.claude/**`, `docs/**`, `.github/**`, `scripts/**`, `DESIGN.md`, `CLAUDE.md`, `AGENTS.md` | (本 PR で更新) |
-| **A1** | ADR 0001-0027 一括起草 | proposed | `docs/adr/**` | — |
-| **A2** | `.claude/rules/*` 全ファイル本格化 + docs 全面拡充 | proposed | `.claude/rules/**`, `docs/{architecture,api,security,requirements,specifications,runbooks}/**` | — |
+| **B0** | ブートストラップ PR | completed | `.claude/**`, `docs/**`, `.github/**`, `scripts/**`, `DESIGN.md`, `CLAUDE.md`, `AGENTS.md` | PR [#117](https://github.com/subroh0508/colormaster/pull/117) (2026-05-17 マージ、commit `0256be9`) |
+| **A1** | ADR 0001-0027 一括起草 | completed | `docs/adr/**` | PR [#119](https://github.com/subroh0508/colormaster/pull/119) (2026-05-17 マージ、commit `7f155b5`) |
+| **A2** | `.claude/rules/*` 全ファイル本格化 + docs 全面拡充 (EPIC-A2 で 5 PR に分割) | in-progress | `.claude/rules/**`, `docs/{architecture,api,security,requirements,specifications,runbooks}/**` | (EPIC-A2 配下 PR で更新、`docs/epics/EPIC-A2-rules-docs-extension/roadmap.md` 参照) |
 | **A3** | 専用 Skill 群実装 PR | proposed | `.claude/skills/**` | — |
 | **A4** | ローカルポーリング機構の本格化 | proposed | `.claude/skills/pr-poller/**`, `.claude/rules/harness-meta-criteria.md` | — |
 | **A5** | 不要モジュール撤去 (Firebase 系) | proposed | `js/**`, `kotlin-js-store/**`, `public/**`, `core/network/{auth,firestore}/**`, `firebase.json`, `.firebaserc`, `web-build-and-deploy.yml` | — |
@@ -33,8 +33,8 @@ source_epic: EPIC-000
 
 | ID | PR 番号 | マージ日 | 主要ファイル |
 |---|---|---|---|
-
-(本 PR (B0) マージ時に B0 行を `completed` に更新し、PR 番号 + マージ日 + 主要ファイルを追記)
+| B0 | [#117](https://github.com/subroh0508/colormaster/pull/117) | 2026-05-17 | `.claude/{rules,skills,mcp.json,settings.json}/**`, `docs/**` 骨格, `.github/PULL_REQUEST_TEMPLATE/**`, `scripts/install-git-hooks.sh`, `CLAUDE.md`, `AGENTS.md`, `DESIGN.md` (commit `0256be9`) |
+| A1 | [#119](https://github.com/subroh0508/colormaster/pull/119) | 2026-05-17 | `docs/adr/ADR-{0001..0027}-*.md` (27 ADR 一括起草、commit `7f155b5`) |
 
 ## 着手順とブロック関係
 
@@ -70,14 +70,16 @@ gantt
 | 日付 | 変更内容 | 理由 |
 |---|---|---|
 | 2026-05-17 | 初期ロードマップ起草 (B0 PR 内で) | EPIC-000 起票と同時 |
+| 2026-05-17 | B0 → completed、A1 → completed、A2 → in-progress (A2-1 PR で更新) | B0 PR #117 / A1 PR #119 がマージ済、A2 は EPIC-A2 で 5 PR に分割して A2-1 着手 |
 
 ## 次の推奨着手 (並行実装観点)
 
-B0 マージ後の手動更新例:
+A1 マージ後・A2-1 着手時点の手動更新例:
 
-1. **A1 (ADR 0001-0027 一括起草)** — `docs/adr/**` のみ touch
-2. **A2 (rules 本格化 + docs 拡充)** — A1 と並行可 (`docs/adr/` と `docs/{architecture,api,...}/` で touch ファイル分離)
-3. A3 着手は A1 完了後 (ADR を参照する Skill 群実装)
+1. **A2-1 (A1 レトロ即時消化)** — 現 worktree `feature/A2-rules-docs-extension` で着手中
+2. **A2-4 (docs/ コア + runbooks 拡充)** — A2-1 マージ後に並走可 (`docs/` のみ touch)
+3. **A2-2 (rules 実装・コード系本格化)** — A2-1 マージ後に並走可 (`.claude/rules/` のみ touch)
+4. A3 着手は EPIC-A2 完了後 (ADR + 本格化された rules を参照する Skill 群実装)
 
 ## 関連
 

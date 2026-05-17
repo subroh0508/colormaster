@@ -51,6 +51,11 @@ related_adrs:
 - **IDE 未起動 / バージョン 2025.2 未満 / MCP Server プラグイン未有効 / 動的ポート変更** で JetBrains MCP が利用不可になる (R-27)
   - Skill 起動時に接続失敗を検出したら警告を出しつつ `gh` CLI / `git grep` などにフォールバック
   - 長期的に IDE 非起動環境で運用する場合は Serena MCP の採用を別 Plan で再評価
+- **HTTP 型 MCP (`context7` / `cloudflare`) の外部障害影響** (A1 レトロ Problem #11 対応):
+  - `.claude/mcp.json` で HTTP 型として登録された MCP server は Claude Code セッション起動時に接続試行する。外部サービス側 (Context7 / Cloudflare) が応答不能の場合、**接続タイムアウト分だけセッション起動 latency が増える** (経験的に 1 サーバあたり数秒〜十数秒)。
+  - 一時的な無効化手順 (障害時の応急処置): `.claude/mcp.json` から該当エントリを削除して Claude Code を再起動 (commit せず手元のみで変更)。または Skill 側で「該当 MCP 呼び出しが N 秒以内に応答しない場合は Context7 / Cloudflare を skip して `gh` CLI / `wrangler` / training data にフォールバック」を実装 (A3 で `feature-request` / `dependency-upgrade` Skill 本格化時に検討)。
+  - 復旧確認: `/mcp` コマンドで接続状態を確認、再度 `.claude/mcp.json` に戻す。
+  - Stdio 型である **JetBrains MCP は IDE 起動時に同 OS プロセス内で接続するため外部障害の影響は受けない** が、IDE 自体の起動失敗は R-27 通り。
 - **Context7 MCP は公開ライブラリ docs** のため、AI が取得した内容を Konsist / detekt / 型チェッカーで二重検証する (R-28)
 - **`@jetbrains/mcp-proxy` npm パッケージは deprecated**、使用しない (`docs/runbooks/mcp-setup.md` 参照)
 - セットアップ詳細 (3 接続方式の選択基準 / OAuth フロー / port 競合) は `docs/runbooks/mcp-setup.md` に集約

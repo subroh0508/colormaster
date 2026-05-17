@@ -1,7 +1,7 @@
 ---
 id: epics-index
 title: Epic 一覧
-status: skeleton
+status: living
 last_updated: 2026-05-17
 ---
 
@@ -17,6 +17,7 @@ last_updated: 2026-05-17
 | EPIC ID | タイトル | status | 起票日 | 関連 |
 |---|---|---|---|---|
 | EPIC-000 | ハーネス基盤構築 (B0 + Phase A) | in-progress | 2026-05-17 | `docs/harness/plan.md` §6.1-6.2 |
+| EPIC-A2 | `.claude/rules/*` 全ファイル本格化 + docs 全面拡充 | in-progress | 2026-05-17 | `docs/harness/plan.md` §6.2 A2 |
 
 ## ステータス語彙
 

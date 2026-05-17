@@ -99,6 +99,22 @@ gantt
 
 「ロードマップ更新」「進捗可視化」「着手順入れ替え」「障壁記録」「保留事項追加」「次の推奨着手を出して」等
 
+## 手動マージ時の同 PR 更新ルール (A1 レトロ Try 対応)
+
+`implementation-workflow` を経由しないマージ (B0 のような手動マージ、急ぎの hotfix 等) では
+Phase 8 の `roadmap-tracker` 自動起動フックが **発火しない** ため、進捗ロストのリスクが残る。
+そのため:
+
+- **手動マージしたら、その PR の `pr-retrospective` learning PR (`harness/learnings-batch-YYYY-WW`
+  ブランチ) と同じ PR で `docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` の手動更新も実施する**
+  (1 PR でレトロ起票 + ロードマップ更新を完結させ、二重 PR 化や更新漏れを回避)
+- 手動更新内容: 対象 PR の項目を `in-progress` → `completed` に変更、`完了根拠` 表に PR 番号 + マージ日
+  + 主要ファイルを追記、`着手順変更履歴` に「手動マージで Phase 8 自動同期発火せず、本 PR で手動更新」
+  と記録
+- `implementation-workflow` 経由マージとの判別: PR description の type が `harness` / `feature` /
+  `bugfix` / `refactor` / `dependency-upgrade` で `roadmap-tracker` 自動起動済み行に
+  `<!-- roadmap-tracker:auto -->` コメント有 → 自動更新済。コメント無 → 手動更新が必要
+
 ## 重要原則
 
 - **plan.md / Epic 本体への逆同期はしない** (片方向ミラー、R-34)。`roadmap-tracker` は Read のみで取り込み、進捗・完了根拠・障壁の記録は roadmap.md 側にのみ追記する。

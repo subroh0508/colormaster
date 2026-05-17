@@ -18,8 +18,8 @@ source_plan: docs/harness/plan.md
 | ID | タイトル | status | expected_modules | 完了根拠 |
 |---|---|---|---|---|
 | **B0** | ブートストラップ PR | completed | `.claude/**`, `docs/**`, `.github/**`, `scripts/**` | PR #117 (2026-05-17 マージ、commit `0256be9`) |
-| **A1** | ADR 0001-0027 一括起草 | completed | `docs/adr/**` | PR #119 (2026-05-17 マージ、commit `7f155b5`) |
-| **A2** | `.claude/rules/*` 全ファイル本格化 + docs 全面拡充 | proposed | `.claude/rules/**`, `docs/{architecture,api,security,requirements,specifications,runbooks}/**` | — |
+| **A1** | ADR 0001-0027 一括起草 | completed | `docs/adr/**` | PR [#119](https://github.com/subroh0508/colormaster/pull/119) (2026-05-17 マージ、commit `7f155b5`) |
+| **A2** | `.claude/rules/*` 全ファイル本格化 + docs 全面拡充 | in-progress | `.claude/rules/**`, `docs/{architecture,api,security,requirements,specifications,runbooks}/**` | (EPIC-A2 で 5 PR に分割、A2-1 着手中) |
 | **A3** | 専用 Skill 群実装 PR | proposed | `.claude/skills/**` | — |
 | **A4** | ローカルポーリング機構の本格化 | proposed | `.claude/skills/pr-poller/**`, `.claude/rules/harness-meta-criteria.md` | — |
 | **A5** | 不要モジュール撤去 | proposed | `js/**`, `kotlin-js-store/**`, `public/**`, `core/network/{auth,firestore}/**`, `firebase.json`, `.firebaserc`, `web-build-and-deploy.yml` | — |
@@ -98,15 +98,17 @@ gantt
 |---|---|---|
 | 2026-05-17 | 初期ロードマップ起草 (plan.md merge 時) | B0 ブートストラップ PR で `docs/harness/plan.md` §6 から取り込み |
 | 2026-05-17 | A1 status を proposed → in-progress | PLAN-001 (ADR 0001-0027 一括起票) 作業着手、worktree feature/A1-adr-bootstrap で起草中 |
-| 2026-05-17 | A1 status を in-progress → completed | PR #119 (commit `7f155b5`) で ADR 0001-0027 一括起票が merge 完了、本 PR で `roadmap-tracker` Phase 8 自動同期の手動代替を実施 |
+| 2026-05-17 | A1 status を in-progress → completed | PR #119 (commit `7f155b5`) で ADR 0001-0027 一括起票が merge 完了、PR #120 で `roadmap-tracker` Phase 8 自動同期の手動代替を実施 |
+| 2026-05-17 | A2 status を proposed → in-progress + EPIC-A2 を 5 PR に分割 (A2-1〜A2-5) | B0 (96 files / +5408 行) のレビュー負荷上限に近く、A2 全体は B0 を超える規模が想定されるため。A1 レトロ Try「巨大 PR の aspect 並列 review における入力分割」と整合 |
 
 ## 次の推奨着手 (並行実装観点)
 
-`roadmap-tracker` Skill が更新する想定。B0 マージ直後の手動更新例:
+`roadmap-tracker` Skill が更新する想定。A1 マージ後・A2-1 着手時点の手動更新例:
 
-1. **A1 (ADR 0001-0027 一括起草)** — `docs/adr/**` のみ触る、他フェーズと重複しない
-2. **A2 (.claude/rules/* 本格化 + docs 拡充)** — A1 と並行可 (`docs/adr/` と `docs/{architecture,api,...}/` で touch ファイル分離)
-3. **A3 着手は A1 完了後** — ADR を参照する Skill 群実装のため
+1. **A2-1 (A1 レトロ即時消化 + ハーネス即時改善)** — 現 worktree `feature/A2-rules-docs-extension` で着手中、`.claude/rules/` の一部と `docs/{adr/README,harness/learnings}` を touch
+2. **A2-4 (docs/ コア + runbooks 拡充)** — A2-1 マージ後に並走可 (`docs/` のみ touch、`.claude/rules/` と衝突しない)
+3. **A2-2 (rules 実装・コード系本格化)** — A2-1 マージ後に並走可 (`.claude/rules/` のみ touch、`docs/` と衝突しない)
+4. **A3 着手は EPIC-A2 完了後** — ADR + 本格化された rules を参照する Skill 群実装のため
 
 ## 関連
 
