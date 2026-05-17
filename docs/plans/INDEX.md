@@ -15,6 +15,7 @@ last_updated: 2026-05-17
 
 | PLAN ID | タイトル | type | status | related_epic | 起票日 |
 |---|---|---|---|---|---|
+| PLAN-001 | ADR 0001-0027 一括起票 | chore | in-progress | EPIC-000 | 2026-05-17 |
 
 ## ステータス語彙
 

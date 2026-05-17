@@ -18,7 +18,7 @@ source_plan: docs/harness/plan.md
 | ID | タイトル | status | expected_modules | 完了根拠 |
 |---|---|---|---|---|
 | **B0** | ブートストラップ PR | completed | `.claude/**`, `docs/**`, `.github/**`, `scripts/**` | PR #117 (2026-05-17 マージ、commit `0256be9`) |
-| **A1** | ADR 0001-0027 一括起草 | proposed | `docs/adr/**` | — |
+| **A1** | ADR 0001-0027 一括起草 | in-progress | `docs/adr/**` | (PLAN-001 で作業中、PR merge 時に PR# 追記) |
 | **A2** | `.claude/rules/*` 全ファイル本格化 + docs 全面拡充 | proposed | `.claude/rules/**`, `docs/{architecture,api,security,requirements,specifications,runbooks}/**` | — |
 | **A3** | 専用 Skill 群実装 PR | proposed | `.claude/skills/**` | — |
 | **A4** | ローカルポーリング機構の本格化 | proposed | `.claude/skills/pr-poller/**`, `.claude/rules/harness-meta-criteria.md` | — |
@@ -94,6 +94,7 @@ gantt
 | 日付 | 変更内容 | 理由 |
 |---|---|---|
 | 2026-05-17 | 初期ロードマップ起草 (plan.md merge 時) | B0 ブートストラップ PR で `docs/harness/plan.md` §6 から取り込み |
+| 2026-05-17 | A1 status を proposed → in-progress | PLAN-001 (ADR 0001-0027 一括起票) 作業着手、worktree feature/A1-adr-bootstrap で起草中 |
 
 ## 次の推奨着手 (並行実装観点)
 
