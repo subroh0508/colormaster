@@ -12,7 +12,10 @@ updated_at: YYYY-MM-DD
 
 # <要件タイトル>
 
-> **5 行以内 summary**: <この要件が答える問い / 主読者 / WHY と WHAT の境界>
+> **5 行以内 summary**: <この要件が答える問い / 主読者 / WHY と WHAT の境界 / 主要 FR の概要>
+> AI 向け note: 本テンプレは `docs/requirements/README.md` の運用規約に従い、HOW は書かず
+> (`docs/specifications/{basic,detail}/` に分離)、コード断片は含めない (§4.6.1)。
+> 起票時に本コメント行は削除して 5 行以内の summary に置き換える。
 
 ## 1. 概要 / 目的 / 背景
 
