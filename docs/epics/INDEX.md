@@ -2,7 +2,7 @@
 id: epics-index
 title: Epic 一覧
 status: living
-last_updated: 2026-05-17
+last_updated: 2026-05-18
 ---
 
 # Epic 一覧
@@ -18,6 +18,7 @@ last_updated: 2026-05-17
 |---|---|---|---|---|
 | EPIC-000 | ハーネス基盤構築 (B0 + Phase A) | in-progress | 2026-05-17 | `docs/harness/plan.md` §6.1-6.2 |
 | EPIC-A2 | `.claude/rules/*` 全ファイル本格化 + docs 全面拡充 | completed | 2026-05-17 | `docs/harness/plan.md` §6.2 A2 |
+| EPIC-A3 | 専用 Skill 群実装 (新規 7 + アップグレード 6 = 13 Skill + harness-bootstrap archived 化) | in-progress | 2026-05-18 | `docs/harness/plan.md` §6.2 A3 |
 
 ## ステータス語彙
 
