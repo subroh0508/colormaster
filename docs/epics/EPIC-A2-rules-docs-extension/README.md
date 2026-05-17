@@ -1,9 +1,9 @@
 ---
 id: EPIC-A2
 title: .claude/rules/* 全ファイル本格化 + docs 全面拡充
-status: in-progress
+status: completed
 created_at: 2026-05-17
-completed_at: null
+completed_at: 2026-05-17
 expected_modules:
   - .claude/rules/**
   - docs/architecture/**
