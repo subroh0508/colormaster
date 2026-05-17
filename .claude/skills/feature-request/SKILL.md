@@ -60,7 +60,7 @@ implementation-workflow / code-reviewer / pr-retrospective 等の後続 Skill �
 - **`docs/specifications/basic/SPEC-NNN-<slug>.md`** (該当時): システム構成 / 業務フロー / 画面遷移 / データモデル (論理) / 外部 I/F 一覧 / エラーケース / AC ↔ テストマップ。`docs/specifications/basic/template.md` 準拠、`.claude/rules/docs-structure.md` §4.6.4
 - **`docs/specifications/detail/SPEC-NNN-<slug>.md`** (該当時): モジュール配置 / 主要クラスの責務 / 状態遷移 / シーケンス / データ構造 / 例外 / 設定値 / テストパターン。`docs/specifications/detail/template.md` 準拠、§4.6.5
 - **Plan or Epic** (常にどちらか): `plan-author` または `epic-author` Skill を呼んで起票
-- **(該当時) ADR**: `adr-author` Skill を呼んで起草 (`.claude/rules/adr.md` 起票基準充足時のみ)
+- **(該当時) ADR**: `.claude/rules/adr.md` 起票基準充足時に `docs/adr/template.md` を copy して `docs/adr/ADR-NNNN-<slug>.md` を直接起草 (本 Skill 自身が担当、`adr-author` Skill は A3 配下では未配置 / 将来配置後は呼び出しに切替予定)
 - **副作用**:
   - `docs/requirements/INDEX.md` 追記 (本 Skill が直接書く)
   - `docs/plans/INDEX.md` or `docs/epics/INDEX.md` 追記 (`plan-author` / `epic-author` が書く)
@@ -135,13 +135,13 @@ implementation-workflow / code-reviewer / pr-retrospective 等の後続 Skill �
 
 ### Phase 5: Plan / Epic 起票判定 + 該当 Skill 呼出
 
-- **判定基準** (`.claude/rules/plan.md` §Epic 昇格条件 と `.claude/rules/docs-structure.md` §4.1 を SoT とする):
-  - **Plan (単一 PR スコープ)**: 想定変更行数 ≤ 1,000 / 触るファイル ≤ 30 / 仕様波及が 1 SPEC 以内 / レビュー aspect の走り方が 2 以下
-  - **Epic (複数 PR スコープ)**: 想定変更行数 > 1,000 / 触るファイル > 30 / 仕様波及が複数 SPEC / レビュー aspect が 3 以上大きく走る / 単独 PR で完結見込みが立たない
-  - 迷ったら **Plan で起票** (Plan は後から `epic-author` 経由で Epic に昇格可能、§4.1)
+- **判定基準** (`docs/harness/plan.md` §4.1 と `.claude/rules/plan.md` §Epic 昇格条件 を SoT とする):
+  - **Plan (単一 PR スコープ)**: 想定変更ファイル数 ≤ 10 / 想定期間 ≤ 1 週間 / open question 想定なし / 単独 PR で完結見込み
+  - **Epic (複数 PR スコープ)**: 想定変更ファイル数 > 10 / 想定期間 > 1 週間 / open question 想定あり / 仕様波及が複数 SPEC / 単独 PR で完結見込みが立たない (4 兆候のいずれかで Epic 検討、`.claude/rules/plan.md` §Epic 昇格条件 4 行表)
+  - 迷ったら **Plan で起票** (Plan は後から `status: promoted` + `promoted_to: EPIC-NNN` で Epic に昇格可能、`.claude/rules/plan.md` §Plan ⇄ Epic ⇄ ADR の責務分離)
 - **Plan 起票**: `plan-author` Skill を呼ぶ (起動コマンド例: `Skill skill="plan-author"`)、frontmatter `type` は要求種別 (`feature-request` / `bug-fix` / `refactor` / `dependency-upgrade` 等) に合わせる
 - **Epic 起票**: `epic-author` Skill を呼ぶ、5 ファイル (README / roadmap / open-questions / decisions / progress) を template から生成、`docs/epics/INDEX.md` 更新、起票直後に `roadmap-tracker` Skill が自動起動
-- **ADR 起票判定** (該当時): 要件 / 基本設計で「アーキテクチャ的に不変な決定」が発生したら `adr-author` Skill を呼ぶ (`.claude/rules/adr.md` §起票基準: SPEC を超えるアーキテクチャ層の意思決定 / 撤回コストが高い / 他複数の判断に影響等)
+- **ADR 起票判定** (該当時): 要件 / 基本設計で「アーキテクチャ的に不変な決定」が発生したら `.claude/rules/adr.md` §起票基準 (SPEC を超えるアーキテクチャ層の意思決定 / 撤回コストが高い / 他複数の判断に影響等、2 項目以上充足) に基づき `docs/adr/template.md` を copy して **本 Skill 自身が ADR を起草** (`adr-author` Skill は A3 配下では未配置のため、本 Skill が直接担当)。将来 `adr-author` Skill 配置後は呼び出しに切替予定
 
 ### Phase 6: orchestrator または人間に handoff
 
@@ -175,6 +175,9 @@ implementation-workflow / code-reviewer / pr-retrospective 等の後続 Skill �
 - **Mermaid の使い分け**: 基本設計 = `graph` / `sequenceDiagram` / `stateDiagram-v2` / `erDiagram`、詳細設計 = `graph TD` / `sequenceDiagram` / `stateDiagram-v2`、roadmap.md 専用の `gantt` は設計書では使わない (§4.6.6 早見表)
 - **plan-author / epic-author の呼び分けミス防止**: 単一 PR スコープを epic-author で起票すると Epic ディレクトリが過剰生成され撤回困難。複数 PR スコープを plan-author で起票するとロードマップ追跡対象外 (R-34) になり進捗可視化が機能しない
 - **コード断片混入の典型パターン**: 「擬似コード」「サンプル」「実装例」と称した Kotlin / SQL 等の断片は全て本 Skill の禁止対象、責務 / 制約 / I/O 表現を自然言語と Mermaid と表で記述する
+- **詳細設計テストパターン表の `@Spec` 予定 ID は placeholder**: Phase 4 テストパターン表 (`.claude/rules/docs-structure.md` §4.6.5 #9) に書く `@Spec` 予定 ID は本 Skill 起草時点では暫定値 (SPEC-NNN-N の候補)、実際の Kotlin 側 `@Spec` annotation は `implementation-workflow` Phase 3 で確定する。SPEC ID 名称変更が発生したら spec-living-sync.md §同期パターン分類 (docs 軽微訂正) で同 PR 内で詳細設計側を更新する
+- **`adr-author` Skill 未配置のため ADR 起草は本 Skill 直接**: A3 配下では `adr-author` Skill 未実装 (実体ファイルなし)、`.claude/rules/adr.md` §起票基準 充足時は本 Skill が `docs/adr/template.md` を copy して直接起草する。`adr-author` を将来配置するときは関連 ADR (例: A3 後続 PR) で「呼び出しに切替」を明示
+- **`docs/requirements/INDEX.md` が未存在の場合は初回起動時に作成**: 採番 (REQ-001 等) の起点として INDEX.md を新規作成し、ヘッダ行 (`| REQ-NNN | タイトル | type | status | related_epic | 起票日 |` 形式) + 自 REQ-NNN 行を追記する
 
 ## 関連
 
@@ -188,7 +191,6 @@ implementation-workflow / code-reviewer / pr-retrospective 等の後続 Skill �
 - `docs/harness/plan.md` §6.2 A3 (本 Skill 本格化フェーズ)
 - `.claude/skills/plan-author/SKILL.md` (Plan 起票責務、本 Skill が呼ぶ)
 - `.claude/skills/epic-author/SKILL.md` (Epic 起票責務、本 Skill が呼ぶ)
-- `.claude/skills/adr-author/SKILL.md` (ADR 起草責務、本 Skill が必要時に呼ぶ)
 - `.claude/skills/implementation-workflow/SKILL.md` (Plan / Epic 起票後のバトンタッチ先)
 - `.claude/rules/docs-structure.md` (要件 / 基本設計 / 詳細設計 テンプレ + frontmatter 規約 + Mermaid 早見表)
 - `.claude/rules/{plan,epic,adr,template-language,markdown,mcp-usage,pii,secrets}.md`
