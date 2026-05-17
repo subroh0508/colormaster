@@ -7,7 +7,6 @@ last_updated: 2026-05-17
 # Claude Code セッション起動時に常時ロードする (公式 docs: paths 未指定 = unconditional load)。
 related_adrs:
   - ADR-0020
-  - ADR-0011
 ---
 
 # pii.md — PII 保護とアクセス制御
@@ -37,12 +36,13 @@ related_adrs:
 `code-reviewer` / `pr-retrospective` / `harness-meta` などの Skill が出力する際は、
 以下のパターンを検出してマスクする (`[REDACTED-PII]` 等のプレースホルダに置換):
 
-| パターン | 置換例 |
-|---|---|
-| メールアドレス (除く `@example.com`) | `[REDACTED-EMAIL]` |
-| `https://lh*.googleusercontent.com/...` | `[REDACTED-AVATAR-URL]` |
-| `sub` claim の値 (典型的に数字 21 桁) | `[REDACTED-UID]` |
-| IP アドレス | `[REDACTED-IP]` |
+| パターン | 検出 regex | 置換 |
+|---|---|---|
+| メールアドレス (除く `@example.com`) | `[a-zA-Z0-9._%+-]+@(?!example\.com)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}` | `[REDACTED-EMAIL]` |
+| GIS avatar URL | `https://lh[0-9]+\.googleusercontent\.com/[^\s]+` | `[REDACTED-AVATAR-URL]` |
+| `sub` claim の値 (典型的に数字 21 桁) | `\b\d{21}\b` | `[REDACTED-UID]` |
+| IPv4 アドレス | `\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b` (除く `127.0.0.1` / `0.0.0.0` / プライベートレンジは context により残す判断) | `[REDACTED-IP]` |
+| IPv6 アドレス | `\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b` | `[REDACTED-IP]` |
 
 ## テスト fixture の規約
 

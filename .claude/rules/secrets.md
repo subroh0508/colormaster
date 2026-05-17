@@ -74,6 +74,15 @@ learning / ADR / レビューコメントを出力する前に以下を検出し
 
 詳細は `pii.md` redaction 表と統合運用 (PII と Secrets は同じ Skill チェックポイントで検証)。
 
+## 機械検証 (A6 で導入)
+
+- **trufflehog** で全 PR 差分の secret scan (`.github/workflows/secret-scan.yml`、上記「漏洩検出」と統合)
+- **Gradle カスタムタスク** で以下を検証:
+  - `.env.example` に **キーのみ + ダミー値** が記載され、実値混入なし (regex で `=.{16,}` のような長文字列を warning)
+  - `gradle/libs.versions.toml` / `**/build.gradle.kts` 内に hardcode された access key / token がない (regex `(?i)(api[-_]?key|token|secret|password)\s*[:=]\s*["'][^"']{8,}["']`)
+  - `.gitignore` に `.env*` / `*-credentials.json` / `service-account*.json` / `.claude/oauth-tokens*` が含まれる
+- **GitHub Actions secret scanning** が repo 設定で有効化されている (Settings → Code security)
+
 ## Gotchas
 
 - **Skill が CI ログ / MCP 結果を learning / レビューコメントに含める場合は redaction 必須** (R-26)
