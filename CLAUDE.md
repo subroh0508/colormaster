@@ -62,11 +62,21 @@
 | `docs/epics/**/` | epic.md |
 | `docs/plans/*.md` | plan.md |
 | `docs/harness/roadmap.md`, `docs/epics/**/roadmap.md` | roadmap.md |
+| `docs/requirements/**`, `docs/specifications/**` (実装中の仕様変更) | spec-living-sync.md, docs-structure.md |
+| `docs/harness/learnings/**/*.md` | retrospective-format.md |
+| `docs/harness/evolution-proposals/**` | harness-evolution.md |
 | `data/users.db*` の追跡 | **禁止** (db-protection.md / pii.md / secrets.md / `.gitignore`) |
 | `data/idols.db` 関連 | sqlite-data-file.md |
 | Dockerfile | cloud-run-deploy.md, db-protection.md |
 | `.github/workflows/**` | gradle.md (CI で `./gradlew check` 起動)、Claude API は呼ばない (ADR 0017) |
+| `.github/PULL_REQUEST_TEMPLATE/**`, `.github/pull_request_template.md` | pr-template.md |
 | `.claude/skills/**/SKILL.md` | skill-authoring.md |
+| `.claude/skills/implementation-workflow/**` | implementation-workflow.md, branch-naming.md, pr-template.md, pr-draft-policy.md, merge-readiness.md, spec-living-sync.md |
+| `.claude/skills/code-reviewer/**` | code-reviewer-aspects.md, merge-readiness.md |
+| `.claude/skills/{harness-meta,pr-poller}/**` | harness-meta-criteria.md, pr-poller.md, retrospective-format.md |
+| `.claude/skills/harness-evolution/**` | harness-evolution.md |
+| `.claude/locks/**` | pr-poller.md |
+| `scripts/install-git-hooks.sh` | commit-message.md, branch-naming.md |
 | `.claude/rules/**` | rules-index.md, docs-structure.md, template-language.md |
 
 ## グローバルルール

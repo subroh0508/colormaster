@@ -23,7 +23,7 @@ related_adrs:
 
 詳細骨格は `docs/harness/plan.md` §4.0.1 を参照。主要ディレクトリ:
 
-```
+```text
 DESIGN.md                  ★ repo root
 docs/
   README.md                ★ AI 用エントリポイント

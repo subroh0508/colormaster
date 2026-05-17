@@ -84,7 +84,7 @@ related_plan: docs/harness/plan.md §5.4.3 / R-15
 - **Critical 0 でも保留判断は OK**: code-reviewer Coordinator が「Critical = 0 → Ready」と判定しても、人間が「もう少し見たい」と判断したら Ready 昇格を保留する
 - **orchestrator 明示承認は本 PR の type で記録**: PR description に承認文言の引用 (orchestrator 指示テキストの抜粋) を残し、後追い監査可能性を担保
 - **fix loop 上限超過 (3 回) で merge readiness 不可** (`implementation-workflow.md` R-14)、Plan status を `blocked` に書き換えて人間に通知
-- **mirror PR は merge readiness の 3 条件が緩和される**: CI 対象が docs のみ (実装コード変更ゼロ) のため `pass / neutral` 判定、code-reviewer は spec-conformance / architecture / security の 3 aspect で十分 (visual-regression / design-tokens / performance / test-quality / code-quality は skip 妥当)、人間 approve は orchestrator 事前承認で代替可
+- **mirror PR は merge readiness の 3 条件が緩和される**: CI 対象が docs のみ (実装コード変更ゼロ) のため `pass / neutral` 判定、code-reviewer の aspect セットは `code-reviewer-aspects.md` Gotchas で SoT 化 (mirror PR は spec-conformance / architecture / security の 3 aspect、harness PR は code-quality を加えた 4 aspect)、人間 approve は orchestrator 事前承認で代替可
 
 ## 関連
 

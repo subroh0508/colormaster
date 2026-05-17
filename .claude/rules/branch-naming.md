@@ -74,7 +74,7 @@ related_plan: docs/harness/plan.md §4.7 / §5.4.2
 | ハーネス改修 / レトロ起票 / mirror | `harness/<purpose>` | `harness.md` | `feat` / `docs` (scope `harness`) |
 | 雑務 | `chore/<purpose>` | `feature.md` を流用 (chore 専用テンプレなし) | `chore` |
 
-## 自動検証 (A6 で導入予定)
+## 機械検証 (A6 で導入予定)
 
 - **Git hook (`scripts/install-git-hooks.sh` 拡張)**: `pre-push` で現在ブランチが正規表現 `^(feature|fix|refactor|docs|chore|harness|epic|renovate|master|main)/.+$` (または `master` / `main` 自体) に合致するかチェック
 - **GitHub Actions**: PR open 時に `head_ref` を検証、`branch-naming.md` の prefix allow リストに合致しない場合は warning コメント (A6 / detekt 導入と同時)
