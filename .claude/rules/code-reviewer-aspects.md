@@ -31,10 +31,10 @@ related_plan: docs/harness/plan.md §5.3 / §5.4.3 / R-13 / R-37
 | `visual-regression` | **A10 完了後 enable** | Roborazzi baseline diff (4 パターン: mobile/desktop × Light/Dark)、許容 threshold 内 |
 | `design-tokens` | **A10 完了後 enable** | DESIGN.md に存在しない hex / sp / dp の混入なし、Primitive/Semantic/Component 3 階層整合 |
 
-## 各 aspect の binary yes/no eval checklist (各 ≥5 項目、R-13)
+## 各 aspect の binary yes/no eval checklist (各 5 項目以上、R-13)
 
 PR #121 レトロ Try「binary checklist 4 aspect × 7-8 項目 = 29 項目を A3 本格化時に確定」を反映。
-本 rule で各 aspect の **最低 5 項目、推奨 7-8 項目** を確定。
+本 rule で各 aspect の **最低 5 項目、推奨 7-8 項目** を確定 (PR #135 レトロ Try で `≥` Unicode を `5 項目以上` に置換、copy 時の escape リスク回避)。
 
 ### spec-conformance (7 項目)
 
@@ -117,6 +117,36 @@ PR #121 レトロ Try「binary checklist 4 aspect × 7-8 項目 = 29 項目を A
 - 日本語の構造化レビューコメントを PR に post (下記フォーマット)
 - Merge readiness を判定: **Critical = 0 で Ready** (`merge-readiness.md` 3 条件と整合)
 - PR コメント post 前に `.claude/rules/pii.md` / `.claude/rules/secrets.md` redaction を必ず通す (R-26)
+
+## aspect 動的選択ルール (PR #126 / #125 / #135 レトロ Try)
+
+PR の touch ファイル種別と規模に応じて aspect セットを動的に選択する。`merge-readiness.md` §大規模 PR (30+ ファイル) の aspect スコープ自動削減 と整合:
+
+| touch ファイル分類 | 既定 aspect セット | skip aspect | 根拠 |
+|---|---|---|---|
+| **Markdown only** (`.claude/rules/**` / `docs/**`) | spec-conformance / architecture / security / code-quality (4 aspect) | test-quality / performance / visual-regression / design-tokens | 実装コード変更ゼロ、UI 変更ゼロのため適用外 |
+| **Kotlin code touch あり (feature/core 配下、非 UI)** | 上記 + test-quality / performance (6 aspect) | visual-regression / design-tokens | A10 完了前は UI aspect 未 enable |
+| **`feature/**` touch あり (UI 変更含む)** | 上記 + visual-regression / design-tokens (8 aspect) | — | A10 完了後の本格運用、現状は skeleton |
+| **`.claude/settings.json` / `.github/workflows/**` touch** | spec-conformance / architecture / security (3 aspect) | code-quality / test-quality / performance / visual-regression / design-tokens | 権限改修 / CI 改修は code-quality / test より architecture / security 重視 |
+| **mirror PR (roadmap docs のみ)** | spec-conformance / architecture / security (3 aspect) | code-quality / test-quality / performance / visual-regression / design-tokens | code-quality は本体 PR で実施済 |
+| **OpenAPI yaml only** (`docs/api/colormaster-api.yaml`) | spec-conformance / architecture / security / code-quality (4 aspect) | test-quality / performance / visual-regression / design-tokens | DTO 同期は別 Plan、code-quality は yaml schema validity を含む |
+| **build script only** (`build.gradle.kts` / `gradle/libs.versions.toml`) | architecture / security / code-quality (3 aspect) | spec-conformance / test-quality / performance / visual-regression / design-tokens | spec docs 変更なし、code-quality は version compatibility を含む |
+
+Coordinator は PR の `--name-only` diff を grep して上記分類を自動判定、skip 対象を集約コメントに明示する (透明性確保)。
+
+### MD040 / CommonMark / GFM 仕様の明示 (PR #125 レトロ Try)
+
+`code-quality` aspect agent prompt に CommonMark / GFM の各 markdownlint rule 仕様を明示し、誤検出を予防 (PR #125 で MD040 35+ 件の誤検出が発生):
+
+| markdownlint rule | 対象範囲 | 注意点 |
+|---|---|---|
+| MD040 (フェンス言語指定必須) | **開始フェンスのみ** | 閉じフェンス (` ``` ` 単独) は対象外、誤検出注意 |
+| MD001 (見出しレベル飛ばし禁止) | 全 H1-H6 | frontmatter 後の H1 から開始、H1 → H3 のジャンプは違反 |
+| MD024 (同一見出し重複禁止) | 全 H1-H6 | `siblings_only: true` で兄弟見出しのみ判定、別 H2 配下の H3 重複は OK |
+| MD034 (裸 URL 禁止) | 本文 | inline code (` `https://...` `) や `<https://...>` は対象外 |
+| MD041 (ファイル冒頭は H1 必須) | ファイル冒頭 | frontmatter ありの場合は frontmatter 直後の H1 が対象 |
+
+各 aspect agent (`Agent({subagent_type: "Explore", ...})`) の system prompt 冒頭で本表を引用し、agent が markdownlint rule の対象範囲を誤判定しないようガードする。
 
 ## Coordinator のレビューコメント形式
 

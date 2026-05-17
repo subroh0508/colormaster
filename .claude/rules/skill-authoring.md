@@ -25,6 +25,8 @@ related_plan: docs/harness/plan.md §5.3 / R-30
 
 ## SKILL.md フォーマット
 
+各セクションの 1 行コメント付き雛形 (PR #135 レトロ Try、`harness-bootstrap` / `harness-meta` 生成時のばらつき抑制):
+
 ```markdown
 ---
 name: <skill-name>
@@ -44,15 +46,27 @@ related_adrs:
 
 ## 役割
 
+<!-- この Skill が担う責務を 3-5 行で記述。他 Skill との責務分離が明示できる粒度。 -->
+
 ## 入力
+
+<!-- 起動時の引数 / 参照するファイル / 環境変数を明示。型・形式・必須/任意を含む。 -->
 
 ## 出力
 
+<!-- 生成するファイル / commit / PR / コメント等の副作用を明示。出力先パスを含む。 -->
+
 ## フェーズ別動作 (該当時)
+
+<!-- implementation-workflow の 10 フェーズ / pr-poller の 3 系統等、複数モードがある場合のみ記述。単一モードなら省略可。 -->
 
 ## Gotchas
 
+<!-- 罠 / 注意点 / 例外を最低 3 項目列挙。抽象論ではなく具体例で。 -->
+
 ## 関連
+
+<!-- 参照する rules / Plan 章 / ADR / 他 Skill を列挙。双方向リンクの片方として機能。 -->
 ```
 
 - frontmatter 配列は block 形式必須 (`docs-structure.md` 規約と整合)

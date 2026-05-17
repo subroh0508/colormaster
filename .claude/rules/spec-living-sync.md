@@ -4,6 +4,8 @@ title: 実装中の仕様変更時の双方向同期規約
 status: stable
 last_updated: 2026-05-17
 paths:
+  # 注意: scope は docs/requirements + docs/specifications のみ (PR #135 レトロ Try)。
+  # docs/architecture / docs/api は本 rule の対象外 (それぞれ別 docs / OpenAPI yaml が SoT)。
   - "docs/requirements/**"
   - "docs/specifications/**"
   - ".claude/skills/implementation-workflow/**"
@@ -39,6 +41,8 @@ related_plan: docs/harness/plan.md §4.6 / R-32 / R-33
 仕様変更を含む PR は description に以下を必ず記載:
 
 ```markdown
+<!-- 例示意図: 以下は fence 内のサンプル表記、実 PR description には変更内容に応じて書き換え (PR #135 レトロ Try) -->
+
 ## 仕様変更箇所 (spec-living-sync)
 
 | 変更前 | 変更後 | 影響範囲 (REQ/SPEC ID) | 同 PR で対応 | 別 PR 切り出し |

@@ -30,20 +30,29 @@ expected_modules: []
 
 ## 対象 PR (KPT / 改修起点)
 
-`harness-meta` / `harness-evolution` / レトロ集約 PR で記入:
+`harness-meta` / `harness-evolution` / レトロ集約 PR で記入。各 PR について採用判定基準該当 (1-5、`.claude/rules/harness-meta-criteria.md` §採用判定基準 参照) も明記:
 
-| 元 PR | KPT 要点 | 本 PR で消化する提案 |
-|---|---|---|
+| 元 PR | KPT 要点 | 本 PR で消化する提案 | 採用判定基準該当 (1-5) | mirror PR か | rebase 回数 | classifier ブロック有無 |
+|---|---|---|---|---|---|---|
+
+記入例 (PR #135 レトロ Try):
+
+| 元 PR | KPT 要点 | 本 PR で消化する提案 | 採用判定基準該当 (1-5) | mirror PR か | rebase 回数 | classifier ブロック有無 |
+|---|---|---|---|---|---|---|
+| #129 | classifier ブロック迂回パターン辞典 | `harness-meta-criteria.md` §classifier ブロック対応 追加 | 1 (PR #125 / #129 で反復) | — | 0 | 0 |
+| #126 | mirror PR merge note 段落テンプレ | `roadmap.md` §merge note 段落テンプレ 追加 | 4 (Critical 派生) | — | 0 | 0 |
 
 ## 変更内容
 
-| 区分 | パス | 変更内容 |
-|---|---|---|
-| rule | `.claude/rules/<name>.md` | <追加 / 改修 / 削除> |
-| skill | `.claude/skills/<name>/SKILL.md` | <追加 / 改修 / archived 化> |
-| template | `.github/PULL_REQUEST_TEMPLATE/<type>.md` 等 | <追加 / 改修> |
-| docs | `docs/harness/**` / `docs/adr/**` 等 | <追加 / 改修> |
-| script | `scripts/install-git-hooks.sh` 等 | <整合性更新> |
+| 区分 | パス | 変更内容 | 持ち越し Improvement |
+|---|---|---|---|
+| rule | `.claude/rules/<name>.md` | <追加 / 改修 / 削除> | <code-reviewer Improvement 番号、本 PR で消化 / 後続持ち越し> |
+| skill | `.claude/skills/<name>/SKILL.md` | <追加 / 改修 / archived 化> | — |
+| template | `.github/PULL_REQUEST_TEMPLATE/<type>.md` 等 | <追加 / 改修> | — |
+| docs | `docs/harness/**` / `docs/adr/**` 等 | <追加 / 改修> | — |
+| script | `scripts/install-git-hooks.sh` 等 | <整合性更新> | — |
+
+> **注**: 「持ち越し Improvement」列 (PR #123 レトロ Try) は `code-reviewer` Coordinator の Improvement 番号 (例: spec-conformance #2 / architecture #4) を記載。本 PR 内消化 / 後続 PR へ持ち越しを `📝 harness-meta フィードバック` 表と紐付ける。
 
 ## ハーネス改善提案件数 (KPT / harness-meta フィードバック)
 

@@ -52,7 +52,22 @@ docs/
 | Epic | `EPIC-NNN` (3 桁ゼロパディング) | `EPIC-001` |
 | Plan | `PLAN-NNN` (3 桁ゼロパディング、Epic と独立採番) | `PLAN-001` |
 | 要件 | `REQ-NNN-<slug>` | `REQ-001-search-by-brand` |
-| 仕様 | `SPEC-<entity-id>-<seq>` (basic/detail 共通) | `SPEC-IDOL-001-3` |
+| 仕様 (連番形式) | `SPEC-<entity-id>-<seq>` (basic/detail 共通、suffix なし) | `SPEC-IDOL-001-3` |
+| 仕様 (basic/detail suffix 形式) | `SPEC-<entity-id>-<seq>(-basic\|-detail)?` (ペア参照時の省略形 / 明示形) | `SPEC-IDOL-001-basic` / `SPEC-IDOL-001-detail` |
+
+**仕様 SPEC suffix 形式の使い分け** (PR #123 レトロ Try):
+
+- **連番形式** (`SPEC-IDOL-001-3`): 単一仕様 ID を独立に参照する場合の主形式
+- **basic/detail suffix 形式** (`SPEC-IDOL-001-basic` / `SPEC-IDOL-001-detail`): 1 つのエンティティに対する basic / detail のペア参照を強調したい場合の省略形
+- 両形式は同一エンティティの仕様を指すため互換性あり、frontmatter / 本文では一方に統一推奨
+
+**title と H1 の表記方針** (PR #126 レトロ Try):
+
+- frontmatter `title` = H1 の **完全一致** を原則とする
+- 例外として `title` ⊇ H1 (frontmatter は完全形、H1 は短縮形) を許容、その場合は frontmatter title の冒頭から H1 の文字列が含まれる形にする
+  - OK: `title: データフロー (im@sparql → Backend → Client)` + `# データフロー (im@sparql → Backend → Client)`
+  - OK (短縮許容): `title: データフロー (im@sparql → Backend → Client)` + `# データフロー`
+  - NG: `title: データフロー` + `# 詳細フロー` (frontmatter / H1 で別表現)
 
 ## AI が読む順序 (推奨)
 
@@ -136,7 +151,7 @@ related_adrs:      # NG (これは null 扱いになる)
 
 | 種別 | 必須 |
 |---|---|
-| 全 docs | `id`, `title`, `status`, `last_updated` |
+| 全 docs | `id`, `title`, `status`, `last_updated`, `related_specs` (該当なしは `[]` 明示、PR #126 レトロ Try) |
 | 要件 (REQ-NNN) | 上記 + `related_specs`, `related_epics`, `related_plans`, `related_adrs`, `created_at`, `updated_at` |
 | 基本設計 (SPEC-NNN-basic) | 上記 + `related_requirements`, `related_detail` |
 | 詳細設計 (SPEC-NNN-detail) | 上記 + `related_requirements`, `related_basic` |
@@ -145,6 +160,34 @@ related_adrs:      # NG (これは null 扱いになる)
 | Plan | 上記 + `type`, `related_pr`, `related_epic`, `related_specs`, `related_adrs`, `expected_modules`, `created_at`, `completed_at`, `promoted_to` |
 | Learning | 上記 + `type: learning`, `related_pr`, `related_plan`, `related_epic`, `generated_at`, `generator` |
 | ロードマップ | 上記 + `source_plan` または `source_epic` |
+
+### related_plan の単複表記 (PR #123 レトロ Try)
+
+- **単数 PLAN-NNN を指す場合も `related_plans:` (複数形 block) で統一**: スカラー単数形 `related_plan: PLAN-NNN` は **non-recommended** (旧形式、A2-4 以前の docs で混在)
+- **`related_plan: —` (該当なし) は許容**: Learning など Plan と無関係な docs では単数 `related_plan` でハイフン (`—`) 明示も可
+- **移行手順** (PR #123 由来 4 docs 等): スカラー単数形 → 複数形 block への移行は別 PR で順次対応、機械検証 (A6) で複数形強制を検証する際は単数形も grace 期間中は warning に留める
+
+## 「現状: B0 段階 / 本格実装: Phase C」明示パターン参考例 (PR #126 レトロ Try)
+
+実装が薄い領域 (Backend ほぼ空 / feature-first 未再編 / Firebase 撤去未済) を docs 化する際、「将来形 SoT として記述 + 現状差分を honest に明示」パターンを採用すると Phase C で同 docs を書き直す必要を最小化できる:
+
+```markdown
+## ストレージ層
+
+### 将来形 (Phase C 完了後の SoT)
+
+- Cloud Run + R2 + Litestream 構成 (`docs/runbooks/r2-litestream.md` 参照)
+- SQLite WAL モード、Litestream replicate / restore で R2 に継続バックアップ
+
+### 現状 (B0 段階)
+
+- Cloud Run / R2 / Litestream は未配置 (Phase C5 / C7 で本格化予定)
+- ローカル開発時は `data/idols.db` を直接マウント、`data/users.db` は `.gitignore` で除外
+- 移行タイミング: Phase C5 着手時に Dockerfile + Litestream sidecar 構成を導入
+```
+
+- 「将来形」「現状」セクションを **明示的に分離**、混在記述は避ける
+- 「現状」セクション末尾に **持ち越し TODO 表** (`| 持ち越し項目 | 持ち越し先 | 理由 |`) を配置して Phase 進捗追跡に資する
 
 ## 機械検証 (A6 で導入)
 
