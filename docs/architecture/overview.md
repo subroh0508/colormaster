@@ -85,16 +85,24 @@ graph TD
     Wasm --> Feature
     Desktop --> Feature
     Feature --> CDomain
-    CDomain --> CData
+    Feature --> CModel
+    CData --> CDomain
     CData --> CNetwork
-    CNetwork --> BServer
+    CData --> CCommon
+    CData --> CModel
+    CDomain --> CModel
+    CNetwork --> CModel
+    CNetwork -.HTTP.-> BServer
     BServer --> GIS
     BServer --> R2
     BCli --> IMSparql
     Wasm -.静的配信.-> CFPages
 ```
 
-> 凡例: 実線 = 依存方向 (上から下)、点線 = ホスティング配信。`feature/*` は EPIC-001 (C3) で `core/features/*` から移行予定 (現状は `core/features/*` に残存)。
+> 凡例: 実線 = コンパイル時依存、点線 = ランタイム通信 / 配信。**DIP**: Repository
+> interface は `core/domain` で宣言、impl は `core/data` が `core/domain` に依存
+> (`CData --> CDomain`)。`feature/*` は EPIC-001 (C3) で `core/features/*` から移行予定。
+> 詳細な層間越境ルールは `layers.md` を参照。
 
 ## target / platform マトリクス
 

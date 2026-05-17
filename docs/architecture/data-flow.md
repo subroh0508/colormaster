@@ -71,19 +71,24 @@ flowchart TB
     SHACheck -->|一致| Skip([no-op])
     Fetch --> IdolsDb
     Fetch --失敗--> Issue
-    IdolsDb --PR レビュー後 merge--> PR
+    Fetch --起票--> PR
+    PR --human review + merge--> IdolsDb
     IdolsDb --コンテナビルド時--> Container
     Container --デプロイ--> Server
-    Server --起動時 restore--> UsersDb
-    R2 --restore--> UsersDb
-    UsersDb --WAL replicate--> Litestream
-    Litestream --> WAL
+    WAL --restore (起動時)--> Litestream
+    Litestream --rebuild (起動時)--> UsersDb
+    UsersDb --WAL replicate (継続)--> Litestream
+    Litestream --PUT chunks--> WAL
+    Server --read/write--> UsersDb
     Server --/api/idols/*--> ClientApp
     Server --/api/me/* (Bearer)--> ClientApp
 ```
 
 > 凡例: 実線 = データの流れ、円柱 = 永続層、丸角 = workflow / プロセス。`data/users.db`
 > は **コンテナイメージに焼き込まない** (`.dockerignore` で除外、ADR 0008 / 0020)。
+> **restore の主体は Litestream daemon** (Startup script から起動)、Server は restore
+> 完了後にのみ start する (詳細は本ページ「Restore (Backend 起動時)」+ `sequences.md`
+> ユースケース 5)。
 
 ## im@sparql 同期フロー (`docs/harness/plan.md` §3.3 詳細)
 

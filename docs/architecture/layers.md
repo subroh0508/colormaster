@@ -23,16 +23,16 @@ related_adrs:
 
 | 層 | パス | 主責務 | 出力 | 依存可能な層 | 関連 rule |
 |---|---|---|---|---|---|
-| **feature/<画面>** | `feature/<name>/` (C3 移行後) | 画面固有の `ViewModel` / `UiState` / `UiAction` / `Screen` Composable / `Route` / `di` | UiState / UiAction / Screen | core/domain, core/data, core/model | `viewmodel.md` / `composable.md` / `navigation.md` / `ui-state.md` |
+| **feature/<画面>** | `feature/<name>/` (C3 移行後) | 画面固有の `ViewModel` / `UiState` / `UiAction` / `Screen` Composable / `Route` / `di` | UiState / UiAction / Screen | core/domain, core/model | `viewmodel.md` / `composable.md` / `navigation.md` / `ui-state.md` |
 | **core/domain** | `core/domain/` (C3 で新設) | ドメインモデル / UseCase / Repository インタフェース | UseCase 関数 / Repository interface | core/model | `repository.md` (interface 部) |
-| **core/data** | `core/data/` | Repository 実装 / DB 抽象化 / マッパー | Repository impl / 永続層 | core/network, core/database | `repository.md` (impl) / `error-handling.md` |
-| **core/network** | `core/network/{imasparql, colormaster-api}/` | Ktor Client / API DTO / シリアライゼーション | HTTP request / DTO | (外部のみ) | `network-client.md` / `error-handling.md` |
+| **core/data** | `core/data/` | Repository 実装 (core/domain の interface を実装) / DB 抽象化 / マッパー | Repository impl / 永続層 | core/domain, core/network, core/common, core/model | `repository.md` (impl) / `error-handling.md` |
+| **core/network** | `core/network/{imasparql, colormaster-api}/` | Ktor Client / API DTO / シリアライゼーション | HTTP request / DTO | core/model | `network-client.md` / `error-handling.md` |
 | **core/model** | `core/model/` | 全層共有の値オブジェクト / sealed class | データクラス | (なし、葉) | `naming.md` |
 | **core/common** | `core/common/` | ロガー / coroutine helper / Result wrapper | utility 関数 | (なし、葉) | `error-handling.md` / `logging.md` |
 | **backend/server** | `backend/server/` | Ktor Server / `/api/*` ハンドラ / JWKS 検証 / SQLite アクセス | HTTP response | (外部: GIS, R2, idols.db, users.db) | `backend-auth.md` |
 | **backend/cli** | `backend/cli/` | im@sparql からのアイドル情報取得 / `data/idols.db` 生成 | SQLite ファイル | (外部: imas/imasparql) | `sync-job.md` / `sparql.md` |
 
-## 依存方向 (上 → 下、逆向き禁止)
+## 依存方向 (DIP 適用、逆向き禁止)
 
 ```mermaid
 graph LR
@@ -47,33 +47,35 @@ graph LR
 
     Feature --> Domain
     Feature --> Model
-    Domain --> Data
-    Domain --> Model
+    Data --> Domain
     Data --> Network
     Data --> Common
+    Data --> Model
+    Domain --> Model
     Network --> Model
     Network -.HTTP.-> Backend
     Backend --> External
 ```
 
 - 実線は **コンパイル時依存**、点線はランタイムの HTTP 通信
-- `core/network` から `core/data` への逆参照は **禁止** (Konsist で機械検証、A2-2 で導入)
-- `feature/*` から `core/network` への直接参照も **禁止** (必ず Repository / UseCase 経由)
+- **DIP (依存性逆転)**: Repository interface は `core/domain` で宣言、impl は `core/data` が `core/domain` に依存 (impl が interface に依存)。Koin DI で `feature` に impl を注入する (`feature` の compile-time 依存は `core/domain` のみ)
+- `core/network` から `core/data` / `core/domain` への参照は **禁止** (Konsist で機械検証、A2-2 で導入)
+- `feature/*` から `core/network` / `core/data` への直接参照は **禁止** (必ず `core/domain` の Repository interface 経由 + DI 注入)
 - `core/model` / `core/common` は葉、他層への依存ゼロ (循環参照防止)
 
 ## 越境ルール
 
-1. **`feature/*` → `core/network/*` 直接参照禁止**
-   - 必ず Repository (`core/data`) または UseCase (`core/domain`) 経由
-   - 理由: ネットワーク失敗時のリトライ / キャッシュ / モック差し替えを Repository に集約
+1. **`feature/*` → `core/network/*` および `core/data/*` 直接参照禁止**
+   - 必ず `core/domain` の Repository interface または UseCase 経由 (impl は DI で注入)
+   - 理由: ネットワーク失敗時のリトライ / キャッシュ / モック差し替えを Repository に集約し、feature 層を interface のみに依存させる (DIP)
 2. **`core/network/*` から DB 直接アクセス禁止**
    - DTO ⇄ ドメインモデルのマッピングは `core/data/Mapper*.kt` で行う
    - 理由: API レスポンスとドメインモデルの分離 (Single Source は backend、クライアント側はビュー寄り)
 3. **`feature/*` 間の直接依存禁止**
    - 共有ロジックは `core/domain` または `core/common` に昇格
    - 画面間遷移は Navigation 3 の `Route.kt` で表現
-4. **`core/domain` から `core/network` 直接依存禁止**
-   - Repository interface は `core/domain` で宣言、impl は `core/data` で `core/network` を使う
+4. **`core/domain` から `core/network` / `core/data` 直接依存禁止**
+   - Repository interface は `core/domain` で宣言、impl は `core/data` で `core/network` を使う (DIP: 実装が抽象に依存、抽象は実装を知らない)
    - 理由: ドメイン層を純粋に保ち、テストでネットワーク不要にする
 5. **`backend/server` の各 API ハンドラは `requireUid()` 呼出必須** (`/api/me/*` のみ)
    - Konsist で機械検証 (A2-2 + A6 で導入、`.claude/rules/backend-auth.md`)
@@ -85,7 +87,8 @@ graph LR
 
 | 規約 | 検証手段 |
 |---|---|
-| feature → core/network 直接参照禁止 | Konsist `KoFileExtension.imports` で `core.network.*` を `feature.*` から検出 |
+| feature → core/network / core/data 直接参照禁止 | Konsist `KoFileExtension.imports` で `core.network.*` / `core.data.*` を `feature.*` から検出 |
+| core/domain → core/data / core/network 直接参照禁止 (DIP) | Konsist で `core.domain.*` の import に `core.data.*` / `core.network.*` を含まないことを検証 |
 | feature 間の直接依存禁止 | Konsist で `feature.A.*` が `feature.B.*` を import していないことを検証 |
 | `/api/me/*` ハンドラの `requireUid()` 必須 | Konsist で `backend.server.routing.me.*` の関数本体に `requireUid()` 呼出を要求 |
 | `core/model` / `core/common` の葉性 | Konsist で他 `core.*` への依存ゼロを検証 |
