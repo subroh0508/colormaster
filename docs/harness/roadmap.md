@@ -75,7 +75,8 @@ gantt
     section Phase A
     A1 :a1, after b0, 14d
     A2 :a2, after b0, 14d
-    A3 :a3, after a1, 14d
+    ORCH-1 :orch1, after a2, 3d
+    A3 :a3, after orch1, 14d
     A4 :a4, after a3, 7d
     A5 :a5, after a3, 7d
     A6 :a6, after a3, 14d

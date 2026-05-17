@@ -202,6 +202,7 @@ cmux send-key --surface surface:N return
 - `/tmp/orchestrator-prompt-*.md` を per-task pane の Read 完了前に削除しない (race condition で内容欠落)
 - Phase 9 で残置 cleanup するか debug 用に残すかは orchestrator 判断 (default: 残置、disk 圧迫時 cleanup)
 - macOS の `/tmp` は再起動時に自動 cleanup されるため、永続化責任なし
+- **起動 prompt 本文に PII / Secrets を含めない** (`.claude/rules/pii.md` / `.claude/rules/secrets.md` redaction 規約準拠): `/tmp/orchestrator-prompt-*.md` は本文をそのまま file 化するため、prompt に PII (メール / display name / GIS avatar URL / sub claim / IPv4/v6 等) や Secrets (API key / token / Bearer / JWT / GitHub PAT 等) が混入すると、残置中は同一マシン他プロセスから world-readable (`/tmp` の default permission) になる。PII / Secrets を含む可能性がある場合は **Phase 9 で `rm /tmp/orchestrator-prompt-*.md` 必須**、または最初から PII / Secrets を含まない prompt 設計を採用
 
 ### 実証ケース (本 PR で初実証)
 

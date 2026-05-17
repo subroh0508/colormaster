@@ -8,7 +8,7 @@ description: |
   物理分離した worktree で並列実装したい時、per-task pane が classifier ブロックで停止
   した時、context が 60% に到達して handover が必要な時、stale display 残骸で per-task
   pane の真の state が読み取れない時、200 字超の prompt を per-task pane に投入する時に
-  必ず本 Skill に従って動作する。
+  本 Skill に従って動作することを推奨する。
 status: stable
 phase: A2 follow-up
 last_updated: 2026-05-17

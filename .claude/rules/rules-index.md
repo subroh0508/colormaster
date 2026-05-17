@@ -153,18 +153,18 @@ last_updated: 2026-05-17
 | `harness-evolution.md` | stable (A2-3) | 外部情報源ホワイトリスト、出力フォーマット、Context7 MCP 引用検証 |
 | `docs-structure.md` | stable (A2-3、NG 例明示) | `docs/` の歩き方、命名規約、5 行 summary + lazy-load |
 
-### 並列 orchestration
-
-| ファイル | 状態 | 主な責務 |
-|---|---|---|
-| `orchestrator-criteria.md` | stable (ORCH-1) | orchestrator Skill の自動回答 / pause 判定ライン、context 60% handover プロトコル、stale display 検出手順、プロンプト送信プロトコル (ファイル経由送信)、classifier 迂回 NG/OK 辞典の SoT |
-
 ### 実装ワークフロー
 
 | ファイル | 状態 | 主な責務 |
 |---|---|---|
 | `implementation-workflow.md` | stable (A2-3、Skill 本格実装は A3) | 10 フェーズ手順、Phase 0 で `git fetch origin master`、fix loop 上限 3、worktree 未マージ検知 |
 | `code-reviewer-aspects.md` | stable (A2-3、Skill 本格実装は A3) | 8 aspect の binary eval checklist (各 5-7 項目)、Coordinator 形式 |
+
+### 並列 orchestration (実装ワークフローを per-task pane に委譲する上位レイヤ)
+
+| ファイル | 状態 | 主な責務 |
+|---|---|---|
+| `orchestrator-criteria.md` | stable (ORCH-1) | orchestrator Skill (= implementation-workflow を per-task pane に委譲する上位レイヤ) の自動回答 / pause 判定ライン、context 60% handover プロトコル、stale display 検出手順、プロンプト送信プロトコル (ファイル経由送信)、classifier 迂回 NG/OK 辞典の SoT |
 
 ### ドキュメント表記
 
