@@ -35,6 +35,8 @@ source_epic: EPIC-A2
 | 2026-05-17 | A2-5 PR #126 Ready 昇格 + merge 完了 (commit `168ef5d`、squash merge、`gh pr merge --squash --admin` で orchestrator 委任 / R-15 代替) | A2-5 PR #126 |
 | 2026-05-17 | A2-5 Phase 8 (roadmap-tracker 手動代替) 実施 → PR #128 (`harness/roadmap-mirror-a2-5`) で EPIC-A2 roadmap.md / progress.md / 全体 roadmap.md の A2-5 完了反映 | PR #128 |
 | 2026-05-17 | A2-2 master rebase × 2 回実施 (PR #122 / #124 → 2 回目 #123 / #126 / #128 反映)、`docs/epics/EPIC-A2-rules-docs-extension/{roadmap,progress}.md` の conflict を master 側 (A2-4 / A2-5 完了根拠) を保持しつつ A2-2 着手記録を統合する形で解決 | A2-2 PR #125 |
+| 2026-05-17 | A2-2 PR #125 Ready 昇格 + merge 完了 (merge commit `1a33ccc`、`gh pr merge --merge`、orchestrator 明示承認で R-15 代替) | A2-2 PR #125 |
+| 2026-05-17 | A2-2 Phase 8 (roadmap-tracker 手動代替) 実施 → 本 PR (`harness/roadmap-mirror-a2-2`) で EPIC-A2 roadmap.md / progress.md / 全体 roadmap.md の A2-2 完了反映 | 本 PR (A2-2 mirror) |
 
 ## マイルストーン
 
@@ -46,6 +48,6 @@ source_epic: EPIC-A2
 | 2026-05-17 | A2-5 PR ドラフト起票 | ✅ 達成 (PR #126) |
 | 2026-05-17 | A2-5 マージ (docs/architecture + api 拡充) | ✅ 達成 (PR #126、commit `168ef5d`) |
 | 2026-05-17 | A2-2 Draft PR 起票 + code-reviewer 並列 review 完了 | ✅ 達成 (PR #125、Critical 0) |
-| (未定) | A2-2 マージ (rules 実装・コード系本格化) | 進行中 (PR #125、Ready 昇格 + merge は本ペインで実行中) |
-| (未定) | A2-3 マージ (rules プロセス・ハーネス・UI 系本格化) | 未達 (A2-2 完了後着手予定) |
-| (未定) | EPIC-A2 status → completed | 未達 (3/5 マージ済、残り A2-2 / A2-3) |
+| 2026-05-17 | A2-2 マージ (rules 実装・コード系本格化) | ✅ 達成 (PR #125、merge commit `1a33ccc`) |
+| (未定) | A2-3 マージ (rules プロセス・ハーネス・UI 系本格化) | 未達 (A2-2 完了で `rules-index.md` 連続編集回避前提が成立、着手可) |
+| (未定) | EPIC-A2 status → completed | 未達 (4/5 マージ済、残り A2-3) |
