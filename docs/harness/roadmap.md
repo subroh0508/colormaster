@@ -17,7 +17,7 @@ source_plan: docs/harness/plan.md
 
 | ID | タイトル | status | expected_modules | 完了根拠 |
 |---|---|---|---|---|
-| **B0** | ブートストラップ PR | in-progress | `.claude/**`, `docs/**`, `.github/**`, `scripts/**` | (本 PR で更新) |
+| **B0** | ブートストラップ PR | completed | `.claude/**`, `docs/**`, `.github/**`, `scripts/**` | PR #117 (2026-05-17 マージ、commit `0256be9`) |
 | **A1** | ADR 0001-0027 一括起草 | proposed | `docs/adr/**` | — |
 | **A2** | `.claude/rules/*` 全ファイル本格化 + docs 全面拡充 | proposed | `.claude/rules/**`, `docs/{architecture,api,security,requirements,specifications,runbooks}/**` | — |
 | **A3** | 専用 Skill 群実装 PR | proposed | `.claude/skills/**` | — |
@@ -43,8 +43,9 @@ source_plan: docs/harness/plan.md
 
 | ID | PR 番号 | マージ日 | 主要ファイル |
 |---|---|---|---|
+| B0 | [#117](https://github.com/subroh0508/colormaster/pull/117) | 2026-05-17 | `.claude/{rules,skills,mcp.json,settings.json}/**`, `docs/{adr,api,architecture,design,epics,harness,requirements,runbooks,security,specifications,README.md,glossary.md,codebase-map.md,traceability.md}`, `DESIGN.md`, `.github/{pull_request_template.md,PULL_REQUEST_TEMPLATE/**}`, `scripts/install-git-hooks.sh`, `CLAUDE.md`, `AGENTS.md` |
 
-(本 PR (B0) マージ時に `roadmap-tracker` Skill 起動 or 手動で B0 行を完了状態に更新する想定)
+(B0 は `implementation-workflow` を経由せず手動マージしたため `roadmap-tracker` の Phase 8 自動起動は発火せず、`pr-retrospective` の learning PR (`harness/learnings-batch-2026-W20`) で手動更新)
 
 ## 着手順とブロック関係
 

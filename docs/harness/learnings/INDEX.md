@@ -16,6 +16,7 @@ last_updated: 2026-05-17
 
 | 日付 | PR # | 関連 Plan | 関連 Epic | actionable 提案数 | 採用提案数 |
 |---|---|---|---|---|---|
+| 2026-05-17 | [#117](https://github.com/subroh0508/colormaster/pull/117) | — | EPIC-000-harness-foundation | 15 | 0 |
 
 ## ファイル運用
 
