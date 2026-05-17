@@ -19,7 +19,7 @@ source_epic: EPIC-000
 |---|---|---|---|---|
 | **B0** | ブートストラップ PR | completed | `.claude/**`, `docs/**`, `.github/**`, `scripts/**`, `DESIGN.md`, `CLAUDE.md`, `AGENTS.md` | PR [#117](https://github.com/subroh0508/colormaster/pull/117) (2026-05-17 マージ、commit `0256be9`) |
 | **A1** | ADR 0001-0027 一括起草 | completed | `docs/adr/**` | PR [#119](https://github.com/subroh0508/colormaster/pull/119) (2026-05-17 マージ、commit `7f155b5`) |
-| **A2** | `.claude/rules/*` 全ファイル本格化 + docs 全面拡充 (EPIC-A2 で 5 PR に分割) | in-progress | `.claude/rules/**`, `docs/{architecture,api,security,requirements,specifications,runbooks}/**` | (EPIC-A2 配下 PR で更新、`docs/epics/EPIC-A2-rules-docs-extension/roadmap.md` 参照) |
+| **A2** | `.claude/rules/*` 全ファイル本格化 + docs 全面拡充 (EPIC-A2 で 5 PR に分割) | in-progress (A2-1 完了、A2-2/A2-4 着手準備中) | `.claude/rules/**`, `docs/{architecture,api,security,requirements,specifications,runbooks}/**` | A2-1: PR [#121](https://github.com/subroh0508/colormaster/pull/121) (2026-05-17 マージ、commit `feb41b5`)。残 A2-2/A2-3/A2-4/A2-5 は `docs/epics/EPIC-A2-rules-docs-extension/roadmap.md` 参照 |
 | **A3** | 専用 Skill 群実装 PR | proposed | `.claude/skills/**` | — |
 | **A4** | ローカルポーリング機構の本格化 | proposed | `.claude/skills/pr-poller/**`, `.claude/rules/harness-meta-criteria.md` | — |
 | **A5** | 不要モジュール撤去 (Firebase 系) | proposed | `js/**`, `kotlin-js-store/**`, `public/**`, `core/network/{auth,firestore}/**`, `firebase.json`, `.firebaserc`, `web-build-and-deploy.yml` | — |
@@ -71,6 +71,7 @@ gantt
 |---|---|---|
 | 2026-05-17 | 初期ロードマップ起草 (B0 PR 内で) | EPIC-000 起票と同時 |
 | 2026-05-17 | B0 → completed、A1 → completed、A2 → in-progress (A2-1 PR で更新) | B0 PR #117 / A1 PR #119 がマージ済、A2 は EPIC-A2 で 5 PR に分割して A2-1 着手 |
+| 2026-05-17 | A2-1 (EPIC-A2 配下、初の EPIC PR) マージ完了 | PR #121 commit `feb41b5`。本 PR (`harness/roadmap-mirror-a2-1`) は `roadmap-tracker` Phase 8 自動同期の手動代替 |
 
 ## 次の推奨着手 (並行実装観点)
 
