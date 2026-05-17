@@ -48,6 +48,42 @@ related_plan: docs/harness/plan.md §3.8 / ADR 0008 / ADR 0020 / ADR 0021
 - Dockerfile では `data/idols.db` のみ COPY 対象に含める (`data/users.db*` を除外する `.dockerignore` 規約も併用)
 - ローカル開発時の `data/users.db` は `.gitignore` 対象なので開発者ごとに別ファイルになる (gist 共有禁止)
 
+## `.dockerignore` 配置 TODO (A6 / Dockerfile 配置時)
+
+A1 レトロ Problem #8 対応。本リポジトリには **`.dockerignore` がまだ配置されていない**
+(B0 では `Dockerfile` 自体が未配置のため意図的に保留)。Dockerfile 配置タイミング
+(A6: Lint / Format 基盤導入時、または C7: Cloud Run デプロイ時) で **同 PR 内に
+`.dockerignore` を配置**することを必須とする。
+
+`.dockerignore` 必須項目:
+
+```text
+# PII / Secrets / 認証情報の焼込み禁止
+data/users.db*
+.env*
+*-credentials.json
+service-account*.json
+.claude/oauth-tokens*
+
+# ローカル開発成果物 (イメージサイズ削減)
+.gradle/
+.idea/
+build/
+**/build/
+*.log
+.git/
+.github/
+docs/
+DESIGN.md
+CLAUDE.md
+AGENTS.md
+node_modules/
+```
+
+検証は Gradle カスタムタスク (A6 で導入) で「`.dockerignore` が `data/users.db*` /
+`.env*` / `*-credentials.json` を全て含む」を機械検証する。Dockerfile 配置 PR の AC に
+本項目を必ず含めること。
+
 ## 関連
 
 - ADR 0008 (Backend SQLite + Litestream + R2)

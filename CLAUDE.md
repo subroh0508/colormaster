@@ -36,6 +36,11 @@
 **常時ロード (paths 未設定の rule)**: `rules-index.md` / `pii.md` / `secrets.md` /
 `template-language.md` (安全網または全 Markdown 共通の規約のため、起動時にロード)。
 
+> **注**: lookup table が指す rule のうち、未実装 (`planned`) のものは A2-2 / A2-3
+> で作成予定。各 rule の現在の `status` (`skeleton (B0)` / `planned (A2-2 / A2-3 / A3 / A6 / A7 / Phase C)`)
+> は `.claude/rules/rules-index.md` を参照。Read 時に rule ファイルが見つからない場合は
+> 該当ファイルを編集する前に rules-index で実装フェーズを確認すること。
+
 編集対象別の参照 rules:
 
 | パターン | 参照する rules |

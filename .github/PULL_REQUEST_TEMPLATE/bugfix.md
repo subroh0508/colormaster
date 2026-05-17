@@ -50,7 +50,9 @@ expected_modules: []
 
 - [ ] `./gradlew check` グリーン
 - [ ] 三層指標差分: line/branch 差分 100%、Spec coverage 差分 100%、mutation score +N%
+  - **注**: A7 完了 (Kover + Konsist Spec coverage + PITest 導入) までは本セクションは **空欄のままで OK** (誤った `N/A` 記入や 0% 詐称を避ける、A1 レトロ Try 対応)。A7 以降は必達ゲート対象
 - [ ] (UI 変更時) Roborazzi baseline 比較グリーン or 承認済
+  - **注**: A10 完了 (Roborazzi 導入 + baseline 生成) までは UI 変更時もスクリーンショット添付のみで可
 
 ## レビュー観点
 

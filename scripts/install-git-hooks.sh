@@ -30,7 +30,8 @@ fi
 #   - type allow リスト: feat / fix / refactor / test / docs / chore /
 #                        build / ci / perf / style / revert
 #   - 破壊的変更は <type>(<scope>)!: <subject>
-#   - subject は英語・現在形・命令形動詞で開始、50 文字以内、末尾ピリオドなし
+#   - subject は英語・現在形・命令形動詞で開始、**72 字推奨 / 100 字 hard limit**、末尾ピリオドなし
+#     (A2-1 で旧 50 字制限を緩和、EPIC-A2 decisions.md 参照)
 #   - scope は省略可だが空文字列 () は不可
 # ----------------------------------------------------------------------------
 cat > "${HOOKS_DIR}/commit-msg" <<'COMMIT_MSG_HOOK'
@@ -72,17 +73,32 @@ EOF
   exit 1
 fi
 
-# subject 長 (type + scope + ": " 含む) 50 文字以内
-if [[ ${#SUBJECT} -gt 50 ]]; then
+# subject 長: 72 字推奨 / 100 字 hard limit
+# (A2-1 で旧 50 字制限を緩和、Conventional Commits 公式は subject 長を規定しない、
+#  EPIC-A2 decisions.md 参照)
+if [[ ${#SUBJECT} -gt 100 ]]; then
   cat >&2 <<EOF
-Error: commit subject が 50 文字を超えています (${#SUBJECT} 文字)。
+Error: commit subject が 100 文字を超えています (${#SUBJECT} 文字、hard limit)。
 
 入力: "${SUBJECT}"
 
-50 文字以内に収め、詳細は body (空行を挟んで 72 文字推奨) に書いてください。
+100 文字以内に収め、詳細は body (空行を挟んで 72 文字推奨) に書いてください。
 詳細: .claude/rules/commit-message.md / docs/harness/plan.md §4.7
 EOF
   exit 1
+fi
+
+if [[ ${#SUBJECT} -gt 72 ]]; then
+  cat >&2 <<EOF
+Warning: commit subject が 72 文字を超えています (${#SUBJECT} 文字、推奨を超過)。
+
+入力: "${SUBJECT}"
+
+GitHub web UI / git log --oneline での視認性を考慮し 72 文字以内を推奨。
+詳細は body (空行を挟んで 72 文字推奨) に書いてください。
+詳細: .claude/rules/commit-message.md / docs/harness/plan.md §4.7
+EOF
+  # 72 字超過は warning のみで継続 (fail しない)
 fi
 
 # 末尾ピリオド禁止

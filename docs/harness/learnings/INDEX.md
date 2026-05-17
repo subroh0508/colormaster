@@ -16,7 +16,13 @@ last_updated: 2026-05-17
 
 | 日付 | PR # | 関連 Plan | 関連 Epic | actionable 提案数 | 採用提案数 |
 |---|---|---|---|---|---|
-| 2026-05-17 | [#117](https://github.com/subroh0508/colormaster/pull/117) | — | EPIC-000-harness-foundation | 15 | 0 |
+| 2026-05-17 | [#117](https://github.com/subroh0508/colormaster/pull/117) | — | EPIC-000-harness-foundation | 15 | 7 (A2-1 PR で消化見込み: rules-index 正規化 / template-language paths 削除 / harness.md PR テンプレ / mcp-usage Gotchas / db-protection `.dockerignore` TODO / code-reviewer SKILL.md PII redaction / commit-message rule + 50→72/100 緩和 / ADR README 索引拡充 / flaky-tests.md 起票) |
+
+## 横断的 learnings (1 PR = 1 ファイルとは別建て)
+
+| ファイル | 用途 |
+|---|---|
+| `flaky-tests.md` | 再現性が低いテストの発生条件・回避策・恒久対策メモを蓄積 (A1 レトロ Try で起票) |
 
 ## ファイル運用
 
