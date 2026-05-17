@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "jetbrains": {
+      "type": "sse",
+      "url": "http://localhost:64342/sse",
+      "_note": "IntelliJ IDEA / Android Studio 2025.2+ にバンドル済の MCP Server プラグインの動的ポートを Copy SSE Config で取得して上書きする。詳細は docs/runbooks/mcp-setup.md。"
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "cloudflare": {
+      "type": "http",
+      "url": "https://mcp.cloudflare.com/mcp"
+    }
+  }
+}
