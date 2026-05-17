@@ -57,11 +57,13 @@ PR コメントを出力する。これらの経路は CI ログ中の Stack Tra
 
 | 項目 | PII 扱い | DB 保存 |
 |---|---|---|
-| メールアドレス | PII | ❌ |
-| Google Account ID (sub claim = `uid`) | 内部識別子、PII 同等取扱 | ✅ (`users.db` の `uid` カラムのみ) |
-| Display Name | PII | ❌ |
-| プロフィール画像 URL | PII | ❌ |
-| IP アドレス | PII | ❌ |
+| メールアドレス | ✅ | ❌ (GIS userinfo から都度取得 + memory cache TTL 15 分) |
+| Google Account ID (sub claim = `uid`) | 内部識別子 (PII 同等取扱) | ✅ (`users.db` の `uid` カラムのみ) |
+| Display Name | ✅ | ❌ |
+| プロフィール画像 URL | ✅ | ❌ |
+| IP アドレス | ✅ | ❌ |
+
+表記は `.claude/rules/pii.md` §PII の定義 と完全整合 (PII 扱いは `✅` または `内部識別子 (PII 同等取扱)` の 1 系統に統一、PR #119 レトロ Try で指摘された二系統表記の解消)。
 
 ダミーデータは `@example.com` ドメイン (RFC 2606 予約) と `test-uid-001` 等の連番
 文字列に限定する。実 PII の fixture commit はインシデント扱いとし、history 除去 +
