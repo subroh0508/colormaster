@@ -44,6 +44,8 @@ source_epic: EPIC-A2
 | 2026-05-17 | A2-2 PR #125 Ready 昇格 + merge 完了 (merge commit `1a33ccc`、`gh pr merge --merge`、orchestrator 明示承認で R-15 代替) | A2-2 PR #125 |
 | 2026-05-17 | A2-2 Phase 8 (roadmap-tracker 手動代替) 実施 → PR #130 (`harness/roadmap-mirror-a2-2`) で EPIC-A2 roadmap.md / progress.md / 全体 roadmap.md の A2-2 完了反映 | PR #130 |
 | 2026-05-17 | A2-4 mirror PR #127 master rebase 実施 (A2-2 / A2-5 mirror = PR #128 / #130 の完了根拠を取り込み統合解決) → orchestrator out-of-band approval で merge | PR #127 |
+| 2026-05-17 | A2-6 を計画外で挿入 (auto-merge 緩和 workaround)。当初検討した ADR-0028 起票 + R-15 緩和 + roadmap A2-6 正式項目追加は不要と判断し、`.claude/settings.json` の `permissions.allow` に `Bash(gh pr ready:*)` / `Bash(gh pr merge:*)` / `Bash(gh pr review:*)` / `Bash(git push:*)` / `Bash(git push --force-with-lease:*)` の 5 件を追加するのみに縮小。`git commit` / `pbcopy` は auto mode classifier に block されたため (Safety-Check Bypass + Self-Modification 判定)、orchestrator pane の subroh0508 が手動で commit + push + PR edit を実行 (out-of-band approval、R-15 充足)。本 PR 自体が merge 権限拡大なので self-merge は明示的に回避し、orchestrator pane で `gh pr ready 129` + `gh pr merge 129 --merge` を実行して merge (commit `b961a22` → merge commit `1ac6fe4`) | A2-6 PR #129 |
+| 2026-05-17 | A2-6 Phase 8 (roadmap-tracker 手動代替) 実施 → 本 PR (`harness/roadmap-mirror-pr-129`) で EPIC-A2 roadmap.md / progress.md / 全体 roadmap.md の A2-6 完了反映 | 本 PR |
 
 ## マイルストーン
 
@@ -56,5 +58,6 @@ source_epic: EPIC-A2
 | 2026-05-17 | A2-5 マージ (docs/architecture + api 拡充) | ✅ 達成 (PR #126、commit `168ef5d`、PR #128 で roadmap mirror) |
 | 2026-05-17 | A2-2 Draft PR 起票 + code-reviewer 並列 review 完了 | ✅ 達成 (PR #125、Critical 0) |
 | 2026-05-17 | A2-2 マージ (rules 実装・コード系本格化) | ✅ 達成 (PR #125、merge commit `1a33ccc`、PR #130 で roadmap mirror) |
+| 2026-05-17 | A2-6 マージ (.claude/settings.json merge / push permissions 追加、計画外挿入) | ✅ 達成 (PR #129、merge commit `1ac6fe4`、本 mirror PR で roadmap 反映) |
 | (未定) | A2-3 マージ (rules プロセス・ハーネス・UI 系本格化) | 未達 (A2-2 完了で `rules-index.md` 連続編集回避前提が成立、着手可) |
-| (未定) | EPIC-A2 status → completed | 未達 (4/5 マージ済、残り A2-3) |
+| (未定) | EPIC-A2 status → completed | 未達 (4/5 + A2-6 マージ済、残り A2-3) |
