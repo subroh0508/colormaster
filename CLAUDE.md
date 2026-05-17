@@ -68,6 +68,7 @@
 | `docs/harness/roadmap.md`, `docs/epics/**/roadmap.md` | roadmap.md |
 | `docs/requirements/**`, `docs/specifications/**` (実装中の仕様変更) | spec-living-sync.md, docs-structure.md |
 | `docs/harness/learnings/**/*.md` | retrospective-format.md |
+| `docs/harness/dry-runs/**/*.md` | harness-meta-criteria.md (§dry-run 必須条件) |
 | `docs/harness/evolution-proposals/**` | harness-evolution.md |
 | `data/users.db*` の追跡 | **禁止** (db-protection.md / pii.md / secrets.md / `.gitignore`) |
 | `data/idols.db` 関連 | sqlite-data-file.md |
