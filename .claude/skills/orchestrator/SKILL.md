@@ -287,9 +287,16 @@ classifier ブロックがあれば denied メッセージを報告して停止�
 
 Claude Code が WORKING 中に画面に表示する `✻ <動詞>… N[sm]` 形式の動詞。**ここに登録されていない動詞は IDLE と誤判定** されるため、観測都度追加する。
 
-### 観測済 (本セッション)
+### 観測済 (本セッション、PR #147 / #153 / #158 batch retro 累計 21 動詞追加)
 
-`Channeling` / `Flibbertigibbeting` / `Moonwalking` / `Noodling` / `Twisting` / `Schlepping`
+`Channeling` / `Flibbertigibbeting` / `Moonwalking` / `Noodling` / `Twisting` / `Schlepping` /
+`Pollinating` / `Honking` / `Galloping` / `Pouncing` / `Scampering` / `Forming` / `Bunning` /
+`Finagling` / `Caramelizing` / `Gusting` / `Scurrying` / `Flambéing` / `Creating` / `Seasoning` /
+`Frosting` / `Waddling` / `Effecting` / `Mustering` / `Warping` / `Accomplishing` / `Skedaddling`
+
+### prefix (本セッションで観測した variation)
+
+動詞は ` ✻ ` だけでなく ` ✶ ` / ` ✽ ` / ` · ` / ` ✢ ` / ` ◯ ` の prefix でも表示される (例: `· Gusting…` / `✽ Effecting…`)。regex の prefix 部分は `(✻|✶|✽|·|✢|◯)` に拡張する。
 
 ### 既知辞書 (Claude Code 公式または他セッション由来)
 
@@ -298,10 +305,12 @@ Claude Code が WORKING 中に画面に表示する `✻ <動詞>… N[sm]` 形�
 ### regex (運用案)
 
 ```regex
-^✻ (Channeling|Flibbertigibbeting|Moonwalking|Noodling|Twisting|Schlepping|Cooking|Drizzling|Baking|Sauteeing|Photosynthesizing|Simmering|Swooping|Zesting|Booping|Perusing|Stewing|Brewing|Pondering|Mulling|Plotting|Crafting|Forging|Weaving|Sketching|Hatching)…?( [0-9]+[ms])?$
+^(✻|✶|✽|·|✢|◯) (Channeling|Flibbertigibbeting|Moonwalking|Noodling|Twisting|Schlepping|Pollinating|Honking|Galloping|Pouncing|Scampering|Forming|Bunning|Finagling|Caramelizing|Gusting|Scurrying|Flambéing|Creating|Seasoning|Frosting|Waddling|Effecting|Mustering|Warping|Accomplishing|Skedaddling|Cooking|Drizzling|Baking|Sauteeing|Photosynthesizing|Simmering|Swooping|Zesting|Booping|Perusing|Stewing|Brewing|Pondering|Mulling|Plotting|Crafting|Forging|Weaving|Sketching|Hatching)…?( [0-9]+[ms])?$
 ```
 
 PR #133 retro 由来: `Moonwalking…` が辞書未登録で IDLE と誤判定された実例あり。**新動詞を観測したら辞書 + regex に追加して同じ誤判定を防ぐ** (本 Skill 改修 PR を harness 経由で起票)。
+
+PR #147 / #153 / #158 batch retro (2026-05-18) で累計 21 動詞 + prefix 6 種を SoT 反映 (harness-meta 初回ドッグフード採用候補 #1)。
 
 ## context 60% handover プロトコル (仕様 6 詳細)
 

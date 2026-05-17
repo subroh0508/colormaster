@@ -16,9 +16,11 @@ related_plan: docs/harness/plan.md §4.8 / §5.4.2
 
 # pr-template.md — PR テンプレート選択と gh pr create 運用規約
 
-> 本リポジトリの全 PR は `.github/PULL_REQUEST_TEMPLATE/<type>.md` から該当 type を
-> 選択し、`gh pr create --template <type>.md` で起票する。デフォルト
-> `.github/pull_request_template.md` は最小フォールバックのみ。詳細運用は本 rule で SoT 化。
+> 本リポジトリの全 PR は `.github/PULL_REQUEST_TEMPLATE/<type>.md` の type 別必須セクション
+> を満たす本格 PR description を起草し、`/tmp/<unique-prefix>-pr-body.md` 経由で
+> `gh pr create --body-file <path>` で起票する (`--template` と `--body-file` は **排他**、
+> 詳細は §gh pr create 必須パラメータ 参照)。デフォルト `.github/pull_request_template.md`
+> は最小フォールバックのみ。詳細運用は本 rule で SoT 化。
 
 ## 6 種類のテンプレート
 
@@ -33,18 +35,57 @@ related_plan: docs/harness/plan.md §4.8 / §5.4.2
 
 ## 起票コマンド
 
+**重要**: `gh pr create` は **`--template` と `--body-file` / `--body` を排他** とする (gh CLI 実仕様、同時指定すると Exit 1 でエラー `` `--template` is not supported when using `--body` or `--body-file` ``、PR #146 / #158 で実証)。本リポジトリの全 PR は本格 PR description 起草が必須 (§必須セクション参照) なので **`--body-file` 一択** で `--template` は使用しない。
+
 ```bash
+# 既定 (本格 PR description 起草、本リポジトリ全 PR で採用)
 gh pr create \
   --base master \
   --head <branch-name> \
   --title "<conventional-commits-subject>" \
-  --template <type>.md \
+  --body-file /tmp/<unique-prefix>-pr-body.md \
   --draft
 ```
 
-- **`--template` は必須**: 省略するとデフォルトテンプレが選ばれ、type 別の必須セクション (Behavior Preservation / レトロ要約等) が抜ける
+- **`--body-file` 一択 (本リポジトリ既定)**: 本リポジトリの全 PR は本格 PR description 起草必須のため、`.github/PULL_REQUEST_TEMPLATE/<type>.md` の内容を `/tmp/<unique-prefix>-pr-body.md` にコピー → 該当 PR 用にカスタマイズ → `--body-file` で渡す (テンプレ構造は手動で揃える)
 - **`--draft` は Phase 5 の既定**: Draft → Ready 昇格は `.claude/rules/pr-draft-policy.md` 参照
-- **`--body-file` 代替**: 大量の自動生成本文 (フェーズ ID / Plan ID / Epic ID 等の埋め込み済 body) を流し込む場合は `--body-file <path>` を `--template` 代わりに使用 (テンプレ構造は手動で揃える)
+- **`--template <type>.md` 単独 (例外、trivial chore PR で body 起草を省く場合のみ)**: `--body-file` / `--body` を同時指定しない、テンプレの default 内容のままで起票
+
+## gh pr create 必須パラメータ (PR #146 / #156 / #158 レトロ Try 反映、改修候補 #8 SoT 化)
+
+`gh pr create` 実行時の必須パラメータ:
+
+| パラメータ | 必須/任意 | 説明 |
+|---|---|---|
+| `--base <target-branch>` | 必須 | 通常 `master` |
+| `--head <source-branch>` | 必須 | 本 PR の source branch (現在チェックアウト中の branch 名) |
+| `--title "<...>"` | 必須 | Conventional Commits 形式 (`.claude/rules/commit-message.md` 準拠) |
+| `--body-file <path>` | 必須 (本リポジトリ既定) | 本格 PR description を `/tmp/<unique-prefix>-pr-body.md` 経由で渡す。`--template` と排他 |
+| `--draft` | 既定 (Phase 5) | `pr-draft-policy.md` 規約、orchestrator 明示指示時のみ即 Ready で起票可、mirror PR は省略可 |
+| `--template <type>.md` | 例外時のみ | body 起草を省く trivial chore PR でのみ使用、`--body-file` と排他 |
+
+**`--template` と `--body-file` の排他関係** (gh CLI 実仕様、PR #158 dogfooding で実証):
+
+```text
+$ gh pr create --base master --head <branch> --draft --template harness.md --title "..." --body-file /tmp/pr-body-...md
+`--template` is not supported when using `--body` or `--body-file`
+Exit code 1
+```
+
+per-task pane / orchestrator pane で `gh pr create` を実行する Skill (implementation-workflow Phase 5、orchestrator 共通テンプレ等) は、**`--body-file` 一択コマンド例** を共通 prompt テンプレで明示すること。
+
+**完全コマンド例** (本リポジトリ既定、`--body-file` 一択):
+
+```bash
+gh pr create \
+  --base master \
+  --head <branch-name> \
+  --draft \
+  --title "<conventional-commits-subject>" \
+  --body-file /tmp/<unique-prefix>-pr-body.md
+```
+
+PR 種別ごとの `<type>.md` 対応は §6 種類のテンプレート 参照、`--body-file` 渡しの body 文面は `.github/PULL_REQUEST_TEMPLATE/<type>.md` の内容を `/tmp/<unique-prefix>-pr-body.md` にコピー → カスタマイズして渡す。
 
 ## PR description frontmatter 規約
 
@@ -125,7 +166,8 @@ A7 完了前は **三層指標 (Kover / Konsist Spec coverage / PITest) が未�
 
 ## Gotchas
 
-- **`--template` 省略は禁止**: デフォルトテンプレ (`.github/pull_request_template.md`) は最小骨格、type 別必須セクションが抜けるため
+- **`--template` と `--body-file` は排他** (PR #146 / #158 レトロ Try、gh CLI 実仕様): 同時指定は Exit 1、本リポジトリは本格 PR description 起草必須のため **`--body-file` 一択** で `--template` は使用しない。`<type>.md` のテンプレ内容は `/tmp/<unique-prefix>-pr-body.md` にコピー → カスタマイズして `--body-file` で渡す
+- **`--body-file` 経由で渡す本文は `<type>.md` のテンプレ構造を維持**: §必須セクション (type 別) を満たすよう手動で揃える、`--template` 省略によって type 別必須セクション (Behavior Preservation / レトロ要約等) が抜けないこと
 - **frontmatter は HTML コメント形式**: GitHub Markdown 仕様で YAML frontmatter を render しないため、`<!-- pr-frontmatter ... -->` で擬装
 - **harness.md は branch-naming `harness/<purpose>` 専用**: feature/bugfix/refactor 等の Plan PR では使わない (`branch-naming.md` と整合)
 - **三層指標差分セクションは A7 完了まで `N/A` 必須記載** (空欄での暗黙了解は禁止、A1 レトロ Problem の防止)
