@@ -19,7 +19,7 @@ source_plan: docs/harness/plan.md
 |---|---|---|---|---|
 | **B0** | ブートストラップ PR | completed | `.claude/**`, `docs/**`, `.github/**`, `scripts/**` | PR #117 (2026-05-17 マージ、commit `0256be9`) |
 | **A1** | ADR 0001-0027 一括起草 | completed | `docs/adr/**` | PR [#119](https://github.com/subroh0508/colormaster/pull/119) (2026-05-17 マージ、commit `7f155b5`) |
-| **A2** | `.claude/rules/*` 全ファイル本格化 + docs 全面拡充 | in-progress | `.claude/rules/**`, `docs/{architecture,api,security,requirements,specifications,runbooks}/**` | (EPIC-A2 で 5 PR に分割、A2-1 / A2-2 / A2-5 マージ済、残り A2-3 / A2-4 進行中) |
+| **A2** | `.claude/rules/*` 全ファイル本格化 + docs 全面拡充 | in-progress | `.claude/rules/**`, `docs/{architecture,api,security,requirements,specifications,runbooks}/**` | (EPIC-A2 で 5 PR に分割、A2-1 / A2-2 / A2-4 / A2-5 マージ済、残り A2-3) |
 | **A3** | 専用 Skill 群実装 PR | proposed | `.claude/skills/**` | — |
 | **A4** | ローカルポーリング機構の本格化 | proposed | `.claude/skills/pr-poller/**`, `.claude/rules/harness-meta-criteria.md` | — |
 | **A5** | 不要モジュール撤去 | proposed | `js/**`, `kotlin-js-store/**`, `public/**`, `core/network/{auth,firestore}/**`, `firebase.json`, `.firebaserc`, `web-build-and-deploy.yml` | — |
@@ -46,6 +46,7 @@ source_plan: docs/harness/plan.md
 | B0 | [#117](https://github.com/subroh0508/colormaster/pull/117) | 2026-05-17 | `.claude/{rules,skills,mcp.json,settings.json}/**`, `docs/{adr,api,architecture,design,epics,harness,requirements,runbooks,security,specifications,README.md,glossary.md,codebase-map.md,traceability.md}`, `DESIGN.md`, `.github/{pull_request_template.md,PULL_REQUEST_TEMPLATE/**}`, `scripts/install-git-hooks.sh`, `CLAUDE.md`, `AGENTS.md` |
 | A1 | [#119](https://github.com/subroh0508/colormaster/pull/119) | 2026-05-17 | `docs/adr/ADR-0001-*.md` 〜 `ADR-0027-*.md` (27 件)、`docs/adr/README.md`、`docs/plans/{PLAN-001-adr-bootstrap.md,INDEX.md}`、`docs/harness/roadmap.md` |
 | A2-1 (EPIC-A2 配下) | [#121](https://github.com/subroh0508/colormaster/pull/121) | 2026-05-17 | EPIC-A2 5 ファイル起票 (`docs/epics/EPIC-A2-rules-docs-extension/{README,roadmap,open-questions,decisions,progress}.md`)、`.claude/rules/{rules-index,template-language,mcp-usage,db-protection,commit-message,roadmap}.md`、`.claude/skills/code-reviewer/SKILL.md` Gotchas、`.github/PULL_REQUEST_TEMPLATE/{harness,feature,bugfix}.md`、`CLAUDE.md`、`docs/adr/README.md`、`docs/harness/learnings/{flaky-tests,2026-05-17-pr-117,INDEX}.md`、`docs/harness/{plan,roadmap}.md` (commit `feb41b5`) |
+| A2-4 (EPIC-A2 配下) | [#123](https://github.com/subroh0508/colormaster/pull/123) | 2026-05-17 | `docs/{README,glossary,codebase-map}.md` 本格化、`docs/security/README.md` (incident 対応 quick-reference inline 化)、`docs/requirements/{README,template}.md` + `docs/specifications/{README,basic/template,detail/template}.md` (§4.6.3-4.6.5 適合微調整)、`docs/runbooks/{local-development,testing,i18n,mcp-setup}.md` (4 件全て 5KB+ 本格化)、`docs/epics/EPIC-A2-rules-docs-extension/progress.md` 進捗追記 (commit `376018d`、squash merge、code-reviewer 4 aspect 並列 review Critical 0 通過 + Improvement #6 / #7 fix loop 消化 / #8 を A2-3 持ち越し) |
 | A2-5 (EPIC-A2 配下) | [#126](https://github.com/subroh0508/colormaster/pull/126) | 2026-05-17 | `docs/architecture/{overview,layers,data-flow,domain-model,state-machines,sequences,infrastructure}.md` (7) + `docs/api/{README,colormaster-api.yaml,auth,idols,me}.md` (5) を B0 skeleton (1.3-2.5KB) から 5KB+ 本格化 (合計 +2,005 行)、Mermaid 図 (graph TD/LR / flowchart TB / erDiagram / stateDiagram-v2 / sequenceDiagram x5) を全 7 architecture docs + sequences 5 ユースケースで描画、`colormaster-api.yaml` paths を 11 endpoint に拡張、`docs/epics/EPIC-A2-rules-docs-extension/{roadmap,progress}.md` 更新 (commit `168ef5d`) |
 | A2-2 (EPIC-A2 配下) | [#125](https://github.com/subroh0508/colormaster/pull/125) | 2026-05-17 | `.claude/rules/` の 35 ファイル本格化 (新規 29 + skeleton 5 件本格化 + `rules-index.md` 索引正規化、合計 +3,479 行)。**計画/記録**: `plan,epic,adr,roadmap`。**アーキテクチャ層**: `viewmodel,ui-state,composable,navigation,repository,network-client`。**横断**: `naming,error-handling,logging,i18n,wasm-compat,firebase-boundary`。**ファイル種別/テスト**: `gradle,kotlin-test,screenshot-test,sql-delight,sparql,test-paired-class,markdown`。**同期/Backend**: `sync-job,sqlite-data-file,cloud-run-deploy,removed-modules,backend-auth,cloudflare-pages,r2-litestream`。**セキュリティ**: `pii,secrets,db-protection,no-firebase`。`rules-index.md` の status 語彙に `stable (X)` を追加し A2-2 で本格化した 34 ファイルを `stable (A2-2)` に正規化。`docs/epics/EPIC-A2-rules-docs-extension/{progress,roadmap}.md` 更新。commit `1a33ccc` (merge commit、`gh pr merge --merge`、orchestrator 委任で R-15 代替)。code-reviewer 4 aspect (spec-conformance / architecture / security / code-quality) 並列 review 通過 (Critical 0)、Improvement 3 件即時反映 (commit `310e430`、後 rebase で `daf9faf` → `1a33ccc`)。master 2 回 rebase (PR #122 / #124 → 追って #123 / #126 / #128) で `progress.md` / `roadmap.md` 衝突を A2-4 / A2-5 完了反映と統合して解決 |
 
@@ -54,6 +55,8 @@ source_plan: docs/harness/plan.md
 (A1 は `implementation-workflow` Phase 0-9 の枠組みで進めたが、`code-reviewer` / `pr-poller` / `roadmap-tracker` が skeleton 段階のため手動補助で実施。`code-reviewer` は 3 aspect (spec-conformance / architecture / security) を手動サブエージェント並列で実行し PR #119 にコメント post。owner 単一で self-approve 不可のため `gh pr merge --merge` で通常マージ。PR #120 は `roadmap-tracker` Phase 8 自動同期の手動代替)
 
 (A2-1 は `implementation-workflow` Phase 0-9 の枠組みで進めた最初の EPIC 配下 PR。`code-reviewer` 4 aspect (spec-conformance / architecture / security / code-quality) を手動サブエージェント並列で実行し PR #121 にコメント post。Critical 1 (plan.md SSoT 矛盾) を fix loop で commit `2e820bc` で解消。owner 単一で self-approve 不可のため `gh pr merge --merge` で通常マージ (squash merge、commit `feb41b5`)。本 PR (`harness/roadmap-mirror-a2-1`) は `roadmap-tracker` Phase 8 自動同期の手動代替)
+
+(A2-4 は A2-1 / A2-2 / A2-5 と並走した 4 つ目の EPIC-A2 配下 PR。専用 worktree `feature/A2-4-docs-core` で `implementation-workflow` Phase 1-9 を自走、`.claude/rules/` を一切 touch せず A2-2 / A2-5 と touch ファイル重複ゼロで並走完走。`code-reviewer` 4 aspect (spec-conformance / architecture / security / code-quality) を手動サブエージェント並列で実行し PR #123 にコメント post、Critical 0 + Improvement 8 件のうち #6 / #7 (docs 表記統一系) を fix loop で commit `b395276` 消化、#8 (テンプレ §11 `Open Questions` 翻訳) は plan.md §4.6.3-4.6.5 が canonical 名称として規定しており、本 PR の 3 テンプレだけ翻訳すると plan.md / Epic / roadmap と乖離するため A2-3 (template-language.md 本格化) に持ち越し。途中で master が PR #122 / #124 マージで進んだため `git rebase origin/master` で取り込み (progress.md 1 件競合解消)、orchestrator merge 委任 (本テストで R-15 人間 approve を委任扱い) のもと `gh pr merge --squash` でマージ (commit `376018d`)。本 mirror PR #127 (`harness/roadmap-mirror-a2-4`) は `roadmap-tracker` Phase 8 自動同期の手動代替で、起票後に A2-2 / A2-5 mirror = PR #128 / #130 が先行 merge したため再度 master rebase + conflict 統合解決を実施)
 
 (A2-2 は `implementation-workflow` Phase 0-9 の枠組みで進めた最大規模の EPIC 配下 PR (37 ファイル / +3,479 行)。`code-reviewer` 4 aspect 並列で Critical 0 + Improvement 3 件、即時反映 (`310e430`)。A2-4 / A2-5 と並走したため master 2 回 rebase 必要、いずれも `docs/epics/EPIC-A2-rules-docs-extension/{progress,roadmap}.md` の conflict を統合解決。orchestrator 明示承認 (R-15 「人間 approve」) を受けて `gh pr merge --merge` (merge commit `1a33ccc`)。本 PR (`harness/roadmap-mirror-a2-2`) は `roadmap-tracker` Phase 8 自動同期の手動代替)
 
@@ -108,17 +111,16 @@ gantt
 | 2026-05-17 | A1 status を in-progress → completed | PR #119 (commit `7f155b5`) で ADR 0001-0027 一括起票が merge 完了、PR #120 で `roadmap-tracker` Phase 8 自動同期の手動代替を実施 |
 | 2026-05-17 | A2 status を proposed → in-progress + EPIC-A2 を 5 PR に分割 (A2-1〜A2-5) | B0 (96 files / +5408 行) のレビュー負荷上限に近く、A2 全体は B0 を超える規模が想定されるため。A1 レトロ Try「巨大 PR の aspect 並列 review における入力分割」と整合 |
 | 2026-05-17 | A2-1 (EPIC-A2 配下、初の EPIC PR) マージ完了 (PR #121、commit `feb41b5`) | A1 レトロ 15 提案中 11 件を消化、EPIC-A2 起票、rules / docs / template 索引基盤を整備。後続 A2-2 / A2-4 並走着手の前提が整う。本 PR (`harness/roadmap-mirror-a2-1`) は `roadmap-tracker` Phase 8 自動同期の手動代替 |
+| 2026-05-17 | A2-4 (EPIC-A2 配下、2 番目の merge) マージ完了 (PR #123、commit `376018d`) | docs/ コア 13 ファイル本格化、`docs/runbooks/**` 4 件を 5KB+ 化、Phase C 持ち越し TODO 表を全 docs に固定。A2-2 / A2-5 と並走完走 (touch ファイル重複ゼロ)。orchestrator merge 委任で `--squash` マージ、本テストで「各ペインが自分の PR を最後まで完走」を検証。本 mirror PR #127 (`harness/roadmap-mirror-a2-4`) は `roadmap-tracker` Phase 8 自動同期の手動代替で、A2-2 / A2-5 mirror の先行 merge 後に再 rebase + conflict 統合解決を経て merge |
 | 2026-05-17 | A2-5 (EPIC-A2 配下、3 番目の merge) マージ完了 (PR #126、commit `168ef5d`) | docs/architecture 7 + docs/api 5 = 12 ファイルを B0 skeleton から 5KB+ 本格化 (+2,005 行)、ADR/plan 駆動の Option A 執筆方針で確定。code-reviewer architecture Critical 4 件を fix loop で解消、A2-4 PR #123 merge 後の rebase で衝突統合。orchestrator 委任で R-15 代替し admin override squash merge。本 mirror PR (`harness/roadmap-mirror-a2-5`) は `roadmap-tracker` Phase 8 自動同期の手動代替 (A3 で Skill 本格化まで継続) |
 
 ## 次の推奨着手 (並行実装観点)
 
-`roadmap-tracker` Skill が更新する想定。A2-1 マージ後 (PR #121、commit `feb41b5`) の手動更新例:
+`roadmap-tracker` Skill が更新する想定。A2-1 (PR #121、commit `feb41b5`) + A2-4 (PR #123、commit `376018d`) + A2-5 (PR #126、commit `168ef5d`) + A2-2 (PR #125、commit `1a33ccc`) マージ済 (mirror PR #127 / #128 / #130)。残りステップ:
 
-1. **A2-4 (docs/ コア + runbooks 拡充)** — `docs/` のみ touch、`.claude/rules/` と衝突しない。別 worktree で並走着手可
-2. **A2-2 (rules 実装・コード系本格化)** — A2-4 と並走可 (touch ファイル重複ゼロ)。別 worktree で並走着手可
-3. **A2-3 (rules プロセス系) 着手は A2-2 完了後** (`.claude/rules/rules-index.md` の連続編集回避のため)
-4. **A2-5 (docs/architecture + api) 着手は A2-4 完了後または並走** (`docs/` 内のサブツリーが異なれば衝突なし)
-5. **A3 着手は EPIC-A2 完了後** — ADR + 本格化された rules を参照する Skill 群実装のため
+1. **A2-3 (rules プロセス・ハーネス・UI 系本格化)** — A2-2 完了で `.claude/rules/rules-index.md` 連続編集回避前提が成立、着手可。20 ファイル本格化 + 索引更新
+2. EPIC-A2 完了は A2-3 マージ後 (4/5 → 5/5 で `completed` 昇格、別 mirror PR で記録)
+3. **A3 着手は EPIC-A2 完了後** — ADR + 本格化された rules を参照する Skill 群実装のため、A2-3 マージ完了が前提
 
 ## 関連
 
