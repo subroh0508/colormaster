@@ -1,13 +1,13 @@
 ---
 id: rules-pii
 title: PII 保護とアクセス制御
-status: skeleton
+status: stable
 last_updated: 2026-05-17
 # 注意: PII 保護は全 PR で必ず遵守すべき安全網のため `paths` を意図的に設定せず、
 # Claude Code セッション起動時に常時ロードする (公式 docs: paths 未指定 = unconditional load)。
-related_plan: docs/harness/plan.md §3.8 / ADR 0020
 related_adrs:
   - ADR-0020
+  - ADR-0011
 ---
 
 # pii.md — PII 保護とアクセス制御
@@ -52,14 +52,31 @@ related_adrs:
 
 ## 機械検証 (A6 で導入)
 
-- **trufflehog** による全 PR 差分の secret-scan
-- Konsist で「テスト fixture の `@example.com` ドメイン以外の検出」(R-21)
-- Gradle カスタムタスクで「`data/users.db*` の追跡禁止」「Dockerfile 内 `COPY data/users.db` 禁止」
+- **trufflehog** による全 PR 差分の secret-scan (`.github/workflows/secret-scan.yml`)
+- Konsist で以下を検証 (Kotlin source 限定、R-21):
+  - テスト fixture (`**/*Test.kt`, `**/*Spec.kt`) のメールアドレス文字列が `@example.com` ドメインで終わる
+  - `data class User` 等の `users.db` スキーマ対応クラスに `email` / `displayName` / `picture` フィールドが存在しない (uid のみ)
+- Gradle カスタムタスクで Markdown / Dockerfile を検証 (Konsist 不可):
+  - `data/users.db*` の追跡禁止 (`git ls-files` チェック)
+  - Dockerfile 内 `COPY data/users.db` パターン禁止
+  - learning ファイル / PR description に redaction 漏れ検出 (`@(?!example\.com)` 等のパターン)
+
+## Skill 出力前のチェックリスト
+
+`code-reviewer` / `pr-retrospective` / `harness-meta` / `harness-evolution` が出力する前に以下を確認:
+
+- [ ] CI ログ抜粋 / `gh pr view` 出力 / MCP 結果に PII が含まれていないか
+- [ ] 「Reviewed by X」「Authored by Y」等の自然文に display name が混入していないか
+- [ ] スタックトレース / エラーメッセージに `sub` claim 値が含まれていないか
+- [ ] スクリーンショット (Roborazzi baseline) に表示名 / メール / アバター URL が含まれていないか
+
+検出時は **`[REDACTED-*]` プレースホルダに置換** してから出力。
 
 ## 権限ロール
 
 - 当面 **owner 1 名のみ** (ADR 0020)
 - 複数人体制になったら別 ADR で `developer` / `releaser` を追加
+- GitHub repo 設定 (Settings → Collaborators) と Cloudflare / GCP の IAM ロールも owner のみで運用、複数化時に別 runbook (`docs/runbooks/permissions.md`) を整備
 
 ## 関連
 
