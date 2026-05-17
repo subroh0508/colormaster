@@ -1,13 +1,14 @@
 ---
 id: rules-secrets
 title: Secrets 管理
-status: skeleton
+status: stable
 last_updated: 2026-05-17
 # 注意: Secrets 管理は全ファイル編集で遵守すべき安全網のため `paths` を意図的に
 # 設定せず、Claude Code セッション起動時に常時ロードする。
-related_plan: docs/harness/plan.md §3.8 / ADR 0021
 related_adrs:
   - ADR-0021
+  - ADR-0017
+  - ADR-0024
 ---
 
 # secrets.md — Secrets 管理
@@ -38,19 +39,57 @@ related_adrs:
 
 ## ローテーション
 
-- **R2 token TTL 90 日** (ADR 0021)
-- 漏洩時 / 退職時 / 漏洩疑い時は即時ローテーション
+| 対象 | 周期 | 契機 |
+|---|---|---|
+| R2 access token | 90 日 | TTL 満了 / 漏洩疑い / 退職 |
+| Cloudflare API token (Pages デプロイ用) | 90 日 | 同上 |
+| GitHub Personal Access Token (Renovate / Actions 用) | 90 日 | 同上 |
+| Google Cloud service account key (Cloud Run 用) | 180 日 / 漏洩時即時 | TTL 満了 / 漏洩 |
+| GIS Client Secret | ローテ不要 (Public Client Flow) | — |
+| MCP OAuth トークン (ローカル Claude Code 安全領域) | Claude 側管理 | 自動 |
+
 - 手順は `docs/runbooks/secrets-rotation.md` に整備 (Phase A〜C で本格化)
+- ローテ実施記録は GitHub Issues `rotation:` ラベルで履歴管理 (将来検討)
 
 ## 漏洩検出
 
-- **trufflehog** を A6 で CI 導入、全 PR 差分をスキャン
-- 検出時は immediate rotate + history rewrite (`git filter-repo`)
+- **trufflehog** を A6 で CI 導入、全 PR 差分をスキャン (`.github/workflows/secret-scan.yml`)
+- 検出時の対応フロー:
+  1. immediate rotate (該当キーを Cloudflare / GCP / GitHub Secrets で再発行)
+  2. history rewrite (`git filter-repo --invert-paths --path <file>`)
+  3. force push (master のみ、collaborator 全員に通知)
+  4. 別 ADR で「漏洩 → ローテ完了」を記録 (incident postmortem)
+
+## redaction 強制 (Skill 出力前)
+
+`code-reviewer` / `pr-retrospective` / `harness-meta` / `harness-evolution` が PR description /
+learning / ADR / レビューコメントを出力する前に以下を検出してマスク:
+
+| パターン | 置換 |
+|---|---|
+| `(?i)(api[-_]?key|token|secret|password)\s*[:=]\s*["']?\S+` | `[REDACTED-SECRET]` |
+| `AKIA[0-9A-Z]{16}` (AWS access key) | `[REDACTED-AWS-KEY]` |
+| `ghp_[0-9A-Za-z]{36}` (GitHub PAT) | `[REDACTED-GH-PAT]` |
+| Bearer token / JWT (`eyJ` で始まる長文字列) | `[REDACTED-JWT]` |
+
+詳細は `pii.md` redaction 表と統合運用 (PII と Secrets は同じ Skill チェックポイントで検証)。
+
+## 機械検証 (A6 で導入)
+
+- **trufflehog** で全 PR 差分の secret scan (`.github/workflows/secret-scan.yml`、上記「漏洩検出」と統合)
+- **Gradle カスタムタスク** で以下を検証:
+  - `.env.example` に **キーのみ + ダミー値** が記載され、実値混入なし (regex で `=.{16,}` のような長文字列を warning)
+  - `gradle/libs.versions.toml` / `**/build.gradle.kts` 内に hardcode された access key / token がない (regex `(?i)(api[-_]?key|token|secret|password)\s*[:=]\s*["'][^"']{8,}["']`)
+  - `.gitignore` に `.env*` / `*-credentials.json` / `service-account*.json` / `.claude/oauth-tokens*` が含まれる
+- **GitHub Actions secret scanning** が repo 設定で有効化されている (Settings → Code security)
 
 ## Gotchas
 
 - **Skill が CI ログ / MCP 結果を learning / レビューコメントに含める場合は redaction 必須** (R-26)
 - 「.env を `.env.example` に間違えてコピー」事故防止のため、`.env.example` には **キーのみ + ダミー値**
+- `.env` を `.env.example` から再生成する手順は runbook (`docs/runbooks/local-development.md`) に集約
+- **Claude Code 内の MCP OAuth トークンは `.claude/oauth-tokens*` に保存される想定**。`.gitignore` で `.claude/oauth-tokens*` を除外する規約を維持し、commit 検証は trufflehog の追加パターンで担保
+- GitHub Actions で `secrets.GITHUB_TOKEN` 以外を参照する箇所は **必ず明示** (`workflow_run` 等の権限境界を意識、ADR 0017 で Actions から Claude API を呼ばない原則と整合)
 
 ## 関連
 

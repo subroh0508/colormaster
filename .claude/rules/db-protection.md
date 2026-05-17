@@ -1,7 +1,7 @@
 ---
 id: rules-db-protection
 title: ユーザーデータ DB の保護
-status: skeleton
+status: stable
 last_updated: 2026-05-17
 paths:
   - "data/**"
@@ -9,7 +9,11 @@ paths:
   - "core/network/**"
   - "Dockerfile"
   - ".dockerignore"
-related_plan: docs/harness/plan.md §3.8 / ADR 0008 / ADR 0020 / ADR 0021
+related_adrs:
+  - ADR-0008
+  - ADR-0020
+  - ADR-0021
+  - ADR-0022
 ---
 
 # db-protection.md — ユーザーデータ DB の保護

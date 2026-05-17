@@ -18,7 +18,7 @@ source_epic: EPIC-A2
 | ID | タイトル | status | expected_modules | 完了根拠 |
 |---|---|---|---|---|
 | **A2-1** | A1 レトロ即時消化 + ハーネス即時改善 | completed | EPIC-A2 起票 + `CLAUDE.md` / `.claude/rules/{rules-index,template-language,mcp-usage,db-protection,commit-message,roadmap}.md` / `.claude/skills/code-reviewer/SKILL.md` / `.github/PULL_REQUEST_TEMPLATE/{harness,feature,bugfix}.md` / `docs/adr/README.md` / `docs/harness/{plan,learnings/flaky-tests,learnings/INDEX,learnings/2026-05-17-pr-117,roadmap}.md` / `scripts/install-git-hooks.sh` | PR [#121](https://github.com/subroh0508/colormaster/pull/121) (2026-05-17 マージ、commit `feb41b5`) |
-| **A2-2** | rules 実装・コード系本格化 | proposed | `.claude/rules/{plan,epic,adr,roadmap,viewmodel,ui-state,composable,navigation,repository,network-client,naming,error-handling,logging,i18n,wasm-compat,firebase-boundary,no-firebase,gradle,kotlin-test,screenshot-test,sql-delight,sparql,test-paired-class,markdown,pii,secrets,db-protection,sync-job,sqlite-data-file,cloud-run-deploy,removed-modules,backend-auth,cloudflare-pages,r2-litestream,rules-index}.md` | — |
+| **A2-2** | rules 実装・コード系本格化 | in-progress | `.claude/rules/{plan,epic,adr,roadmap,viewmodel,ui-state,composable,navigation,repository,network-client,naming,error-handling,logging,i18n,wasm-compat,firebase-boundary,no-firebase,gradle,kotlin-test,screenshot-test,sql-delight,sparql,test-paired-class,markdown,pii,secrets,db-protection,sync-job,sqlite-data-file,cloud-run-deploy,removed-modules,backend-auth,cloudflare-pages,r2-litestream,rules-index}.md` | (本 PR #125 で更新) |
 | **A2-3** | rules プロセス・ハーネス・UI系本格化 | proposed | `.claude/rules/{pr-template,branch-naming,merge-readiness,pr-draft-policy,spec-living-sync,harness-meta-criteria,retrospective-format,pr-poller,skill-authoring,harness-evolution,implementation-workflow,code-reviewer-aspects,design-tokens,ui-snapshot,ui-inventory,behavior-preservation,docs-structure,template-language,rules-index}.md` | — |
 | **A2-4** | docs/ コア + runbooks 拡充 | proposed | `docs/{README,glossary,codebase-map}.md`, `docs/security/README.md`, `docs/requirements/{README,template}.md`, `docs/specifications/{README,basic/template,detail/template}.md`, `docs/runbooks/{local-development,testing,i18n,mcp-setup}.md` | — |
 | **A2-5** | docs/architecture + api 拡充 | completed | `docs/architecture/{overview,layers,data-flow,domain-model,state-machines,sequences,infrastructure}.md`, `docs/api/{README,colormaster-api.yaml,auth,idols,me}.md` | PR [#126](https://github.com/subroh0508/colormaster/pull/126) (2026-05-17 マージ、commit `168ef5d`) |
@@ -65,6 +65,7 @@ A2-1 完了後、A2-2/A2-3 (rules 系) と A2-4/A2-5 (docs 系) は **並走可*
 | 2026-05-17 | EPIC-A2 起票 + A2 を 5 PR に分割 | B0 (96 files / +5408 行) のレビュー負荷が上限近く、A2 全体は B0 を超える規模が想定されるため。A1 レトロ Try「巨大 PR の aspect 並列 review における入力分割」と整合 |
 | 2026-05-17 | A2-1 着手 (現 worktree `feature/A2-rules-docs-extension` を reuse) | A1 レトロ 15 提案のうち消化可能項目を最優先で消化、後続 PR の規約・索引基盤を整える |
 | 2026-05-17 | A2-1 status を in-progress → completed (PR #121 マージ、commit `feb41b5`) | A1 レトロ 15 提案中 11 件を消化、後続 A2-2 / A2-4 並走着手の前提が整う。本 PR は `roadmap-tracker` Phase 8 自動同期の手動代替 (A3 で Skill 本格化まで継続) |
+| 2026-05-17 | A2-1 PR #121 マージ後、A2-2 / A2-4 / A2-5 を並走着手 (本 PR は A2-2、新規 worktree `feature/A2-2-rules-impl`) | A2-2 と A2-4 / A2-5 は touch ファイル重複ゼロ (`.claude/rules/` vs `docs/`)、A2-3 は rules-index.md 連続編集回避のため A2-2 マージ後に着手 |
 | 2026-05-17 | A2-5 着手 (worktree `feature/A2-5-docs-arch-api`) | A2-1 マージ後、A2-2 / A2-4 と並行で docs/architecture + api サブツリーを 12 ファイル 5KB+ に拡充 (touch ファイル重複ゼロ) |
 | 2026-05-17 | A2-5 status を in-progress → completed (PR #126 マージ、commit `168ef5d`) | docs/architecture 7 + docs/api 5 を 5KB+ 本格化、code-reviewer architecture Critical 4 件 fix loop で解消、A2-4 PR #123 merge 後の rebase で `progress.md` / `roadmap.md` 衝突を統合解決。本 PR は `roadmap-tracker` Phase 8 自動同期の手動代替 (A3 で Skill 本格化まで継続) |
 
@@ -72,7 +73,7 @@ A2-1 完了後、A2-2/A2-3 (rules 系) と A2-4/A2-5 (docs 系) は **並走可*
 
 A2-1 / A2-4 / A2-5 マージ済 (PR #121 / #123 / #126)。残りステップ:
 
-1. **A2-2 (rules 実装・コード系本格化)** — PR #125 DRAFT 進行中 (`feature/A2-2-rules-impl`)。Ready 昇格 + code-reviewer → merge
+1. **A2-2 (rules 実装・コード系本格化)** — PR #125 進行中 (`feature/A2-2-rules-impl`)。Ready 昇格 + code-reviewer → merge 中
 2. **A2-3 (rules プロセス・ハーネス・UI 系本格化)** — A2-2 完了後着手 (`.claude/rules/rules-index.md` の連続編集回避のため)
 3. EPIC-A2 完了は A2-2 / A2-3 マージ後 (4/5 → 5/5 で `completed` 昇格、別 mirror PR で記録)
 4. A3 (専用 Skill 群実装) 着手は EPIC-A2 完了後 (ADR + 本格化された rules を参照する Skill 群実装のため)

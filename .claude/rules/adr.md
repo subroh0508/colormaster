@@ -1,14 +1,14 @@
 ---
 id: rules-adr
 title: ADR 起票基準と書式
-status: skeleton
+status: stable
 last_updated: 2026-05-17
 paths:
   - "docs/adr/**/*.md"
   - ".claude/skills/adr-author/**"
-related_plan: docs/harness/plan.md §4.5
 related_adrs:
   - ADR-0001
+  - ADR-0027
 ---
 
 # adr.md — ADR 起票基準と書式
@@ -16,6 +16,7 @@ related_adrs:
 > Michael Nygard の原則 ("Architecturally Significant Decisions" のみ記録、
 > "Any Decision Records" ではない) + AWS / Microsoft / Google / Martin Fowler の
 > ADR ガイドラインに準拠。詳細は ADR 0001 を Single Source of Truth とする。
+> Plan / Epic / 補助 rule との責務分離は本ルール §他の記録方法を参照。
 
 ## 起票基準: 以下の 2 つ以上を満たすときに ADR を起こす
 
@@ -67,15 +68,66 @@ related_adrs:
 ## 採番・命名・ステータス
 
 - 連番、4 桁ゼロパディング (`0001`, `0002`, ...)
-- ファイル名: `{NNNN}-{kebab-case-title}.md`
+- ファイル名: `ADR-{NNNN}-{kebab-case-title}.md`
 - タイトル: 簡潔・現在形・断定的
 - ステータス: `proposed` → `accepted` → `deprecated` | `superseded by ADR-NNNN` (MADR 4 状態)
 - `accepted` 以降は immutable。変更時は新 ADR を起こし旧 ADR を `Superseded by` でリンク
 - 採番欠番は実装前なら整理可、運用後は番号維持で `withdrawn` を許容
 - **言語は日本語** (ADR 0027)
 
+## 本文構造 (`docs/adr/template.md` と整合)
+
+```markdown
+---
+id: ADR-NNNN
+title: <日本語タイトル>
+status: proposed | accepted | deprecated | superseded
+date: YYYY-MM-DD
+related_epics:
+  - EPIC-NNN
+related_plans:
+  - PLAN-NNN
+related_specs:
+  - SPEC-NNN-N
+superseded_by: ADR-NNNN | null
+supersedes:
+  - ADR-NNNN
+---
+
+# ADR-NNNN: <タイトル>
+
+## ステータス
+
+## コンテキスト
+
+## 決定
+
+## 影響
+
+## 代替案
+```
+
+## 機械検証 (A6 で導入)
+
+- Gradle カスタムタスクで以下を検証 (§5.2):
+  - `id` の正規表現 (`^ADR-\d{4}$`) とファイル名整合
+  - `superseded_by` / `supersedes` の相互参照が実在
+  - `accepted` 以降のステータスで本文末尾の immutable 性 (git blame で改変検出は人間レビュー任せ)
+  - `docs/adr/README.md` の索引行と本体 status / title の整合
+
+## Gotchas
+
+- **`accepted` 以降は本文を改変しない**。誤記訂正でも新 ADR を起こすか、`docs/adr/README.md` 側に正誤表を追記
+- 補助 Skill / 撤回コスト低の方針は ADR 化見送り → `.claude/rules/*` で運用 (例: `roadmap.md` / `commit-message.md` 等)
+- ADR 起票判断は `docs/harness/plan.md` §4.5 の判断フロー Mermaid に従う
+- 関連 SPEC / Epic / Plan / ADR の双方向リンクは **frontmatter で管理**、本文に手書きしない (機械検証対象)
+
 ## 関連
 
 - ADR 0001 (本ルールの Single Source of Truth)
-- `docs/adr/template.md`
+- ADR 0027 (テンプレート言語 / docs 構造)
+- `docs/adr/README.md` (ADR 0001-0027 索引)
+- `docs/adr/template.md` (ADR 本体テンプレ)
 - `docs/harness/plan.md` §4.5 (判断フロー Mermaid)
+- `.claude/skills/adr-author/SKILL.md`
+- `.claude/rules/{plan,epic,docs-structure}.md`
