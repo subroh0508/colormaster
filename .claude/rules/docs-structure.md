@@ -3,8 +3,14 @@ id: rules-docs-structure
 title: docs/ 構造と命名規約、AI が読む順序
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - "docs/**/*.md"
+  - "DESIGN.md"
+  - "CLAUDE.md"
+  - "AGENTS.md"
 related_plan: docs/harness/plan.md §4 / ADR 0027
-related_adrs: [ADR-0027]
+related_adrs:
+  - ADR-0027
 ---
 
 # docs-structure.md — docs/ 構造規約
@@ -68,7 +74,10 @@ id: <id>
 title: <タイトル>
 status: <ステータス>
 last_updated: YYYY-MM-DD
-related_*: ...
+related_adrs:
+  - ADR-NNNN
+related_specs:
+  - SPEC-NNN-N
 ---
 
 # <タイトル>
@@ -79,6 +88,57 @@ related_*: ...
 
 ...
 ```
+
+## frontmatter 規約
+
+### 配列はブロック形式を強制
+
+YAML frontmatter の配列は **必ずブロック形式** (`-` インデント表記) で記述する。
+flow 形式 (`[A, B, C]`) は **禁止**。
+
+理由:
+
+- 行差分が読みやすく、PR レビューで追加・削除が把握しやすい
+- Gradle カスタムタスク (A6 で導入予定) の YAML パーサーがどちらも受理するが、人間レビューの一貫性のため block を強制
+- 1 要素でも block 形式に揃える (`[ADR-0023]` ではなく `- ADR-0023`)
+
+例:
+
+```yaml
+# OK (block)
+related_adrs:
+  - ADR-0001
+  - ADR-0011
+related_specs:
+  - SPEC-IDOL-001-3
+
+# NG (flow / inline) — 機械検証で reject 予定 (A6)
+related_adrs: [ADR-0001, ADR-0011]
+related_specs: [SPEC-IDOL-001-3]
+```
+
+### 空配列の表記
+
+要素ゼロの場合のみ `[]` を許容する (block 形式では「null」と区別できないため):
+
+```yaml
+related_adrs: []   # OK (要素ゼロ)
+related_adrs:      # NG (これは null 扱いになる)
+```
+
+### 必須キー (各 docs 種別ごと)
+
+| 種別 | 必須 |
+|---|---|
+| 全 docs | `id`, `title`, `status`, `last_updated` |
+| 要件 (REQ-NNN) | 上記 + `related_specs`, `related_epics`, `related_plans`, `related_adrs`, `created_at`, `updated_at` |
+| 基本設計 (SPEC-NNN-basic) | 上記 + `related_requirements`, `related_detail` |
+| 詳細設計 (SPEC-NNN-detail) | 上記 + `related_requirements`, `related_basic` |
+| ADR | `id`, `title`, `status`, `date`, `related_epics`, `related_plans`, `related_specs`, `superseded_by`, `supersedes` |
+| Epic README | 上記 + `created_at`, `completed_at`, `expected_modules`, `related_adrs`, `related_specs` |
+| Plan | 上記 + `type`, `related_pr`, `related_epic`, `related_specs`, `related_adrs`, `expected_modules`, `created_at`, `completed_at`, `promoted_to` |
+| Learning | 上記 + `type: learning`, `related_pr`, `related_plan`, `related_epic`, `generated_at`, `generator` |
+| ロードマップ | 上記 + `source_plan` または `source_epic` |
 
 ## 機械検証 (A6 で導入)
 

@@ -3,8 +3,14 @@ id: rules-design-tokens
 title: DESIGN.md とデザイントークン規約
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - "feature/**/*.kt"
+  - "core/**/*.kt"
+  - "composeApp/**/*.kt"
+  - "DESIGN.md"
 related_plan: docs/harness/plan.md §3.9 / ADR 0023
-related_adrs: [ADR-0023]
+related_adrs:
+  - ADR-0023
 ---
 
 # design-tokens.md — DESIGN.md とデザイントークン規約

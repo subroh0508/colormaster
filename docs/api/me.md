@@ -4,7 +4,10 @@ title: ユーザーデータ API (/api/me/*)
 status: skeleton
 last_updated: 2026-05-17
 related_plan: docs/harness/plan.md §3.2 / §3.8
-related_adrs: [ADR-0008, ADR-0011, ADR-0020]
+related_adrs:
+  - ADR-0008
+  - ADR-0011
+  - ADR-0020
 ---
 
 # ユーザーデータ API (/api/me/*)

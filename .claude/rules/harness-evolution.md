@@ -3,8 +3,12 @@ id: rules-harness-evolution
 title: harness-evolution Skill 運用規約 (外部情報源ホワイトリスト + 手動起動)
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - ".claude/skills/harness-evolution/**"
+  - "docs/harness/evolution-proposals/**"
 related_plan: docs/harness/plan.md §5.3 / §5.4.6 / ADR 0026
-related_adrs: [ADR-0026]
+related_adrs:
+  - ADR-0026
 ---
 
 # harness-evolution.md — harness-evolution 運用規約

@@ -3,8 +3,11 @@ id: rules-template-language
 title: テンプレート言語ポリシー (日本語必須)
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - "**/*.md"
 related_plan: docs/harness/plan.md §5.5
-related_adrs: [ADR-0027]
+related_adrs:
+  - ADR-0027
 ---
 
 # template-language.md — テンプレート言語ポリシー
@@ -38,7 +41,9 @@ related_adrs: [ADR-0027]
 
 ## 機械検証 (A6 で導入)
 
-- Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `org.commonmark:commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x) で「frontmatter 外の見出しは日本語必須」を検証
+- Gradle カスタムタスク (Kotlin、`org.commonmark:commonmark` + `org.commonmark:commonmark-ext-yaml-front-matter` + `org.yaml:snakeyaml` 2.x) で以下を検証 (§5.2):
+  - 「frontmatter 外の見出しは日本語必須」
+  - **「frontmatter の配列は block 形式必須」** (flow 形式 `[A, B]` を reject、`.claude/rules/docs-structure.md` の frontmatter 規約と統一)
 - Konsist は Kotlin file 専用のため Markdown 検証には使えない (§5.2)
 
 ## Gotchas

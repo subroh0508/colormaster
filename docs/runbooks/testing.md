@@ -4,7 +4,10 @@ title: テスト実行と三層指標の運用
 status: skeleton
 last_updated: 2026-05-17
 related_plan: docs/harness/plan.md §3.10 / §6.2 A7
-related_adrs: [ADR-0013, ADR-0015, ADR-0016]
+related_adrs:
+  - ADR-0013
+  - ADR-0015
+  - ADR-0016
 ---
 
 # テスト実行と三層指標の運用

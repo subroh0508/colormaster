@@ -3,8 +3,10 @@ id: SPEC-NNN-basic
 title: <基本設計タイトル>
 type: spec-basic
 status: proposed
-related_requirements: [REQ-NNN]
-related_detail: [SPEC-NNN-detail]
+related_requirements:
+  - REQ-NNN
+related_detail:
+  - SPEC-NNN-detail
 related_epics: []
 related_plans: []
 related_adrs: []

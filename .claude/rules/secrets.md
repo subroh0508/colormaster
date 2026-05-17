@@ -3,14 +3,18 @@ id: rules-secrets
 title: Secrets 管理
 status: skeleton
 last_updated: 2026-05-17
+# 注意: Secrets 管理は全ファイル編集で遵守すべき安全網のため `paths` を意図的に
+# 設定せず、Claude Code セッション起動時に常時ロードする。
 related_plan: docs/harness/plan.md §3.8 / ADR 0021
-related_adrs: [ADR-0021]
+related_adrs:
+  - ADR-0021
 ---
 
 # secrets.md — Secrets 管理
 
 > API キー / トークン / 認証情報の保管場所・ローテーション・取り扱いを規定。
 > 詳細は ADR 0021 を Single Source of Truth とする。
+> **本 rule は安全網として常時ロード** (frontmatter `paths` を意図的に未設定、§5.1 参照)。
 
 ## 保管場所の使い分け
 

@@ -4,7 +4,9 @@ title: アイドル情報 API (/api/idols/*)
 status: skeleton
 last_updated: 2026-05-17
 related_plan: docs/harness/plan.md §3.3
-related_adrs: [ADR-0007, ADR-0010]
+related_adrs:
+  - ADR-0007
+  - ADR-0010
 ---
 
 # アイドル情報 API (/api/idols/*)

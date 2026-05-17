@@ -31,8 +31,19 @@ related_plan: docs/harness/plan.md §4.6
 
 ## ペア参照
 
-- basic 側 frontmatter `related_detail: [SPEC-NNN-N]` で詳細設計を参照
-- detail 側 frontmatter `related_basic: [SPEC-NNN-N]` で基本設計を参照
+- basic 側 frontmatter は block 形式で詳細設計を参照:
+
+  ```yaml
+  related_detail:
+    - SPEC-NNN-detail
+  ```
+
+- detail 側 frontmatter は block 形式で基本設計を参照:
+
+  ```yaml
+  related_basic:
+    - SPEC-NNN-basic
+  ```
 - A6 で Gradle カスタムタスクが双方向リンクの実在を機械検証
 
 ## テンプレート

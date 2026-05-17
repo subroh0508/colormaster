@@ -3,6 +3,8 @@ id: rules-code-reviewer-aspects
 title: code-reviewer 8 aspect の binary eval checklist と Coordinator 形式
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - ".claude/skills/code-reviewer/**"
 related_plan: docs/harness/plan.md §5.3 / §5.4.3 / ADR 0019
 ---
 

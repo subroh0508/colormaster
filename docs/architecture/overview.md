@@ -4,7 +4,9 @@ title: アーキテクチャ概要
 status: skeleton
 last_updated: 2026-05-17
 related_plan: docs/harness/plan.md §3
-related_adrs: [ADR-0002, ADR-0003]
+related_adrs:
+  - ADR-0002
+  - ADR-0003
 ---
 
 # アーキテクチャ概要

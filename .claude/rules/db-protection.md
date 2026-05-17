@@ -3,6 +3,12 @@ id: rules-db-protection
 title: ユーザーデータ DB の保護
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - "data/**"
+  - "backend/**"
+  - "core/network/**"
+  - "Dockerfile"
+  - ".dockerignore"
 related_plan: docs/harness/plan.md §3.8 / ADR 0008 / ADR 0020 / ADR 0021
 ---
 

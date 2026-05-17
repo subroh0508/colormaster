@@ -3,8 +3,13 @@ id: rules-mcp-usage
 title: MCP サーバの使い分けと認証情報の取り扱い
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - ".claude/mcp.json"
+  - ".claude/skills/**"
+  - "docs/runbooks/mcp-setup.md"
 related_plan: docs/harness/plan.md §5.6 / ADR 0024
-related_adrs: [ADR-0024]
+related_adrs:
+  - ADR-0024
 ---
 
 # mcp-usage.md — MCP サーバ利用規約

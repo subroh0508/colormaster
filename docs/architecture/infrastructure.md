@@ -4,7 +4,11 @@ title: インフラ構成 (Cloud Run + Cloudflare Pages + R2 + GIS)
 status: skeleton
 last_updated: 2026-05-17
 related_plan: docs/harness/plan.md §3.4 / §3.5
-related_adrs: [ADR-0008, ADR-0009, ADR-0011, ADR-0022]
+related_adrs:
+  - ADR-0008
+  - ADR-0009
+  - ADR-0011
+  - ADR-0022
 ---
 
 # インフラ構成

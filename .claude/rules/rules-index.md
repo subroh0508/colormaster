@@ -3,13 +3,32 @@ id: rules-index
 title: rules 索引
 status: skeleton
 last_updated: 2026-05-17
+# 注意: 索引そのものは小さく、AI が他 rule を発見する起点として
+# 起動時に常時ロードしておくのが望ましいため `paths` を意図的に未設定。
 ---
 
 # rules 索引
 
-`.claude/rules/` 配下に置かれるルールファイルの一覧。Skill / CLAUDE.md / `code-reviewer` は
-本索引を起点に該当ルールを Read する。詳細な参照パターンマッチングは
-`CLAUDE.md` 内の lookup table (§5.1) を参照。
+`.claude/rules/` 配下に置かれるルールファイルの一覧。各 rule は frontmatter の
+**`paths` フィールド** (block 形式) で対象ファイルパターンを指定し、Claude Code が
+該当ファイルを Read するときだけ自動ロードされる ([公式 docs](https://code.claude.com/docs/en/memory#organize-rules-with-claude/rules/) 参照)。
+`paths` 未指定の rule は起動時に **無条件ロード** されるため、安全網として常時必要な
+場合 (PII / Secrets / rules-index / 全 Markdown 共通の template-language) に限定する。
+
+詳細な参照パターンマッチング (人間 / AI 向け索引) は `CLAUDE.md` の lookup table を参照。
+
+## `paths` 設計方針
+
+- **常時ロード (paths 未設定)**: `pii.md` / `secrets.md` / `rules-index.md` / `template-language.md`
+- **広範囲スコープ**: `docs-structure.md` (`docs/**/*.md` + ルート 3 ファイル)
+- **モジュール / フェーズ別**: 残り 15 rule は各 Skill ディレクトリ / 対象ソース / docs サブツリーに限定
+- **glob はブロック形式必須** (`.claude/rules/docs-structure.md` frontmatter 規約):
+
+  ```yaml
+  paths:
+    - "feature/**/*.kt"
+    - "core/**/*.kt"
+  ```
 
 ## カテゴリ別索引
 

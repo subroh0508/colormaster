@@ -3,8 +3,14 @@ id: rules-ui-snapshot
 title: UI screenshot baseline 維持規約 (Roborazzi)
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - "feature/**/*.kt"
+  - "composeApp/**/*.kt"
+  - "docs/design/inventory/screenshots/**"
+  - ".claude/skills/ui-snapshot/**"
 related_plan: docs/harness/plan.md §3.9 / ADR 0023
-related_adrs: [ADR-0023]
+related_adrs:
+  - ADR-0023
 ---
 
 # ui-snapshot.md — UI screenshot baseline 維持規約

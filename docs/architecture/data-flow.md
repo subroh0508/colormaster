@@ -4,7 +4,10 @@ title: データフロー (im@sparql → Backend → Client)
 status: skeleton
 last_updated: 2026-05-17
 related_plan: docs/harness/plan.md §3.3 / §3.4
-related_adrs: [ADR-0007, ADR-0008, ADR-0010]
+related_adrs:
+  - ADR-0007
+  - ADR-0008
+  - ADR-0010
 ---
 
 # データフロー

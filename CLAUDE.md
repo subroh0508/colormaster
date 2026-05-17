@@ -28,7 +28,15 @@
 
 ## ファイル編集対象 ⇄ rules lookup table
 
-編集する対象に応じて以下の rules を必ず Read してから作業する。
+各 rule は `.claude/rules/<name>.md` の frontmatter `paths` フィールドで対象ファイル
+パターンを指定し、Claude Code が該当ファイルを Read したときに **自動ロード** される
+([公式 docs](https://code.claude.com/docs/en/memory#organize-rules-with-claude/rules/))。
+本 lookup table は **人間 / AI 向けの索引** であり、自動ロードの実体は各 rule の `paths` 側。
+
+**常時ロード (paths 未設定の rule)**: `rules-index.md` / `pii.md` / `secrets.md` /
+`template-language.md` (安全網または全 Markdown 共通の規約のため、起動時にロード)。
+
+編集対象別の参照 rules:
 
 | パターン | 参照する rules |
 |---|---|
@@ -59,6 +67,7 @@
 ## グローバルルール
 
 - **Markdown は全て日本語見出し** (ADR 0027 / `.claude/rules/template-language.md`)
+- **frontmatter の配列は block 形式必須** (`-` インデント表記、`[A, B]` 形式は禁止、詳細は `.claude/rules/docs-structure.md`)
 - **Conventional Commits** 必須 (`.claude/rules/commit-message.md`、`scripts/install-git-hooks.sh` で検証)
 - **PR テンプレートは `.github/PULL_REQUEST_TEMPLATE/<type>.md`** を `--template` で指定
 - **設計書本文 (`docs/{requirements,specifications}/**`) にコード断片は書かない** (§4.6.1)

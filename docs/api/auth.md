@@ -4,7 +4,9 @@ title: 認証 API (GIS 統一)
 status: skeleton
 last_updated: 2026-05-17
 related_plan: docs/harness/plan.md §3.2 / ADR 0011
-related_adrs: [ADR-0011, ADR-0020]
+related_adrs:
+  - ADR-0011
+  - ADR-0020
 ---
 
 # 認証 API (GIS 統一)

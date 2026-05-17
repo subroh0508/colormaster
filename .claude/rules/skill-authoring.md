@@ -3,8 +3,11 @@ id: rules-skill-authoring
 title: Skill 作成は example-skills:skill-creator 経由
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - ".claude/skills/**/SKILL.md"
 related_plan: docs/harness/plan.md §5.3 / ADR 0025
-related_adrs: [ADR-0025]
+related_adrs:
+  - ADR-0025
 ---
 
 # skill-authoring.md — Skill 作成規約

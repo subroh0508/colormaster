@@ -3,8 +3,12 @@ id: rules-adr
 title: ADR 起票基準と書式
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - "docs/adr/**/*.md"
+  - ".claude/skills/adr-author/**"
 related_plan: docs/harness/plan.md §4.5
-related_adrs: [ADR-0001]
+related_adrs:
+  - ADR-0001
 ---
 
 # adr.md — ADR 起票基準と書式

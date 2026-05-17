@@ -3,6 +3,8 @@ id: rules-implementation-workflow
 title: implementation-workflow 10 フェーズ手順規約
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - ".claude/skills/implementation-workflow/**"
 related_plan: docs/harness/plan.md §5.3 / §5.4.2 / ADR 0018
 ---
 

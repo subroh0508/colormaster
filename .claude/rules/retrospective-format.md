@@ -3,6 +3,11 @@ id: rules-retrospective-format
 title: pr-retrospective が生成する learning ファイルの構造化フォーマット
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - "docs/harness/learnings/**/*.md"
+  - ".claude/skills/pr-retrospective/**"
+  - ".claude/skills/pr-poller/**"
+  - ".claude/skills/harness-meta/**"
 related_plan: docs/harness/plan.md §4.4 / §5.5
 ---
 

@@ -3,6 +3,10 @@ id: rules-roadmap
 title: ロードマップ Markdown 規約 (roadmap-tracker Skill 操作規約)
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - "docs/harness/roadmap.md"
+  - "docs/epics/**/roadmap.md"
+  - ".claude/skills/roadmap-tracker/**"
 related_plan: docs/harness/plan.md §5.3 / R-34 / R-35 / R-36
 ---
 

@@ -3,6 +3,10 @@ id: rules-pr-poller
 title: pr-poller ローカルポーリング規約
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - ".claude/skills/pr-poller/**"
+  - ".claude/locks/**"
+  - ".claude/rules/harness-meta-criteria.md"
 related_plan: docs/harness/plan.md §5.3 / §6.2 A4 / ADR 0017
 ---
 

@@ -3,8 +3,11 @@ id: rules-ui-inventory
 title: UI Inventory 規約 (docs/design/inventory/ の構造と更新)
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - "docs/design/inventory/**"
 related_plan: docs/harness/plan.md §3.9 / ADR 0023
-related_adrs: [ADR-0023]
+related_adrs:
+  - ADR-0023
 ---
 
 # ui-inventory.md — UI Inventory 規約
@@ -30,11 +33,14 @@ related_adrs: [ADR-0023]
 id: inventory-screen-home
 type: screen | component | state | flow
 title: <タイトル>
-related_specs: [SPEC-NNN-N]
+related_specs:
+  - SPEC-NNN-N
 related_screenshots:
   - <composable>-mobile-light.png
   - <composable>-mobile-dark.png
-related_design_tokens: [colors.brand.imas-cg-rin, ...]
+related_design_tokens:
+  - colors.brand.imas-cg-rin
+  # 必要に応じて追加
 last_updated: YYYY-MM-DD
 ---
 ```

@@ -4,7 +4,8 @@ title: UI Inventory 索引
 status: skeleton
 last_updated: 2026-05-17
 related_plan: docs/harness/plan.md §3.9 / ADR 0023
-related_adrs: [ADR-0023]
+related_adrs:
+  - ADR-0023
 ---
 
 # UI Inventory 索引

@@ -3,8 +3,14 @@ id: rules-behavior-preservation
 title: リファクタ時の振る舞い維持原則
 status: skeleton
 last_updated: 2026-05-17
+paths:
+  - "feature/**/*.kt"
+  - "core/**/*.kt"
+  - "composeApp/**/*.kt"
+  - "docs/design/inventory/**"
 related_plan: docs/harness/plan.md §3.9 / ADR 0023
-related_adrs: [ADR-0023]
+related_adrs:
+  - ADR-0023
 ---
 
 # behavior-preservation.md — リファクタ時の振る舞い維持原則

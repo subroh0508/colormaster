@@ -4,7 +4,8 @@ title: MCP セットアップ (JetBrains / Context7 / Cloudflare)
 status: skeleton
 last_updated: 2026-05-17
 related_plan: docs/harness/plan.md §5.6 / ADR 0024
-related_adrs: [ADR-0024]
+related_adrs:
+  - ADR-0024
 ---
 
 # MCP セットアップ (JetBrains / Context7 / Cloudflare)
