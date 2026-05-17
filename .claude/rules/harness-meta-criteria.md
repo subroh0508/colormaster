@@ -112,6 +112,52 @@ Step 1 と Step 2 を同一 PR に統合する 1 段階運用は **禁止** (誤
 - **code-reviewer 4 aspect 並列を必ず通す**: harness 改修は spec-conformance / architecture / security / code-quality の 4 aspect で十分 (test-quality / performance / visual-regression / design-tokens は skip 妥当な場合が多い)
 - **PR description の「採用根拠」セクション**: 対象 learning ファイル + 採用判定基準 1〜5 のどれを満たすかを明記
 
+## dry-run 必須条件 (PR #141 レトロ Try / 人間追加最優先)
+
+`harness-meta` / `harness-bootstrap` (retro 集約改善モード) が改善提案を commit + push する前に
+**dry-run フェーズ** を経るべきかを判定する基準。dry-run の目的は **AI 出力品質改善の事前検証**
+(rule strict 化が誤検知を増やさないか / template 強化が本質的に AI のミスを減らすか / Skill フロー
+追加が context 圧迫の割に効果が出るか)、Generator-Evaluator 独立性 (R-13) と整合。
+本格的な dry-run 実装 (サブエージェント並列 + 出力比較 + 判定) は A3/A4 (harness-meta Skill 本格化) で実施、
+現状の `harness-bootstrap` (skeleton) では本セクションを参照しつつ手動で代替実行可。
+
+### dry-run 必須 (適用版 vs 未適用版の subagent 並列比較が必要)
+
+以下のいずれかに該当する改善提案は、commit + push 前に dry-run フェーズで AI 出力品質の改善有無を検証:
+
+| 区分 | 例 |
+|---|---|
+| **rule 全文書き換え** | 既存 rule の本文 50% 以上を改変、SoT 方向の変更、採用判定基準 / 必須条件等の核心セクション改修 |
+| **Skill 新規追加** | `.claude/skills/<new-name>/SKILL.md` の新規配置 (skeleton / active 問わず) |
+| **Skill フロー追加 / 削除** | 既存 Skill の入力 / 出力 / フェーズ別動作の追加 / 削除 |
+| **template 構造変更** | テンプレ Markdown のセクション追加 / 削除 / frontmatter 必須キー変更 |
+| **rule 間の SoT 反転** | 既存の rule A → rule B 参照方向を逆転、または同一トピックの SoT 移動 |
+| **`harness-meta` 採用判定基準 / 撤去基準の改修** | 本 rule §採用判定基準 / §撤去判定基準 の項目追加 / 削除 / 閾値変更 |
+
+### dry-run 不要 (commit + push に直接進んでよい)
+
+以下のいずれかに該当する改善提案は dry-run スキップ可:
+
+| 区分 | 例 |
+|---|---|
+| **typo / 表記揺れ修正** | 全角半角統一、識別子の表記正規化、機械検出可能な誤字 |
+| **リンク追加 / 修正** | rule 間クロスリンクの欠落補正、`docs/` への参照追加 |
+| **既存セクションへの例示追加** | 既存ルールの根拠を強化する事例追加 (rule 本体ルール不変) |
+| **frontmatter 値更新** | `last_updated` / `status` / `phase` の更新のみ |
+| **rules-index.md / CLAUDE.md lookup table の索引行追加** | 既存 rule の参照パターン明文化、新規 rule の追加に伴う索引同期 |
+| **撤回コスト低 + scope 限定 + 既存 rule 本体改定なし** (PR #140 `accepted` ADR 補足追加 3 条件) | ADR 補足追加、retro 📝 追記、横断 learnings への 1 行追加 |
+
+### dry-run 結果の記録先
+
+- dry-run 実施時は `docs/harness/dry-runs/YYYY-MM-DD-pr-NNN.md` (テンプレ: `docs/harness/dry-runs/template.md`、索引: `docs/harness/dry-runs/INDEX.md`) に **before/after の AI 出力差分** と **判定理由** を記録
+- 判定基準: 適用版が未適用版より明らかに望ましい出力 (誤検知減 / 規約遵守率向上 / 提案精度向上) を出す場合のみ commit + push に進む
+- 改善が見られない / 退化する場合は変更を破棄 or 別案検討 → `📝 harness-meta フィードバック` の「保留 (要再評価)」表に記録
+
+### 必須条件不一致時のフォールバック
+
+- 改善提案が **必須 / 不要のどちらにも明確に該当しない** (例: rule 改修だが scope 限定的、template 構造変更だが backward compatible 等) → orchestrator (subroh0508) に判定委任 (`harness-meta-criteria.md` 採用判定基準 5 と同等のエスカレーション)
+- dry-run コストが効果を上回ると判断される場合は **skip 理由を `📝 harness-meta フィードバック` に明示** (例: 「rule 改修だが採用バイアス対策のため即時反映、後続 PR で効果測定」)
+
 ## 即時消化 vs 持ち越し 判断基準 (PR #135 レトロ Try)
 
 採用判定基準 1-5 は「採用 = 改修 PR 起票」の基準であり、採用後に **同 PR 内で即時消化するか / 持ち越して別 PR にするか** の境界は別軸で判断する:
