@@ -80,6 +80,7 @@
 | `.claude/skills/code-reviewer/**` | code-reviewer-aspects.md, merge-readiness.md |
 | `.claude/skills/{harness-meta,pr-poller}/**` | harness-meta-criteria.md, pr-poller.md, retrospective-format.md |
 | `.claude/skills/harness-evolution/**` | harness-evolution.md |
+| `.claude/skills/orchestrator/**` | orchestrator-criteria.md, skill-authoring.md, harness-meta-criteria.md, implementation-workflow.md, pr-poller.md, branch-naming.md, merge-readiness.md |
 | `.claude/locks/**` | pr-poller.md |
 | `scripts/install-git-hooks.sh` | commit-message.md, branch-naming.md |
 | `.claude/rules/**` | rules-index.md, docs-structure.md, template-language.md |

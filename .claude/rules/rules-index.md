@@ -160,6 +160,12 @@ last_updated: 2026-05-17
 | `implementation-workflow.md` | stable (A2-3、Skill 本格実装は A3) | 10 フェーズ手順、Phase 0 で `git fetch origin master`、fix loop 上限 3、worktree 未マージ検知 |
 | `code-reviewer-aspects.md` | stable (A2-3、Skill 本格実装は A3) | 8 aspect の binary eval checklist (各 5-7 項目)、Coordinator 形式 |
 
+### 並列 orchestration (実装ワークフローを per-task pane に委譲する上位レイヤ)
+
+| ファイル | 状態 | 主な責務 |
+|---|---|---|
+| `orchestrator-criteria.md` | stable (ORCH-1) | orchestrator Skill (= implementation-workflow を per-task pane に委譲する上位レイヤ) の自動回答 / pause 判定ライン、context 60% handover プロトコル、stale display 検出手順、プロンプト送信プロトコル (ファイル経由送信)、classifier 迂回 NG/OK 辞典の SoT |
+
 ### ドキュメント表記
 
 | ファイル | 状態 | 主な責務 |
