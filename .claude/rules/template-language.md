@@ -1,7 +1,7 @@
 ---
 id: rules-template-language
 title: テンプレート言語ポリシー (日本語必須)
-status: skeleton
+status: stable
 last_updated: 2026-05-17
 # 注意: 全 Markdown 共通の規約のため `paths` を意図的に未設定 (常時ロード)。
 # rules-index.md / CLAUDE.md の「常時ロード (paths 未設定の rule)」リストと整合させるため、
@@ -40,6 +40,15 @@ related_adrs:
 - ステータス値 (`proposed`, `in-progress`, `completed`, `abandoned`, `promoted` 等)
 - コマンド・ファイルパス・コード断片
 - 識別子 (SPEC-IDOL-001-3, EPIC-NNN, PLAN-NNN, ADR 0001 等)
+- Conventional Commits の type / scope (`feat` / `fix` / `refactor` / `docs(harness)` 等、`.claude/rules/commit-message.md` 参照)
+- ブランチ名 prefix (`feature/` / `harness/` / `chore/` 等、`.claude/rules/branch-naming.md` 参照)
+
+## Phase A 期間中の経過措置
+
+- **commit message subject**: 英語推奨だが Phase A (A1〜A10) 期間中は日本語混在を許容 (`.claude/rules/commit-message.md` §subject 言語ポリシー参照)
+- **PR title**: commit subject と同じポリシー (Conventional Commits 形式 + 日本語混在許容)
+- **PR description body**: 日本語推奨 (本 rule の日本語化対象に含まれる)、コード断片は英語
+- **GitHub Issues / Discussions**: 日本語推奨、外部コラボレーション時のみ英語可
 
 ## 機械検証 (A6 で導入)
 
@@ -50,12 +59,17 @@ related_adrs:
 
 ## Gotchas
 
-- ADR / Plan / Epic の **タイトル** は日本語で簡潔・現在形・断定的に記述。
-- code 例 (Kotlin / Gradle DSL / SQL / シェル等) はそのまま英語。コメントは日本語可。
-- 識別子 (SPEC-NNN-N 等) と enum 値 (status / type 等) を日本語訳しない (parse 不可能になる)。
+- **ADR / Plan / Epic のタイトル** は日本語で簡潔・現在形・断定的に記述
+- **code 例 (Kotlin / Gradle DSL / SQL / シェル等) はそのまま英語**、コメントは日本語可
+- **識別子 (SPEC-NNN-N 等) と enum 値 (status / type 等) を日本語訳しない** (parse 不可能になる)
+- **`paths` 未設定で常時ロード**: A2-1 で `paths: ["**/*.md"]` 削除、rules-index.md / CLAUDE.md の「常時ロード (paths 未設定の rule)」リストと整合 (PR #117 A1 レトロ Problem #2 解消)
+- **本 rule は安全網として PII / Secrets / rules-index と同じ常時ロード群** に含まれる: 全 Markdown 共通の規約のため、起動時に無条件ロード
+- **過去コミット (A1 / A2-1 等) の日本語混在 subject** は Phase A 経過措置で許容、Phase B (A6 で `commit-msg` hook 拡張時) に英語強制を再評価
+- **Markdown 表記規約は `.claude/rules/markdown.md`** が担当、本 rule は言語ポリシー (日本語必須 + 例外列挙) に集中
 
 ## 関連
 
 - ADR 0027 (docs 構造 + 命名規約 + 日本語化方針)
 - `docs/harness/plan.md` §5.5 (テンプレート言語ポリシー)
-- `.claude/rules/markdown.md` (Markdown 全般の表記規約)
+- `.claude/rules/{markdown,docs-structure,commit-message,branch-naming,pr-template}.md`
+- `docs/epics/EPIC-A2-rules-docs-extension/decisions.md` (A2-1 paths 削除の判断記録)

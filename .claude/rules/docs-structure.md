@@ -1,7 +1,7 @@
 ---
 id: rules-docs-structure
 title: docs/ 構造と命名規約、AI が読む順序
-status: skeleton
+status: stable
 last_updated: 2026-05-17
 paths:
   - "docs/**/*.md"
@@ -23,7 +23,7 @@ related_adrs:
 
 詳細骨格は `docs/harness/plan.md` §4.0.1 を参照。主要ディレクトリ:
 
-```
+```text
 DESIGN.md                  ★ repo root
 docs/
   README.md                ★ AI 用エントリポイント
@@ -105,17 +105,23 @@ flow 形式 (`[A, B, C]`) は **禁止**。
 例:
 
 ```yaml
-# OK (block)
+# ✅ OK (block 形式) — 本リポジトリ全 docs / rule / Skill SKILL.md でこの形式を採用
 related_adrs:
   - ADR-0001
   - ADR-0011
 related_specs:
   - SPEC-IDOL-001-3
 
-# NG (flow / inline) — 機械検証で reject 予定 (A6)
+# ❌ NG (flow / inline 形式) — 機械検証で reject 予定 (A6)
+# 以下はあくまで「禁止例」として記載しており、本リポジトリの実体には混入させないこと
 related_adrs: [ADR-0001, ADR-0011]
 related_specs: [SPEC-IDOL-001-3]
 ```
+
+> **注**: 上記の `❌ NG` ブロックは比較のための参考表記であり、A6 で機械検証 (Gradle カスタム
+> タスク) を導入した時点で flow 形式の検出は CI 失敗となる。PR #121 レビュー
+> (spec-conformance aspect) で「`docs-structure.md:116-117` の NG 例にコメント注記なし」
+> と指摘されたため A2-3 で明示化。
 
 ### 空配列の表記
 
@@ -160,5 +166,6 @@ related_adrs:      # NG (これは null 扱いになる)
 
 - ADR 0027 (docs 構造 + 命名規約 + 5 行 summary + lazy-load + 日本語化)
 - `docs/harness/plan.md` §4
-- `.claude/rules/{template-language,roadmap,adr}.md`
+- `.claude/rules/{template-language,markdown,roadmap,adr,plan,epic,spec-living-sync}.md`
 - `docs/README.md` (AI 用エントリポイント)
+- `docs/traceability.md` (A6 自動生成、双方向リンク機械検証)
