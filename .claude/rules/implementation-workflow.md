@@ -2,7 +2,7 @@
 id: rules-implementation-workflow
 title: implementation-workflow 10 フェーズ手順規約
 status: stable
-last_updated: 2026-05-17
+last_updated: 2026-05-19
 paths:
   - ".claude/skills/implementation-workflow/**"
 related_adrs:
@@ -231,6 +231,81 @@ git branch -d <branch-name>  # 検出されなければ -D に切替
   - `-D` を使うのは **PR state が MERGED であることを確認した後** に限定
 - `branch -d` で先にトライし、失敗時のみ `-D` に切り替える順序を守る (PR state 未確認のまま `-D` を使うと未マージ work が消滅するリスク)
 
+## commit 分離規範 (single-file PR 内、PR #161/#162/#164/#165/#167 レトロ Try 反映)
+
+`harness-meta-criteria.md` §分割粒度 表は **ファイル数ベース** の PR 粒度規範 (1-5 ファイル = 1 PR 包括、6-20 ファイル = グループ単位 commit 分離)。本セクションは補完として、**1 ファイル PR でも論理的に独立な変更を別 commit に分離する** 規範を SoT 化する。skeleton → active 本格化 PR / Skill SoT 反映 PR / rule 改修 PR では、変更行数が +200 を超えても 1 ファイル PR として並走可能だが、1 commit に集約すると後続レビュー / retro で logical separator が読み取れない問題が PR #161/#162/#164/#165/#167 (Group 3 wave1/wave2) で 5 回反復観測された (採用判定基準 1 強化該当)。
+
+### 分離判定基準 (commit 分離 vs 単一 commit OK)
+
+以下のいずれかに該当する場合、同一ファイル内でも別 commit に分離:
+
+| 区分 | 例 |
+|---|---|
+| **論理的に独立した目的** | rule 本体の規範追加 + frontmatter `last_updated` 更新 + `rules-index.md` 索引行追加 = 3 commit (各々の取り消し粒度を独立化) |
+| **改修候補 ID が異なる** | 改修候補 #3 / #4 / #6 / #7 を SKILL.md 1 ファイルに反映する PR では、各改修候補ごとに 1 commit (`git add -p` 経由でファイル内 hunk 分離) |
+| **skeleton → active 本格化 PR の Phase 別** | Phase 0-3 セクション / Phase 4-6 セクション / Phase 7-9 セクション + frontmatter で 4 commit 分離 (例: `.claude/skills/implementation-workflow/SKILL.md` の skeleton → active 本格化) |
+| **取り消し時の粒度を独立させたい** | 後続レビューで「frontmatter 更新だけ revert したい」「§N セクション追加だけ revert したい」等の要望が想定される場合 |
+| **レビュー時の差分追跡を容易にしたい** | 単一 commit で +200 行超は読み切りコスト高、論理単位で commit 分離すれば `git log -p --first-parent` で差分追跡可能 |
+
+### 例外 (単一 commit OK、commit 分離不要)
+
+以下のいずれかに該当する場合、単一 commit で OK:
+
+| 区分 | 例 |
+|---|---|
+| **typo / 表記揺れ修正のみ** | 全角半角統一、識別子の表記正規化、機械検出可能な誤字 (`harness-meta-criteria.md` §dry-run 不要条件 と整合) |
+| **1-2 行の補正** | frontmatter `last_updated` 単独更新、リンク 1 件追加、見出し 1 件修正 |
+| **同一目的の小規模変更が複数箇所** | 同じ rule の §A / §B / §C に同じ修正パターンを適用 (例: 全角コロン → 半角コロン置換を 5 箇所) |
+| **logical separator が分離コストに見合わない** | +50 行未満 + 単一目的 (rule 1 セクション追加のみ) は単一 commit で OK |
+
+### 実装手順 (`git add -p` 経由のファイル内 hunk 分離)
+
+同一ファイル内で複数の論理的変更を別 commit に分離する場合、`git add -p` で hunk 単位に staging する:
+
+```bash
+# 1. ファイル全体を編集 (Edit / Write tool で複数箇所を一括変更)
+
+# 2. hunk 単位で staging (interactive)
+git add -p <file>
+# 各 hunk について y/n/s/e/q を選択
+#   y = この hunk を staging
+#   n = この hunk を skip
+#   s = hunk を分割 (split)
+#   e = hunk を編集 (edit)
+#   q = quit
+
+# 3. staged hunk のみ commit
+git commit -F /tmp/<prefix>-commit-msg-1.txt
+
+# 4. 残り hunk を次の commit に
+git add -p <file>
+git commit -F /tmp/<prefix>-commit-msg-2.txt
+
+# 5. 全 hunk staging 完了まで繰り返し
+```
+
+### 学習起点 (5 PR 反復)
+
+- **PR #161** (orchestrator SKILL.md 包括更新): 改修候補 #3/#4/#6/#7 を 1 ファイル / 1 commit で実装、後続レビューで logical separator が読み取れない問題を Problem に記録
+- **PR #162** (A3-8 implementation-workflow Skill 本格化): +278 / -26 を 1 commit、Phase 別 commit 分離が読み取れない問題を Problem に記録
+- **PR #164** (A3-9 code-reviewer Skill 本格化): +215 / -36 を 1 commit、Coordinator ステップ別 / Gotchas セクション別の logical separator が読み取れない問題を Problem に記録
+- **PR #165** (A3-12 roadmap-tracker Skill 本格化): +248 / -28 を 2 commits (initial + fix loop 1)、5 系統別の commit 分離が読み取れない問題を Problem に記録
+- **PR #167** (A3-10 pr-retrospective Skill 本格化): +189 / -21 を 1 commit、Phase 別 commit 分離が読み取れない問題を Problem に記録
+
+採用判定基準 1 (複数 PR 反復) を強化条件 (5 回反復) で満たすため、本 SoT 化で再発予防。
+
+### Phase 別の適用タイミング
+
+- **Phase 3 (実装 + Lint + Test)**: 実装中は logical 単位で commit、`./gradlew check` green を各 commit で担保 (途中 commit で fail でも OK だが、PR 起票前に green commit に rebase 整理)
+- **Phase 5 (Draft PR 作成)**: PR 起票前に `git log --oneline origin/master..HEAD` で commit 構造を最終確認、各 commit が独立 revertable / 読み切り可能か検証
+- **Phase 6 (code-reviewer 呼出)**: fix loop で追加 commit は logical separator 維持、Critical 修正は単独 commit (revert 容易化)
+- **Phase 7 (squash merge)**: 本リポジトリは `--squash` 採用のため、merge commit としては単一 commit に圧縮されるが、PR 内 commit 履歴は `gh pr view --json commits` で残り、後続 retro / レビューが trace 可能
+
+### 機械検証 (A6 で導入予定)
+
+- **Gradle カスタムタスク**: `git log --oneline origin/master..HEAD` で commit 数 / 各 commit の touch 行数を計測、`logical separator なし` 疑い (1 ファイル PR + 1 commit + 100 行超) を warning 化
+- **commit-msg hook 拡張**: Conventional Commits subject に logical 単位を示す scope 明示を推奨 (例: `feat(skill): orchestrator §Phase 6 セクション差し替え (改修候補 #3)`)
+
 ## Fix loop の上限と blocked 判定
 
 - **Phase 3 fix loop**: `./gradlew check` 失敗 → 修正 → 再実行 を 3 回まで
@@ -270,11 +345,14 @@ git branch -d <branch-name>  # 検出されなければ -D に切替
 - **Phase 9 の `branch -d` を先にトライし、失敗時のみ `-D` に切替** (PR #123 / #135 レトロ Try): squash merge / merge commit のいずれも `--merged origin/master` で検出されないケースがある。`gh pr view --json state=MERGED` 確認後に `-D` 許容、PR state 未確認のまま `-D` は禁止 (未マージ work 消滅リスク)
 - **worktree path の slug は `branch-naming.md` 規約に厳密に従う**: スラッシュをハイフンに置換、特殊文字なし
 - **並走中の rules-index.md / roadmap.md / progress.md の rebase 競合** は EPIC-A2 で頻発、mirror PR で統合解消するパターンを A2-2 / A2-4 / A2-5 で確立
+- **single-file PR でも論理的に独立した変更は別 commit に分離** (PR #161/#162/#164/#165/#167 レトロ Try 反映、本 rule §commit 分離規範 参照): 改修候補 ID 別 / Phase 別 / frontmatter 単独 等の logical separator を `git add -p` 経由で実現、+200 行超の skeleton → active 本格化 PR は特に分離推奨
 
 ## 関連
 
 - ADR 0017 (ローカル Claude Code ポーリング駆動、Generator/Evaluator 分離の前提)
 - ADR 0018 (10 フェーズ設計の SoT)
 - `docs/harness/plan.md` §5.3 / §5.4.2 / R-14 / R-15 / R-34 / R-37
-- `.claude/rules/{branch-naming,pr-template,pr-draft-policy,merge-readiness,code-reviewer-aspects,spec-living-sync,roadmap,pr-poller}.md`
+- `.claude/rules/{branch-naming,pr-template,pr-draft-policy,merge-readiness,code-reviewer-aspects,spec-living-sync,roadmap,pr-poller,harness-meta-criteria}.md`
+- `.claude/rules/harness-meta-criteria.md` §分割粒度 (本 rule §commit 分離規範 と補完関係、ファイル数ベース粒度 vs single-file PR 内 logical separator の二重 SoT)
 - `.claude/skills/implementation-workflow/SKILL.md`
+- 学習起点: PR #161/#162/#164/#165/#167 retro Try (single-file PR commit logical separator 5 回反復、`docs/harness/learnings/2026-05-18-pr-{161,162,164,165,167}.md`)
