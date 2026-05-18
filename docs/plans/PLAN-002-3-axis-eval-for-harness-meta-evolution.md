@@ -2,8 +2,8 @@
 id: PLAN-002
 title: harness-meta / harness-evolution 改修 PR の 3 軸定量評価フレーム導入
 type: harness
-status: proposed
-related_pr: null
+status: completed
+related_pr: 171
 related_epic: null
 related_specs: []
 related_adrs:
@@ -22,7 +22,7 @@ expected_modules:
   - docs/harness/dry-runs/golden-set.md
   - docs/adr/ADR-0028-3-axis-quantitative-eval.md
 created_at: 2026-05-19
-completed_at: null
+completed_at: 2026-05-19
 promoted_to: null
 ---
 
