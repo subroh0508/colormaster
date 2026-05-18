@@ -1,8 +1,8 @@
 ---
 id: evolution-proposals-index
 title: ハーネス進化提案索引
-status: skeleton
-last_updated: 2026-05-17
+status: living
+last_updated: 2026-05-19
 ---
 
 # ハーネス進化提案索引
@@ -16,6 +16,7 @@ last_updated: 2026-05-17
 
 | 日付 | 主旨 | 提案数 | 採用 → 起票 |
 |---|---|---|---|
+| [2026-05-19](2026-05-19.md) | harness-meta / harness-evolution 改修 PR の 3 軸定量評価フレーム導入 (改善度 / 再現性 / 副作用) | 6 (`[rule]` × 4 + `[skill]` × 2) | Plan 起票推奨 (本提案 §採用提案、`harness/3-axis-eval-framework` ブランチ想定、起票時に PLAN リンク追記) |
 
 ## ファイル運用
 
