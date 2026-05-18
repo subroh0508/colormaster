@@ -2,7 +2,7 @@
 id: adr-readme
 title: ADR (Architecture Decision Records) README
 status: living
-last_updated: 2026-05-17
+last_updated: 2026-05-19
 related_plan: docs/harness/plan.md §4.5
 ---
 
@@ -11,7 +11,8 @@ related_plan: docs/harness/plan.md §4.5
 > **5 行以内 summary**: 重要なアーキテクチャ決定の記録。Michael Nygard 原則
 > ("Architecturally Significant Decisions" のみ記録) 準拠。起票基準は §4.5 と
 > `.claude/rules/adr.md` を参照。連番 4 桁ゼロパディング、日本語、`accepted` 以降は
-> immutable で変更時は新 ADR + `Superseded by` リンク。0001-0027 は A1 (PLAN-001) で起草済。
+> immutable で変更時は新 ADR + `Superseded by` リンク。0001-0027 は A1 (PLAN-001) で起草、
+> ADR-0028 は PLAN-002 / PR #171 で起草 (PR #129 で予約後見送られた 0028 番号を再割当)。
 
 ## ステータス遷移 (MADR 4 状態)
 
@@ -33,7 +34,7 @@ related_plan: docs/harness/plan.md §4.5
 - 運用手順 → runbook
 - PR ごとの学び・改善案 → `docs/harness/learnings/`
 
-## ADR 0001-0027 一覧 (A1 = PLAN-001 で起草済、PR #119)
+## ADR 0001-0028 一覧 (0001-0027 は A1 / PR #119、0028 は PLAN-002 / PR #171)
 
 詳細は `docs/harness/plan.md` §4.0.3 参照。状態は全件 `accepted` (PLAN-001 PR で `proposed → accepted`
 の中間遷移を経ずに `accepted` で起票、根拠は PLAN-001 のメモを参照)。
@@ -73,6 +74,7 @@ related_plan: docs/harness/plan.md §4.5
 | 0025 | accepted | Skill 作成は `example-skills:skill-creator` 経由 (公式準拠) | 7, 8 | `skill-authoring.md` | [ADR-0025](ADR-0025-skill-creator-via-example-skills.md) |
 | 0026 | accepted | `harness-evolution` Skill 採用 (内部 KPT + 外部研究 二系統) | 7, 8 | `harness-evolution.md` / `harness-meta-criteria.md` | [ADR-0026](ADR-0026-harness-evolution-internal-external.md) |
 | 0027 | accepted (★統合) | docs 構造 + 命名規約 + 5 行 summary + lazy-load + 日本語化 | 7, 10 | `docs-structure.md` / `template-language.md` / `markdown.md` | [ADR-0027](ADR-0027-docs-structure-and-japanese.md) |
+| 0028 | accepted | ハーネス改修 PR の品質指標として 3 軸定量評価フレーム (改善度 / 再現性 / 副作用) を導入 (PR #129 で予約後見送られた 0028 番号を再割当) | 5, 7, 10 | `harness-meta-criteria.md` / `harness-evolution.md` | [ADR-0028](ADR-0028-3-axis-quantitative-eval.md) |
 
 ### ★統合の経緯
 

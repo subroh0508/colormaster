@@ -54,6 +54,44 @@ expected_modules: []
 
 > **注**: 「持ち越し Improvement」列 (PR #123 レトロ Try) は `code-reviewer` Coordinator の Improvement 番号 (例: spec-conformance #2 / architecture #4) を記載。本 PR 内消化 / 後続 PR へ持ち越しを `📝 harness-meta フィードバック` 表と紐付ける。
 
+## 3 軸定量評価 (harness-meta / harness-evolution 改修 PR は必須、ADR-0028)
+
+<!--
+本セクションは harness-meta / harness-evolution 由来の改修 PR で必須記入。
+それ以外 (template 改修のみ等で dry-run 不要条件該当) は「dry-run skip 理由」のみ記入し本表 / 入力記録は空欄可。
+詳細運用規約は `.claude/rules/harness-meta-criteria.md` §dry-run 3 軸定量評価 を SoT として参照。
+-->
+
+### スコア表
+
+| 軸 | 計測方法 | Before (旧版) | After (新版) | 閾値 (calibration 由来) | 判定 |
+|---|---|---|---|---|---|
+| 改善度 | 関連 retrospective の Problem 再発率 (M 件中 X 件再発) | M/M (100%) | X/M (X%) | Problem 再発率 ≤ 30% | ✅ / ❌ |
+| 再現性 | 新版に同一入力 N 回試行、target × メトリクス対応表に従い算出 | — (再現性は新版のみ計測) | Jaccard 平均 0.ZZ / CV / 完全一致率 / LLM-as-judge | 初期 placeholder: Jaccard ≥ 0.80 / CV ≤ 0.15 / 完全一致率 ≥ 70% / LLM-as-judge ≥ 0.80 | ✅ / ❌ |
+| 副作用 | 基準シナリオ集 (golden set) K 件の退化率 + 新規 Critical findings 件数 | (旧版は基準シナリオ集として定義済) | 退化率 X% + Critical Y 件 | 退化率 ≤ 20% + 新規 Critical ≤ 1 件 | ✅ / ❌ |
+
+### dry-run 入力記録 (要約、詳細は dry-run ファイル参照)
+
+| 項目 | 値 |
+|---|---|
+| 起動 Skill / args | `Skill skill="<name>" args="<args の冒頭 100 字>..."` (全文は dry-run ファイル §1) |
+| Subagent プロンプト要旨 | Before / After 共通の user prompt の要旨 1-2 行 (全文は dry-run ファイル §2) |
+| Model / Temperature / N | `claude-opus-4-7` / `temp=0` / `N=10` 等 (詳細は dry-run ファイル §3) |
+| 入力ファイル (改修対象) | `<file 1>` / `<file 2>` (commit sha は dry-run ファイル §4) |
+
+### dry-run ファイル + 9 通り組合せ別レビュー指針
+
+- **dry-run 結果 (4 ブロック入力記録 + 3 軸スコア算出根拠)**: [`docs/harness/dry-runs/YYYY-MM-DD-pr-NNN.md`](../../docs/harness/dry-runs/YYYY-MM-DD-pr-NNN.md)
+- **本 PR の該当 #** (`.claude/rules/harness-meta-criteria.md` §3 軸結果の組合せ別レビュー指針 9 通り表): <#1-9 のいずれか>
+- **推奨アクション**: <該当 # 行の推奨アクション (例: #1 = Approve 推奨 / #2 = Reject 推奨 (guardrail 優先) / #9 = 人間判定要)>
+- **レビュワー最終判断**: 本指針は reference、最終 approve / reject は human review (subroh0508、R-15) が下す
+
+### dry-run skip 該当時
+
+dry-run 不要条件 (`.claude/rules/harness-meta-criteria.md` §dry-run 不要条件) 該当時は本表 / 入力記録を空欄とし、以下のみ記入:
+
+- **skip 理由**: <typo 修正 / リンク追加 / frontmatter 値更新 / 索引行追加 / 撤回コスト低 3 条件 のいずれかを明示>
+
 ## ハーネス改善提案件数 (KPT / harness-meta フィードバック)
 
 | 観点 | 採用 | 見送り | 保留 | 撤去 |

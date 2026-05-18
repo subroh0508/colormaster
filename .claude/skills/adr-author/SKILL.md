@@ -81,8 +81,9 @@ related_adrs:
     満たす場合のみ ADR 化見送りが正当と判定。該当する場合は EPIC `decisions.md` / PR
     description / Plan に「ADR 起票基準 (§起票基準) を満たさないため見送り、撤回コスト低 /
     scope は `<files>` 限定 / 既存 rule 本体の改定なし」と明記して記録を推奨 (PR #129 で
-    `.claude/settings.json` の permissions.allow 拡張時に本テンプレを適用し、ADR-0028 起票を
-    見送って EPIC-A2 `decisions.md` に判断ログを残した実績)
+    `.claude/settings.json` の permissions.allow 拡張時に本テンプレを適用し、当時予約していた
+    ADR-0028 番号での起票を見送って EPIC-A2 `decisions.md` に判断ログを残した実績、本見送りで
+    解放された ADR-0028 番号は後に PLAN-002 / PR #171 で 3 軸定量評価フレーム ADR に再割当)
 - 満たす場合は Phase 2 へ進む
 
 ### Phase 2: 採番 + テンプレ copy + frontmatter 埋め
@@ -148,8 +149,9 @@ related_adrs:
 - **起票基準を満たさない決定を ADR 化しない**: `.claude/rules/adr.md` §起票基準 10 項目のうち
   2 つ以上を満たさない場合は ADR 起草を見送り、別記録方法 (rules / Epic decisions.md /
   Plan / learning / runbook) を提案。撤回コスト低 / config N ファイル限定 / 既存 rule 本体
-  改定なしの 3 条件を満たすなら §ADR 化見送りの理由テンプレ に従う (PR #129 で実績、ADR-0028
-  起票を見送り EPIC-A2 `decisions.md` に記録)
+  改定なしの 3 条件を満たすなら §ADR 化見送りの理由テンプレ に従う (PR #129 で実績、当時予約
+  していた ADR-0028 番号での起票を見送り EPIC-A2 `decisions.md` に記録。本見送りで解放された
+  ADR-0028 番号は PLAN-002 / PR #171 で 3 軸定量評価フレーム ADR に再割当)
 - **双方向リンク漏れ防止**: `supersedes: ADR-MMMM` 宣言時は対向 ADR の `superseded_by` も同 PR
   内で更新。片方向だけ書くと A6 機械検証 (相互参照の実在チェック) で reject される
 - **`superseded_by` の整合性**: 対向 ADR の `status` も `superseded` に更新が必要。`accepted`

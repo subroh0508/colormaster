@@ -1,13 +1,14 @@
 ---
 id: rules-harness-meta-criteria
-title: harness-meta 採用 / 見送り / 撤去判定基準 + pr-poller 起動閾値
+title: harness-meta 採用 / 見送り / 撤去判定基準 + pr-poller 起動閾値 + dry-run 3 軸定量評価
 status: stable
-last_updated: 2026-05-17
+last_updated: 2026-05-19
 paths:
   - ".claude/skills/harness-meta/**"
   - ".claude/skills/pr-poller/**"
 related_adrs:
   - ADR-0026
+  - ADR-0028
 related_plan: docs/harness/plan.md §5.4.5 / R-31
 ---
 
@@ -158,6 +159,108 @@ archived 化済のため (`.claude/skills/archived/harness-bootstrap/` 参照)�
 
 - 改善提案が **必須 / 不要のどちらにも明確に該当しない** (例: rule 改修だが scope 限定的、template 構造変更だが backward compatible 等) → orchestrator (subroh0508) に判定委任 (`harness-meta-criteria.md` 採用判定基準 5 と同等のエスカレーション)
 - dry-run コストが効果を上回ると判断される場合は **skip 理由を `📝 harness-meta フィードバック` に明示** (例: 「rule 改修だが採用バイアス対策のため即時反映、後続 PR で効果測定」)
+
+## dry-run 3 軸定量評価 (ADR-0028 で導入、PLAN-002 で本格化)
+
+`harness-meta` / `harness-evolution` が起票する改修 PR の dry-run について、verdict 3 値ラベル (adopt / discard / escalate) を廃止し、**改善度 / 再現性 / 副作用** の 3 軸定量スコア + 9 通り組合せ別レビュー指針で代替する (ADR-0028 §決定)。
+
+### 3 軸の定義
+
+| 軸 | 計測対象 | 計測手順 | 閾値 (初期 placeholder、calibration で調整) |
+|---|---|---|---|
+| **改善度** (Improvement Score) | 旧版で発生していた Problem の再発率 | 1) 対象 Skill / rule の関連 retrospective (直近 N 件、推奨 5-10 件) の `⚠️ Problem` セクションから関連 Problem を抽出 (M 件)。2) M 件のシナリオを新版 dry-run subagent (適用版) に投入。3) 再発した件数 / M 件 = Problem 再発率 (%)。 | **Problem 再発率 ≤ 30%** (= 改善率 ≥ 70%) で「改善あり」判定 |
+| **再現性** (Reproducibility Score) | 同一手順 / 同一引数 / 同一プロンプトでの新版出力の安定性 | 1) 下記 §dry-run 入力記録 4 ブロックを固定 → 新版 dry-run subagent に同一入力を **N=10 以上 (Anthropic「20-50 simple tasks」推奨を Skill 改修向けに圧縮)** 投入、コスト制約で N=5 採用時は信頼区間明示必須。2) 各実行の重要セクションを下記 §measurement target × メトリクス対応表 に従い分類。3) 各メトリクスの calibration 由来閾値で安定判定。 | **calibration 由来** (Braintrust「fixed numeric values 非推奨」準拠): N=20 baseline 計測 → median - 1σ。**初期 placeholder**: Jaccard ≥ 0.80 / CV ≤ 0.15 / 完全一致率 ≥ 70% / LLM-as-judge ≥ 0.80。**入力記録 4 ブロック不在 / 不完全の場合は再現性スコア算出を見送り** → 9 通り指針 #9 (人間判定要) |
+| **副作用** (Side-Effect Score) | 旧版で問題なく動作していたシナリオの退化 / 新規違反検出 | 1) `docs/harness/dry-runs/golden-set.md` の **基準シナリオ集** (初期 K=5、iterative 拡張) を投入対象として保持。2) 新版 dry-run subagent に K 件を投入。3) 各シナリオを **「改善 / 変化なし / 退化」** の 3 値で判定 (`改善`=新版が明らかに良化 / `変化なし`=出力 diff なしまたは無視できる差 / `退化`=旧版より明らかに劣化、誤検知増 / 規約違反検出 / Critical findings 増)、退化件数 + 新規 Critical findings 件数を集計。 | **閾値型** (Evidently「lte = 0.1 / 10% acceptable fail rate」準拠、zero-tolerance は LLM flakiness で全件 escalate 倒れするため非採用): **退化率 ≤ 20% (= 退化件数 / K)** + **新規 Critical findings ≤ 1 件** で「副作用なし」判定。閾値は K に応じて運用熟成で調整 |
+
+### measurement target × メトリクス対応表 (再現性軸、データ型別)
+
+再現性軸の「重要セクション」はデータ型ごとに別メトリクスを適用する (Jaccard 統一は set 比較限定で適切、scalar / categorical / 自由文には不適合):
+
+| measurement target | データ型 | 推奨メトリクス | 算出方法 | 初期閾値 (calibration 前) |
+|---|---|---|---|---|
+| 該当規約 ID 列挙 / 改修対象ファイルリスト / Skill 名集合 | set of strings | **Jaccard 係数** | `|A ∩ B| / |A ∪ B|`、N 回試行のペアワイズ平均 | 平均 ≥ 0.80 |
+| Gotchas 数 / fix loop 回数 / 該当行数 等の数値 | scalar (integer / float) | **変動係数 (CV)** | `標準偏差 / 平均値` | CV ≤ 0.15 |
+| verdict 後継ラベル (将来用途) / category 選択 | categorical | **完全一致率 (modal agreement)** | 最頻値の出現率 / N | ≥ 70% |
+| 自由文 (SKILL.md 本文 / レビューコメント本文 / 説明文) | text | **LLM-as-judge semantic equivalence** | 別 subagent に「N 回出力の semantic 一致度」を 0-1 で判定 | ≥ 0.80 |
+
+**Calibration 推奨手順** (運用熟成段階):
+
+1. 既存 Skill (harness-meta / harness-evolution) の安定状態で N=20 baseline 計測を実施
+2. 各メトリクスの **median - 1σ** を初期閾値の調整値とする
+3. 3 PR サイクル分の dry-run 実績で moving average 更新
+
+### 基準シナリオ集 (golden set) 更新フロー
+
+副作用軸の検証用 K 件は `docs/harness/dry-runs/golden-set.md` を SoT とし (PLAN-002 で新規追加)、iterative 拡張する:
+
+1. **新規 retro の `⚠️ Problem` 発生時**: `pr-retrospective` 生成 learning から「副作用候補」(例: 「旧版で動いていたが新版で誤動作」型) を抽出 → 基準シナリオ集追加候補 PR 起票
+2. **`harness-meta` の `📝 harness-meta フィードバック` `保留` 表に「副作用懸念」理由で新規追加**: 自動的に候補化
+3. **orchestrator 手動追加**: subroh0508 が「これは恒久的に検証すべき」と判断した場合
+4. **古い基準シナリオの除外 (retire)**: 3 PR サイクル連続で 改善 / 変化なし のみ + 対象 Skill / rule 廃止 + orchestrator 明示承認の 3 条件で除外可
+
+更新 PR は `harness/golden-set-update-YYYY-MM-DD` ブランチで起票、本 rule + `docs/harness/dry-runs/golden-set.md` を編集。
+
+### dry-run 入力記録仕様 (4 ブロック必須)
+
+3 軸スコアの算出根拠が再現可能であることを担保するため、dry-run ファイル (`docs/harness/dry-runs/YYYY-MM-DD-pr-NNN.md`) に **以下 4 ブロックを必須記録**。レビュワーは本ブロックを根拠に「同一入力で本当に再現できるか」「3 軸スコアが妥当か」を判定する。
+
+**ブロック 1: Skill 起動コマンド (Harness Invocation)**:
+
+- 起動形式 (スラッシュコマンド / `Skill` ツール / 手動代替実行)
+- Skill 名 (`harness-evolution` / `harness-meta` 等)
+- args 全文 (PII / Secrets redaction 済、1 文字も省略せず)
+- 起動者 (human / orchestrator pane / pr-poller 自動 / 他 Skill 連鎖)
+- 起動日時 (JST)
+
+**ブロック 2: Subagent 投入プロンプト (適用版 / 未適用版両方)**:
+
+- subagent_type (例: `general-purpose`)
+- system prompt 差分 (適用版 = 改修後 rule 参照、未適用版 = 改修前 rule 参照)
+- user prompt 全文 (PII / Secrets redaction 済)
+- **user prompt は両 subagent で完全一致が原則** (system prompt 側で適用 / 未適用切替)、不一致時は正当化を明記
+
+**ブロック 3: 実行環境 (Runtime Environment)**:
+
+- Model ID (`claude-opus-4-7` 等の実行時 ID)
+- Temperature (設定値、デフォルト 1.0 で flakiness 大、本評価では明示推奨)
+- MCP 接続 (有効 MCP 一覧)
+- Permission モード (acceptEdits / plan / default)
+- Worktree / branch (`branch` + `HEAD commit sha`)
+- Skill バージョン (該当 Skill SKILL.md の `phase` / `last_updated`)
+- 同 conversation 内の prior context (fresh / 継続セッション)
+
+**ブロック 4: 入力ファイル (Read された rule / SKILL.md / docs)**:
+
+- ファイルパス × 適用版 commit sha × 未適用版 commit sha の表
+- commit sha 不一致が必要なファイル = 本改修で実際に書き換えるファイル
+- commit sha が一致するべきファイル = 改修対象外、両 subagent が同じ内容を参照すべき
+
+### 3 軸結果の組合せ別レビュー指針 (9 通り全列挙、verdict ラベルなし)
+
+verdict 3 値 (`adopt` / `discard` / `escalate`) は廃止し、3 軸スコアの結果組合せごとに **推奨アクションを示すがラベル化しない** 表で代替する (Anthropic / Braintrust 公式の hybrid 原則: automation + periodic human review)。
+
+各組合せの推奨アクションはレビュワーが最終判断する際の reference、機械的に approve / reject を決定する SoT ではない。Plan / Skill 改修の継続判断は human review (subroh0508) が下す (R-15)。
+
+| # | 改善度 | 再現性 | 副作用 | 推奨アクション |
+|---|---|---|---|---|
+| 1 | ✅ | ✅ | ✅ | **Approve 推奨** — 全軸合格、改修目的達成 + 副作用 guardrail 内 + 再現性十分。commit + push に進む候補 |
+| 2 | ✅ | ✅ | ❌ | **Reject 推奨 (guardrail 優先)** — Braintrust 準拠で副作用優先、改善と再現性が出ていても guardrail 違反は変更を退ける根拠。退化シナリオを retro `保留` 表に記録 + 別案検討に戻す |
+| 3 | ✅ | ❌ | ✅ | **再計測推奨** — flakiness 許容超、N を 10 → 20 へ増やして再計測 / temperature 確認 / 重要セクション粒度を狭めて再算出。1 回の追加計測で再現性 ✅ なら本表 #1 ルートへ |
+| 4 | ❌ | ✅ | ✅ | **改修価値再評価** — 改善効果が薄い、コスト vs 効果再考。本質的変更が必要か、別アプローチか、orchestrator (subroh0508) 委任で「改修対象 / 改修内容」再設計を検討 |
+| 5 | ✅ | ❌ | ❌ | **副作用調査優先 + Reject** — guardrail 違反が最優先 (本表 #2 と同根拠)、副作用解消後に再現性を再計測。改善度がスコープ通り出ているため改修方向自体は維持可能、副作用シナリオの根本原因を Plan / Epic に切り出して再起票 |
+| 6 | ❌ | ✅ | ❌ | **Reject 推奨** — 改善小 + 副作用あり、提案見送り。改修対象 / 改修内容の再設計が必要、本表 #2 と #4 の合算理由で reject |
+| 7 | ❌ | ❌ | ✅ | **改修見直し + 再計測** — 改善効果不明 + 再現性不安定、提案 scope 縮小 / 別案検討。先に再計測 (本表 #3 ルート) で再現性回復を試み、その上で改善度判定を行う 2 段階 |
+| 8 | ❌ | ❌ | ❌ | **Reject 強推奨** — 全軸不合格、提案破棄。harness-meta `保留` 表に「全軸不合格」と記録 + 別案検討に着手、本提案 scope は閉じる |
+| 9 | — | **測定不能** | — | **人間判定要 (旧 escalate 相当)** — 入力記録 4 ブロック不備、または measurement target が定義不能、または Skill が dry-run 必須条件不一致時のフォールバック対象。Plan Phase 1 で「3 軸算出不能の理由」を記述し orchestrator 委任、改修着手前に retry 必須 |
+
+### PR description への必須転載
+
+`harness-meta` / `harness-evolution` の改修 PR description には以下を必須記載 (詳細フォーマットは `.github/PULL_REQUEST_TEMPLATE/harness.md` §3 軸定量評価 参照):
+
+- 3 軸スコア表 (verdict 行なし、再現性軸は新版のみ計測で Before 列なし)
+- dry-run 入力記録の要約 (起動 Skill / args 冒頭 / プロンプト要旨 / Model / Temperature / 入力ファイル)
+- dry-run ファイル詳細リンク (`docs/harness/dry-runs/YYYY-MM-DD-pr-NNN.md`)
+- 9 通り組合せ別レビュー指針 #N 該当 (推奨アクション記入、レビュワー reference として)
 
 ## 即時消化 vs 持ち越し 判断基準 (PR #135 レトロ Try)
 
