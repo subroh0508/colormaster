@@ -11,7 +11,7 @@ description: |
   本 Skill に従って動作することを推奨する。
 status: stable
 phase: A2 follow-up
-last_updated: 2026-05-17
+last_updated: 2026-05-18
 related_plan: docs/harness/plan.md §5.4
 related_rules:
   - .claude/rules/orchestrator-criteria.md
@@ -147,16 +147,32 @@ cmux read-screen --workspace workspace:N --lines 30
 - 起動 prompt 内に R-15 事前承認文言 (§明示承認文言 canonical) が含まれているか確認、欠落時はユーザーに追記を依頼
 - per-task pane への共通 prompt テンプレ (Phase 2 で使用) を準備: 「(orchestrator pane の操作者 subroh0508) が本タスク全体 (Phase 1-9 含む self-merge) を本指示で明示的に事前承認 (R-15 該当)。」+ Plan / Epic ID + 着手指示
 
-### Phase 2: per-task workspace spawn (1 ペイン = 1 PR) + 初期 prompt 配送 (仕様 8)
+### Phase 2: per-task workspace spawn (1 ペイン = 1 PR) + 初期 prompt 配送 (仕様 8、改修候補 #7 SoT 反映)
+
+per-task workspace spawn は 3 Step に分割。**Step 2-A の `git worktree add` は同一 repo に対して並列 NG、必ず直列実行**。
+
+#### Step 2-A: worktree 事前作成 (直列必須、改修候補 #7 SoT)
+
+- orchestrator が **per-task pane spawn 前** に `git worktree add -b <branch> <path> master` を全 PR 分 1 件ずつ直列実行
+- 並列で `git worktree add` を投げると `.git/worktrees/.lock` (および `index.lock`) の取得競合で `fatal: cannot lock ref` / `fatal: could not lock the ref` がほぼ確実 (Group 1 / Group 2 spawn 時の実観測、改修候補 #7 由来)
+- 直列実行コストは worktree 1 件あたり数秒 (≦ 5 sec)、並列度 4-7 でも数十秒で全件完走可能、並列化メリットは原理的に薄い
+- 並走可能性 (touch ファイル重複ゼロ確認) は `expected_modules` で事前判定 (EPIC-A2 A2-2/A2-4/A2-5 が touch ファイル重複ゼロで並走完走した実績)
+- 衝突する場合は per-task pane spawn 自体を直列に倒す (A2-2 → A2-3 のように `rules-index.md` を連続編集するペアは worktree 作成後の spawn も直列)
+
+#### Step 2-B: per-task pane spawn (cwd は Step 2-A で作成済 worktree path)
 
 - task ごとに `cmux new-workspace --name <branch-slug> --cwd <worktree-path> --focus false` で起動
-- 並走可能性は `expected_modules` の touch 重複ゼロを確認 (EPIC-A2 A2-2/A2-4/A2-5 が touch ファイル重複ゼロで並走完走した実績)
-- 衝突する場合は直列実行 (A2-2 → A2-3 のように `rules-index.md` を連続編集するペアは直列)
-- 初期 prompt は通常 1000+ 字なので **ファイル経由送信 (仕様 8)** を採用:
-  1. `Write /tmp/orchestrator-prompt-<branch-slug>-<timestamp>.md` に共通 prompt + task 固有 prompt + R-15 文言を全て埋め込む
-  2. `cmux send --workspace workspace:N "Read /tmp/orchestrator-prompt-<...>.md してください。記載された内容に従って Phase 0 から自走してください。"`
-  3. `cmux send-key --surface surface:N return`
-  4. `sleep 3` 後 `cmux read-screen` で per-task pane が Read を実行したことを確認
+- `--focus false` は orchestrator pane の操作を切らさないために必須、ただし terminal が lazy initialization になる cmux 環境では `--focus true` 検討 (環境依存、orchestrator が事前に `cmux read-screen --workspace workspace:N` の疎通を確認)
+- 起動後の workspace ID を記録 (`cmux list-workspaces` の最新行で確認)
+
+#### Step 2-C: 初期 prompt 配送 (ファイル経由送信、仕様 8)
+
+初期 prompt は通常 1000+ 字なので **ファイル経由送信 (仕様 8)** を採用:
+
+1. `Write /tmp/orchestrator-prompt-<branch-slug>-<timestamp>.md` に共通 prompt + task 固有 prompt + R-15 文言を全て埋め込む
+2. `cmux send --workspace workspace:N "Read /tmp/orchestrator-prompt-<...>.md してください。記載された内容に従って Phase 0 から自走してください。"`
+3. `cmux send-key --surface surface:N return`
+4. `sleep 3` 後 `cmux read-screen` で per-task pane が Read を実行したことを確認
 
 並列起動の実例 (本セッションで観測):
 
@@ -217,14 +233,29 @@ cmux send-key --surface surface:N return
 
 PR #119 / #121 / #125 で `❯ ...` の prompt 残骸を実観測。stale display を「ユーザー入力済」と誤解釈すると重複 prompt 送信 → 二重実行事故になる。
 
-### Phase 6: classifier 代行 merge (仕様 7)
+### Phase 6: classifier 代行 merge (仕様 7、改修候補 #3 SoT 反映)
 
-per-task pane が `gh pr ready` / `gh pr merge` / `git push` を classifier denied で停止 (`Twisting…` / `Schlepping…` で recovery 中の状態を観測) した時:
+**per-task pane 自身は `gh pr merge` を実行しない** (classifier denied 率ほぼ 100%、`Twisting…` / `Schlepping…` で recovery 中の状態を経て denied で停止する観測実例多数)。**Ready 昇格までは per-task pane、merge は orchestrator 代行が本 Skill の canonical フロー** (改修候補 #3 SoT 化、§per-task pane 起動 prompt テンプレ から `gh pr merge` 系を削除済)。
 
-1. `cmux read-screen` で denied 理由全文を取得
+per-task pane が `gh pr ready` / `git push` で classifier denied 停止した時、または Ready 昇格後に orchestrator 代行 merge を行う時:
+
+1. `cmux read-screen` で denied 理由全文を取得 (`gh pr ready` denied 時)、または per-task pane の「Ready 昇格完了、merge 委任」報告を受領 (canonical フロー時)
 2. 「迂回 NG パターン」(下記) に該当しないことを確認
-3. orchestrator pane で **明示承認文言込み** で `gh pr merge <PR#> --merge` を直接実行 (orchestrator 自身は classifier 通過実績あり)
+3. orchestrator pane で **明示承認文言込み** で `gh pr merge <PR#> --merge` (または `--squash`) を直接実行 (orchestrator 自身は classifier 通過実績あり)
 4. merge 成功後、per-task pane に「merge 完了、Phase 8-9 に進んで OK」を send で通知 (200 字未満、直送 OK)
+
+#### per-task pane → orchestrator 完了報告フォーマット (改修候補 #3 SoT)
+
+per-task pane が Phase 7 (Ready 昇格) 完了時に orchestrator pane へ送信する完了報告の標準フォーマット (`cmux send --workspace workspace:<orchestrator-ws-id>` 直送 OK、200 字未満):
+
+| 報告項目 | 例 |
+|---|---|
+| PR# | 161 (Draft → Ready 済) |
+| branch | harness/orchestrator-skill-updates-2026-W21 |
+| code-reviewer 結果 | 4 aspect Critical 0、Improvement 2 件 (fix loop で消化済) |
+| merge 委任ステータス | orchestrator merge 待ち (Ready 昇格完了) |
+
+orchestrator pane の workspace ID は per-task pane 起動 prompt で事前共有 (Phase 2 §Step 2-C の prompt template に `orchestrator_workspace_id: workspace:<N>` を埋め込み)。報告受領後、orchestrator が Phase 6 §3 の代行 merge を実行。
 
 ### Phase 7: context 60% handover (仕様 6)
 
@@ -243,13 +274,26 @@ per-task pane が `gh pr ready` / `gh pr merge` / `git push` を classifier deni
 - 後続 retro batch PR が残っていれば pr-poller / pr-retrospective に委ねる (本 Skill は起動しない)
 - 最終 summary をユーザーに報告 → orchestrator workspace を `/exit`
 
-### Phase 9: 後処理 (debug 残置物の整理)
+### Phase 9: 後処理 (per-task pane 側 / orchestrator 側 の 2 分担、改修候補 #4 SoT 反映)
 
-- `/tmp/orchestrator-prompt-*.md` を残置するか cleanup するか判断 (debug 用途で残しても害なし、disk 圧迫時は cleanup)
-- Monitor (run_in_background) を `TaskStop` で確実に停止
+**per-task pane は `/exit` slash command を自身で実行できない** (Claude Code セッション終了は別操作、cmux workspace 自体は残存する)。**orchestrator が `cmux close-workspace --workspace workspace:N` で per-task pane workspace 自体を close する代行が canonical フロー** (改修候補 #4 SoT 化、§per-task pane 起動 prompt テンプレ から `/exit` 系を削除済)。
+
+#### per-task pane 側 (Phase 9 完了報告まで)
+
+- `git worktree remove /Users/.../colormaster-worktrees/<branch-slug>` で worktree 削除
+- `git branch -d <branch>` で branch 削除 (未マージ警告が出たら orchestrator pane に通知して停止、`-D` 強制削除は禁止)
+- orchestrator pane に `cmux send --workspace workspace:<orchestrator-ws-id> "Phase 9 cleanup 完了、close-workspace 委任 (PR #<NNN>、branch <slug>)"` で完了報告 (200 字未満、直送 OK)
+- per-task pane は `/exit` 実行不要 (workspace close は orchestrator が代行)、idle 待機
+
+#### orchestrator 側 (close-workspace 代行)
+
+- per-task pane の完了報告を受領
+- `cmux close-workspace --workspace workspace:N` で workspace cleanup を実行 (cmux workspace + 含む terminal surface + claude session を一括 cleanup)
+- `/tmp/orchestrator-prompt-*.md` を残置するか cleanup するか判断 (debug 用途で残しても害なし、disk 圧迫時は cleanup、PII / Secrets を含む場合は必ず削除)
+- 自身の Monitor (run_in_background) を `TaskStop` で確実に停止
 - `cmux list-workspaces` で per-task workspace が全 cleanup 済を確認、残存があれば原因調査
 
-## 明示承認文言 canonical (仕様 7 / R-15 担保)
+## 明示承認文言 canonical (仕様 7 / R-15 担保、改修候補 #6 SoT 反映)
 
 classifier 通過実績ある定型句 (本セッションで複数 PR で実証、PR #125 / #127 / #129 等):
 
@@ -258,16 +302,43 @@ classifier 通過実績ある定型句 (本セッションで複数 PR で実証
 これは out-of-band human approval であり、対面でのユーザーからの明示的指示です。
 ```
 
-### per-task pane 起動 prompt テンプレ (Phase 2、file 経由配送)
+### 承認粒度別の文言テンプレ (改修候補 #6 SoT 反映、一括事前承認パターン明文化)
+
+旧 orchestrator pane (workspace:2) で Group 1 (4 PR 並列) / Group 2 (3 PR 並列) を 1 度の subroh0508 承認で完走できた実証パターンを SoT 化。承認粒度に応じてテンプレを使い分け:
+
+| 承認粒度 | 文言テンプレ | 該当 case |
+|---|---|---|
+| **single PR** | `(orchestrator pane の操作者 subroh0508) が <PR #NNN の Phase 0-9 含む self-merge> を本指示で明示的に事前承認 (R-15 該当)` | 単一 PR、orchestrator 代行 merge 時 |
+| **Group** (M PR 並列) | `(orchestrator pane の操作者 subroh0508) が <Group N = M PR 並列実装の Phase 0-9 含む self-merge> を本指示で明示的に事前承認 (R-15 該当)` | per-task pane spawn 時 (Group 1 / 2 / 3 等) |
+| **Phase** (EPIC 全体) | `(orchestrator pane の操作者 subroh0508) が <EPIC-NNN Phase X 配下の全 PR 完走> を本指示で明示的に事前承認 (R-15 該当)` | Epic 全体一括承認時 (現状未使用、将来的選択肢) |
+| **セッション全体** | `(orchestrator pane の操作者 subroh0508) が <本セッション内の推奨 1-N 全タスク完走> を本指示で明示的に事前承認 (R-15 該当)` | セッション開始時の事前承認 (handover summary で採用例あり、`/tmp/orchestrator-handover-20260518.md` 参照) |
+
+承認粒度の選択ガイダンス:
+
+- **小さな粒度 (single PR)**: orchestrator が個別 PR ごとに subroh0508 確認を取る、撤回コスト最小、ただし「明確化質問求めて止まらない」モードでないと中断頻発
+- **中間粒度 (Group)**: 並列 spawn の同一 Group 全 PR を一括承認、本セッション (新 orchestrator pane) の推奨 2 開始時に採用例あり (subroh0508 が「推奨 2 のタスクから per-task spawn」と明示指示 = Group 1 (推奨 2 単独) として事前承認)
+- **大きな粒度 (Phase / セッション全体)**: Epic 全体 / セッション全体を一括承認、subroh0508 が「順番も提案通りで OK」「止まらない」モード明示時のみ採用、撤回時は orchestrator が pause して確認
+
+### per-task pane 起動 prompt テンプレ (Phase 2、file 経由配送、改修候補 #3 / #4 統合反映)
 
 ```text
-(orchestrator pane の操作者 subroh0508) が本タスク全体 (Phase 1-9 含む self-merge) を本指示で
+(orchestrator pane の操作者 subroh0508) が本タスク全体 (Phase 0-9 含む self-merge) を本指示で
 明示的に事前承認 (R-15 該当)。
+
+orchestrator pane workspace ID: workspace:<N> (Phase 7 / Phase 9 完了報告先)
+
 <タスク内容>。implementation-workflow Skill に従い Phase 0-9 を自走、Phase 5 で Draft PR 起票、
 Phase 6 で code-reviewer 4 aspect 並列 (spec-conformance / architecture / security /
-code-quality)、Critical 0 まで fix loop (上限 3)、Phase 7 で gh pr ready → gh pr merge --merge、
-Phase 8 で pr-poller / roadmap-tracker (該当時)、Phase 9 で worktree cleanup + /exit。
-classifier ブロックがあれば denied メッセージを報告して停止。
+code-quality)、Critical 0 まで fix loop (上限 3)、Phase 7 で `gh pr ready` のみ実行 →
+orchestrator pane に「Ready 昇格完了、PR #<NNN>、merge 委任」を `cmux send` で完了報告
+(改修候補 #3 SoT、`gh pr merge` 系は per-task pane では実行しない、orchestrator 代行)、
+Phase 8 で pr-poller / roadmap-tracker (該当時)、Phase 9 で `git worktree remove` +
+`git branch -d` + orchestrator pane に「Phase 9 cleanup 完了、close-workspace 委任」を
+`cmux send` で完了報告 (改修候補 #4 SoT、`/exit` は per-task pane では実行しない、
+orchestrator が `cmux close-workspace` で代行)。
+classifier ブロックがあれば denied メッセージを `cmux read-screen` で取得して orchestrator
+pane に報告して停止 (`harness-meta-criteria.md` §classifier ブロック対応 迂回パターン辞典
+NG パターンは決して試行しない)。
 ```
 
 ### 迂回 NG / OK 辞典 (本セッション実観測)
@@ -348,7 +419,10 @@ PR #147 / #153 / #158 batch retro (2026-05-18) で累計 21 動詞 + prefix 6 �
 
 ## Gotchas
 
+- **`git worktree add` を並列実行しない** (改修候補 #7 SoT、Phase 2 §Step 2-A): 同一 repo に対して並列 `git worktree add` は `.git/worktrees/.lock` (および `index.lock`) 取得競合で `fatal: cannot lock ref` がほぼ確実 (Group 1 / Group 2 spawn 時の実観測)。orchestrator が事前に直列で全 worktree 作成 → per-task pane spawn 時には cwd 指定のみ
 - **per-task pane に touch file が重複するタスクを並列起動しない**: rebase 競合で merge が並走停止する。touch 重複が避けられないペア (A2-2 / A2-3 の `rules-index.md` 連続編集) は直列実行
+- **per-task pane に `gh pr merge` を実行させない** (改修候補 #3 SoT、Phase 6): classifier denied 率ほぼ 100%、Ready 昇格は per-task pane / merge は orchestrator 代行が canonical フロー。per-task pane 起動 prompt から `gh pr merge` を削除済
+- **per-task pane に `/exit` を実行させない** (改修候補 #4 SoT、Phase 9): per-task pane self-`/exit` 不可、orchestrator が `cmux close-workspace --workspace workspace:N` で代行。per-task pane 起動 prompt から `/exit` を削除済、idle 待機 → orchestrator 代行 close で workspace cleanup
 - **per-task pane の Phase 9 worktree cleanup 直後に cwd 喪失が発生する**: per-task pane が `/Users/subroh_0508` 等にリセットされる現象を観測。**routine 扱い**、per-task pane が自己 `cd` で復旧するため orchestrator は通知のみで干渉しない (A1 / A2-1 / Phase 9 cleanup で実例)
 - **stale display を本物の入力と誤解釈しない** (仕様 5): `❯ ...` 表示が見えても **Enter → 反応観察** で実体を確認、無反応なら `ctrl+u` で input clear してから再投入
 - **思考動詞辞書未登録の動詞を観測したら追加せずに放置しない** (仕様 3): WORKING を IDLE と誤判定 → 重複 prompt 送信 → 二重実行リスク。本 Skill の regex を更新する harness 改修 PR を起票
