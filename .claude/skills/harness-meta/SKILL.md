@@ -58,11 +58,12 @@ related_adrs:
 - **`docs/harness/learnings/INDEX.md`**: 走査範囲を絞る索引、`harness/learnings-batch-YYYY-WW` ブランチ集約状況の確認に使用
 - **`docs/harness/evolution-proposals/*.md`**: harness-evolution との重複検証 (R-31)
 - **関連 rule / Skill / docs**:
-  - `.claude/rules/harness-meta-criteria.md` (採用 / 見送り / 撤去判定基準、dry-run 必須条件、即時消化 vs 持ち越し基準、分割粒度、classifier 迂回辞典)
+  - `.claude/rules/harness-meta-criteria.md` (採用 / 見送り / 撤去判定基準、dry-run 必須条件、3 軸定量評価 SoT、即時消化 vs 持ち越し基準、分割粒度、classifier 迂回辞典)
   - `.claude/rules/retrospective-format.md` (learning ファイル正規構造、4 プレフィックス、フィードバック追記フォーマット)
   - `.claude/rules/skill-authoring.md` (`example-skills:skill-creator` 経由規約、100-point rubric)
   - `.claude/rules/pr-poller.md` (起動経路 + 閾値連携)
   - `.claude/rules/harness-evolution.md` (重複検証相手)
+  - `docs/harness/dry-runs/golden-set.md` (基準シナリオ集 SoT、副作用軸検証用 K=5 シナリオ + iterative 更新フロー、ADR-0028 で導入)
 - **`pr-poller` の閾値到達通知** (自動起動経路): 未処理 learning 10 件超過 / 前回実行から 7 日経過 (`harness-meta-criteria.md` §pr-poller 起動閾値)
 - **`.claude/locks/harness-meta.lock`**: 排他制御 (二重起動防止、A4 で本格化、本 PR 時点では placeholder)
 
@@ -115,8 +116,9 @@ related_adrs:
   - template 構造変更 (セクション追加削除 / frontmatter 必須キー変更)
   - rule 間の SoT 反転
   - harness-meta 採用判定基準 / 撤去基準の改修
-- §dry-run 不要条件 (typo / リンク追加 / 既存セクション例示追加 / frontmatter 値更新 / 索引行追加 / 撤回コスト低 3 条件) に該当する場合は dry-run スキップ可 (PR description は「dry-run skip 理由」のみ記入)
+- §dry-run 不要条件 (typo / リンク追加 / 既存セクション例示追加 / frontmatter 値更新 / 索引行追加 / 撤回コスト低 3 条件) に該当する場合は dry-run スキップ可 (PR description の `## 3 軸定量評価` セクションは「dry-run skip 理由」のみ記入、スコア表 / 入力記録 / 9 通り指針 #N は空欄)
 - 必須 / 不要のどちらにも明確に該当しない場合は orchestrator 判定委任 (採用判定基準 5 と同等のエスカレーション)、skip 理由を「📝 harness-meta フィードバック」§保留 表に明示
+- **以下「dry-run 必須条件該当時の 3 軸定量評価フロー」 (7 step) は dry-run 必須時のみ実行する**。skip 該当時 (上記 dry-run 不要条件該当 / 必須不要どちらも該当しない場合) は本フローを skip し Phase 4 (改修 PR 起票) に直接遷移する
 - **dry-run 必須条件該当時の 3 軸定量評価フロー** (ADR-0028 §決定、`.claude/rules/harness-meta-criteria.md` §dry-run 3 軸定量評価):
   1. **dry-run 入力記録 4 ブロックを subagent 起動前に固定 + 全文記録** (起動 Skill / Subagent プロンプト全文 / 実行環境 / 入力ファイル commit sha、入力記録不在 / 不完全の場合は再現性スコア算出を見送り 9 通り指針 #9 に分類)
   2. **改善度軸**: 関連 retrospective 直近 5-10 件の `⚠️ Problem` から M 件抽出 → 新版 dry-run subagent に投入 → Problem 再発率 算出 (≤ 30% で ✅)

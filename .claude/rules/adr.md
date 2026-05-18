@@ -94,7 +94,7 @@ ADR 起票基準 (§起票基準 2 項目以上) を満たさないが意思決�
 
 3 条件すべて満たす場合: 「ADR 起票基準 (§起票基準) を満たさないため見送り、撤回コスト低 / scope は `<files>` 限定 / 既存 rule 本体の改定なし」と PR description / EPIC `decisions.md` に明記し、ADR を起票しない。
 
-実績: PR #129 (`.claude/settings.json` の `permissions.allow` 拡張) で本テンプレを適用、ADR-0028 起票を見送り EPIC-A2 `decisions.md` に判断ログを記録。
+実績: PR #129 (`.claude/settings.json` の `permissions.allow` 拡張) で本テンプレを適用、当時予約していた ADR-0028 番号での起票を見送り EPIC-A2 `decisions.md` に判断ログを記録 (本見送りで解放された ADR-0028 番号は PLAN-002 / PR #171 で **3 軸定量評価フレーム導入 ADR** に再割当)。
 
 ## 本文構造 (`docs/adr/template.md` と整合)
 

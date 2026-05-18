@@ -70,7 +70,7 @@ promoted_to: null
 - [ ] **AC-7**: `.github/PULL_REQUEST_TEMPLATE/harness.md` に `## 3 軸定量評価` セクション追加 (スコア表 + 入力記録要約 + 9 通り指針リンク、verdict 行なし、再現性 Before 列なし)
 - [ ] **AC-8**: `docs/harness/dry-runs/golden-set.md` 新規追加、初期 K=5 シナリオ + 更新フロー SoT + retire 条件
 - [ ] **AC-9**: PII / Secrets redaction 検証済 (`.claude/rules/pii.md` / `secrets.md` の regex で全 7 ファイル + dry-run ファイルを scan、検出 0)
-- [ ] **AC-10**: merge 後 24 時間以内に `docs/harness/evolution-proposals/2026-05-19.md` の §採用提案表に PR リンク追記 + status `draft` → `actioned`、`roadmap-tracker` で `docs/harness/roadmap.md` 反映
+- [ ] **AC-10**: merge 後 24 時間以内に `docs/harness/evolution-proposals/2026-05-19.md` の §採用提案表に PR リンク追記 + status `draft` → `actioned`。Plan は R-34 (`roadmap.md` §Plan は roadmap-tracker 対象外) のため `roadmap.md` 反映は **不要** (本 Plan 完了時に proposal `actioned` 化のみ実施、roadmap-tracker は起動しない)
 
 ## スコープ外
 
