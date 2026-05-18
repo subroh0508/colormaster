@@ -7,7 +7,7 @@ last_updated: 2026-05-18
 
 # ハーネス改善提案 dry-run 索引
 
-> **5 行以内 summary**: `harness-meta` / `harness-bootstrap` (retro 集約改善モード) が
+> **5 行以内 summary**: `harness-meta` Skill (A3-5 で本格化) が
 > ハーネス改善提案を commit + push する前に実施する dry-run 結果の索引。
 > 1 PR (or 1 改善提案バッチ) = 1 ファイル (`YYYY-MM-DD-pr-NNN.md`)、Single Source of Truth。
 > ファイルフォーマットは `docs/harness/dry-runs/template.md` 参照、必須条件は
@@ -25,7 +25,7 @@ last_updated: 2026-05-18
 - 1 PR (or 1 改善提案バッチ) = 1 ファイル (`YYYY-MM-DD-pr-<n>.md`)
 - 必須条件: `.claude/rules/harness-meta-criteria.md` §dry-run 必須条件 §dry-run 必須 表に該当する提案が対象
 - 不要条件: 同 §dry-run 不要 表に該当する提案は本ディレクトリ非対象 (`📝 harness-meta フィードバック` に skip 理由明示)
-- 自動生成: `harness-meta` Skill 本格化 (A3/A4) で `harness-bootstrap` (skeleton) から移行
+- 自動生成: `harness-meta` Skill (A3-5 / PR #156 で本格化済、`harness-bootstrap` は A3-14 で archived 化済)
 - 集約 push: 通常は retro 集約消化 PR と同一ブランチで push、独立 PR が必要な場合は `harness/dry-run-<purpose>` ブランチ
 - 索引追記タイミング: dry-run ファイル生成時 (commit + push 前) に本 INDEX.md に 1 行追加
 
@@ -33,6 +33,6 @@ last_updated: 2026-05-18
 
 - `.claude/rules/harness-meta-criteria.md` §dry-run 必須条件
 - `.claude/rules/retrospective-format.md` (元 retrospective フォーマット)
-- `.claude/skills/{harness-bootstrap,harness-meta}/SKILL.md` (harness-meta は A3/A4 で本格化予定)
+- `.claude/skills/harness-meta/SKILL.md` (A3-5 / PR #156 で本格化済、`harness-bootstrap` は A3-14 で archived 化済 `.claude/skills/archived/harness-bootstrap/`)
 - `docs/harness/learnings/INDEX.md` (元 retrospective 索引)
 - `docs/harness/plan.md` §5.4.5 (harness-meta Skill 責務)

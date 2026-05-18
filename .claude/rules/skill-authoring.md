@@ -19,13 +19,13 @@ related_plan: docs/harness/plan.md §5.3 / R-30
 
 ## 起動方法
 
-- 他 Skill (`harness-bootstrap` / `harness-meta` / `harness-evolution`) や人間からの「新規 Skill 作成 / 既存 Skill 改修」要求時に呼び出す
+- 他 Skill (`harness-meta` / `harness-evolution` 等) や人間からの「新規 Skill 作成 / 既存 Skill 改修」要求時に呼び出す (`harness-bootstrap` は A3-14 で archived 化済、`.claude/skills/archived/harness-bootstrap/` 参照)
 - 本リポジトリには `.claude/skills/skill-creator/` を配置しない (ユーザースコープにインストール済のため、ADR 0025)
 - 起動コマンド: `Skill skill="example-skills:skill-creator" args="<task description>"`
 
 ## SKILL.md フォーマット
 
-各セクションの 1 行コメント付き雛形 (PR #135 レトロ Try、`harness-bootstrap` / `harness-meta` 生成時のばらつき抑制):
+各セクションの 1 行コメント付き雛形 (PR #135 レトロ Try、`harness-meta` 等の Skill 生成時のばらつき抑制):
 
 ```markdown
 ---

@@ -10,13 +10,13 @@ related_proposals:
   - "[rule] <提案 2>"
   - "[template] <提案 3>"
 generated_at: YYYY-MM-DDTHH:MM:SSZ
-generator: harness-meta Skill (vX.Y.Z) | harness-bootstrap (skeleton、本ペインで手動代替実行)
+generator: harness-meta Skill (vX.Y.Z)
 verdict: adopt | discard | escalate
 ---
 
 # PR #NNN ハーネス改善提案 dry-run 結果
 
-> 生成: harness-meta / harness-bootstrap Skill (vX.Y.Z) at YYYY-MM-DDTHH:MM:SSZ
+> 生成: harness-meta Skill (vX.Y.Z) at YYYY-MM-DDTHH:MM:SSZ
 > 関連 retrospective: [`YYYY-MM-DD-pr-NNN.md`](../learnings/YYYY-MM-DD-pr-NNN.md)
 > 対象提案: <提案 N 件、各提案のプレフィックス [rule] / [skill] / [template] と該当ファイルパス>
 > 判定基準: 適用版が未適用版より明らかに望ましい出力 (誤検知減 / 規約遵守率向上 / 提案精度向上) を出す場合のみ採用
@@ -115,5 +115,5 @@ verdict: adopt | discard | escalate
 
 - 元 retrospective: [`docs/harness/learnings/YYYY-MM-DD-pr-NNN.md`](../learnings/YYYY-MM-DD-pr-NNN.md)
 - 関連 rule: `.claude/rules/{harness-meta-criteria,retrospective-format}.md`
-- 関連 Skill: `.claude/skills/{harness-bootstrap,harness-meta}/SKILL.md` (harness-meta は A3/A4 で本格化予定)
+- 関連 Skill: `.claude/skills/harness-meta/SKILL.md` (A3-5 / PR #156 で本格化済、`harness-bootstrap` は A3-14 で archived 化済)
 - 索引: `docs/harness/dry-runs/INDEX.md`
