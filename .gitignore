@@ -62,6 +62,7 @@ service-account*.json
 # Skill 実行スクラッチ
 .claude/locks/*
 !.claude/locks/.gitkeep
+!.claude/locks/README.md
 .claude/logs/*
 !.claude/logs/.gitkeep
 
