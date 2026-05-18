@@ -8,7 +8,7 @@ description: |
   dry-run 必須条件該当時は dry-run 先行。
 status: active
 phase: A3
-last_updated: 2026-05-18
+last_updated: 2026-05-19
 related_plan: docs/harness/plan.md §4.4 / §5.4.5 / R-29 / R-30 / R-31
 related_rules:
   - .claude/rules/harness-meta-criteria.md
@@ -28,6 +28,7 @@ related_adrs:
   - ADR-0025
   - ADR-0026
   - ADR-0027
+  - ADR-0028
 ---
 
 # harness-meta
@@ -105,7 +106,7 @@ related_adrs:
 - `[mcp]` プレフィックスを受信した場合は §`[mcp]` プレフィックス受信ルール (採用判定 → ADR 起票判定 → harness-evolution 重複検証) に従う
 - 各候補の判定結果を `{candidate, 判定 (採用/見送り/撤去), 該当基準 ID, 判定理由 (1-2 行)}` に整形
 
-### Phase 3: dry-run 必須条件チェック + dry-run 起票 (採用候補のみ)
+### Phase 3: dry-run 必須条件チェック + 3 軸定量評価 + dry-run 起票 (採用候補のみ、ADR-0028 で 3 軸定量化)
 
 - 採用候補について `.claude/rules/harness-meta-criteria.md` §dry-run 必須条件 (PR #141 レトロ Try) を順に評価:
   - rule 全文書き換え (本文 50% 以上改変 / SoT 方向変更 / 核心セクション改修)
@@ -114,12 +115,22 @@ related_adrs:
   - template 構造変更 (セクション追加削除 / frontmatter 必須キー変更)
   - rule 間の SoT 反転
   - harness-meta 採用判定基準 / 撤去基準の改修
-- 該当時は `docs/harness/dry-runs/YYYY-MM-DD-pr-<n>.md` を先行起票 (テンプレ: `docs/harness/dry-runs/template.md`):
-  - サブエージェント並列で「適用版 vs 未適用版」の AI 出力比較を実施 (A4 で本格化、本 PR 時点では手動代替可)
-  - before/after 出力差分 + 判定理由 + 採否を記録
-  - 改善が見られない / 退化する場合は変更を破棄 → §保留 (要再評価) 表に記録
-- §dry-run 不要条件 (typo / リンク追加 / 既存セクション例示追加 / frontmatter 値更新 / 索引行追加 / 撤回コスト低 3 条件) に該当する場合は dry-run スキップ可
+- §dry-run 不要条件 (typo / リンク追加 / 既存セクション例示追加 / frontmatter 値更新 / 索引行追加 / 撤回コスト低 3 条件) に該当する場合は dry-run スキップ可 (PR description は「dry-run skip 理由」のみ記入)
 - 必須 / 不要のどちらにも明確に該当しない場合は orchestrator 判定委任 (採用判定基準 5 と同等のエスカレーション)、skip 理由を「📝 harness-meta フィードバック」§保留 表に明示
+- **dry-run 必須条件該当時の 3 軸定量評価フロー** (ADR-0028 §決定、`.claude/rules/harness-meta-criteria.md` §dry-run 3 軸定量評価):
+  1. **dry-run 入力記録 4 ブロックを subagent 起動前に固定 + 全文記録** (起動 Skill / Subagent プロンプト全文 / 実行環境 / 入力ファイル commit sha、入力記録不在 / 不完全の場合は再現性スコア算出を見送り 9 通り指針 #9 に分類)
+  2. **改善度軸**: 関連 retrospective 直近 5-10 件の `⚠️ Problem` から M 件抽出 → 新版 dry-run subagent に投入 → Problem 再発率 算出 (≤ 30% で ✅)
+  3. **再現性軸**: 新版 subagent に同一入力を **N=10 以上 (コスト制約で N=5 採用時は信頼区間明示必須)** 投入 → measurement target × メトリクス対応表 (set: Jaccard / scalar: 変動係数 / categorical: 完全一致率 / 自由文: LLM-as-judge) に従い算出 → calibration 由来閾値で判定 (初期 placeholder: Jaccard ≥ 0.80 / CV ≤ 0.15 / 完全一致率 ≥ 70% / LLM-as-judge ≥ 0.80)
+  4. **副作用軸**: `docs/harness/dry-runs/golden-set.md` の **基準シナリオ集** (初期 K=5、iterative 拡張) を新版 subagent に投入 → 各シナリオを「改善 / 変化なし / 退化」3 値判定 → 退化率 + 新規 Critical findings 件数を集計 (退化率 ≤ 20% + Critical ≤ 1 件で ✅)
+  5. **基準シナリオ集自動更新 trigger 評価**: 本 dry-run で抽出した Problem に「副作用候補」(旧版で動いていたが新版で誤動作型) が含まれる場合は基準シナリオ集追加候補 PR を起票 (`harness/golden-set-update-YYYY-MM-DD` ブランチ)
+  6. **dry-run ファイル生成** (`docs/harness/dry-runs/YYYY-MM-DD-pr-NNN.md`、テンプレ: `docs/harness/dry-runs/template.md`): 4 ブロック入力記録 + 3 軸スコア表 + シナリオ別判定 + 9 通り組合せ別レビュー指針 #N 該当を記録 (verdict ラベルは廃止、ADR-0028 §決定 2)
+  7. **PR description 転載**: Phase 4 改修 PR description の `## 3 軸定量評価` セクション (`.github/PULL_REQUEST_TEMPLATE/harness.md`) に **3 軸スコア表 + dry-run 入力記録の要約 + dry-run ファイルリンク + 9 通り指針 #N 該当の推奨アクション** を必須転載
+- **判定結果による分岐**:
+  - 9 通り指針 #1 (全軸 ✅) → Phase 4 改修 PR 起票に進む
+  - #2 / #5 / #6 / #8 (副作用 ❌ 系統) → guardrail 違反 reject、変更を破棄 → retro `📝 harness-meta フィードバック` §保留 (要再評価) 表に記録、別案検討
+  - #3 / #7 (再現性 ❌ 系統) → N を増やして再計測 → 改善後に #1 ルートへ、改善されない場合は #9 (人間判定要) に escalate
+  - #4 (改善度 ❌ + 副作用 ✅ + 再現性 ✅) → orchestrator (subroh0508) 委任で「コスト vs 効果」再評価
+  - #9 (測定不能) → orchestrator 委任、改修着手前に retry 必須
 
 ### Phase 4: 改修 PR 起票 (採用候補)
 

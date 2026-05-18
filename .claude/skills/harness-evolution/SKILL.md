@@ -8,7 +8,7 @@ description: |
   `example-skills:skill-creator` 経由で Skill scaffold / Plan / EPIC 起票し、人間 approve を必須とする。
 status: active
 phase: A3
-last_updated: 2026-05-18
+last_updated: 2026-05-19
 related_plan: docs/harness/plan.md §5.3 / §5.4.6 / R-29 / R-30 / R-31
 related_rules:
   - .claude/rules/harness-evolution.md
@@ -25,6 +25,7 @@ related_adrs:
   - ADR-0025
   - ADR-0026
   - ADR-0027
+  - ADR-0028
 ---
 
 # harness-evolution
@@ -107,7 +108,7 @@ related_adrs:
 - frontmatter `sources` は block 形式必須 (`docs-structure.md` 規約、URL / title / accessed_at の 3 キー)
 - 出力前に **PII / Secrets redaction を必ず通す** (`pii.md` / `secrets.md` §redaction 強制、R-26)。外部情報源の本文にメール / token 等が混入する可能性あり
 
-### Phase 5: 重要案の Skill / Plan / EPIC 起票 trigger (人間 approve 待ち)
+### Phase 5: 重要案の Skill / Plan / EPIC 起票 trigger + 3 軸定量評価 PR description 転載 (人間 approve 待ち、ADR-0028 で 3 軸定量化)
 
 - Phase 4 の `改善提案` のうち重大度「高」を中心に **重要案を抽出**
 - 新規 Skill 提案 → `example-skills:skill-creator` を呼び出して `.claude/skills/<new-skill>/SKILL.md` の draft を生成 (`.claude/rules/skill-authoring.md` 100-point rubric 準拠)
@@ -115,6 +116,13 @@ related_adrs:
   - 単一 PR スコープ → `plan-author` を呼び出して `docs/plans/PLAN-NNN-<slug>.md` 起票
   - 複数 PR スコープ → `epic-author` を呼び出して `docs/epics/EPIC-NNN-<slug>/` 起票
 - 起票後は `docs/harness/evolution-proposals/YYYY-MM-DD.md` の `## 採用提案` 表に Plan / EPIC リンクを追記、proposal の status は **`draft` のまま**。人間 approve + merge 後に **別 PR で `actioned` に更新**
+- **3 軸定量評価 + 入力記録要約の PR description 転載手順** (ADR-0028 §決定 5、`.claude/rules/harness-evolution.md` §3 軸定量評価 §Plan / EPIC 起票時の転載手順):
+  1. **Plan / Epic 本体側 (`docs/plans/` / `docs/epics/`) に dry-run ファイルへのリンクを必須記載** (本 Skill 経由起票時の dry-run ファイル `docs/harness/dry-runs/YYYY-MM-DD-pr-NNN.md` への相対パスリンク)
+  2. **後続実装 PR description 転載** (実装着手は `implementation-workflow` Skill が担う): `.github/PULL_REQUEST_TEMPLATE/harness.md` §3 軸定量評価 セクションに **3 軸スコア表 + dry-run 入力記録の要約 + dry-run ファイル詳細リンク + 9 通り組合せ別レビュー指針 #N 該当の推奨アクション** を必須転載
+  3. **入力記録 4 ブロック (harness-evolution 固有)** (`.claude/rules/harness-evolution.md` §harness-evolution 固有の dry-run 入力記録仕様):
+     - ブロック 1: focus topic 文字列を args として記録
+     - ブロック 2: 外部情報源 URL 一覧 + Context7 MCP 引用検証 (R-28) の対象 API / バージョン を user prompt 内に明示
+     - ブロック 4: 外部情報源 WebFetch の accessed_at 日付を frontmatter `sources` と整合させる (出典記録の必須要件、R-29)
 - **本 Skill は `gh pr merge` を実行しない** (R-15 + 人間 approve 必須、auto-merge 禁止)
 
 ## Gotchas
