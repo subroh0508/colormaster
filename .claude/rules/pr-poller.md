@@ -2,7 +2,7 @@
 id: rules-pr-poller
 title: pr-poller ローカルポーリング規約
 status: stable
-last_updated: 2026-05-17
+last_updated: 2026-05-19
 paths:
   - ".claude/skills/pr-poller/**"
   - ".claude/locks/**"
@@ -86,9 +86,74 @@ related_plan: docs/harness/plan.md §5.3 / §6.2 A4 / R-11 / R-12
 
 ## A3 / A4 で本格化する MVP
 
-- **A3**: Phase 1 (merged PR → pr-retrospective) を Skill 駆動で本格化、現状は手動代替 (PR #117 / #119 / #121 の learning は手動生成)
-- **A4**: Phase 2 (Renovate ラベル PR → dependency-upgrade) を Skill 駆動で本格化、CronCreate / ScheduleWakeup の自動起動経路を追加
-- **A4**: harness-meta 自動起動閾値の機械化 (本 rule の閾値表を parse)
+- **A3 (完了、PR #167 / #168)**: Phase 1 (merged PR → `pr-retrospective`) + Phase 2 (Renovate ラベル PR → `dependency-upgrade`) を Skill 駆動で本格化
+- **A4 (本 PR で本格化)**: 3 系統起動経路 (SessionStart hook / CronCreate / ScheduleWakeup) の実運用稼働 + harness-meta 自動起動閾値の runtime override + dogfood 観測値の記録枠 (`.claude/rules/harness-meta-criteria.md` §実行時パラメータ 参照)
+- **A6 (機械化予定)**: 本 rule の閾値表を parse + Gradle カスタムタスクで stale lock 検出 + GitHub Actions で learning 起票検証 (R-12 ロスト検出)
+
+## 実運用稼働 Q&A (A4 で本格化)
+
+A4 PR (本 PR) 以降の実運用で発生し得る well-known 失敗パターンと回避策。`.claude/skills/pr-poller/SKILL.md` §実運用稼働手順 / §Gotchas と整合 (SoT は本 rule、SKILL.md は手順書側)。
+
+### Q1. lock 二重取得 (`mkdir` が EEXIST で失敗する)
+
+**症状**: `mkdir .claude/locks/pr-poller.lock` が `mkdir: cannot create directory '.claude/locks/pr-poller.lock': File exists` で失敗、Phase 1 で skip 判定。
+
+**原因 (well-known)**:
+
+- 直前の `pr-poller` 異常終了で lock が残留 (`acquired_at` が 30 分以内なら正規 skip、超えてたら stale 回収対象)
+- 3 系統 (SessionStart / CronCreate / ScheduleWakeup) のいずれかが同時刻起動して片方が EEXIST 失敗
+- 別ペイン (orchestrator pane / per-task pane) が同時刻に手動起動
+
+**回避策**:
+
+1. `cat .claude/locks/pr-poller.lock/acquired_at` で取得時刻を確認、30 分以内なら正規 skip (二重起動防止が機能している)
+2. 30 分以上前なら stale 判定 → `rm -rf .claude/locks/pr-poller.lock` + `pr-poller` 再起動
+3. `cat .claude/locks/pr-poller.lock/route` で起動経路 (manual / cron / wakeup) を確認、想定外の経路なら orchestrator (subroh0508) に通知
+
+### Q2. CronCreate 起動で `gh auth status` 失敗 (環境ロード未済)
+
+**症状**: CronCreate で起動した `pr-poller` の Phase 2 で `gh pr list` が `gh: To get started with GitHub CLI, please run: gh auth login` で失敗、連続 5 件失敗で緊急停止。
+
+**原因 (well-known)**:
+
+- Claude Code routine の起動時に `gh` の token cache が読み込まれていない (親シェルの環境変数継承漏れ)
+- GitHub token が TTL 切れ (90 日ローテーション、`.claude/rules/secrets.md` §ローテーション 参照)
+
+**回避策**:
+
+1. Skill の Phase 2 冒頭で `gh auth status` を最初に走らせて token 有効性を確認 (失敗時は連続 5 件失敗扱いで緊急停止経路に乗せる)
+2. CronCreate routine の cron 式起動コマンドに `gh auth login` を前置せず、**ローカル Claude Code セッション内で 1 度認証を済ませる** (Claude Code 内 OAuth は `.claude/oauth-tokens*` に保存、`.gitignore` で除外)
+3. TTL 切れ検出時は `docs/runbooks/secrets-rotation.md` の手順で再認証 (A6 で本格運用)
+
+### Q3. dispatch 重複 (3 系統が同 lookback で重なる)
+
+**症状**: SessionStart hook で起動した直後に CronCreate routine が 09:00 JST 起動、同じ未処理 PR# を 2 回 `pr-retrospective` に dispatch して learning ファイルが重複生成される。
+
+**原因 (well-known)**:
+
+- `.claude/locks/pr-poller.last-run` が前者で更新される前に後者が起動 (lock 排他は機能していても last-run の前進判定が間に合わない)
+- `docs/harness/learnings/*.md` の dedup が「ファイル存在チェック」のみで、in-flight (生成中) ファイルを処理済 set に含めていない
+
+**回避策**:
+
+1. **Phase 1 lock 排他で防御**: 後発側が `mkdir` EEXIST で 30 分 no-op、Phase 5 で前者が last-run 更新するまで待つ
+2. **Phase 5 で `.claude/locks/pr-poller.last-run` を lock 解放前に書く** (`.claude/skills/pr-poller/SKILL.md` §Phase 5 順序が SoT)、次回起動時の lookback 起点を確実に前進させる
+3. **dedup を 2 経路で行う**: `docs/harness/learnings/*.md` ファイル列挙 + `.claude/locks/pr-poller.processed-cache` の直近 30 日分の処理済 PR# 記録 (`SKILL.md` §Phase 3 1-2)
+
+### Q4. harness-meta 二重起動 (pr-poller 自動起動 + 人間手動起動)
+
+**症状**: 未処理 learning が閾値 10 件を超えて `pr-poller` が `harness-meta` を自動起動した直後に、orchestrator (subroh0508) が手動で `harness-meta` を起動 → `harness-meta` の改修 PR 起票処理が衝突して二重 PR 起票や提案セクション parse の race condition が発生。
+
+**原因 (well-known)**:
+
+- `harness-meta` 側の lock 排他 (`.claude/locks/harness-meta.lock`) が pr-poller 側からは見えず、pr-poller が「閾値超過 → 即起動」した直後に人間が二重起動
+- `harness-meta-criteria.md` §実行時パラメータ の `harness_meta_min_interval_hours` (24h) が「pr-poller 自動起動」のみ参照、人間手動起動は無視
+
+**回避策**:
+
+1. **`harness-meta` Skill 側で `.claude/locks/harness-meta.lock` 排他制御を担う**: pr-poller は「起動を試みる」だけで成否を問わない (`.claude/skills/pr-poller/SKILL.md` §Phase 4-4)
+2. **人間手動起動時も `harness-meta-criteria.md` §連続実行間隔 (24h) を確認**: orchestrator (subroh0508) が手動起動する前に `git log -- .claude/rules/harness-meta-criteria.md | head` で前回実行時刻を確認、24h 未満なら起動見送り or `harness_meta_min_interval_hours=6` 等の上書きを明示
+3. **pr-poller が `harness-meta` 起動結果を handoff サマリに記録**: 「起動済」「skip (lock 競合)」「skip (閾値未到達)」の 3 値で出力、人間手動起動判断の材料化
 
 ## Gotchas
 
