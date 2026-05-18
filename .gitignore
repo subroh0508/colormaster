@@ -42,6 +42,18 @@ data/users.db-wal
 data/*.db-journal
 
 # ----------------------------------------------------------------------------
+# im@sparql ローカル Fuseki 用 RDF 初期データ (PLAN-003 / SPEC-IMASPARQL-001-basic / ADR-0014)
+# ライセンス未確認のため RDF 形式は除外、.gitkeep / README.md のみ追跡。
+# ----------------------------------------------------------------------------
+data/imasparql/*.ttl
+data/imasparql/*.nq
+data/imasparql/*.rdf
+data/imasparql/*.nt
+data/imasparql/tdb2/
+!data/imasparql/.gitkeep
+!data/imasparql/README.md
+
+# ----------------------------------------------------------------------------
 # Secrets / Credentials (ADR 0021 / secrets.md)
 # ----------------------------------------------------------------------------
 .env

@@ -17,6 +17,7 @@ last_updated: 2026-05-19
 |---|---|---|---|---|---|
 | PLAN-001 | ADR 0001-0027 一括起票 | chore | in-progress | EPIC-000 | 2026-05-17 |
 | [PLAN-002](PLAN-002-3-axis-eval-for-harness-meta-evolution.md) | harness-meta / harness-evolution 改修 PR の 3 軸定量評価フレーム導入 | harness | completed | — | 2026-05-19 |
+| [PLAN-003](PLAN-003-a8-imasparql-docker.md) | A8 im@sparql ローカル Docker 環境構築 (Fuseki container) | feature-request | in-progress | — | 2026-05-19 |
 
 ## ステータス語彙
 

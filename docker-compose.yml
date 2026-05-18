@@ -1,0 +1,38 @@
+# im@sparql ローカル Docker 環境 (REQ-001 / SPEC-IMASPARQL-001-basic / PLAN-003 / ADR-0014)
+#
+# - Apache Jena Fuseki 公式 Docker image を localhost:3030 で起動する。
+# - admin password は環境変数 FUSEKI_ADMIN_PASSWORD で渡し、本 YAML には hardcode しない (ADR-0021)。
+# - RDF 初期データは data/imasparql/ に開発者が手動配置する (placeholder / git 除外、ADR-0014 §決定)。
+# - 起動 / 接続確認手順は docs/runbooks/local-imasparql.md を参照。
+# - 公開 endpoint との切替 / Testcontainers 統合は A8 後続 Plan のスコープ (本 PR は触れない)。
+
+services:
+  fuseki:
+    # image tag を明示固定 (latest 不使用、Renovate docker manager 対象)。
+    # 採用根拠: stain/jena-fuseki は広く使われる Fuseki Docker image、最新メンテ状況を
+    # docs/runbooks/local-imasparql.md で再確認しつつ運用する (Open Question 解決まで)。
+    image: stain/jena-fuseki:4.10.0
+    container_name: colormaster-fuseki
+    restart: unless-stopped
+    # localhost にのみバインドし、他ホストから到達できないようにする (本番混入予防)。
+    ports:
+      - "127.0.0.1:3030:3030"
+    environment:
+      # admin password は .env (gitignore 対象) 経由で渡す。.env.example に placeholder。
+      ADMIN_PASSWORD: ${FUSEKI_ADMIN_PASSWORD:?FUSEKI_ADMIN_PASSWORD must be set in .env (see .env.example)}
+      # in-memory dataset を 1 つ起動 (default)。
+      # TDB2 永続化が必要な場合は volumes セクション + FUSEKI_DATASET 等のフラグで切替 (runbook 参照)。
+      FUSEKI_DATASET_1: imasparql
+    volumes:
+      # RDF 初期データを read-only でマウント (開発者が data/imasparql/ に *.ttl 等を配置)。
+      # ライセンス確認前の RDF データは .gitignore で除外済 (.gitkeep / README.md のみ git 追跡)。
+      - ./data/imasparql:/staging:ro
+    healthcheck:
+      # 管理 UI トップが 200 を返すかを 30 秒ごとにチェック。
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:3030/$$/ping || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+# Volumes / networks は本 PR では明示宣言しない (default network で十分、TDB2 永続化は別 Plan)。
