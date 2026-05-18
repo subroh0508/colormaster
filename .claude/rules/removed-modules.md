@@ -2,7 +2,7 @@
 id: rules-removed-modules
 title: 撤去 module 一覧と再導入禁止規約
 status: stable
-last_updated: 2026-05-17
+last_updated: 2026-05-19
 paths:
   - "**/build.gradle.kts"
   - "settings.gradle.kts"
@@ -24,13 +24,18 @@ related_adrs:
 
 | 名称 | 撤去理由 | 撤去 ADR | 残骸 (撤去進行中) | 検出 rule |
 |---|---|---|---|---|
-| Decompose (`com.arkivanov.decompose:*`) | KMP Navigation の代替を `androidx.navigation` (Nav3) に統一 | ADR 0005 | なし (撤去完了) | `viewmodel.md` / `navigation.md` |
-| 旧 JS app (`js/app/`) | Wasm 統一でブラウザ target を 1 つに | ADR 0012 | `js/app/` ディレクトリ残存 (削除予定) | `wasm-compat.md` |
-| Firebase Authentication SDK | GIS (Google Identity Services) + Backend 検証に移行 | ADR 0011 | `core/network/auth/` 内に一部依存残存 | `firebase-boundary.md` / `no-firebase.md` |
-| Firebase Firestore | Backend SQLite + Litestream + R2 に移行 | ADR 0008 / 0011 | `core/network/firestore/` 残存 (削除予定) | `firebase-boundary.md` / `no-firebase.md` |
-| Firebase Hosting | Cloudflare Pages に移行 | ADR 0011 / 0022 | `firebase.json` / `.firebaserc` 残存 (削除予定) | `cloudflare-pages.md` |
+| Decompose (`com.arkivanov.decompose:*`) | KMP Navigation の代替を `androidx.navigation` (Nav3) に統一 | ADR 0005 | なし (撤去完了、PLAN-003 / 2026-05-19) | `viewmodel.md` / `navigation.md` |
+| 旧 JS app (`js/app/`, `js/material/`) | Wasm 統一でブラウザ target を 1 つに | ADR 0012 | なし (撤去完了、PLAN-003 / 2026-05-19) | `wasm-compat.md` |
+| `kotlin-js-store/` (Yarn lock) | `:js:*` 撤去で kotlin-js project ロックが不要 | ADR 0012 | なし (撤去完了、PLAN-003 / 2026-05-19) | `wasm-compat.md` |
+| Firebase Authentication SDK | GIS (Google Identity Services) + Backend 検証に移行 | ADR 0011 | `core/network/auth/` 内に一部依存残存 (Backend GIS 移行 EPIC で撤去予定) | `firebase-boundary.md` / `no-firebase.md` |
+| Firebase Firestore | Backend SQLite + Litestream + R2 に移行 | ADR 0008 / 0011 | `core/network/firestore/` 残存 (Phase C5 で撤去予定) | `firebase-boundary.md` / `no-firebase.md` |
+| Firebase Hosting | Cloudflare Pages に移行 | ADR 0011 / 0022 | なし (撤去完了、PLAN-003 / 2026-05-19) | `cloudflare-pages.md` |
 | Firebase 系全般 (Analytics / Crashlytics / Messaging / Config / Functions) | 採用方針外 | ADR 0011 | (もし import 残存していれば) | `no-firebase.md` / `firebase-boundary.md` |
-| `com.google.gms.google-services` plugin | Firebase SDK 撤去に伴い不要 | ADR 0011 | (Android module 内 plugin 適用箇所) | `no-firebase.md` |
+| `com.google.gms.google-services` plugin | Firebase SDK 撤去に伴い不要 | ADR 0011 | なし (撤去完了、PLAN-003 / 2026-05-19、`android/app/build.gradle.kts` の commented out 行 + catalog 行を削除) | `no-firebase.md` |
+| `kotlin-wrappers` (`org.jetbrains.kotlin-wrappers:*`) | 旧 JS app 専用、Wasm 統一で不要 | ADR 0012 | なし (撤去完了、PLAN-003 / 2026-05-19) | `wasm-compat.md` |
+| `@material/*` (npm MDC for Web) | 旧 JS app 専用、Compose Multiplatform に統一 | ADR 0012 | なし (撤去完了、PLAN-003 / 2026-05-19、`npm-material-component-web` catalog 削除) | `wasm-compat.md` |
+| `org.jetbrains.kotlin.js` plugin | `:js:*` 撤去で不要 (KMP 経由の Kotlin/JS target は維持) | ADR 0012 | なし (撤去完了、PLAN-003 / 2026-05-19、`build.gradle.kts` の `apply false` + catalog 行を削除) | `wasm-compat.md` |
+| Firebase Hosting deploy workflow (`.github/workflows/web-build-and-deploy.yml`) | `:js:app:jsBrowserDistribution` の Firebase Hosting deploy が dead | ADR 0011 / 0022 | なし (撤去完了、PLAN-003 / 2026-05-19) | `cloudflare-pages.md` |
 
 ## 撤去進行中 module の追跡
 

@@ -15,7 +15,6 @@ class AndroidAppModulePlugin : Plugin<Project> {
                 apply("org.jetbrains.kotlin.android")
                 apply("org.jetbrains.compose")
                 apply("org.jetbrains.kotlin.plugin.compose")
-                apply("com.google.gms.google-services")
             }
 
             setupAndroid(isMinifyEnabled = true)
