@@ -9,7 +9,7 @@ related_proposals:
   - "[skill] orchestrator SKILL.md §Phase 3 (30 秒ポーリング) + §Monitor 思考動詞辞書 への Monitor dedup ロジック v3 (workspace prefix + tail -3) SoT 追加"
 generated_at: 2026-05-18T10:00:00+09:00
 generator: orchestrator pane (新セッション、旧 workspace:2 引き継ぎ後、harness-meta Skill 本格化前の手動代替)
-verdict: escalate
+legacy_verdict: escalate  # ADR-0028 / PLAN-002 で verdict 3 値ラベル廃止、本 field は履歴保持目的のレガシー marker (新フォーマット移行明示、新規 dry-run では使わない)
 ---
 
 # Monitor dedup ロジック v3 (workspace prefix + tail -3) SoT 化 dry-run 結果
