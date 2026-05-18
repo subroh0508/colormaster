@@ -31,9 +31,8 @@ related_adrs:
 > **5 行以内 summary**: `docs/harness/plan.md` の B0 / A1-A10 / C1-C10 フェーズ項目と
 > `docs/epics/EPIC-NNN-*/` を入力に `docs/harness/roadmap.md` (全体) と
 > `docs/epics/<id>/roadmap.md` (Epic 別) を **片方向ミラー** で更新する Skill。
-> 自動起動フック 2 系統 (epic-author 起票直後 / implementation-workflow Phase 8) +
-> pr-poller pending-fetch 再走査 + 手動起動契機をサポート、plan.md / Epic 本体への
-> 逆同期は禁止 (R-34)。詳細手順 SoT は `.claude/rules/roadmap.md`。
+> 自動起動フック 2 系統 + pr-poller pending-fetch 再走査 + 手動起動契機をサポート、
+> plan.md / Epic 本体への逆同期は禁止 (R-34)。詳細手順 SoT は `.claude/rules/roadmap.md`。
 
 ## 役割
 
