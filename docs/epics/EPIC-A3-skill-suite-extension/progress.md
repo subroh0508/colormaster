@@ -41,6 +41,15 @@ source_epic: EPIC-A3
 - 全 3 PR で touch ファイル重複ゼロ、Group 1 と同じ並走完走パターンを実証
 - A3-6 は既存 skeleton 本格化 (B0 配置の skeleton から +155 行 / -25 行)、新規 Skill ではない
 
+## 2026-05-18 (A3-14 完走)
+
+- A3-14 `harness-bootstrap` archived 化を独立 worktree (`harness/EPIC-A3-harness-bootstrap-archived`) で実施
+- `.claude/skills/harness-bootstrap/` → `.claude/skills/archived/harness-bootstrap/` へ `git mv` (履歴保持)
+- SKILL.md frontmatter を `status: archived` + `archived_at: 2026-05-18` + `archived_pr: A3-14` に更新、撤去理由セクション追加 (代替先 13 Skill 一覧 + 復活時の操作明記)
+- 参照削除/差し替え: `.claude/skills/archived/README.md` に archived 一覧表追加、`.claude/rules/skill-authoring.md` / `.claude/rules/harness-meta-criteria.md` / `docs/harness/dry-runs/{template,INDEX}.md` から active 言及を削除し archived 参照に書き換え
+- historical 記録 (`docs/harness/learnings/**` / `docs/harness/plan.md` / `docs/adr/ADR-0025*` / `docs/harness/roadmap.md` 履歴行 / EPIC-A3 既存記述) は意図的に未変更 (履歴の不可逆性維持)
+- CLAUDE.md / `.claude/rules/rules-index.md` には直接の `harness-bootstrap` 参照が無かったため touch なし
+
 ## マイルストーン
 
 | 日付 | マイルストーン | 達成 / 未達 |

@@ -114,12 +114,13 @@ Step 1 と Step 2 を同一 PR に統合する 1 段階運用は **禁止** (誤
 
 ## dry-run 必須条件 (PR #141 レトロ Try / 人間追加最優先)
 
-`harness-meta` / `harness-bootstrap` (retro 集約改善モード) が改善提案を commit + push する前に
+`harness-meta` が改善提案を commit + push する前に
 **dry-run フェーズ** を経るべきかを判定する基準。dry-run の目的は **AI 出力品質改善の事前検証**
 (rule strict 化が誤検知を増やさないか / template 強化が本質的に AI のミスを減らすか / Skill フロー
 追加が context 圧迫の割に効果が出るか)、Generator-Evaluator 独立性 (R-13) と整合。
-本格的な dry-run 実装 (サブエージェント並列 + 出力比較 + 判定) は A3/A4 (harness-meta Skill 本格化) で実施、
-現状の `harness-bootstrap` (skeleton) では本セクションを参照しつつ手動で代替実行可。
+本格的な dry-run 実装 (サブエージェント並列 + 出力比較 + 判定) は `harness-meta` Skill が担う
+(A3-5 / PR #156 で本格化済)。Phase A 期間中の汎用 Skill `harness-bootstrap` は A3-14 で
+archived 化済のため (`.claude/skills/archived/harness-bootstrap/` 参照)、暫定の手動代替実行ルートは終了。
 
 ### dry-run 必須 (適用版 vs 未適用版の subagent 並列比較が必要)
 

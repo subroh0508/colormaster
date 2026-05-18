@@ -1,11 +1,12 @@
 ---
 name: harness-bootstrap
 description: |
-  Phase A の A1〜A10 を進める汎用 Skill。専用 Skill 群が揃うまで、入力パスから
-  タスク種別 (ADR 起草 / rules 拡充 / docs 拡充 / Skill 実装 / 撤去 / Lint 導入 /
-  retro 集約改善) を自動判定して該当ファイルを起草する。A3 完了後に archived/ へ移動。
-status: skeleton
+  [archived A3-14 / 2026-05-18] Phase A の A1〜A10 を進める汎用 Skill。専用 Skill 群が
+  A3 で出揃ったため archived 化。新規呼び出し禁止。本ファイルは履歴参照用。
+status: archived
 phase: B0
+archived_at: 2026-05-18
+archived_pr: A3-14
 related_plan: docs/harness/plan.md §6.2
 related_rules:
   - .claude/rules/adr.md
@@ -16,7 +17,32 @@ related_rules:
   - .claude/rules/retrospective-format.md
 ---
 
-# harness-bootstrap (B0 骨格)
+# harness-bootstrap (archived A3-14)
+
+> **本ファイルは archived 済み**。A3 で専用 Skill 群が出揃ったため、Phase A 用の汎用 Skill としての
+> 役割は終了。新規呼び出しは禁止し、各タスク種別は対応する専用 Skill を使用すること。
+> 本セクション以下は履歴参照用に残置 (元の B0 骨格)。
+
+## 撤去理由 (A3-14)
+
+- **撤去日**: 2026-05-18 (EPIC-A3 A3-14 PR でマージ)
+- **理由**: A3 で feature-request / bug-fix / refactor / adr-author / harness-meta /
+  harness-evolution / dependency-upgrade / implementation-workflow / code-reviewer /
+  pr-retrospective / pr-poller / roadmap-tracker / ui-snapshot の 13 Skill が出揃い、
+  本 Skill が担っていた汎用起票・起草の責務は全て専用 Skill に移行済
+  (`docs/harness/plan.md` §6.2 A3 / R-6)。
+- **代替先 (タスク種別 → 専用 Skill)**: ADR 起草 → `adr-author` / rules 拡充・docs 拡充 →
+  対応する Plan / Epic から `implementation-workflow` 経由 / retro 集約改善 → `harness-meta`
+  (dry-run 必須条件は `.claude/rules/harness-meta-criteria.md` §dry-run 必須条件を参照) /
+  Skill 実装 → `example-skills:skill-creator` (ADR 0025)。
+- **復活時の操作**: `.claude/skills/archived/harness-bootstrap/` から
+  `.claude/skills/harness-bootstrap/` へ `git mv` で戻し、frontmatter `status` を
+  `archived` → `active`、`archived_at` / `archived_pr` を削除、CLAUDE.md /
+  `.claude/rules/rules-index.md` / 関連 rule の参照を復活。ただし復活前に「専用 Skill の
+  責務分担でカバーできない gap」が ADR / Epic レベルで明示されていることを前提とする
+  (汎用 Skill 復活は anti-pattern)。
+
+---
 
 > 本ファイルは B0 で配置する **最小スケルトン**。本格実装は Phase A 内 (主に A1-A3) で行う。
 
