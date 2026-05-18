@@ -1,13 +1,14 @@
 ---
 id: rules-harness-evolution
-title: harness-evolution Skill 運用規約 (外部情報源ホワイトリスト + 手動起動)
+title: harness-evolution Skill 運用規約 (外部情報源ホワイトリスト + 手動起動 + 改修 PR の 3 軸定量評価)
 status: stable
-last_updated: 2026-05-17
+last_updated: 2026-05-19
 paths:
   - ".claude/skills/harness-evolution/**"
   - "docs/harness/evolution-proposals/**"
 related_adrs:
   - ADR-0026
+  - ADR-0028
 related_plan: docs/harness/plan.md §5.3 / §5.4.6 / R-29 / R-30 / R-31
 ---
 
@@ -97,6 +98,35 @@ sources:
 - frontmatter `sources` は block 形式必須 (URL + title + accessed_at の 3 キー)
 - 5 行 summary は冒頭 blockquote (>) ではなく `# 概要 (5 行以内)` 直下に記述 (本フォーマット固有)
 - 改善提案プレフィックスは `[skill]` / `[rule]` / `[remove]` に加え **`[mcp]`** を追加 (harness-evolution 固有、新規 MCP 採用余地検討用)
+
+## 3 軸定量評価 (改修 PR 起票時に必須生成、ADR-0028 で導入)
+
+`harness-evolution` 由来の改修 PR (`docs/harness/evolution-proposals/YYYY-MM-DD.md` から `plan-author` / `epic-author` 経由で起票される Plan / Epic 配下 PR) では、PR description に **3 軸定量評価セクション** を必須記載する。詳細運用規約は `.claude/rules/harness-meta-criteria.md` §dry-run 3 軸定量評価 を Single Source of Truth として参照、本 rule は harness-evolution 固有の事項のみ規定する。
+
+### 必須記載内容 (PR description)
+
+`.github/PULL_REQUEST_TEMPLATE/harness.md` §3 軸定量評価 セクション (ADR-0028 §決定 5) に従い:
+
+- 3 軸スコア表 (改善度 / 再現性 / 副作用、verdict 行なし、再現性軸は新版のみ計測で Before 列なし)
+- dry-run 入力記録の要約 (起動 Skill `harness-evolution` / args 冒頭 / プロンプト要旨 / Model / Temperature / 入力ファイル)
+- dry-run ファイル詳細リンク (`docs/harness/dry-runs/YYYY-MM-DD-pr-NNN.md`)
+- 9 通り組合せ別レビュー指針 #N 該当 (`.claude/rules/harness-meta-criteria.md` §3 軸結果の組合せ別レビュー指針 参照)
+
+### harness-evolution 固有の dry-run 入力記録仕様
+
+`.claude/rules/harness-meta-criteria.md` §dry-run 入力記録仕様 の 4 ブロックを基本とし、harness-evolution 固有の以下を追加記録する:
+
+- **ブロック 1 (Skill 起動コマンド)**: focus topic 文字列 (`Skill skill="harness-evolution" args="<focus area>"`) を args として記録
+- **ブロック 2 (Subagent 投入プロンプト)**: 外部情報源 URL 一覧 + Context7 MCP 引用検証 (R-28) の対象 API / バージョン を user prompt 内に明示
+- **ブロック 4 (入力ファイル)**: 外部情報源を WebFetch した accessed_at 日付を frontmatter `sources` と整合させる (出典記録の必須要件、R-29)
+
+### Plan / EPIC 起票時の転載手順
+
+本 rule §採用提案の Plan / Epic 起票 で `plan-author` / `epic-author` を呼び出す際、生成される Plan / Epic 本体 + 後続 PR description に上記 3 軸評価 + 入力記録要約を必ず転載する。Plan / Epic 本体側にも `docs/harness/dry-runs/YYYY-MM-DD-pr-NNN.md` へのリンクを必須化する (`.claude/skills/harness-evolution/SKILL.md` Phase 5 改修で本ステップを SKILL.md SoT 化、PLAN-002 / ADR-0028)。
+
+### harness-meta との分担
+
+3 軸定量評価フレーム自体の SoT は `.claude/rules/harness-meta-criteria.md` (内部 KPT 駆動の harness-meta が dry-run 主管轄、R-31 で harness-meta 優先)。本 rule は harness-evolution 固有の入力 / 出典記録 / PR description 必須項目を補強する位置付け。
 
 ## Context7 MCP による引用検証 (R-28)
 
