@@ -93,7 +93,10 @@ related_adrs:
 
 ## 6. im@sparql Fuseki ローカル起動
 
-`docs/runbooks/local-imasparql.md` (A8 で本格化)。現時点では未整備。
+[`docs/runbooks/local-imasparql.md`](./local-imasparql.md) を参照 (A8 / PLAN-003 で整備)。
+`docker compose up -d fuseki` で `localhost:3030` に Fuseki container を起動できる。
+Backend / CLI の endpoint 切替 (`backend/cli/.../ImasparqlApiClient.kt` の hardcode `HOSTNAME`)
+は本 PR のスコープ外で A8 後続 Plan に分離。
 
 ## 7. Backend ローカル起動
 
@@ -116,7 +119,6 @@ related_adrs:
 
 | 持ち越し項目 | 持ち越し先 | 理由 |
 |---|---|---|
-| `docs/runbooks/local-imasparql.md` (Apache Jena Fuseki Docker 起動手順) | A8 | im@sparql 同期 Skill 本格化と連動 |
 | `docs/runbooks/backend-local.md` (Backend ローカル起動 + users.db 復元手順) | C5 | Backend 本格化と連動 |
 | `docs/runbooks/cloudflare-pages.md` (wrangler 認証 / preview デプロイ手順) | C7 | 静的配信デプロイ実装と連動 |
 | `docs/runbooks/cloud-run-deploy.md` (gcloud 認証 / Cloud Run デプロイ手順) | C7 | Backend デプロイ実装と連動 |
