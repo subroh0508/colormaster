@@ -7,8 +7,8 @@ description: |
   CronCreate + ScheduleWakeup) に対応するため .claude/locks/pr-poller.lock で排他制御し、
   pending-fetch 項目の再走査と harness-meta 自動起動の閾値判定も担当する。
 status: active
-phase: A3
-last_updated: 2026-05-18
+phase: A4
+last_updated: 2026-05-19
 related_plan: docs/harness/plan.md §5.3 / §5.4 / §6.2 A3 / §6.2 A4
 related_rules:
   - .claude/rules/pr-poller.md
@@ -154,6 +154,89 @@ dispatch は順次 / 直列 (並列起動は Phase 4 内では行わない、各
 - `rm -rf .claude/locks/pr-poller.lock` で lock 解放
 - handoff サマリを §出力 のフォーマットで標準出力に出す
 - 異常終了時 (Phase 1-4 のいずれかで unrecoverable error): lock を解放してから orchestrator 通知 + 当該 PR を次回再試行に回す (lock 残留は次回 stale 判定で自動回収されるため強制不要)
+
+## 実運用稼働手順 (A4 本格化)
+
+3 系統起動経路の具体的 setup と初回 dogfood 手順。`.claude/rules/pr-poller.md` §3 系統の起動経路 + `harness-meta-criteria.md` §pr-poller 起動閾値 と整合。
+
+### 経路 1: SessionStart hook (起動時 auto-invoke)
+
+`.claude/settings.json` の `hooks.SessionStart` で Bash command を登録し、Claude Code セッション開始時に **「pr-poller 起動候補」のヒントを context に注入** する (`.claude/rules/pr-poller.md` §3 系統 / `.claude/rules/harness-meta-criteria.md` §pr-poller 起動閾値 参照)。
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "test -d .claude/locks/pr-poller.lock 2>/dev/null && echo '[pr-poller] lock active - skip auto-invoke' || echo '[pr-poller] no active lock - 候補: /pr-poller を起動して未処理 PR の有無を確認 (R-15 / R-37、SessionStart hint)'"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+- **hook の責務は context 注入のみ**: Skill の自動起動は Claude が判断 (R-15 人間 approve の代替として、Claude が「起動候補」を提示する形)
+- **lock 既存時は skip**: `mkdir` が EEXIST で失敗する経路と整合、二重起動防止 (Phase 1 §stale 判定)
+- **PII / Secrets 漏洩経路なし**: hook の stdout は固定文字列、`gh pr` / `git log` などの外部コマンドを **呼ばない** (PR# / 著者名等が context に乗らない、R-26)
+
+### 経路 2: CronCreate (日次まとめ)
+
+ローカル Claude Code routine を `CronCreate` で登録し、日次まとめ起動。`harness-meta-criteria.md` §pr-poller 起動閾値 (7 日経過、10 件閾値) と組合せて週単位の取りこぼし防止。
+
+```text
+# 例: 毎日 22:00 JST (= 13:00 UTC) に pr-poller を起動
+/schedule "0 13 * * *" /pr-poller route=cron
+```
+
+- **cron 式は UTC で記述** (CronCreate の慣行)、JST 換算は手元計算で確認
+- **route=cron を渡す**: Skill 側で経路識別 (Phase 1 lock 内 `route` 平文ファイルへ記録)
+- **環境ロードのタイミング**: Claude Code routine は起動時に `.claude/mcp.json` / `.claude/settings.json` を再ロードするが、shell 環境変数は親プロセス継承前提なので **`gh auth status` を最初に走らせて token 有効性を確認** (失敗時は Phase 2 連続失敗 5 件で緊急停止経路に乗る)
+- **22:00 JST 採用理由**: 日中の人間活動 (PR merge / コードレビュー) が一巡した後に retro 集約、翌日 09:00 JST までに learning が揃う想定
+
+### 経路 3: ScheduleWakeup (継続ループ短時間追従)
+
+`/loop` skill 経由で dynamic 間隔の wakeup を予約。merge tide が来ているタイミング (例: 並列 implementation PR が複数 merge された直後) の追従に使う。
+
+```text
+# 例: 自己 pace で 20-30 分間隔の継続起動
+/loop /pr-poller route=wakeup
+```
+
+- **delaySeconds 推奨**: 1200-1800s (20-30 分)、ScheduleWakeup の cache TTL 5 分超え前提で長め設定
+- **CronCreate との重複時**: 09:00 JST の cron 起動と wakeup loop が同 lookback で重なる可能性 → `.claude/locks/pr-poller.lock` の mkdir 排他で後発側が 30 分 no-op (`.claude/rules/pr-poller.md` §3 系統 二重起動防止)
+- **明示停止**: wakeup loop を止めるときは `/loop` の停止指示で次サイクルから自動終了 (lock は正常終了で解放済)
+
+### 初回 dogfood 手順
+
+A4 PR merge 直後の本 Skill 実運用稼働を以下の手順で確認:
+
+1. **lock 取得確認**: `mkdir .claude/locks/pr-poller.lock` で原子取得、配下に `pid` / `acquired_at` / `route=manual` 配置 (Phase 1)
+2. **対象 PR 検出**: `gh pr list --state merged --search "merged:>2026-05-12" --limit 50 --json number,title,mergedAt` で直近 7 日の merge PR 列挙 (Phase 2)
+3. **dedup**: `docs/harness/learnings/YYYY-MM-DD-pr-<N>.md` を ls して処理済 set を構築、Phase 2 結果から差し引いて未処理リスト確定 (Phase 3)
+4. **dispatch**: 未処理 PR 1 件ごとに `pr-retrospective` Skill 起動 (Phase 4)
+5. **harness-meta 自動起動閾値判定**: 未処理 learning 件数 + 前回 harness-meta 実行経過日数を `harness-meta-criteria.md` §実行時パラメータ と比較、閾値超過なら `harness-meta` 起動 (Phase 4)
+6. **lock 解放**: `.claude/locks/pr-poller.last-run` 更新 → `rm -rf .claude/locks/pr-poller.lock` (Phase 5)
+7. **handoff サマリ**: 標準出力に §出力 のフォーマットで起動経路 / 検出件数 / dispatch 件数 / harness-meta 起動有無を出力
+
+### A4 dogfood 期待値 (PR #180 直後タイミング)
+
+PR #180 (4 件 retro 同時 merge: #174 / #175 / #176 / #177) の merge 直後で本 Skill を稼働させた場合の期待観測値 (実測は A4 PR merge 後の手動 dogfood で記録):
+
+| 項目 | 期待値 | 観測手順 |
+|---|---|---|
+| 未処理 learning 件数 (本 Skill 起動時点) | 0-2 件 | `ls docs/harness/learnings/2026-05-*.md | wc -l` と PR #180 集約済件数の差分 |
+| 未処理 merged PR (直近 7 日) | 0-3 件 | `gh pr list --state merged --search "merged:>2026-05-12"` の件数 - 処理済 set |
+| 前回 harness-meta 実行からの経過日数 | 7 日未満 (PR #156 から 5 月 13-15 日経過) | `git log -- .claude/rules/harness-meta-criteria.md` の最新更新日 |
+| harness-meta 自動起動 | 起動しない見込み | 未処理 learning < 10 件 + 経過日数 < 7 日 (`harness-meta-criteria.md` §実行時パラメータ デフォルト) |
+| Renovate open PR | 0-2 件 | `gh pr list --state open --label renovate --limit 30` |
+
+dogfood 結果は本 Skill PR merge 後の retro (`docs/harness/learnings/YYYY-MM-DD-pr-<A4 PR#>.md`) に「§指標」表として記録、`.claude/rules/harness-meta-criteria.md` §実行時パラメータ §dogfood 観測値 に転載する。
 
 ## Gotchas
 
