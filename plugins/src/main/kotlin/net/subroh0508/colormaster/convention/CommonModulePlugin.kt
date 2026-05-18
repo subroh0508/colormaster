@@ -1,7 +1,6 @@
 package net.subroh0508.colormaster.convention
 
 import net.subroh0508.colormaster.koinCore
-import net.subroh0508.colormaster.library
 import net.subroh0508.colormaster.libs
 import net.subroh0508.colormaster.primitive.compose.compose
 import net.subroh0508.colormaster.primitive.kmp.applyKmpPlugins
@@ -27,12 +26,6 @@ class CommonModulePlugin : Plugin<Project> {
                             implementation(compose.dependencies.runtime)
                             implementation(compose.dependencies.ui)
                             implementation(libs.koinCore)
-                        }
-                    }
-                    jsMain {
-                        dependencies {
-                            implementation(dependencies.platform(libs.library("kotlin-wrappers-bom")))
-                            implementation(libs.library("kotlin-wrappers-js"))
                         }
                     }
                 }

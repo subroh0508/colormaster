@@ -24,6 +24,4 @@ dependencies {
     implementation(libs.koin.android)
 }
 
-//apply(plugin = "com.google.gms.google-services")
-
 android { namespace = "net.subroh0508.colormaster.androidapp" }
