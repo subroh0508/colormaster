@@ -9,7 +9,7 @@ description: |
   per-task pane に Phase 0-9 自走を委譲したときに本 Skill に従って動作する。
 status: active
 phase: A3
-last_updated: 2026-05-18
+last_updated: 2026-05-19
 related_plan: docs/harness/plan.md §5.3 / §5.4.2 / ADR 0018
 related_rules:
   - .claude/rules/implementation-workflow.md
@@ -33,7 +33,7 @@ related_adrs:
 
 > **5 行以内 summary**: Plan / Epic 確定後の実装着手から worktree 削除までを 10 フェーズで統合管理する Skill。
 > Phase 0 worktree 作成 + master fetch / Phase 1-4 実装 + Self-Verification / Phase 5 Draft PR 起票 /
-> Phase 6 code-reviewer 並列 / Phase 7 R-15 3 条件 merge / Phase 8 pr-poller + roadmap-tracker /
+> Phase 6 code-reviewer 並列 / Phase 7 R-15 3 条件 merge / Phase 8 pr-poller + Plan/Epic frontmatter 同期 + roadmap-tracker /
 > Phase 9 worktree cleanup を順守。fix loop 上限 3 回 (R-14)、auto-merge 禁止 (R-15)、
 > Generator/Evaluator 独立性 (R-13) を維持。詳細手順 SoT は `.claude/rules/implementation-workflow.md`。
 
@@ -62,7 +62,7 @@ related_adrs:
 - **Draft PR**: Phase 5 で `gh pr create --draft --body-file <path>` (`--template` と排他、`--body-file` 一択、改修候補 #8 SoT)
 - **code-reviewer Coordinator レビューコメント**: Phase 6 で `code-reviewer` Skill 起動 → PR に構造化レビューコメント post
 - **merge commit**: Phase 7 で 3 条件充足後 `gh pr merge --squash` (または `--merge`)
-- **learning ファイル + roadmap 更新**: Phase 8 で `pr-poller` / `pr-retrospective` 経由 `docs/harness/learnings/YYYY-MM-DD-pr-<N>.md`、Epic 配下 PR は `roadmap-tracker` で `docs/epics/<id>/roadmap.md` 完了根拠表に PR# + マージ日追記
+- **learning ファイル + Plan/Epic frontmatter + roadmap 更新**: Phase 8 で `pr-poller` / `pr-retrospective` 経由 `docs/harness/learnings/YYYY-MM-DD-pr-<N>.md` 生成 + 関連 Plan/Epic frontmatter 同期 (`docs/plans/PLAN-NNN-*.md` の `status: completed` + `related_pr` + `completed_at`、`docs/plans/INDEX.md` 行更新、Epic 配下全 PR merge 済時のみ `docs/epics/EPIC-NNN-*/README.md` 同期、本 Skill の新責務、R-34 は侵さない) + Epic 配下 PR は `roadmap-tracker` で `docs/epics/<id>/roadmap.md` 完了根拠表に PR# + マージ日追記 (片方向ミラー)
 - **副作用**: Phase 9 で `git worktree remove` + `git branch -D` (squash merge 後は強制削除許容、PR state MERGED 確認後のみ)
 
 ## フェーズ別動作 (10 フェーズ)
@@ -210,12 +210,61 @@ orchestrator 事前承認下でも classifier (auto mode safety layer) が別 la
 - per-task pane: `gh pr ready` で Ready 昇格 → orchestrator pane に完了報告 (`cmux send` で 200 字未満直送、または touch file `/tmp/orchestrator-status-<task>-ready.txt`)
 - orchestrator pane: Ready 昇格を確認 → `gh pr merge --squash` を直接実行 (R-15 事前承認に基づく代行)
 
-### Phase 8: pr-poller 即時起動 + roadmap-tracker
+### Phase 8: pr-poller 即時起動 + Plan/Epic frontmatter 同期 + roadmap-tracker
+
+merge 直後に以下 3 step を順次実行 (各 step の責務は独立、step 2 で R-34 を侵さない設計):
+
+#### Step 1: pr-poller 即時起動 (learning ファイル生成 trigger)
 
 - `pr-poller` を即時起動 → `pr-retrospective` 駆動 → learning ファイル生成 (`docs/harness/learnings/YYYY-MM-DD-pr-<N>.md`)
-- `roadmap-tracker` を起動 (**Epic 配下 PR / B-A-C フェーズ項目に該当時のみ**、Plan 単体は対象外、R-34)
-- mirror PR が必要な場合 (`implementation-workflow` を経由しないマージ + Epic / フェーズ項目該当) は `harness/roadmap-mirror-<phase-id>` ブランチで mirror PR 起票 (`roadmap.md` §手動マージ時の同 PR 更新ルール 参照)
 - learning ファイルは `harness/learnings-batch-YYYY-WW` ブランチに集約、週次 / 件数閾値到達時に PR 起票
+
+#### Step 2: 関連 Plan / Epic frontmatter 同期 (R-34 を侵さない、本 Skill の新責務)
+
+`roadmap-tracker` は R-34 で Plan 対象外 + Epic 本体 (`README.md`) への逆同期も禁止のため、merge 後の Plan / Epic frontmatter 同期は本 Skill が担う (詳細手順 SoT は `.claude/rules/implementation-workflow.md` §Phase 8 関連 Plan / Epic frontmatter 同期)。
+
+1. **関連 ID 抽出 (3 source 統合)**:
+   - **PR description**: `<!-- pr-frontmatter ... -->` 内の `related_plan: PLAN-NNN` / `related_epic: EPIC-NNN` 行を `gh pr view <PR#> --json body` から grep
+   - **branch 名**: `feature/PLAN-NNN-*` / `feature/EPIC-NNN-*-pr-NN` / `feature/<phase-id>-*` 等から ID 抽出
+   - **merge commit message subject**: `(PLAN-NNN)` / `(EPIC-NNN)` / `(A2-3)` 等の言及から ID 抽出
+   - **重複排除 + null skip**: 3 source 統合後に重複 ID を除去、`related_plan: null` / `related_epic: null` の場合は本 step を no-op で抜ける
+
+2. **対応 Plan / Epic ファイルの frontmatter 更新** (現値が `in-progress` の場合のみ):
+   - `docs/plans/PLAN-NNN-*.md` frontmatter: `status: in-progress → completed` + `related_pr: <PR#>` + `completed_at: <YYYY-MM-DD>` (merge 日)
+   - `docs/epics/EPIC-NNN-*/README.md` frontmatter: `status: in-progress` 維持 + `completed_at` は配下全 PR merge 済の場合のみ `completed` 候補としてフラグ立て (最終決定は orchestrator / 人間レビュー)
+   - `docs/plans/INDEX.md`: 対応行の status 列を `in-progress → completed` に更新、`related_pr` 列に PR# 追記
+   - `docs/epics/INDEX.md`: Epic 配下全 PR merge 済確定時のみ更新 (部分完了時は手を付けない)
+   - **誤検知防止**: 現値が `proposed` / `abandoned` / `promoted` 等の他状態の場合は本 Skill では絶対に書き換えない (人間判断が必要なため warning 出力)
+   - **複数 ID 該当時**: 1 PR が複数 Plan / Epic に紐づく場合は全件更新
+
+3. **更新方法の判定 (inline 同期 vs mirror PR)**:
+
+| 方法 | 内容 | 推奨基準 |
+|---|---|---|
+| **inline 同期** | merge した PR の **同一 PR** に Plan/Epic frontmatter 更新 commit を含める (Phase 5 で本体実装と一緒に commit) | 本体 PR の touch ファイル数が 30 以下、Plan/Epic 更新を含めても影響範囲が増えない場合 |
+| **mirror PR** | merge 後に **別 mirror PR** (`harness/mirror-<phase-id>` または `harness/plan-epic-sync-<id>` ブランチ) で Plan/Epic frontmatter 更新を別起票 | 本体 PR が 30 ファイル超 (本セッションの A5/A6 のような 100+ ファイル) で Plan/Epic 更新を分離した方が rebase 容易な場合 |
+
+判定基準は touch ファイル数 > 30 で mirror PR、それ以下なら inline 同期を推奨。並走 spawn 環境では mirror PR がトラブル少ない経験則あり (本セッション A5/A6 事例)、orchestrator 判断で柔軟に切替可。
+
+#### Step 3: roadmap-tracker 起動 (片方向ミラー、既存責務、R-34 維持)
+
+- `roadmap-tracker` を起動 (**Epic 配下 PR / B-A-C フェーズ項目に該当時のみ**、Plan 単体は対象外、R-34)
+- `docs/harness/roadmap.md` (全体) + `docs/epics/<id>/roadmap.md` (Epic 別) を Read-only で取り込み → 完了根拠表 / 着手順変更履歴 / 次の推奨着手を更新 (R-34 片方向ミラー)
+- mirror PR が必要な場合 (`implementation-workflow` を経由しないマージ + Epic / フェーズ項目該当) は `harness/roadmap-mirror-<phase-id>` ブランチで mirror PR 起票 (`roadmap.md` §手動マージ時の同 PR 更新ルール 参照)
+
+#### Phase 8 stale 事例 (運用例)
+
+本セッション (2026-05-19) で発覚した実運用 gap (本拡張責務の起点):
+
+| 対象 | merge 済 PR | 当時の frontmatter | 本拡張で目指す動作 |
+|---|---|---|---|
+| PLAN-001 (ADR 0001-0027) | PR #119 (2026-05-17) | `in-progress` / `related_pr: null` | Step 2 で `completed` + `related_pr: 119` + `completed_at: 2026-05-17` に同期 |
+| PLAN-003 (A8 im@sparql Docker) | PR #175 (2026-05-19) | `in-progress` / `related_pr: null` | 同上 |
+| PLAN-004 (A5 不要モジュール撤去) | PR #176 (2026-05-19) | `in-progress` / `related_pr: null` | 同上 |
+| PLAN-005 (A6 Lint/Format step1) | PR #182 (2026-05-19) | `in-progress` / `related_pr: null` | 同上 |
+| EPIC-A3 (Skill 群実装) | 全 15 PR merge 済 | `in-progress` | Step 2 で配下全 PR merge 済確定後 `completed` 候補としてフラグ立て、人間レビューで `completed` 確定 |
+
+stale 5 件の実 frontmatter 更新は本 PR スコープ外、別 dogfood PR で消化予定 (本拡張責務の初回適用テスト)。
 
 ### Phase 9: Worktree 削除 (orchestrator 経由時は改修候補 #4 SoT)
 
@@ -285,6 +334,10 @@ git branch -d <branch-name>  # 未検出時は -D
 - **Phase 7 で classifier ブロック発生時は迂回せず人間判断を仰ぐ** (PR #125 / #129 レトロ Try): denied メッセージ全文報告 → ユーザー指示待ち、機械的迂回禁止
 - **Phase 7 で per-task pane は `gh pr merge` を実行しない** (改修候補 #3 SoT、orchestrator skill 経由時): Ready 昇格まで per-task pane、merge は orchestrator pane が代行
 - **Phase 8 で `roadmap-tracker` を呼ぶのは Epic 配下 PR / B-A-C フェーズ項目のみ** (R-34): Plan 単体は対象外
+- **Phase 8 Step 2 (Plan/Epic frontmatter 同期) は本 Skill の新責務、R-34 を侵さない** (本セッション 2026-05-19 stale 5 件起点): `roadmap-tracker` は Plan 対象外 + Epic 本体逆同期禁止のため、`docs/plans/PLAN-NNN-*.md` / `docs/plans/INDEX.md` / Epic 配下全 PR merge 済時の `docs/epics/EPIC-NNN-*/README.md` の frontmatter 同期は本 Skill が担う。`roadmap-tracker` の片方向ミラー (`docs/harness/roadmap.md` / `docs/epics/<id>/roadmap.md` 専用) との責務分離を明示し、本 Skill から `docs/harness/plan.md` への書き戻しは禁止
+- **Phase 8 Step 2 の ID 抽出は 3 source 統合** (PR description / branch / commit subject): いずれか 1 source からでも抽出できれば更新、`related_plan: null` + `related_epic: null` + branch 名 prefix が `harness/<purpose>` 等 ID 抽出不能ならば本 step は no-op で抜ける
+- **Phase 8 Step 2 で書き換える status は `in-progress → completed` のみ** (誤検知防止): 現値が `proposed` / `abandoned` / `promoted` 等の場合は本 Skill では絶対に書き換えず warning 出力、人間判断を仰ぐ
+- **Phase 8 Step 2 の inline 同期 vs mirror PR 判定は touch ファイル数 > 30 が基準**: 並走 spawn 環境では mirror PR がトラブル少ない経験則あり (本セッション A5/A6 100+ ファイル事例)、orchestrator 判断で柔軟に切替可
 - **Phase 9 の `branch -d` を先にトライし、失敗時のみ `-D` に切替** (PR #123 / #135 レトロ Try): squash merge / merge commit のいずれも `--merged origin/master` で検出されないケースがある、`gh pr view --json state=MERGED` 確認後に `-D` 許容
 - **Phase 9 で per-task pane は `/exit` を実行しない** (改修候補 #4 SoT、orchestrator skill 経由時): orchestrator pane が `cmux close-workspace` で代行
 - **worktree path の slug は `branch-naming.md` 規約に厳密に従う**: スラッシュをハイフンに置換、特殊文字なし
