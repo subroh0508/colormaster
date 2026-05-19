@@ -17,6 +17,7 @@ last_updated: 2026-05-19
 | REQ ID | タイトル | status | related_specs | related_plans | 起票日 |
 |---|---|---|---|---|---|
 | [REQ-001](REQ-001-imasparql-local-docker.md) | im@sparql ローカル Docker 環境 | proposed | SPEC-IMASPARQL-001-basic | PLAN-003 | 2026-05-19 |
+| [REQ-002](REQ-002-imasparql-rdf-loading.md) | im@sparql RDF データ取得と Fuseki への load | proposed | SPEC-IMASPARQL-002-basic | PLAN-006 | 2026-05-19 |
 
 ## ステータス語彙
 
