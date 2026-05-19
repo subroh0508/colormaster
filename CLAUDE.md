@@ -83,6 +83,7 @@
 | `.claude/skills/orchestrator/**` | orchestrator-criteria.md, skill-authoring.md, harness-meta-criteria.md, implementation-workflow.md, pr-poller.md, branch-naming.md, merge-readiness.md |
 | `.claude/locks/**` | pr-poller.md |
 | `scripts/install-git-hooks.sh` | commit-message.md, branch-naming.md |
+| `scripts/docker-claude.sh`, `docs/runbooks/{local-imasparql,claude-code-docker-setup}.md`, `docker-compose.yml` | docker-cli.md |
 | `.claude/rules/**` | rules-index.md, docs-structure.md, template-language.md |
 
 ## グローバルルール
@@ -98,6 +99,7 @@
 - **IDE 操作は JetBrains MCP**、ライブラリ docs は **Context7 MCP**、Cloudflare 操作は **Cloudflare MCP**
 - **`@example.com` 以外のメールアドレスを fixture に書かない** (`.claude/rules/pii.md`)
 - **`.gitignore` 対象のファイルを絶対追跡しない** (`.env*` / `data/users.db*` / `*-credentials.json` 等)
+- **Claude Code から Docker 実行する場合は `./scripts/docker-claude.sh`** (DOCKER_CONFIG 分離 wrapper、絶対パス強制、`.claude/rules/docker-cli.md` SoT、PLAN-007 / ADR-0014)
 
 ## Worktree 運用 (implementation-workflow)
 

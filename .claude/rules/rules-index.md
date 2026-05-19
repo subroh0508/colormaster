@@ -2,7 +2,7 @@
 id: rules-index
 title: rules 索引
 status: living
-last_updated: 2026-05-19
+last_updated: 2026-05-20
 # 注意: 索引そのものは小さく、AI が他 rule を発見する起点として
 # 起動時に常時ロードしておくのが望ましいため `paths` を意図的に未設定。
 ---
@@ -141,6 +141,7 @@ last_updated: 2026-05-19
 | `merge-readiness.md` | stable (A2-3) | Merge 可否判定 (CI green + Critical 0 + 人間 approve の 3 条件) |
 | `pr-draft-policy.md` | stable (A2-3) | Draft → Ready 昇格条件、Draft 中の WIP commit ポリシー |
 | `spec-living-sync.md` | stable (A2-3) | 実装中の仕様変更時の双方向同期 (基本設計 / 詳細設計 ⇄ 実装コード) |
+| `docker-cli.md` | stable (Phase A、本 PR で起票) | Claude Code Docker CLI 分離 (DOCKER_CONFIG + wrapper script)、絶対パス強制 |
 
 ### ハーネス改善ループ
 
