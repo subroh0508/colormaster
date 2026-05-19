@@ -2,8 +2,8 @@
 id: PLAN-001
 title: ADR 0001-0027 一括起票
 type: chore
-status: in-progress
-related_pr: null
+status: completed
+related_pr: 119
 related_epic: EPIC-000
 related_specs: []
 related_adrs:
@@ -39,7 +39,7 @@ expected_modules:
   - docs/plans/**
   - docs/harness/roadmap.md
 created_at: 2026-05-17
-completed_at: null
+completed_at: 2026-05-17
 promoted_to: null
 ---
 

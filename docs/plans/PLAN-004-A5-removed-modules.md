@@ -2,8 +2,8 @@
 id: PLAN-004
 title: A5 不要モジュール撤去 (js / kotlin-js-store / Firebase Hosting 設定)
 type: refactor
-status: in-progress
-related_pr: null
+status: completed
+related_pr: 176
 related_epic: null
 related_specs: []
 related_adrs:
@@ -23,7 +23,7 @@ expected_modules:
   - "core/common/src/jsMain/kotlin/net/subroh0508/colormaster/common/firebase.kt"
   - ".claude/rules/removed-modules.md"
 created_at: 2026-05-19
-completed_at: null
+completed_at: 2026-05-19
 promoted_to: null
 ---
 

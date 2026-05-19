@@ -2,8 +2,8 @@
 id: PLAN-003
 title: A8 im@sparql ローカル Docker 環境構築 (Fuseki container)
 type: feature-request
-status: in-progress
-related_pr: null
+status: completed
+related_pr: 175
 related_epic: null
 related_specs:
   - SPEC-IMASPARQL-001-basic
@@ -18,7 +18,7 @@ expected_modules:
   - .gitignore
   - .env.example
 created_at: 2026-05-19
-completed_at: null
+completed_at: 2026-05-19
 promoted_to: null
 ---
 

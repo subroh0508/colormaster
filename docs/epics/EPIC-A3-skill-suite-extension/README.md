@@ -1,9 +1,9 @@
 ---
 id: EPIC-A3
 title: 専用 Skill 群実装 (feature-request / bug-fix / refactor / dependency-upgrade / adr-author / harness-meta / harness-evolution の新規完成 + 6 Skill 本格化)
-status: in-progress
+status: completed
 created_at: 2026-05-18
-completed_at: null
+completed_at: 2026-05-18
 expected_modules:
   - .claude/skills/**
   - .claude/rules/**
