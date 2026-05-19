@@ -19,6 +19,7 @@ last_updated: 2026-05-19
 | [PLAN-002](PLAN-002-3-axis-eval-for-harness-meta-evolution.md) | harness-meta / harness-evolution 改修 PR の 3 軸定量評価フレーム導入 | harness | completed | — | 2026-05-19 |
 | [PLAN-003](PLAN-003-a8-imasparql-docker.md) | A8 im@sparql ローカル Docker 環境構築 (Fuseki container) | feature-request | in-progress | — | 2026-05-19 |
 | [PLAN-004](PLAN-004-A5-removed-modules.md) | A5 不要モジュール撤去 (js / kotlin-js-store / Firebase Hosting 設定) | refactor | in-progress | — | 2026-05-19 |
+| [PLAN-005](PLAN-005-A6-lint-format-foundation-step1.md) | A6 Lint/Format 基盤 step1 = Spotless + ktlint 最小統合 | harness | in-progress | — | 2026-05-19 |
 
 ## ステータス語彙
 
