@@ -27,6 +27,9 @@ kotest = "6.0.0.M1"
 
 sqldelight = "2.1.0"
 
+spotless = "7.0.4"
+ktlint = "1.5.0"
+
 npm-i18next-core = "^22.0.4"
 npm-i18next-http-backend = "^2.0.1"
 
@@ -51,6 +54,8 @@ compose-compiler-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compil
 android-gradle-build-tools = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 android-gradle-build-tools-builder = { module = "com.android.tools.build:builder", version.ref = "agp" }
 android-gradle-build-tools-builder-model = { module = "com.android.tools.build:builder-model", version.ref = "agp" }
+
+spotless-gradle-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }

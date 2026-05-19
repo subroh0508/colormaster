@@ -14,6 +14,7 @@ dependencies {
     implementation(libs.android.gradle.build.tools)
     implementation(libs.android.gradle.build.tools.builder)
     implementation(libs.android.gradle.build.tools.builder.model)
+    implementation(libs.spotless.gradle.plugin)
 }
 
 gradlePlugin {
@@ -21,6 +22,10 @@ gradlePlugin {
         register("allTestReport") {
             id = "colormaster.primitive.test.report"
             implementationClass = "net.subroh0508.colormaster.primitive.AllTestReportPlugin"
+        }
+        register("spotless") {
+            id = "colormaster.primitive.spotless"
+            implementationClass = "net.subroh0508.colormaster.primitive.spotless.SpotlessPlugin"
         }
         register("androidLibrary") {
             id = "colormaster.primitive.android.libarary"
