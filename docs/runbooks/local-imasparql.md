@@ -2,7 +2,7 @@
 id: runbook-local-imasparql
 title: im@sparql ローカル Fuseki Docker 環境
 status: living
-last_updated: 2026-05-19
+last_updated: 2026-05-20
 related_adrs:
   - ADR-0007
   - ADR-0014
@@ -66,6 +66,11 @@ docker compose up -d fuseki
 - 2 回目以降は数秒で起動完了
 - 起動完了は `docker compose ps` の `STATUS` が `Up (healthy)` になるまで
 
+> **注 (Claude Code 経由実行時)**: 上記コマンドを Claude Code セッションから実行する場合は
+> **`./scripts/docker-claude.sh`** で叩く (絶対パス、PLAN-007 / `.claude/rules/docker-cli.md` 参照)。
+> `docker` 直叩きは macOS Docker Desktop `credsStore: "desktop"` 経由の Keychain helper で
+> 0% CPU hang するリスクあり。人間手元実行 / 通常ターミナルは影響なし (通常 `docker` のまま)。
+
 ## 4. 接続確認
 
 ### 4.1. 管理 UI
@@ -124,7 +129,16 @@ docker compose down
 - in-memory dataset (default) は停止で揮発、再起動時は再投入が必要
 - TDB2 永続化を有効化していれば `data/imasparql/tdb2/` 配下にデータが残る (TDB2 設定は本 runbook §8 オプションを参照)
 
+> **注 (Claude Code 経由実行時)**: 上記コマンドを Claude Code セッションから実行する場合は
+> **`./scripts/docker-claude.sh`** で叩く (絶対パス、PLAN-007 / `.claude/rules/docker-cli.md` 参照)。
+> `docker` 直叩きは `credsStore: "desktop"` hang リスクあり。人間手元実行は影響なし。
+
 ## 7. トラブルシュート
+
+> **注 (Claude Code 経由実行時)**: 下表の対処コマンド (`docker compose logs` / `docker compose ps`
+> / `docker logout` / `docker login` 等) を Claude Code セッションから実行する場合は
+> **`./scripts/docker-claude.sh`** で叩く (絶対パス、PLAN-007 / `.claude/rules/docker-cli.md` 参照)。
+> `docker` 直叩きは `credsStore: "desktop"` hang リスクあり。人間手元実行は影響なし。
 
 | 症状 | 原因 | 対処 |
 |---|---|---|
@@ -174,6 +188,9 @@ A8 後続 Plan で `IMASPARQL_ENDPOINT_URL` 等の環境変数経由の切替を
 - `data/imasparql/README.md` (RDF データ取得 / ライセンス注意)
 - `.claude/rules/sparql.md` (SPARQL クエリ実装規約)
 - `.claude/rules/secrets.md` (`.env` / `.env.example` 規約)
+- `.claude/rules/docker-cli.md` (Claude Code 経由実行時の wrapper 利用規約、PLAN-007)
+- `docs/runbooks/claude-code-docker-setup.md` (`scripts/docker-claude.sh` の host setup 手順)
+- `docs/plans/PLAN-007-claude-code-docker-cli-isolation.md` (本 runbook §3 / §6 / §7 注記追加の Plan)
 - `docs/runbooks/local-development.md` §6 (本 runbook へのリンク元)
 - Apache Jena Fuseki: https://jena.apache.org/documentation/fuseki2/
 - stain/jena-fuseki Docker image: https://hub.docker.com/r/stain/jena-fuseki
