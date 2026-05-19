@@ -1,15 +1,15 @@
 package net.subroh0508.colormaster.androidapp.components.atoms
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 import net.subroh0508.colormaster.androidapp.themes.darkBackground
 import net.subroh0508.colormaster.androidapp.themes.lightBackground
@@ -26,9 +26,10 @@ fun Checkbox(
         ComposeCheckbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
-            colors = CheckboxDefaults.colors(
-                checkedColor = MaterialTheme.colors.primary,
-            ),
+            colors =
+                CheckboxDefaults.colors(
+                    checkedColor = MaterialTheme.colors.primary,
+                ),
             modifier = modifier,
         )
 
@@ -39,9 +40,10 @@ fun Checkbox(
         ComposeCheckbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
-            colors = CheckboxDefaults.colors(
-                checkedColor = MaterialTheme.colors.primary,
-            ),
+            colors =
+                CheckboxDefaults.colors(
+                    checkedColor = MaterialTheme.colors.primary,
+                ),
             modifier = Modifier.padding(end = 9.dp),
         )
         Text(

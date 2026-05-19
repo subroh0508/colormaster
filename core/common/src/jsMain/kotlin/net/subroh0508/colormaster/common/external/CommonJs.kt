@@ -6,7 +6,9 @@ import kotlin.js.RegExp
 
 external interface Context<T> : JsFunction1<String, T> {
     fun resolve(module: String): String
+
     fun keys(): Array<String>
+
     val id: Int
 }
 

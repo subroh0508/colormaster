@@ -6,7 +6,8 @@ class SearchByIdQuery(
     lang: String,
     ids: List<String>,
 ) : ImasparqlQuery() {
-    override val rawQuery = """
+    override val rawQuery =
+        """
         SELECT ?id ?name ?color WHERE {
           ?s imas:Color ?color;
             imas:Brand ?brand.

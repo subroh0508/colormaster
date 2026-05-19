@@ -8,6 +8,7 @@ expect class FakeAuthClient() : AuthClient {
     override val currentUser: FirebaseUser?
 
     override suspend fun signInAnonymously()
+
     override suspend fun signOut()
 
     override fun subscribeAuthState(): Flow<FirebaseUser?>

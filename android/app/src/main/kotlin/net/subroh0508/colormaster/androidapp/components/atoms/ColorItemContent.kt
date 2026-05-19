@@ -1,9 +1,9 @@
 package net.subroh0508.colormaster.androidapp.components.atoms
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,15 +27,19 @@ fun ColorItemContent(
             label,
             color = textColor,
             style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Medium),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-                .padding(top = 8.dp, start = 24.dp, end = 24.dp),
+            modifier =
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 8.dp, start = 24.dp, end = 24.dp),
         )
         Text(
             intColor.toHex(),
             color = textColor,
             style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Medium),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-                .padding(bottom = 8.dp, start = 24.dp, end = 24.dp),
+            modifier =
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 8.dp, start = 24.dp, end = 24.dp),
         )
     }
 }

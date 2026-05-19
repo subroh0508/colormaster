@@ -29,9 +29,11 @@ private fun ColumnScope.StaticColorListItem(
     label: String,
     intColor: IntColor,
 ) {
-    val boxModifier = Modifier.fillMaxWidth()
-        .weight(1.0F, true)
-        .background(color = intColor.toColor())
+    val boxModifier =
+        Modifier
+            .fillMaxWidth()
+            .weight(1.0F, true)
+            .background(color = intColor.toColor())
 
     if (type == ScreenType.Penlight) {
         Box(modifier = boxModifier)
@@ -40,9 +42,12 @@ private fun ColumnScope.StaticColorListItem(
 
     Box(modifier = boxModifier) {
         ColorItemContent(
-            label, intColor,
-            modifier = Modifier.fillMaxWidth()
-                .align(Alignment.Center),
+            label,
+            intColor,
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center),
         )
     }
 }

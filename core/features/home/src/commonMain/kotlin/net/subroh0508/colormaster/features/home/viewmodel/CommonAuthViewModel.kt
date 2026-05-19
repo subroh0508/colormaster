@@ -11,15 +11,20 @@ import net.subroh0508.colormaster.model.auth.AuthRepository
 abstract class CommonAuthViewModel(
     protected val repository: AuthRepository,
 ) : ViewModel() {
-    val uiState: StateFlow<AuthUiState> = repository.getCurrentUserStream()
-        .map { user ->
-            if (user == null) AuthUiState.NotSignedIn
-            else AuthUiState.SignedIn(user)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = AuthUiState.NotSignedIn,
-        )
+    val uiState: StateFlow<AuthUiState> =
+        repository
+            .getCurrentUserStream()
+            .map { user ->
+                if (user == null) {
+                    AuthUiState.NotSignedIn
+                } else {
+                    AuthUiState.SignedIn(user)
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = AuthUiState.NotSignedIn,
+            )
 
     suspend fun signOut() = repository.signOut()
 }

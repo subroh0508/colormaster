@@ -8,13 +8,13 @@ import org.gradle.api.Project
 @Suppress("unused")
 class KmpPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        with (target) {
-            with (pluginManager) {
+        with(target) {
+            with(pluginManager) {
                 apply("org.jetbrains.kotlin.multiplatform")
             }
 
             kotlin {
-                with (sourceSets) {
+                with(sourceSets) {
                     commonTest {
                         dependencies {
                             implementation(libs.library("kotlinx-coroutines-test"))

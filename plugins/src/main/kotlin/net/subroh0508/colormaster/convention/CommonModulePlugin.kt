@@ -11,8 +11,8 @@ import org.gradle.api.Project
 @Suppress("unused")
 class CommonModulePlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        with (target) {
-            with (plugins) {
+        with(target) {
+            with(plugins) {
                 applyKmpPlugins()
                 apply("org.jetbrains.compose")
                 apply("org.jetbrains.kotlin.plugin.compose")
@@ -20,7 +20,7 @@ class CommonModulePlugin : Plugin<Project> {
             }
 
             kotlin {
-                with (sourceSets) {
+                with(sourceSets) {
                     commonMain {
                         dependencies {
                             implementation(compose.dependencies.runtime)

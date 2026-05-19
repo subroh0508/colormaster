@@ -1,7 +1,5 @@
 package net.subroh0508.colormaster.test.extension
 
-import io.kotest.core.test.TestScope
-import io.kotest.core.test.testCoroutineScheduler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +15,8 @@ suspend fun <T> flowToList(
     val instances = mutableListOf<T>()
     val scheduler = TestCoroutineScheduler()
 
-    flow.onEach(instances::add)
+    flow
+        .onEach(instances::add)
         .stateIn(CoroutineScope(UnconfinedTestDispatcher(scheduler)))
 
     return instances to scheduler

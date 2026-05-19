@@ -2,8 +2,12 @@ package net.subroh0508.colormaster.network.imasparql.query
 
 import net.subroh0508.colormaster.network.imasparql.internal.ESCAPED_ENDPOINT_RDFS_DETAIL
 
-class RandomQuery(lang: String, limit: Int = 10) : ImasparqlQuery() {
-    override val rawQuery = """
+class RandomQuery(
+    lang: String,
+    limit: Int = 10,
+) : ImasparqlQuery() {
+    override val rawQuery =
+        """
         SELECT ?id ?name ?color WHERE {
           ?s imas:Color ?color;
             imas:Brand ?brand.

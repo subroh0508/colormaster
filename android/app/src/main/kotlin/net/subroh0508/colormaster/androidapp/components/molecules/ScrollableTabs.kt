@@ -21,7 +21,7 @@ fun ScrollableTabs(
         contentColor = MaterialTheme.colors.onSurface,
         indicator = {},
         divider = {},
-        modifier = modifier
+        modifier = modifier,
     ) {
         titles.forEachIndexed { index, title ->
             Tab(

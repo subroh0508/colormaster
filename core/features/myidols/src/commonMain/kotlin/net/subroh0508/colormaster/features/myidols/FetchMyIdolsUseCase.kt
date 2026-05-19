@@ -40,13 +40,13 @@ private fun rememberFetchMyIdolsUseCase(
             return@LaunchedEffect
         }
 
-        val job = launch(start = CoroutineStart.LAZY) {
-            runCatching {
-                repository.search(repository.fetchIds(), language.code)
+        val job =
+            launch(start = CoroutineStart.LAZY) {
+                runCatching {
+                    repository.search(repository.fetchIds(), language.code)
+                }.onSuccess { loadState.value = LoadState.Loaded(it) }
+                    .onFailure { loadState.value = LoadState.Error(it) }
             }
-                .onSuccess { loadState.value = LoadState.Loaded(it) }
-                .onFailure { loadState.value = LoadState.Error(it) }
-        }
 
         loadState.value = LoadState.Loading
         job.start()

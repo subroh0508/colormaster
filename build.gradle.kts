@@ -8,4 +8,5 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotest) apply false
     id("colormaster.primitive.test.report")
+    id("colormaster.primitive.spotless")
 }

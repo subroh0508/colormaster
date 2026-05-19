@@ -18,42 +18,45 @@ class SearchIdolsViewModel(
     private val searchParamsStateFlow = MutableStateFlow<SearchParams>(SearchParams.None)
     private val eventStateFlow = MutableStateFlow<IdolSelectUiEvent>(IdolSelectUiEvent.UnselectAll)
 
-    val uiState: StateFlow<SearchIdolsUiState> = combine(
-        searchParamsStateFlow.onEach { params ->
-            when (params) {
-                is SearchParams.None -> repository.rand(limit = 10, "ja")
-                is SearchParams.ByName -> searchByName(params)
-                is SearchParams.ByLive -> searchByLive(params)
-            }
-        },
-        eventStateFlow,
-        repository.getIdolColorsStream(limit = 10, "ja"),
-        repository.getInChargeOfIdolIdsStream(),
-        repository.getFavoriteIdolIdsStream(),
-    ) { params, event, idolColors, inChargeOfIds, favoriteIds ->
-        buildUiState(params, event, idolColors, inChargeOfIds, favoriteIds)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = SearchIdolsUiState.Loading(SearchParams.None),
-    )
+    val uiState: StateFlow<SearchIdolsUiState> =
+        combine(
+            searchParamsStateFlow.onEach { params ->
+                when (params) {
+                    is SearchParams.None -> repository.rand(limit = 10, "ja")
+                    is SearchParams.ByName -> searchByName(params)
+                    is SearchParams.ByLive -> searchByLive(params)
+                }
+            },
+            eventStateFlow,
+            repository.getIdolColorsStream(limit = 10, "ja"),
+            repository.getInChargeOfIdolIdsStream(),
+            repository.getFavoriteIdolIdsStream(),
+        ) { params, event, idolColors, inChargeOfIds, favoriteIds ->
+            buildUiState(params, event, idolColors, inChargeOfIds, favoriteIds)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = SearchIdolsUiState.Loading(SearchParams.None),
+        )
 
     fun search(params: SearchParams) {
         searchParamsStateFlow.value = params
     }
 
     fun select(id: String, selected: Boolean) {
-        eventStateFlow.value = when (selected) {
-            true -> IdolSelectUiEvent.Select(id)
-            false -> IdolSelectUiEvent.Unselect(id)
-        }
+        eventStateFlow.value =
+            when (selected) {
+                true -> IdolSelectUiEvent.Select(id)
+                false -> IdolSelectUiEvent.Unselect(id)
+            }
     }
 
     fun selectAll(selected: Boolean) {
-        eventStateFlow.value = when (selected) {
-            true -> IdolSelectUiEvent.SelectAll
-            false -> IdolSelectUiEvent.UnselectAll
-        }
+        eventStateFlow.value =
+            when (selected) {
+                true -> IdolSelectUiEvent.SelectAll
+                false -> IdolSelectUiEvent.UnselectAll
+            }
     }
 
     private suspend fun searchByName(params: SearchParams.ByName) {
@@ -82,27 +85,36 @@ class SearchIdolsViewModel(
         inChargeOfIds: List<String>,
         favoriteIds: List<String>,
     ): SearchIdolsUiState {
-        val items = idolColors.map { idolColor ->
-            IdolColorListItem(
-                idolColor,
-                selected = when (event) {
-                    is IdolSelectUiEvent.Select -> event.id == idolColor.id
-                    is IdolSelectUiEvent.Unselect -> event.id != idolColor.id
-                    is IdolSelectUiEvent.UnselectAll -> false
-                    is IdolSelectUiEvent.SelectAll -> true
-                },
-                inCharge = idolColor.id in inChargeOfIds,
-                favorite = idolColor.id in favoriteIds,
-            )
-        }
+        val items =
+            idolColors.map { idolColor ->
+                IdolColorListItem(
+                    idolColor,
+                    selected =
+                        when (event) {
+                            is IdolSelectUiEvent.Select -> event.id == idolColor.id
+                            is IdolSelectUiEvent.Unselect -> event.id != idolColor.id
+                            is IdolSelectUiEvent.UnselectAll -> false
+                            is IdolSelectUiEvent.SelectAll -> true
+                        },
+                    inCharge = idolColor.id in inChargeOfIds,
+                    favorite = idolColor.id in favoriteIds,
+                )
+            }
 
         return SearchIdolsUiState.Loaded(params, items)
     }
 
     private sealed interface IdolSelectUiEvent {
-        data class Select(val id: String) : IdolSelectUiEvent
-        data class Unselect(val id: String) : IdolSelectUiEvent
+        data class Select(
+            val id: String,
+        ) : IdolSelectUiEvent
+
+        data class Unselect(
+            val id: String,
+        ) : IdolSelectUiEvent
+
         data object UnselectAll : IdolSelectUiEvent
+
         data object SelectAll : IdolSelectUiEvent
     }
 }

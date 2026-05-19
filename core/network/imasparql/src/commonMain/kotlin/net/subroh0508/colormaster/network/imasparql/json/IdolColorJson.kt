@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class IdolColorJson internal constructor(
     val id: Map<String, String>,
     val name: Map<String, String>,
-    val color: Map<String, String>
+    val color: Map<String, String>,
 )

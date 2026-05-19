@@ -21,5 +21,6 @@ actual interface AuthClient {
     actual fun subscribeAuthState(): Flow<FirebaseUser?>
 
     suspend fun signInWithGoogle()
+
     suspend fun signInWithGoogleForMobile()
 }

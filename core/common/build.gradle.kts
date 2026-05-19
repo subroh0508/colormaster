@@ -11,8 +11,20 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                implementation(npm("i18next", libs.versions.npm.i18next.core.get()))
-                implementation(npm("i18next-http-backend", libs.versions.npm.i18next.http.backend.get()))
+                implementation(
+                    npm(
+                        "i18next",
+                        libs.versions.npm.i18next.core
+                            .get(),
+                    ),
+                )
+                implementation(
+                    npm(
+                        "i18next-http-backend",
+                        libs.versions.npm.i18next.http.backend
+                            .get(),
+                    ),
+                )
             }
         }
     }

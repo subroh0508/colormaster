@@ -16,8 +16,7 @@ class AddIdolToFavoriteUseCase(
         scope.launch {
             runCatching {
                 repository.getFavoriteIdolIds()
-            }
-                .onSuccess { favorites.value = it }
+            }.onSuccess { favorites.value = it }
                 .onFailure { favorites.value = listOf() }
         }
     }
@@ -25,13 +24,13 @@ class AddIdolToFavoriteUseCase(
     fun add(id: String, favorite: Boolean) {
         scope.launch {
             runCatching {
-                if (favorite)
+                if (favorite) {
                     repository.favorite(id)
-                else
+                } else {
                     repository.unfavorite(id)
+                }
                 repository.getFavoriteIdolIds()
-            }
-                .onSuccess { favorites.value = it }
+            }.onSuccess { favorites.value = it }
                 .onFailure { favorites.value = listOf() }
         }
     }

@@ -15,23 +15,25 @@ abstract class ImasparqlQuery {
 
     protected abstract val rawQuery: String
 
-    val plainQuery get() = buildString {
-        append(PREFIX_SCHEMA)
-        append(PREFIX_IMAS)
-        append(PREFIX_RDF)
-        append(PREFIX_RDFS)
-        append(PREFIX_XSD)
+    val plainQuery get() =
+        buildString {
+            append(PREFIX_SCHEMA)
+            append(PREFIX_IMAS)
+            append(PREFIX_RDF)
+            append(PREFIX_RDFS)
+            append(PREFIX_XSD)
 
-        append(rawQuery)
-    }
+            append(rawQuery)
+        }
 
-    fun build() = buildString {
-        append(ENDPOINT_MAIN)
-        append("?output=json")
-        append("&query=")
+    fun build() =
+        buildString {
+            append(ENDPOINT_MAIN)
+            append("?output=json")
+            append("&query=")
 
-        append(URLEncoder.encode(plainQuery))
-    }
+            append(URLEncoder.encode(plainQuery))
+        }
 
     protected fun String.trimIndentAndBr() = trimIndent().replace("[\n\r]", "")
 }

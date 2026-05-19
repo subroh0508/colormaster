@@ -1,13 +1,12 @@
 package net.subroh0508.colormaster.androidapp.components.atoms
 
 import androidx.annotation.StringRes
-import androidx.compose.material.Text
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,7 +36,8 @@ fun DebounceTextField(
     }
 
     LaunchedEffect(onTextChanged) {
-        debounceFlowState.debounce(debounceTimeMillis)
+        debounceFlowState
+            .debounce(debounceTimeMillis)
             .collect { onTextChanged(it.takeIf(String::isNotBlank)) }
     }
 

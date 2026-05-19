@@ -19,11 +19,14 @@ fun DrawerButton(
 ) {
     TextButton(
         onClick = onClick,
-        colors = ButtonDefaults.textButtonColors(
-            contentColor = MaterialTheme.colors.onSurface,
-        ),
-        modifier = Modifier.fillMaxWidth()
-            .height(48.dp),
+        colors =
+            ButtonDefaults.textButtonColors(
+                contentColor = MaterialTheme.colors.onSurface,
+            ),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(48.dp),
     ) {
         Spacer(Modifier.width(16.dp))
         Icon(asset, contentDescription = null)

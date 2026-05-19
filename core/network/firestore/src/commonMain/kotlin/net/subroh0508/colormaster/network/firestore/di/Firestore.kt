@@ -8,7 +8,8 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 object Firestore {
-    val Module: Module get() = module {
-        single<FirestoreClient> { FirestoreClientImpl(Firebase.firestore) }
-    }
+    val Module: Module get() =
+        module {
+            single<FirestoreClient> { FirestoreClientImpl(Firebase.firestore) }
+        }
 }

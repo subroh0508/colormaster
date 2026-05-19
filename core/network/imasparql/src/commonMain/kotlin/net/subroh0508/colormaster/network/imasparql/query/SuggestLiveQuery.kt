@@ -3,8 +3,9 @@ package net.subroh0508.colormaster.network.imasparql.query
 class SuggestLiveQuery(
     dateRange: Pair<String, String>? = null,
     name: String? = null,
-)  : ImasparqlQuery() {
-    override val rawQuery = """
+) : ImasparqlQuery() {
+    override val rawQuery =
+        """
         SELECT ?name WHERE {
           ?live rdf:type imas:Live;
             schema:name ?name;

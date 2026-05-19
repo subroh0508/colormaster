@@ -40,12 +40,13 @@ fun HomeTopBar(
             painter = painterResource(R.drawable.ic_menu),
             contentDescription = null,
             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .clickable(onClick = {
-                   drawerScope.launch { drawerState.open() }
-                })
-                .padding(top = 16.dp, end = 16.dp, bottom = 16.dp),
+            modifier =
+                Modifier
+                    .align(Alignment.CenterVertically)
+                    .clickable(onClick = {
+                        drawerScope.launch { drawerState.open() }
+                    })
+                    .padding(top = 16.dp, end = 16.dp, bottom = 16.dp),
         )
 
         Title(titles)
@@ -53,18 +54,24 @@ fun HomeTopBar(
 }
 
 @Composable
-private fun RowScope.Title(titles: Array<String>) = when (titles.size) {
-    1 -> Text(
-        titles.first(),
-        style = MaterialTheme.typography.h6,
-        modifier = Modifier.align(Alignment.CenterVertically)
-            .padding(start = 16.dp),
-    )
-    else -> ScrollableTabs(
-        titles,
-        modifier = Modifier
-            .weight(1F)
-            .align(Alignment.CenterVertically)
-            .padding(start = 16.dp),
-    )
-}
+private fun RowScope.Title(titles: Array<String>) =
+    when (titles.size) {
+        1 ->
+            Text(
+                titles.first(),
+                style = MaterialTheme.typography.h6,
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(start = 16.dp),
+            )
+        else ->
+            ScrollableTabs(
+                titles,
+                modifier =
+                    Modifier
+                        .weight(1F)
+                        .align(Alignment.CenterVertically)
+                        .padding(start = 16.dp),
+            )
+    }

@@ -49,9 +49,9 @@ fun Search(
     val (params, setParams) = remember { mutableStateOf<SearchParams>(SearchParams.ByName.EMPTY) }
 
     SideEffect {
-        //viewModel.search()
-        //viewModel.loadInCharges()
-        //viewModel.loadFavorites()
+        // viewModel.search()
+        // viewModel.loadInCharges()
+        // viewModel.loadFavorites()
     }
 
     BackdropScaffold(
@@ -83,10 +83,11 @@ private fun BackLayerContent(
 ) = SearchBox(
     params,
     onParamsChange = onParamsChange,
-    modifier = Modifier
-        .fillMaxSize()
-        .padding(horizontal = 16.dp, vertical = 8.dp)
-        .background(MaterialTheme.colors.background),
+    modifier =
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .background(MaterialTheme.colors.background),
 )
 
 @ExperimentalFoundationApi
@@ -116,22 +117,25 @@ private fun FrontLayerContent(
         SearchStateLabel(
             params,
             idolColorLoadState,
-            if (backdropScaffoldState.isConcealed)
+            if (backdropScaffoldState.isConcealed) {
                 Icons.Default.KeyboardArrowDown
-            else
-                Icons.Default.KeyboardArrowUp,
+            } else {
+                Icons.Default.KeyboardArrowUp
+            },
             onClick = {
                 coroutineScope.launch {
-                    if (backdropScaffoldState.isConcealed)
+                    if (backdropScaffoldState.isConcealed) {
                         backdropScaffoldState.reveal()
-                    else
+                    } else {
                         backdropScaffoldState.conceal()
+                    }
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(HEADER_HEIGHT)
-                .padding(8.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(HEADER_HEIGHT)
+                    .padding(8.dp),
         )
 
         val (messageFavorite, messageUnfavorite) =
@@ -146,10 +150,11 @@ private fun FrontLayerContent(
             onClickFavorite = { (id), favorite ->
                 favorites.add(id, favorite)
                 showSnackbar(
-                    if (favorite)
+                    if (favorite) {
                         messageFavorite
-                    else
+                    } else {
                         messageUnfavorite
+                    },
                 )
             },
             onClick = { launchPreviewScreen(ScreenType.Penlight, listOf(it.id)) },
@@ -180,7 +185,7 @@ private fun SearchStateLabel(
     endAsset: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier,
-) = when  {
+) = when {
     loadState is LoadState.Loading -> WarningAlert(stringResource(R.string.search_state_label_waiting), modifier, endAsset, onClick)
     loadState is LoadState.Error -> ErrorAlert(stringResource(R.string.search_state_label_error, loadState.error.message ?: ""), modifier, endAsset, onClick)
     loadState is LoadState.Loaded<*> && !params.isEmpty() -> SuccessAlert(stringResource(R.string.search_state_label_searched, loadState.getValueOrNull<List<IdolColor>>()?.size ?: 0), modifier, endAsset, onClick)

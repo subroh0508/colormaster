@@ -21,7 +21,7 @@ internal class ImasparqlApiClient(
 
         return json.decodeFromString(
             Response.serializer(serializer),
-            response.bodyAsText(Charset.forName("UTF-8"))
+            response.bodyAsText(Charset.forName("UTF-8")),
         )
     }
 }

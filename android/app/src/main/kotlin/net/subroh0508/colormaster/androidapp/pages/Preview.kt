@@ -1,11 +1,10 @@
 package net.subroh0508.colormaster.androidapp.pages
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import net.subroh0508.colormaster.androidapp.R
@@ -44,7 +43,7 @@ private fun LoadingDialog(
         TextButton(onClick = confirmButton) {
             Text(stringResource(R.string.cancel))
         }
-    }
+    },
 )
 
 @Composable
@@ -64,5 +63,5 @@ private fun ErrorDialog(
         TextButton(onClick = confirmButton) {
             Text(stringResource(R.string.close))
         }
-    }
+    },
 )

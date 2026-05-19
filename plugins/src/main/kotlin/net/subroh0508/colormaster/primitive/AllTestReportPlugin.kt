@@ -22,29 +22,37 @@ class AllTestReportPlugin : Plugin<Project> {
         applyJsBrowserUnitTestReport(target)
     }
 
-    private fun applyAndroidUnitTestReport(target: Project) = with (target) {
-        tasks.register(TASK_TEST_DEBUG_UNIT_TEST_REPORT, TestReport::class) {
-            destinationDirectory.set(
-                layout.buildDirectory.dir("reports/allTests/${TASK_TEST_DEBUG_UNIT_TEST}").get().asFile,
-            )
+    private fun applyAndroidUnitTestReport(target: Project) =
+        with(target) {
+            tasks.register(TASK_TEST_DEBUG_UNIT_TEST_REPORT, TestReport::class) {
+                destinationDirectory.set(
+                    layout.buildDirectory
+                        .dir("reports/allTests/${TASK_TEST_DEBUG_UNIT_TEST}")
+                        .get()
+                        .asFile,
+                )
 
-            subprojects.forEach {
-                val test = it.tasks.findByName(TASK_TEST_DEBUG_UNIT_TEST) as? Test
-                if (test != null) testResults.from(test.binaryResultsDirectory)
+                subprojects.forEach {
+                    val test = it.tasks.findByName(TASK_TEST_DEBUG_UNIT_TEST) as? Test
+                    if (test != null) testResults.from(test.binaryResultsDirectory)
+                }
             }
         }
-    }
 
-    private fun applyJsBrowserUnitTestReport(target: Project) = with (target) {
-        tasks.register(TASK_JS_BROWSER_TEST_REPORT, TestReport::class) {
-            destinationDirectory.set(
-                layout.buildDirectory.dir("reports/allTests/${TASK_JS_BROWSER_TEST}").get().asFile,
-            )
+    private fun applyJsBrowserUnitTestReport(target: Project) =
+        with(target) {
+            tasks.register(TASK_JS_BROWSER_TEST_REPORT, TestReport::class) {
+                destinationDirectory.set(
+                    layout.buildDirectory
+                        .dir("reports/allTests/${TASK_JS_BROWSER_TEST}")
+                        .get()
+                        .asFile,
+                )
 
-            subprojects.forEach {
-                val test = it.tasks.findByName(TASK_JS_BROWSER_TEST) as? KotlinJsTest
-                if (test != null) testResults.from(test.binaryResultsDirectory)
+                subprojects.forEach {
+                    val test = it.tasks.findByName(TASK_JS_BROWSER_TEST) as? KotlinJsTest
+                    if (test != null) testResults.from(test.binaryResultsDirectory)
+                }
             }
         }
-    }
 }

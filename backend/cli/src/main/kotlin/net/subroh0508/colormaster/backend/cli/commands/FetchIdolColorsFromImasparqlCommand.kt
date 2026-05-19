@@ -20,21 +20,26 @@ object FetchIdolColorsFromImasparqlCommand {
 
     private const val DB_FILE_NAME = "color_master.db"
     private const val CONTENT_CATEGORY_IMAS = "The Idolmaster"
+
     // プロジェクトルートからの相対パスでサーバーのdataディレクトリを指定
     private val DB_DIR_PATH = File("../../backend/server/data").absolutePath
 
-    private val json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
-
-    private val httpClient = HttpClient(OkHttp) {
-        engine {
-            addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
+    private val json =
+        Json {
+            ignoreUnknownKeys = true
+            isLenient = true
         }
-    }
+
+    private val httpClient =
+        HttpClient(OkHttp) {
+            engine {
+                addInterceptor(
+                    HttpLoggingInterceptor().apply {
+                        level = HttpLoggingInterceptor.Level.BODY
+                    },
+                )
+            }
+        }
 
     private val imasparqlClient = ImasparqlApiClient(httpClient, json)
 
@@ -44,29 +49,31 @@ object FetchIdolColorsFromImasparqlCommand {
             val query = FetchAllIdolsQuery
 
             // Execute the query
-            val response = imasparqlClient.search(
-                query.build(),
-                IdolColorJson.serializer()
-            )
+            val response =
+                imasparqlClient.search(
+                    query.build(),
+                    IdolColorJson.serializer(),
+                )
 
             // Process the results
-            val results = response.results.bindings.map { idolColor ->
-                val id = idolColor.id["value"] ?: ""
-                val nameJa = idolColor.nameJa["value"] ?: ""
-                val nameKanaJa = idolColor.nameKanaJa["value"] ?: ""
-                val nameEn = idolColor.nameEn["value"] ?: ""
-                val color = idolColor.color["value"] ?: ""
-                val brand = idolColor.brandName["value"] ?: ""
+            val results =
+                response.results.bindings.map { idolColor ->
+                    val id = idolColor.id["value"] ?: ""
+                    val nameJa = idolColor.nameJa["value"] ?: ""
+                    val nameKanaJa = idolColor.nameKanaJa["value"] ?: ""
+                    val nameEn = idolColor.nameEn["value"] ?: ""
+                    val color = idolColor.color["value"] ?: ""
+                    val brand = idolColor.brandName["value"] ?: ""
 
-                IdolColorResult(
-                    id,
-                    nameJa,
-                    nameKanaJa,
-                    nameEn,
-                    color,
-                    brand,
-                )
-            }
+                    IdolColorResult(
+                        id,
+                        nameJa,
+                        nameKanaJa,
+                        nameEn,
+                        color,
+                        brand,
+                    )
+                }
 
             // Database connection setup
             val dbDir = File(DB_DIR_PATH).also { if (!it.exists()) it.mkdirs() }
@@ -85,19 +92,23 @@ object FetchIdolColorsFromImasparqlCommand {
             var skippedCount = 0
 
             // Sort results by brand and then by id for consistent ordering
-            val sortedResults = results.sortedWith(
-                compareBy<IdolColorResult> { it.brand }
-                    .thenBy { it.id }
-            )
+            val sortedResults =
+                results.sortedWith(
+                    compareBy<IdolColorResult> { it.brand }
+                        .thenBy { it.id },
+                )
 
             sortedResults.forEach { result ->
                 // Check if a record with the same name_en, content_category, and content_title already exists
-                val existingRecord = database.idolQueries.selectByNameEnAndContentCategoryAndTitle(
-                    result.nameEn,
-                    CONTENT_CATEGORY_IMAS,
-                    result.brand
-                ).executeAsList().firstOrNull()
-            
+                val existingRecord =
+                    database.idolQueries
+                        .selectByNameEnAndContentCategoryAndTitle(
+                            result.nameEn,
+                            CONTENT_CATEGORY_IMAS,
+                            result.brand,
+                        ).executeAsList()
+                        .firstOrNull()
+
                 val isDuplicate = existingRecord != null
 
                 // Ensure color has # prefix
@@ -111,7 +122,7 @@ object FetchIdolColorsFromImasparqlCommand {
                         name_en = result.nameEn,
                         color = formattedColor,
                         content_category = CONTENT_CATEGORY_IMAS,
-                        content_title = result.brand
+                        content_title = result.brand,
                     )
                     insertedCount++
                 } else {
@@ -139,6 +150,6 @@ object FetchIdolColorsFromImasparqlCommand {
         val nameKanaJa: String,
         val nameEn: String,
         val color: String,
-        val brand: String
+        val brand: String,
     )
 }

@@ -4,9 +4,12 @@ import net.subroh0508.colormaster.network.imasparql.internal.ESCAPED_ENDPOINT_RD
 
 class SearchByNameQuery(
     lang: String,
-    idolName: String?, brandsQueryStr: String?, typesQueryStr: List<String>,
+    idolName: String?,
+    brandsQueryStr: String?,
+    typesQueryStr: List<String>,
 ) : ImasparqlQuery() {
-    override val rawQuery = """
+    override val rawQuery =
+        """
         SELECT ?id ?name ?color WHERE {
           ?s imas:Color ?color;
             imas:Brand ?brand.

@@ -25,6 +25,7 @@ actual class FakeAuthClient : AuthClient {
     override suspend fun signInWithGoogle() {
         currentUserStateFlow.value = fromGoogle
     }
+
     override suspend fun signInWithGoogleForMobile() {
         currentUserStateFlow.value = fromGoogle
     }

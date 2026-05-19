@@ -33,17 +33,17 @@ fun rememberSearchLiveUseCase(
             return@produceState
         }
 
-        val job = scope.launch {
-            runCatching {
-                when {
-                    liveNameQuery.isNumber() -> liveNameQuery.toDateNum()?.range()?.let { repository.suggest(it) }
-                    liveNameQuery.query != null -> repository.suggest(liveNameQuery.query)
-                    else -> null
-                } ?: listOf()
+        val job =
+            scope.launch {
+                runCatching {
+                    when {
+                        liveNameQuery.isNumber() -> liveNameQuery.toDateNum()?.range()?.let { repository.suggest(it) }
+                        liveNameQuery.query != null -> repository.suggest(liveNameQuery.query)
+                        else -> null
+                    } ?: listOf()
+                }.onSuccess { value = LoadState.Loaded(it) }
+                    .onFailure { value = LoadState.Error(it) }
             }
-                .onSuccess { value = LoadState.Loaded(it) }
-                .onFailure { value = LoadState.Error(it) }
-        }
 
         value = LoadState.Loading
         job.start()

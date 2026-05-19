@@ -6,7 +6,8 @@ object FetchAllIdolsQuery : ImasparqlQuery() {
     private const val LANG_JA = "ja"
     private const val LANG_EN = "en"
 
-    override val rawQuery = """
+    override val rawQuery =
+        """
         SELECT ?id ?nameJa ?nameKanaJa ?nameEn ?color ?brandName WHERE {
           ?s imas:Color ?color;
             imas:Brand ?brand.

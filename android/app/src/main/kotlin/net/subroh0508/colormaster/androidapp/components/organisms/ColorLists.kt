@@ -19,7 +19,8 @@ import net.subroh0508.colormaster.androidapp.components.molecules.SelectableColo
 import net.subroh0508.colormaster.model.IdolColor
 
 private enum class UiState {
-    Preview, Select
+    Preview,
+    Select,
 }
 
 @ExperimentalFoundationApi
@@ -65,17 +66,22 @@ fun ColorLists(
 
     Box(modifier) {
         LazyColumn(
-            modifier = Modifier.padding(
-                start = 4.dp, top = 8.dp, end = 4.dp, bottom = 52.dp,
-            ),
-            contentPadding = PaddingValues(top = 4.dp, bottom = 4.dp)
+            modifier =
+                Modifier.padding(
+                    start = 4.dp,
+                    top = 8.dp,
+                    end = 4.dp,
+                    bottom = 52.dp,
+                ),
+            contentPadding = PaddingValues(top = 4.dp, bottom = 4.dp),
         ) {
             items(items.size, { items[it].id }) { index ->
                 val (id, name, intColor/*, selected, favorited*/) = items[index]
                 val idolColor = IdolColor(id, name, intColor)
 
                 SelectableColorListItem(
-                    name, intColor,
+                    name,
+                    intColor,
                     selected = /* selected */ false,
                     favorited = /* favorited */ false,
                     onClick = { handleOnClick(idolColor) },
@@ -91,8 +97,10 @@ fun ColorLists(
             onPreviewClick = onPreviewClick,
             onPenlightClick = onPenlightClick,
             onAllClick = onAllClick,
-            modifier = Modifier.align(Alignment.BottomCenter)
-                .background(color = MaterialTheme.colors.surface),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .background(color = MaterialTheme.colors.surface),
         )
     }
 }
@@ -112,12 +120,13 @@ private fun BottomButtons(
             painter = painterResource(R.drawable.ic_palette_24dp),
             onClick = onPreviewClick,
             enabled = !isEmpty,
-            shape = RoundedCornerShape(
-                topStart = 4.dp,
-                topEnd = 0.dp,
-                bottomStart = 4.dp,
-                bottomEnd = 0.dp,
-            ),
+            shape =
+                RoundedCornerShape(
+                    topStart = 4.dp,
+                    topEnd = 0.dp,
+                    bottomStart = 4.dp,
+                    bottomEnd = 0.dp,
+                ),
             modifier = Modifier.weight(1.0F, true),
         )
 
@@ -131,21 +140,23 @@ private fun BottomButtons(
         )
 
         val (toggleLabelRes, toggleAssetRes) =
-            if (isEmpty)
+            if (isEmpty) {
                 R.string.search_box_bottom_all to R.drawable.ic_check_box_24dp
-            else
+            } else {
                 R.string.search_box_bottom_clear to R.drawable.ic_indeterminate_check_box_24dp
+            }
 
         OutlinedButton(
             stringResource(toggleLabelRes),
             painter = painterResource(toggleAssetRes),
             onClick = { onAllClick(isEmpty) },
-            shape = RoundedCornerShape(
-                topStart = 0.dp,
-                topEnd = 4.dp,
-                bottomStart = 0.dp,
-                bottomEnd = 4.dp,
-            ),
+            shape =
+                RoundedCornerShape(
+                    topStart = 0.dp,
+                    topEnd = 4.dp,
+                    bottomStart = 0.dp,
+                    bottomEnd = 4.dp,
+                ),
             modifier = Modifier.weight(1.0F, true),
         )
     }

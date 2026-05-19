@@ -10,8 +10,8 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.ScreenType
@@ -21,12 +21,14 @@ import net.subroh0508.colormaster.androidapp.components.molecules.MenuListLabel
 import net.subroh0508.colormaster.androidapp.components.templates.ModalDrawerScaffold
 import net.subroh0508.colormaster.common.CurrentLocalKoinApp
 
-private enum class Page(@StringRes override val resId: Int) : MenuListLabel {
+private enum class Page(
+    @StringRes override val resId: Int,
+) : MenuListLabel {
     SEARCH(R.string.app_menu_search_attributes),
     FAVORITES(R.string.app_menu_favorites),
     HOW_TO_USE(R.string.app_menu_about_how_to_use),
     DEVELOPMENT(R.string.app_menu_about_development),
-    TERMS(R.string.app_menu_about_terms)
+    TERMS(R.string.app_menu_about_terms),
 }
 
 @ExperimentalFoundationApi
@@ -44,26 +46,28 @@ fun Home(
     ModalDrawerScaffold(
         drawerContent = { drawerState ->
             HomeDrawerContent {
-               drawerScope.launch {
-                   drawerState.close()
-                   page.value = it
-               }
+                drawerScope.launch {
+                    drawerState.close()
+                    page.value = it
+                }
             }
         },
         bodyContent = { drawerState, snackbarHostState ->
             when (page.value) {
-                Page.SEARCH -> Search(
-                    drawerState,
-                    drawerScope,
-                    snackbarHostState,
-                    launchPreviewScreen,
-                )
-                Page.FAVORITES -> Favorites(
-                    drawerState,
-                    drawerScope,
-                    snackbarHostState,
-                    launchPreviewScreen,
-                )
+                Page.SEARCH ->
+                    Search(
+                        drawerState,
+                        drawerScope,
+                        snackbarHostState,
+                        launchPreviewScreen,
+                    )
+                Page.FAVORITES ->
+                    Favorites(
+                        drawerState,
+                        drawerScope,
+                        snackbarHostState,
+                        launchPreviewScreen,
+                    )
                 else -> Unit
             }
         },
@@ -82,19 +86,21 @@ private fun HomeDrawerContent(
         )
         DrawerMenuList(
             label = stringResource(R.string.app_menu_search_label),
-            items = arrayOf(
-                Icons.Default.Search to Page.SEARCH,
-                Icons.Default.Favorite to Page.FAVORITES,
-            ),
+            items =
+                arrayOf(
+                    Icons.Default.Search to Page.SEARCH,
+                    Icons.Default.Favorite to Page.FAVORITES,
+                ),
             onClick = onClick,
         )
         DrawerMenuList(
             label = stringResource(R.string.app_menu_about_label),
-            items = arrayOf(
-                Icons.Default.Search to Page.HOW_TO_USE,
-                Icons.Default.Search to Page.DEVELOPMENT,
-                Icons.Default.Search to Page.TERMS,
-            ),
+            items =
+                arrayOf(
+                    Icons.Default.Search to Page.HOW_TO_USE,
+                    Icons.Default.Search to Page.DEVELOPMENT,
+                    Icons.Default.Search to Page.TERMS,
+                ),
             onClick = {},
         )
     }
@@ -105,5 +111,5 @@ private fun HomeDrawerContent(
 @ExperimentalMaterialApi
 @ExperimentalLayoutApi
 fun PreviewHome() {
-    //Home(uiModel)
+    // Home(uiModel)
 }

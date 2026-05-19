@@ -9,10 +9,12 @@ sealed interface SearchIdolsUiState {
     data class Loading(
         override val params: SearchParams,
     ) : SearchIdolsUiState
+
     data class Loaded(
         override val params: SearchParams,
         val idols: List<IdolColorListItem>,
     ) : SearchIdolsUiState
+
     data class Error(
         override val params: SearchParams,
         val error: Throwable,

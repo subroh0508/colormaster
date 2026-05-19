@@ -7,7 +7,8 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 object Auth {
-    val Module: Module get() = module {
-        single { AuthClient(Firebase.auth) }
-    }
+    val Module: Module get() =
+        module {
+            single { AuthClient(Firebase.auth) }
+        }
 }

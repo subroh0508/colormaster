@@ -16,7 +16,9 @@ import net.subroh0508.colormaster.network.auth.model.FirebaseUser
 import net.subroh0508.colormaster.network.auth.model.Provider
 import dev.gitlive.firebase.auth.FirebaseUser as RawFirebaseUser
 
-internal class AuthClientImpl(private val auth: FirebaseAuth) : AuthClient {
+internal class AuthClientImpl(
+    private val auth: FirebaseAuth,
+) : AuthClient {
     override val currentUser get() = auth.currentUser?.toDataClass()
 
     override suspend fun signInAnonymously() {
@@ -25,15 +27,17 @@ internal class AuthClientImpl(private val auth: FirebaseAuth) : AuthClient {
 
     override suspend fun signOut() = auth.signOut()
 
-    override fun subscribeAuthState(): Flow<FirebaseUser?> = callbackFlow {
-        val unsubscribe = onAuthStateChanged(auth.js) { trySend(it?.toDataClass()) }
+    override fun subscribeAuthState(): Flow<FirebaseUser?> =
+        callbackFlow {
+            val unsubscribe = onAuthStateChanged(auth.js) { trySend(it?.toDataClass()) }
 
-        awaitClose { unsubscribe() }
-    }
+            awaitClose { unsubscribe() }
+        }
 
     override suspend fun signInWithGoogle() {
         signInWithPopup(auth.js, GoogleAuthProvider()).await()
     }
+
     override suspend fun signInWithGoogleForMobile() {
         signInWithRedirect(auth.js, GoogleAuthProvider()).await<Nothing>()
     }
@@ -47,13 +51,15 @@ internal class AuthClientImpl(private val auth: FirebaseAuth) : AuthClient {
         return rawUser.providerData.map { Provider(it.providerId, it.email, it.displayName) }
     }
 
-    private fun RawFirebaseUser.toDataClass() = FirebaseUser(
-        uid,
-        this@AuthClientImpl.getProviderData(),
-    )
+    private fun RawFirebaseUser.toDataClass() =
+        FirebaseUser(
+            uid,
+            this@AuthClientImpl.getProviderData(),
+        )
 
-    private fun User.toDataClass() = FirebaseUser(
-        uid,
-        this@AuthClientImpl.getProviderData(),
-    )
+    private fun User.toDataClass() =
+        FirebaseUser(
+            uid,
+            this@AuthClientImpl.getProviderData(),
+        )
 }

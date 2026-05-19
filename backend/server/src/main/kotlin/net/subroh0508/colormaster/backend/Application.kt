@@ -24,7 +24,7 @@ fun main() {
     // ポート番号を環境変数から取得（デフォルトは8080）
     val port = System.getenv("PORT")?.toIntOrNull() ?: 8080
 
-    embeddedServer(Netty, port = port, host = "0.0.0.0") { 
+    embeddedServer(Netty, port = port, host = "0.0.0.0") {
         module(database)
     }.start(wait = true)
 }
@@ -41,10 +41,12 @@ private fun createSqlDriver(path: String): SqlDriver {
 
 fun Application.module(database: ColorMasterDatabase) {
     install(ContentNegotiation) {
-        json(Json {
-            prettyPrint = true
-            isLenient = true
-        })
+        json(
+            Json {
+                prettyPrint = true
+                isLenient = true
+            },
+        )
     }
 
     routing {
@@ -62,10 +64,13 @@ fun Application.module(database: ColorMasterDatabase) {
         }
 
         get("/api/idols/{id}") {
-            val idParam = call.parameters["id"] ?: return@get call.respondText("Missing id", status = io.ktor.http.HttpStatusCode.BadRequest)
-            val id = idParam.toLongOrNull() ?: return@get call.respondText("Invalid id format", status = io.ktor.http.HttpStatusCode.BadRequest)
-            val idol = database.idolQueries.selectById(id).executeAsOneOrNull()
-                ?: return@get call.respondText("No idol with id $id", status = io.ktor.http.HttpStatusCode.NotFound)
+            val idParam =
+                call.parameters["id"] ?: return@get call.respondText("Missing id", status = io.ktor.http.HttpStatusCode.BadRequest)
+            val id =
+                idParam.toLongOrNull() ?: return@get call.respondText("Invalid id format", status = io.ktor.http.HttpStatusCode.BadRequest)
+            val idol =
+                database.idolQueries.selectById(id).executeAsOneOrNull()
+                    ?: return@get call.respondText("No idol with id $id", status = io.ktor.http.HttpStatusCode.NotFound)
 
             call.respond(idol.toDto())
         }

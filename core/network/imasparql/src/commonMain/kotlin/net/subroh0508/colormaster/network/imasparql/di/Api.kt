@@ -19,8 +19,9 @@ object Api {
     }
 
     @Suppress("FunctionName")
-    fun Module(client: HttpClient = httpClient(json)) = module {
-        single { client }
-        single<ImasparqlClient> { ImasparqlApiClient(get(), json) }
-    }
+    fun Module(client: HttpClient = httpClient(json)) =
+        module {
+            single { client }
+            single<ImasparqlClient> { ImasparqlApiClient(get(), json) }
+        }
 }

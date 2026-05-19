@@ -5,7 +5,8 @@ actual enum class SearchByTab(
     val labelKey: String,
 ) {
     BY_NAME("", "searchBox.tabs.name"),
-    BY_LIVE("live", "searchBox.tabs.live");
+    BY_LIVE("live", "searchBox.tabs.live"),
+    ;
 
     companion object {
         fun findByQuery(query: String?) = values().find { it.query == query } ?: BY_NAME

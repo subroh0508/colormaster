@@ -3,9 +3,9 @@
 package net.subroh0508.colormaster.common.external
 
 import kotlinx.js.jso
-import kotlin.js.Promise
 import net.subroh0508.colormaster.common.ui.Languages
 import org.w3c.dom.Window
+import kotlin.js.Promise
 
 @JsModule("i18next")
 @JsNonModule
@@ -13,8 +13,11 @@ private external val i18next: I18next
 
 external interface I18next {
     fun init(options: I18nextOptions, callback: dynamic): Promise<I18nextText>
+
     fun use(module: dynamic): I18next
+
     fun changeLanguage(lng: String): Promise<I18nextText>
+
     fun t(vararg arg: Any): String
 
     fun on(event: String, callback: dynamic)
@@ -45,14 +48,30 @@ external interface I18nextBackendOptions {
     var loadPath: String
 }
 
-fun I18nextOptions.resources(code: String, res: dynamic) { resources = jso { this[code] = res } }
-fun I18nextOptions.fallbackLng(vararg lng: String) { this.asDynamic()["fallbackLng"] = lng }
-fun I18nextOptions.backend(options: I18nextBackendOptions.() -> Unit) { this.asDynamic()["backend"] = jso(options) }
-fun I18nextResources.ja(res: dynamic) { this.asDynamic()["ja.translation"] = res }
-operator fun I18nextResources.set(code: String, res: dynamic) { this.asDynamic()[code] = js("{ translation: res }") }
+fun I18nextOptions.resources(code: String, res: dynamic) {
+    resources = jso { this[code] = res }
+}
+
+fun I18nextOptions.fallbackLng(vararg lng: String) {
+    this.asDynamic()["fallbackLng"] = lng
+}
+
+fun I18nextOptions.backend(options: I18nextBackendOptions.() -> Unit) {
+    this.asDynamic()["backend"] = jso(options)
+}
+
+fun I18nextResources.ja(res: dynamic) {
+    this.asDynamic()["ja.translation"] = res
+}
+
+operator fun I18nextResources.set(code: String, res: dynamic) {
+    this.asDynamic()[code] = js("{ translation: res }")
+}
 
 fun I18next.init(options: I18nextOptions.() -> Unit, callback: (Error, I18nextText) -> Unit) = init(jso(options), callback)
+
 operator fun I18nextText.invoke(key: String): String = asDynamic()(key) as String
+
 operator fun I18nextText.invoke(key: String, args: Any): String = asDynamic()(key, args) as String
 
 fun i18nextInit(
@@ -64,7 +83,8 @@ fun i18nextInit(
     return i18next
         .use(httpBackend)
         .apply {
-            init(options = {
+            init(
+                options = {
                     resources(language.code, require("locale/${language.code}"))
                     lng = language.code
                     fallbackLng("ja")
@@ -79,11 +99,13 @@ fun i18nextInit(
         }
 }
 
-fun I18next.onLanguageChanged(func: (Languages?) -> Unit) = apply {
-    on("languageChanged") { code: String -> func(Languages.valueOfCode(code)) }
-}
+fun I18next.onLanguageChanged(func: (Languages?) -> Unit) =
+    apply {
+        on("languageChanged") { code: String -> func(Languages.valueOfCode(code)) }
+    }
 
 val Window.language
-    get() = window.location.pathname.split("/")[1].takeIf(String::isNotBlank)?.let { code ->
-        Languages.valueOfCode(code)
-    } ?: Languages.JAPANESE
+    get() =
+        window.location.pathname.split("/")[1].takeIf(String::isNotBlank)?.let { code ->
+            Languages.valueOfCode(code)
+        } ?: Languages.JAPANESE

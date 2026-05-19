@@ -27,11 +27,12 @@ fun rememberFetchIdolsUseCase(
             return@produceState
         }
 
-        val job = scope.launch {
-            runCatching { repository.search(ids, language.code) }
-                .onSuccess { value = LoadState.Loaded(it) }
-                .onFailure { value = LoadState.Error(it) }
-        }
+        val job =
+            scope.launch {
+                runCatching { repository.search(ids, language.code) }
+                    .onSuccess { value = LoadState.Loaded(it) }
+                    .onFailure { value = LoadState.Error(it) }
+            }
 
         value = LoadState.Loading
         job.start()

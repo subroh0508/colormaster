@@ -11,15 +11,16 @@ data class IdolDto(
     val nameEn: String,
     val color: String,
     val contentCategory: String,
-    val contentTitle: String
+    val contentTitle: String,
 )
 
-fun Idol.toDto() = IdolDto(
-    id = id,
-    nameJa = name_ja,
-    nameKanaJa = name_kana_ja,
-    nameEn = name_en,
-    color = color,
-    contentCategory = content_category,
-    contentTitle = content_title
-)
+fun Idol.toDto() =
+    IdolDto(
+        id = id,
+        nameJa = name_ja,
+        nameKanaJa = name_kana_ja,
+        nameEn = name_en,
+        color = color,
+        contentCategory = content_category,
+        contentTitle = content_title,
+    )

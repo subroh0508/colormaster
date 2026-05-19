@@ -6,7 +6,8 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual object AuthRepositories {
-    actual val Module: Module = module {
-        single<AuthRepository> { DefaultAuthRepository(get()) }
-    }
+    actual val Module: Module =
+        module {
+            single<AuthRepository> { DefaultAuthRepository(get()) }
+        }
 }

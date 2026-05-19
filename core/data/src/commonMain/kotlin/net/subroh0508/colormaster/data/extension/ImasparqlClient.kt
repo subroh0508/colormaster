@@ -7,10 +7,11 @@ import net.subroh0508.colormaster.network.imasparql.query.SearchByIdQuery
 internal suspend fun ImasparqlClient.search(
     ids: List<String>,
     lang: String,
-) = if (ids.isEmpty())
-        listOf()
-    else
-        search(
-            SearchByIdQuery(lang, ids).build(),
-            IdolColorJson.serializer(),
-        ).toIdolColors()
+) = if (ids.isEmpty()) {
+    listOf()
+} else {
+    search(
+        SearchByIdQuery(lang, ids).build(),
+        IdolColorJson.serializer(),
+    ).toIdolColors()
+}
