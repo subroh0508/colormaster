@@ -21,7 +21,7 @@ last_updated: 2026-05-20
 | [PLAN-004](PLAN-004-A5-removed-modules.md) | A5 不要モジュール撤去 (js / kotlin-js-store / Firebase Hosting 設定) | refactor | completed | — | 2026-05-19 |
 | [PLAN-005](PLAN-005-A6-lint-format-foundation-step1.md) | A6 Lint/Format 基盤 step1 = Spotless + ktlint 最小統合 | harness | completed | — | 2026-05-19 |
 | [PLAN-006](PLAN-006-imasparql-rdf-loading.md) | im@sparql RDF データ取得と Fuseki への load 計画立案 | feature-request | proposed | — | 2026-05-19 |
-| [PLAN-007](PLAN-007-claude-code-docker-cli-isolation.md) | Claude Code Docker CLI 分離 (DOCKER_CONFIG + wrapper script) | harness | proposed | — | 2026-05-20 |
+| [PLAN-007](PLAN-007-claude-code-docker-cli-isolation.md) | Claude Code Docker CLI 分離 (DOCKER_CONFIG + wrapper script) | harness | completed | — | 2026-05-20 |
 
 ## ステータス語彙
 

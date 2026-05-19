@@ -2,8 +2,8 @@
 id: PLAN-007
 title: Claude Code Docker CLI 分離 (DOCKER_CONFIG + wrapper script)
 type: harness
-status: proposed
-related_pr: null
+status: completed
+related_pr: 188
 related_epic: null
 related_specs: []
 related_adrs:
@@ -17,7 +17,7 @@ expected_modules:
   - CLAUDE.md
   - .claude/rules/rules-index.md
 created_at: 2026-05-20
-completed_at: null
+completed_at: 2026-05-20
 promoted_to: null
 ---
 
