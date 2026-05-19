@@ -96,15 +96,42 @@ Step 1 と Step 2 を同一 PR に統合する 1 段階運用は **禁止** (誤
 | 前回 harness-meta 実行からの経過日数 | 7 日 | 同上で 3 日に下げる |
 | 連続実行間隔 | 24 時間 | 緊急時のみ 6 時間に下げる (debug / 手動) |
 
-上書きは `.claude/rules/harness-meta-criteria.md` 本ファイル末尾の「実行時パラメータ」セクション (placeholder、将来追加) または `pr-poller` 起動時の引数で指定。
+上書きは本ファイル §実行時パラメータ (本格化済、A4) または `pr-poller` 起動時の引数で指定。
 
-## 実行時パラメータ (placeholder、A4 Skill 本格化時に拡充予定)
+## 実行時パラメータ (A4 で本格化)
 
-> **注**: 本セクションは pr-poller / harness-meta Skill 本格化 (A4) 時に実行時パラメータを書き込む場所として確保している placeholder。A4 完了までは空のまま維持し、本文の `(将来追加)` 参照との整合を保つ (PR #135 レトロ Try 反映)。
+> **注**: 本セクションは `pr-poller` / `harness-meta` Skill 実運用稼働 (A4) のための実行時パラメータ SoT。`.claude/skills/pr-poller/SKILL.md` §入力 / §実運用稼働手順 と本 rule §pr-poller 起動閾値 が本表を参照する (R-31、SoT 一本化)。
 
-| パラメータ名 | 既定値 | 上書き例 |
-|---|---|---|
-| _(A4 で記入)_ | _(A4 で記入)_ | _(A4 で記入)_ |
+### 既定値 + 上書き例
+
+| パラメータ名 | 既定値 | 上書き条件 | 上書き例 |
+|---|---|---|---|
+| `unprocessed_learnings_threshold` (未処理 learning 件数) | 10 件 | 重要改修 PR が直近 merge された / フェーズ ID 切替時 (A2 → A3 → A4 等) / orchestrator 明示 | 一時的に **5 件**に下げて harness-meta を前倒し起動 (PR #135 / #156 直後タイミング) |
+| `harness_meta_interval_days` (前回 harness-meta 実行からの経過日数) | 7 日 | 同上 + 連休前の集約 | 一時的に **3 日**に下げる (週次 PR を月曜日 09:00 JST にまとめ起票したい場合) |
+| `harness_meta_min_interval_hours` (連続実行間隔の最小) | 24 時間 | 緊急 debug / 手動 dogfood | 一時的に **6 時間**に下げる (A4 PR merge 後の Skill 本格化直後 dogfood) |
+| `pr_poller_stale_threshold_minutes` (lock stale 判定) | 30 分 | 長時間 dispatch を想定 (キャッチアップ batch 30+ 件) | **60 分**に延長 (`pr-poller` 起動時引数 `stale_threshold_minutes=60`) |
+| `pr_poller_lookback_default` (lookback 既定) | 24h | `$LAST_RUN` 不在時のフォールバック (`now - 7d`) で取りこぼし懸念 | **48h** に延長 (連休後の初回起動、`pr-poller` 起動時引数 `lookback=48h`) |
+| `dry_run` | false | 本 A4 PR merge 後の初回 dogfood / debug | `pr-poller` 起動時引数 `dry_run=true` (副作用なし、dispatch + learning push + harness-meta 起動を skip) |
+
+上書きは以下の 2 経路:
+
+- **本 rule §既定値 + 上書き例 を直接編集する PR**: 恒久的な閾値変更 (例: 運用熟成で 10 件 → 7 件 に下げる judgment) は本 rule を改修する harness-meta 改修 PR として起票 (`harness/<purpose>` ブランチ + `harness.md` テンプレ)
+- **`pr-poller` 起動時引数で渡す**: 一時的な上書き (`pr-poller route=manual unprocessed_learnings_threshold=5 dry_run=true` 等)、本表を参照しつつ runtime で override
+
+### dogfood 観測値 (A4 PR merge 後に追記)
+
+A4 PR (本 PR) merge 後の初回稼働で観測した実値を以下の表に記録する。観測値は `.claude/skills/pr-poller/SKILL.md` §A4 dogfood 期待値 と差分比較して、閾値妥当性 (10 件 / 7 日 / 24h) の運用熟成材料化する。
+
+| 観測項目 | A4 PR merge 時点 | 期待値 (SKILL.md §A4 dogfood 期待値) | 差分 / 備考 |
+|---|---|---|---|
+| 未処理 learning 件数 (pr-poller 起動時点) | _(dogfood で記入)_ | 0-2 件 | _(差分理由を記入)_ |
+| 未処理 merged PR (直近 7 日) | _(dogfood で記入)_ | 0-3 件 | _(同上)_ |
+| 前回 harness-meta 実行からの経過日数 | _(dogfood で記入)_ | 7 日未満 (PR #156 = A3-5 起点) | _(同上)_ |
+| harness-meta 自動起動有無 | _(dogfood で記入)_ | 起動しない見込み | _(起動した場合は閾値が低すぎた / してない場合は妥当)_ |
+| Renovate open PR 検出件数 | _(dogfood で記入)_ | 0-2 件 | _(同上)_ |
+| lock 取得 / 解放経過秒 | _(dogfood で記入)_ | 1 分以内 | _(同上)_ |
+
+dogfood が複数サイクル (CronCreate 起動 / ScheduleWakeup 起動の差分検証含む) 走った場合は、本表を縦に拡張するのではなく **新たな表として 1 サイクルずつ追記** + 観測日時 JST を明示する。3 サイクル分の観測値が揃ったら閾値の運用熟成 PR (本 rule §既定値 + 上書き例 の直接編集) を起票する。
 
 ## 改修 PR の品質基準 (採用時)
 
