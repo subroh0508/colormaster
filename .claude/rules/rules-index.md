@@ -2,7 +2,7 @@
 id: rules-index
 title: rules 索引
 status: living
-last_updated: 2026-05-17
+last_updated: 2026-05-19
 # 注意: 索引そのものは小さく、AI が他 rule を発見する起点として
 # 起動時に常時ロードしておくのが望ましいため `paths` を意図的に未設定。
 ---
@@ -157,7 +157,7 @@ last_updated: 2026-05-17
 
 | ファイル | 状態 | 主な責務 |
 |---|---|---|
-| `implementation-workflow.md` | stable (A2-3、Skill 本格実装は A3) | 10 フェーズ手順、Phase 0 で `git fetch origin master`、fix loop 上限 3、worktree 未マージ検知 |
+| `implementation-workflow.md` | stable (A2-3、Skill 本格実装は A3、Phase 8 拡張は 2026-05-19) | 10 フェーズ手順、Phase 0 で `git fetch origin master`、fix loop 上限 3、worktree 未マージ検知、Phase 8 で Plan/Epic frontmatter 同期 + roadmap-tracker (R-34 非侵犯) |
 | `code-reviewer-aspects.md` | stable (A2-3、Skill 本格実装は A3) | 8 aspect の binary eval checklist (各 5-7 項目)、Coordinator 形式 |
 
 ### 並列 orchestration (実装ワークフローを per-task pane に委譲する上位レイヤ)
