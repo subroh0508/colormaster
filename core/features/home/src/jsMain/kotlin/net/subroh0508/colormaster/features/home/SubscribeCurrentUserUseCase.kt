@@ -18,9 +18,11 @@ fun rememberSubscribeCurrentUserUseCase(
     return produceState<CurrentUser?>(
         initialValue = null,
     ) {
-        repository.getCurrentUserStream().onEach {
-            value = it
-        }.launchIn(scope)
+        repository
+            .getCurrentUserStream()
+            .onEach {
+                value = it
+            }.launchIn(scope)
     }
 }
 

@@ -13,7 +13,6 @@ import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.ScreenType
 import net.subroh0508.colormaster.androidapp.components.organisms.ColorLists
 import net.subroh0508.colormaster.androidapp.components.organisms.HomeTopBar
-import net.subroh0508.colormaster.features.myidols.rememberAddIdolToFavoriteUseCase
 import net.subroh0508.colormaster.features.myidols.rememberFetchFavoriteIdolsUseCase
 import net.subroh0508.colormaster.model.IdolColor
 

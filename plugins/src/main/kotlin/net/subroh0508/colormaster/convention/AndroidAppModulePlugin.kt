@@ -9,8 +9,8 @@ import org.gradle.api.Project
 @Suppress("unused")
 class AndroidAppModulePlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        with (target) {
-            with (plugins) {
+        with(target) {
+            with(plugins) {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.android")
                 apply("org.jetbrains.compose")

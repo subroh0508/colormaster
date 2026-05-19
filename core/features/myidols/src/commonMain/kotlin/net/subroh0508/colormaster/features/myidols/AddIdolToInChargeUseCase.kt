@@ -16,8 +16,7 @@ class AddIdolToInChargeUseCase(
         scope.launch {
             runCatching {
                 repository.getInChargeOfIdolIds()
-            }
-                .onSuccess { inCharges.value = it }
+            }.onSuccess { inCharges.value = it }
                 .onFailure { inCharges.value = listOf() }
         }
     }
@@ -25,13 +24,13 @@ class AddIdolToInChargeUseCase(
     fun add(id: String, inCharge: Boolean) {
         scope.launch {
             runCatching {
-                if (inCharge)
+                if (inCharge) {
                     repository.registerInChargeOf(id)
-                else
+                } else {
                     repository.unregisterInChargeOf(id)
+                }
                 repository.getInChargeOfIdolIds()
-            }
-                .onSuccess { inCharges.value = it }
+            }.onSuccess { inCharges.value = it }
                 .onFailure { inCharges.value = listOf() }
         }
     }

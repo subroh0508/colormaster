@@ -27,9 +27,10 @@ actual class AppPreference(
         val i18n: I18nextText? = null,
     ) {
         constructor(localStorage: Storage) : this(
-            theme = localStorage["themeType"]?.let {
-                ThemeType.valueOf(it.uppercase())
-            } ?: ThemeType.DAY,
+            theme =
+                localStorage["themeType"]?.let {
+                    ThemeType.valueOf(it.uppercase())
+                } ?: ThemeType.DAY,
         )
 
         val dark = theme == ThemeType.NIGHT
@@ -38,10 +39,11 @@ actual class AppPreference(
 
 actual val LocalApp: ProvidableCompositionLocal<AppPreference.State> = compositionLocalOf { AppPreference.State() }
 
-val Languages.basename get() = when (this) {
-    Languages.JAPANESE -> ""
-    Languages.ENGLISH -> "/en"
-}
+val Languages.basename get() =
+    when (this) {
+        Languages.JAPANESE -> ""
+        Languages.ENGLISH -> "/en"
+    }
 
 @Composable
 fun LocalI18n() = LocalApp.current.i18n
@@ -55,4 +57,6 @@ private operator fun Storage.setValue(
     thisRef: AppPreference,
     property: KProperty<*>,
     value: ThemeType?,
-) { if (value == null) removeItem(property.name) else set(property.name, value.name) }
+) {
+    if (value == null) removeItem(property.name) else set(property.name, value.name)
+}

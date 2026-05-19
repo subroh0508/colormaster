@@ -1,15 +1,15 @@
 package net.subroh0508.colormaster.androidapp.components.atoms
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.material.Text
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab as MaterialTab
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.Tab as MaterialTab
 
 @Composable
 fun Tab(
@@ -20,7 +20,8 @@ fun Tab(
     var textModifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
     if (selected) {
         textModifier =
-            Modifier.border(BorderStroke(2.dp, MaterialTheme.colors.onSurface), RoundedCornerShape(16.dp))
+            Modifier
+                .border(BorderStroke(2.dp, MaterialTheme.colors.onSurface), RoundedCornerShape(16.dp))
                 .then(textModifier)
     }
 

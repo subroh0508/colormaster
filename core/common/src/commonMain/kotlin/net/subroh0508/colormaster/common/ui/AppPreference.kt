@@ -14,6 +14,7 @@ expect class AppPreference {
         val theme: ThemeType
 
         operator fun component1(): Languages
+
         operator fun component2(): ThemeType
     }
 }

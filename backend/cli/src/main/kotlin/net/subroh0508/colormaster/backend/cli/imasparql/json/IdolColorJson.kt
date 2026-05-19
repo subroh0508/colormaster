@@ -9,5 +9,5 @@ data class IdolColorJson(
     val nameKanaJa: Map<String, String>,
     val nameEn: Map<String, String>,
     val color: Map<String, String>,
-    val brandName: Map<String, String>
+    val brandName: Map<String, String>,
 )

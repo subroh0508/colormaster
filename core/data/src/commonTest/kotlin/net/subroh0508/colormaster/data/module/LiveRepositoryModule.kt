@@ -8,8 +8,9 @@ import org.koin.dsl.koinApplication
 
 internal fun buildLiveRepository(
     block: () -> HttpClient,
-): LiveRepository = koinApplication {
-    modules(
-        Api.Module(block()) + LiveRepositories.Module
-    )
-}.koin.get(LiveRepository::class)
+): LiveRepository =
+    koinApplication {
+        modules(
+            Api.Module(block()) + LiveRepositories.Module,
+        )
+    }.koin.get(LiveRepository::class)

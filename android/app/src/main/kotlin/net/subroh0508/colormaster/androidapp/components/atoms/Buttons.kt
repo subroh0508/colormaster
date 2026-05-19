@@ -3,21 +3,19 @@ package net.subroh0508.colormaster.androidapp.components.atoms
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.OutlinedButton as ComposeOutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 import net.subroh0508.colormaster.androidapp.themes.darkBackground
 import net.subroh0508.colormaster.androidapp.themes.lightBackground
+import androidx.compose.material.OutlinedButton as ComposeOutlinedButton
 
 @Composable
 fun OutlinedButton(
@@ -30,22 +28,26 @@ fun OutlinedButton(
 ) = ComposeOutlinedButton(
     onClick = onClick,
     enabled = enabled,
-    colors = ButtonDefaults.outlinedButtonColors(
-        contentColor = MaterialTheme.colors.onSurface,
-    ),
+    colors =
+        ButtonDefaults.outlinedButtonColors(
+            contentColor = MaterialTheme.colors.onSurface,
+        ),
     shape = shape,
-    contentPadding = PaddingValues(
-        start = (if (painter == null) 16 else 12).dp,
-        end = 16.dp,
-    ),
+    contentPadding =
+        PaddingValues(
+            start = (if (painter == null) 16 else 12).dp,
+            end = 16.dp,
+        ),
     modifier = Modifier.height(36.dp).then(modifier),
 ) {
     if (painter != null) {
         Icon(
             painter,
             contentDescription = null,
-            modifier = Modifier.padding(end = 8.dp)
-                .align(Alignment.CenterVertically),
+            modifier =
+                Modifier
+                    .padding(end = 8.dp)
+                    .align(Alignment.CenterVertically),
         )
     }
 
@@ -113,4 +115,3 @@ fun PreviewOutlinedButton_Dark() {
         }
     }
 }
-

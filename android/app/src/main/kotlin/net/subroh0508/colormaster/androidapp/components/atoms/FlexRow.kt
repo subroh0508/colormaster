@@ -86,8 +86,10 @@ fun FlexRow(
 fun PreviewChipGroup() {
     ColorMasterTheme(darkTheme = true) {
         Box(
-            modifier = Modifier.width(360.dp)
-                .background(color = darkBackground)
+            modifier =
+                Modifier
+                    .width(360.dp)
+                    .background(color = darkBackground),
         ) {
             FlexRow(spacing = 8.dp) {
                 (0..10).forEach { i -> Chip("Chip #$i", false) }

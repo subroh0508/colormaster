@@ -1,6 +1,7 @@
 package net.subroh0508.colormaster.data
 
-val IdolColorEmpty = """
+val IdolColorEmpty =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -11,7 +12,8 @@ val IdolColorEmpty = """
     }
 """.trim()
 
-val IdolColorRandomJA = """
+val IdolColorRandomJA =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -73,7 +75,8 @@ val IdolColorRandomJA = """
     }
 """.trim()
 
-val IdolColorRandomEN = """
+val IdolColorRandomEN =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -135,7 +138,8 @@ val IdolColorRandomEN = """
     }
 """.trim()
 
-val IdolColorNameJA = """
+val IdolColorNameJA =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -157,7 +161,8 @@ val IdolColorNameJA = """
     }
 """.trim()
 
-val IdolColorNameEN = """
+val IdolColorNameEN =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -179,7 +184,8 @@ val IdolColorNameEN = """
     }
 """.trim()
 
-val IdolColorBrandJA = """
+val IdolColorBrandJA =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -206,7 +212,8 @@ val IdolColorBrandJA = """
     }
 """.trim()
 
-val IdolColorBrandEN = """
+val IdolColorBrandEN =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -233,7 +240,8 @@ val IdolColorBrandEN = """
     }
 """.trim()
 
-val IdolColorBrandAndTypeJA = """
+val IdolColorBrandAndTypeJA =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -265,7 +273,8 @@ val IdolColorBrandAndTypeJA = """
     }
 """.trim()
 
-val IdolColorBrandAndTypeEN = """
+val IdolColorBrandAndTypeEN =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -297,7 +306,8 @@ val IdolColorBrandAndTypeEN = """
     }
 """.trim()
 
-val IdolColorLiveNameJA = """
+val IdolColorLiveNameJA =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -319,7 +329,8 @@ val IdolColorLiveNameJA = """
     }
 """.trim()
 
-val IdolColorLiveNameEN = """
+val IdolColorLiveNameEN =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -341,7 +352,8 @@ val IdolColorLiveNameEN = """
     }
 """.trim()
 
-val IdolColorIdsJA = """
+val IdolColorIdsJA =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -363,7 +375,8 @@ val IdolColorIdsJA = """
     }
 """.trim()
 
-val IdolColorIdsEN = """
+val IdolColorIdsEN =
+    """
     {
       "head": {
         "vars": ["id", "name", "color"]
@@ -385,7 +398,8 @@ val IdolColorIdsEN = """
     }
 """.trim()
 
-val LiveNameDateRange = """
+val LiveNameDateRange =
+    """
     {
       "head": {
         "vars": ["name"]
@@ -401,7 +415,8 @@ val LiveNameDateRange = """
     }
 """.trim()
 
-val LiveNameTitle = """
+val LiveNameTitle =
+    """
     {
       "head": {
         "vars": ["name"]

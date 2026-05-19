@@ -21,8 +21,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import net.subroh0508.colormaster.androidapp.R
 import net.subroh0508.colormaster.androidapp.themes.*
 
@@ -33,6 +33,7 @@ fun InfoAlert(
     endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
 ) = Alert(Icons.Outlined.Info, message, blue500, modifier, endAsset, onClickEndIcon)
+
 @Composable
 fun SuccessAlert(
     message: String,
@@ -40,6 +41,7 @@ fun SuccessAlert(
     endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
 ) = Alert(Icons.Outlined.CheckCircle, message, green500, modifier, endAsset, onClickEndIcon)
+
 @Composable
 fun WarningAlert(
     message: String,
@@ -47,6 +49,7 @@ fun WarningAlert(
     endAsset: ImageVector? = null,
     onClickEndIcon: () -> Unit = {},
 ) = Alert(Icons.Outlined.Warning, message, orange500, modifier, endAsset, onClickEndIcon)
+
 @Composable
 fun ErrorAlert(
     message: String,
@@ -109,16 +112,18 @@ fun Alert(
                 painter = painter,
                 contentDescription = null,
                 tint = color,
-                modifier = Modifier
-                    .padding(end = 12.dp)
-                    .align(Alignment.CenterVertically),
+                modifier =
+                    Modifier
+                        .padding(end = 12.dp)
+                        .align(Alignment.CenterVertically),
             )
             Text(
                 message,
                 textAlign = TextAlign.Justify,
-                modifier = Modifier
-                    .weight(1.0F, true)
-                    .align(Alignment.CenterVertically),
+                modifier =
+                    Modifier
+                        .weight(1.0F, true)
+                        .align(Alignment.CenterVertically),
             )
 
             if (endPainter != null) {
@@ -126,10 +131,11 @@ fun Alert(
                     painter = endPainter,
                     contentDescription = null,
                     tint = MaterialTheme.colors.onSurface,
-                    modifier = Modifier
-                        .padding(start = 12.dp)
-                        .align(Alignment.CenterVertically)
-                        .clickable(onClick = onClickEndIcon),
+                    modifier =
+                        Modifier
+                            .padding(start = 12.dp)
+                            .align(Alignment.CenterVertically)
+                            .clickable(onClick = onClickEndIcon),
                 )
             }
         }
@@ -138,40 +144,45 @@ fun Alert(
 
 @Composable
 private fun textColor(color: Color) =
-        if (MaterialTheme.colors.isLight)
-            color.darken(0.6F)
-        else
-            color.lighten(0.6F)
+    if (MaterialTheme.colors.isLight) {
+        color.darken(0.6F)
+    } else {
+        color.lighten(0.6F)
+    }
 
 @Composable
 private fun backgroundColor(color: Color) =
-        if (MaterialTheme.colors.isLight)
-            color.lighten(0.9F)
-        else
-            color.darken(0.9F)
+    if (MaterialTheme.colors.isLight) {
+        color.lighten(0.9F)
+    } else {
+        color.darken(0.9F)
+    }
 
+private fun Color.lighten(percent: Float) =
+    Color(
+        red + (1.0F - red) * percent,
+        green + (1.0F - green) * percent,
+        blue + (1.0F - blue) * percent,
+        alpha,
+    )
 
-private fun Color.lighten(percent: Float) = Color(
-    red + (1.0F - red) * percent,
-    green + (1.0F - green) * percent,
-    blue + (1.0F - blue) * percent,
-    alpha,
-)
-private fun Color.darken(percent: Float) = Color(
-    red * (1.0F - percent),
-    green * (1.0F - percent),
-    blue * (1.0F - percent),
-    alpha,
-)
+private fun Color.darken(percent: Float) =
+    Color(
+        red * (1.0F - percent),
+        green * (1.0F - percent),
+        blue * (1.0F - percent),
+        alpha,
+    )
 
 @Preview
 @Composable
 fun PreviewAlerts_Light() {
     ColorMasterTheme(darkTheme = false) {
-        val modifier = Modifier
-            .width(360.dp)
-            .height(56.dp)
-            .padding(8.dp)
+        val modifier =
+            Modifier
+                .width(360.dp)
+                .height(56.dp)
+                .padding(8.dp)
 
         Column(Modifier.background(lightBackground)) {
             InfoAlert("Sample Text", endAsset = Icons.Default.KeyboardArrowDown, modifier = modifier)
@@ -186,10 +197,11 @@ fun PreviewAlerts_Light() {
 @Composable
 fun PreviewAlerts_Dark() {
     ColorMasterTheme(darkTheme = true) {
-        val modifier = Modifier
-            .width(360.dp)
-            .height(56.dp)
-            .padding(8.dp)
+        val modifier =
+            Modifier
+                .width(360.dp)
+                .height(56.dp)
+                .padding(8.dp)
 
         Column(Modifier.background(darkBackground)) {
             InfoAlert("Sample Text", endAsset = Icons.Default.KeyboardArrowDown, modifier = modifier)
@@ -199,4 +211,3 @@ fun PreviewAlerts_Dark() {
         }
     }
 }
-

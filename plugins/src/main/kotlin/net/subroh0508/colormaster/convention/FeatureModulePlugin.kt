@@ -14,15 +14,15 @@ import org.gradle.kotlin.dsl.project
 @Suppress("unused")
 class FeatureModulePlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        with (target) {
-            with (plugins) {
+        with(target) {
+            with(plugins) {
                 applyKmpPlugins()
                 apply("org.jetbrains.compose")
                 apply("org.jetbrains.kotlin.plugin.compose")
             }
 
             kotlin {
-                with (sourceSets) {
+                with(sourceSets) {
                     commonMain {
                         dependencies {
                             implementation(project(":core:common"))

@@ -12,14 +12,14 @@ import org.gradle.api.Project
 @Suppress("unused")
 class ApiModulePlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        with (target) {
-            with (plugins) {
+        with(target) {
+            with(plugins) {
                 applyKmpPlugins()
                 apply("org.jetbrains.kotlin.plugin.serialization")
             }
 
             kotlin {
-                with (sourceSets) {
+                with(sourceSets) {
                     commonMain {
                         dependencies {
                             implementation(libs.kotlinxCoroutinesCore)

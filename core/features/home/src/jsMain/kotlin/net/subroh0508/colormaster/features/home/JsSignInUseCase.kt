@@ -15,10 +15,11 @@ actual class SignInUseCase(
     operator fun invoke() {
         scope.launch {
             runCatching {
-                if (isMobile)
+                if (isMobile) {
                     repository.signInWithGoogleForMobile()
-                else
+                } else {
                     repository.signInWithGoogle()
+                }
             }
         }
     }

@@ -9,7 +9,9 @@ import net.subroh0508.colormaster.network.auth.model.FirebaseUser
 import net.subroh0508.colormaster.network.auth.model.Provider
 import dev.gitlive.firebase.auth.FirebaseUser as RawFirebaseUser
 
-internal class AuthClientImpl(private val auth: FirebaseAuth) : AuthClient {
+internal class AuthClientImpl(
+    private val auth: FirebaseAuth,
+) : AuthClient {
     override val currentUser get() = auth.currentUser?.toDataClass()
 
     override suspend fun signInAnonymously() {
@@ -35,8 +37,9 @@ internal class AuthClientImpl(private val auth: FirebaseAuth) : AuthClient {
         return rawUser.providerData.map { Provider(it.providerId, it.email, it.displayName) }
     }
 
-    private fun RawFirebaseUser.toDataClass() = FirebaseUser(
-        uid,
-        this@AuthClientImpl.getProviderData(),
-    )
+    private fun RawFirebaseUser.toDataClass() =
+        FirebaseUser(
+            uid,
+            this@AuthClientImpl.getProviderData(),
+        )
 }

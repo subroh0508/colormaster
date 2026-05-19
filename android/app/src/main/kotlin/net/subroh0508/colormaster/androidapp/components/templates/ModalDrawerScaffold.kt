@@ -17,7 +17,7 @@ import net.subroh0508.colormaster.androidapp.themes.ColorMasterTheme
 fun ModalDrawerScaffold(
     drawerContent: @Composable ColumnScope.(DrawerState) -> Unit,
     bodyContent: @Composable (DrawerState, SnackbarHostState) -> Unit,
-    bottomBarHeight: Dp = 0.dp
+    bottomBarHeight: Dp = 0.dp,
 ) {
     val modalDrawerState = rememberDrawerState(DrawerValue.Closed)
     val snackbarHostState = remember(::SnackbarHostState)
@@ -32,8 +32,10 @@ fun ModalDrawerScaffold(
                 bodyContent(modalDrawerState, snackbarHostState)
                 SnackbarHost(
                     hostState = snackbarHostState,
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                        .padding(start = 8.dp, end = 8.dp, bottom = bottomBarHeight + 8.dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(start = 8.dp, end = 8.dp, bottom = bottomBarHeight + 8.dp),
                     snackbar = {
                         Snackbar { Text(it.message) }
                     },

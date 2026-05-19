@@ -23,11 +23,12 @@ fun rememberSearchIdolsUseCase(
         initialValue = LoadState.Initialize,
         params,
     ) {
-        val job = scope.launch {
-            runCatching { repository.search(params, language) }
-                .onSuccess { value = LoadState.Loaded(it) }
-                .onFailure { value = LoadState.Error(it) }
-        }
+        val job =
+            scope.launch {
+                runCatching { repository.search(params, language) }
+                    .onSuccess { value = LoadState.Loaded(it) }
+                    .onFailure { value = LoadState.Error(it) }
+            }
 
         value = LoadState.Loading
         job.start()
@@ -38,11 +39,13 @@ private suspend fun IdolColorsRepository.search(
     params: SearchParams?,
     language: Languages,
 ) = when (params) {
-    is SearchParams.ByName -> params.takeUnless { it.isEmpty() }?.let {
-        search(it.idolName, it.brands, it.types, language.code)
-    } ?: rand(10, language.code)
-    is SearchParams.ByLive -> params.liveName?.let {
-        search(it, language.code)
-    } ?: listOf()
+    is SearchParams.ByName ->
+        params.takeUnless { it.isEmpty() }?.let {
+            search(it.idolName, it.brands, it.types, language.code)
+        } ?: rand(10, language.code)
+    is SearchParams.ByLive ->
+        params.liveName?.let {
+            search(it, language.code)
+        } ?: listOf()
     else -> listOf()
 }

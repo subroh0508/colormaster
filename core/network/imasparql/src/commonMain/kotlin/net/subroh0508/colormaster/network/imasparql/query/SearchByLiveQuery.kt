@@ -6,7 +6,8 @@ class SearchByLiveQuery(
     lang: String,
     liveName: String?,
 ) : ImasparqlQuery() {
-    override val rawQuery = """
+    override val rawQuery =
+        """
         SELECT ?id ?name ?color WHERE {
           ?live rdf:type imas:Live;
             schema:name ?liveName;

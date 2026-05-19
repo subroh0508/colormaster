@@ -7,8 +7,9 @@ actual class AuthViewModel(
 ) : CommonAuthViewModel(repository) {
     suspend fun signInWithGoogle(
         isMobile: Boolean,
-    ) = if (isMobile)
-            repository.signInWithGoogleForMobile()
-        else
-            repository.signInWithGoogle()
+    ) = if (isMobile) {
+        repository.signInWithGoogleForMobile()
+    } else {
+        repository.signInWithGoogle()
+    }
 }

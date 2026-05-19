@@ -12,17 +12,19 @@ class PenlightViewModel(
     private val withDescription: Boolean,
     private val repository: PreviewRepository,
 ) : ViewModel() {
-    val uiState: StateFlow<PenlightUiState> = repository.getPreviewColorsStream()
-        .map { idols ->
-            when (idols.isEmpty()) {
-                true -> PenlightUiState.Loading
-                false -> PenlightUiState.Loaded(idols, withDescription)
-            }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = PenlightUiState.Loading,
-        )
+    val uiState: StateFlow<PenlightUiState> =
+        repository
+            .getPreviewColorsStream()
+            .map { idols ->
+                when (idols.isEmpty()) {
+                    true -> PenlightUiState.Loading
+                    false -> PenlightUiState.Loaded(idols, withDescription)
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = PenlightUiState.Loading,
+            )
 
     suspend fun show(ids: List<String>, lang: String) {
         repository.clear()

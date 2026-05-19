@@ -5,7 +5,8 @@ import net.subroh0508.colormaster.model.LiveRepository
 import org.koin.dsl.module
 
 object LiveRepositories {
-    val Module get() = module {
-        single<LiveRepository> { DefaultLiveRepository(get()) }
-    }
+    val Module get() =
+        module {
+            single<LiveRepository> { DefaultLiveRepository(get()) }
+        }
 }

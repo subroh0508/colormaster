@@ -12,6 +12,7 @@ expect interface AuthClient {
     val currentUser: FirebaseUser?
 
     suspend fun signInAnonymously()
+
     suspend fun signOut()
 
     fun subscribeAuthState(): Flow<FirebaseUser?>

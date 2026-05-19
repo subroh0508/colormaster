@@ -11,14 +11,14 @@ import org.gradle.api.Project
 @Suppress("unused")
 class DataModulePlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        with (target) {
-            with (plugins) {
+        with(target) {
+            with(plugins) {
                 applyKmpPlugins()
                 apply("io.kotest.multiplatform")
             }
 
             kotlin {
-                with (sourceSets) {
+                with(sourceSets) {
                     commonMain {
                         dependencies {
                             implementation(libs.kotlinxCoroutinesCore)

@@ -30,20 +30,21 @@ class PreviewActivity : ComponentActivity() {
         }
     }
 
-    private val penlightController = object : LifecycleObserver {
-        @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-        fun keepScreenOn() {
-            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        }
+    private val penlightController =
+        object : LifecycleObserver {
+            @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+            fun keepScreenOn() {
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
 
-        @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-        fun brightnessFull() {
-            window.attributes.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
-        }
+            @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+            fun brightnessFull() {
+                window.attributes.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
+            }
 
-        @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-        fun brightnessNone() {
-            window.attributes.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+            @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+            fun brightnessNone() {
+                window.attributes.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+            }
         }
-    }
 }

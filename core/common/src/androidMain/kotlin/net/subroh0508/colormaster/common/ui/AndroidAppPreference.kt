@@ -7,8 +7,13 @@ actual class AppPreference {
     actual val lang get() = _lang
     actual val theme get() = _themeType
 
-    fun setLanguage(lang: Languages) { _lang = lang }
-    actual fun setThemeType(type: ThemeType) { _themeType = type }
+    fun setLanguage(lang: Languages) {
+        _lang = lang
+    }
+
+    actual fun setThemeType(type: ThemeType) {
+        _themeType = type
+    }
 
     private var _lang: Languages = Languages.JAPANESE
     private var _themeType: ThemeType = ThemeType.DAY

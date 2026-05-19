@@ -8,7 +8,7 @@ dependencies {
 
     // Add Ktor client dependencies
     implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.okhttp)  // For JVM platform
+    implementation(libs.ktor.client.okhttp) // For JVM platform
     implementation(libs.ktor.client.json)
     implementation(libs.ktor.serialization.core)
     implementation(libs.ktor.serialization.kotlinx.json)

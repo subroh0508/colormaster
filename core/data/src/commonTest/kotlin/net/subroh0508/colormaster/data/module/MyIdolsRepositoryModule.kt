@@ -17,14 +17,16 @@ internal fun buildMyIdolsRepository(
     val authClient: AuthClient = FakeAuthClient()
     val firestoreClient: FirestoreClient = FakeFirestoreClient()
 
-    val repository: MyIdolsRepository = koinApplication {
-        modules(
-            Api.Module(block()) + module {
-                single { authClient }
-                single { firestoreClient }
-            } + MyIdolsRepositories.Module
-        )
-    }.koin.get(MyIdolsRepository::class)
+    val repository: MyIdolsRepository =
+        koinApplication {
+            modules(
+                Api.Module(block()) +
+                    module {
+                        single { authClient }
+                        single { firestoreClient }
+                    } + MyIdolsRepositories.Module,
+            )
+        }.koin.get(MyIdolsRepository::class)
 
     return Triple(repository, authClient, firestoreClient)
 }

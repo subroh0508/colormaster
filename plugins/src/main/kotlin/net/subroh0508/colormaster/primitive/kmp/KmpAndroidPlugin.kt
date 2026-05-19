@@ -9,15 +9,15 @@ import org.gradle.api.Project
 @Suppress("unused")
 class KmpAndroidPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        with (target) {
-            with (pluginManager) {
+        with(target) {
+            with(pluginManager) {
                 apply("com.android.library")
             }
 
             kotlin {
                 androidTarget()
 
-                with (sourceSets) {
+                with(sourceSets) {
                     getByName("androidUnitTest") {
                         dependencies {
                             implementation(libs.library("kotest-runner-junit5"))

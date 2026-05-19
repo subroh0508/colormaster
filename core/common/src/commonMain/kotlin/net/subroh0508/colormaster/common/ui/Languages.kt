@@ -1,10 +1,15 @@
 package net.subroh0508.colormaster.common.ui
 
-enum class Languages(val code: String, val label: String) {
+enum class Languages(
+    val code: String,
+    val label: String,
+) {
     JAPANESE("ja", "日本語"),
-    ENGLISH("en", "ENGLISH");
+    ENGLISH("en", "ENGLISH"),
+    ;
 
     operator fun component1() = code
+
     operator fun component2() = label
 
     companion object {

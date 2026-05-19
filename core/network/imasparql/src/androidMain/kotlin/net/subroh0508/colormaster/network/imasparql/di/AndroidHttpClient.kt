@@ -13,26 +13,27 @@ import net.subroh0508.colormaster.network.imasparql.internal.ContentType
 import net.subroh0508.colormaster.network.imasparql.internal.UserAgent
 import okhttp3.logging.HttpLoggingInterceptor
 
-internal actual fun httpClient(json: Json) = HttpClient(OkHttp) {
-    engine {
-        if (BuildConfig.DEBUG) {
-            val loggingInterceptor = HttpLoggingInterceptor()
-            loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-            addInterceptor(loggingInterceptor)
-        }
+internal actual fun httpClient(json: Json) =
+    HttpClient(OkHttp) {
+        engine {
+            if (BuildConfig.DEBUG) {
+                val loggingInterceptor = HttpLoggingInterceptor()
+                loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+                addInterceptor(loggingInterceptor)
+            }
 
-        // @see https://github.com/ktorio/ktor/issues/1708
-        config {
-            retryOnConnectionFailure(true)
+            // @see https://github.com/ktorio/ktor/issues/1708
+            config {
+                retryOnConnectionFailure(true)
+            }
         }
-    }
-    defaultRequest {
-        url {
-            protocol = URLProtocol.HTTPS
-            host = HOSTNAME
+        defaultRequest {
+            url {
+                protocol = URLProtocol.HTTPS
+                host = HOSTNAME
+            }
+            accept(ContentType.Application.SparqlJson)
+            userAgent(UserAgent)
         }
-        accept(ContentType.Application.SparqlJson)
-        userAgent(UserAgent)
+        Json(json) {}
     }
-    Json(json) {}
-}

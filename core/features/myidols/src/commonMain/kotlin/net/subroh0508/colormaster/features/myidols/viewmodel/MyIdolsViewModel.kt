@@ -13,20 +13,21 @@ import net.subroh0508.colormaster.model.MyIdolsRepository
 class MyIdolsViewModel(
     private val repository: MyIdolsRepository,
 ) : ViewModel() {
-    val uiState: StateFlow<MyIdolsUiState> = combine<
-        List<IdolColor>,
-        List<IdolColor>,
-        MyIdolsUiState,
-    >(
-        repository.getInChargeOfIdolsStream("ja"),
-        repository.getFavoriteIdolsStream("ja"),
-    ) { inCharges, favorites ->
-        MyIdolsUiState.Loaded(inCharges, favorites)
-    }.catch { e ->
-        emit(MyIdolsUiState.Error(e))
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = MyIdolsUiState.Loading,
-    )
+    val uiState: StateFlow<MyIdolsUiState> =
+        combine<
+            List<IdolColor>,
+            List<IdolColor>,
+            MyIdolsUiState,
+        >(
+            repository.getInChargeOfIdolsStream("ja"),
+            repository.getFavoriteIdolsStream("ja"),
+        ) { inCharges, favorites ->
+            MyIdolsUiState.Loaded(inCharges, favorites)
+        }.catch { e ->
+            emit(MyIdolsUiState.Error(e))
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = MyIdolsUiState.Loading,
+        )
 }

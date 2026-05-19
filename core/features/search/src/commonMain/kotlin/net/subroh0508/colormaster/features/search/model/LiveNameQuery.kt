@@ -12,10 +12,14 @@ data class LiveNameQuery(
     }
 
     fun change(query: String?) = if (isSettled) this else copy(query = query?.takeIf(String::isNotBlank))
+
     fun settle(value: LiveName) = LiveNameQuery(value.value, true)
+
     fun clear() = LiveNameQuery()
 
     fun isNumber() = query?.let { DATE_NUMBER_PATTERN.toRegex().matches(it) } ?: false
+
     fun toDateNum() = query?.toIntOrNull()?.let(::DateNum)
+
     fun toLiveName() = takeIf { isSettled }?.query?.let(::LiveName)
 }

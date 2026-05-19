@@ -9,13 +9,14 @@ import kotlinx.serialization.json.Json
 import net.subroh0508.colormaster.network.imasparql.HOSTNAME
 import net.subroh0508.colormaster.network.imasparql.internal.ContentType
 
-internal actual fun httpClient(json: Json) = HttpClient(Js) {
-    defaultRequest {
-        url {
-            protocol = URLProtocol.HTTPS
-            host = HOSTNAME
+internal actual fun httpClient(json: Json) =
+    HttpClient(Js) {
+        defaultRequest {
+            url {
+                protocol = URLProtocol.HTTPS
+                host = HOSTNAME
+            }
+            accept(ContentType.Application.SparqlJson)
         }
-        accept(ContentType.Application.SparqlJson)
+        Json(json) {}
     }
-    Json(json) {}
-}

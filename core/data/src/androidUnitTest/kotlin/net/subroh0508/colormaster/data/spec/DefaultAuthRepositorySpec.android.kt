@@ -8,22 +8,24 @@ import net.subroh0508.colormaster.data.module.buildAuthRepository
 import net.subroh0508.colormaster.test.extension.flowToList
 import net.subroh0508.colormaster.test.model.GoogleUser
 
-class AndroidDefaultAuthRepositorySpec : FunSpec({
-    test("#getCurrentUserStream: it should return current user") {
-        val repository = buildAuthRepository()
+class AndroidDefaultAuthRepositorySpec :
+    FunSpec({
+        test("#getCurrentUserStream: it should return current user") {
+            val repository = buildAuthRepository()
 
-        val (instances, _) = flowToList(repository.getCurrentUserStream())
+            val (instances, _) = flowToList(repository.getCurrentUserStream())
 
-        repository.signInWithGoogle("idToken")
-        repository.signOut()
+            repository.signInWithGoogle("idToken")
+            repository.signOut()
 
-        instances.let {
-            it should haveSize(3)
-            it should containExactly(
-                null,
-                GoogleUser,
-                null,
-            )
+            instances.let {
+                it should haveSize(3)
+                it should
+                    containExactly(
+                        null,
+                        GoogleUser,
+                        null,
+                    )
+            }
         }
-    }
-})
+    })
