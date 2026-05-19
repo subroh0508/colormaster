@@ -2,8 +2,8 @@
 id: PLAN-005
 title: A6 Lint/Format 基盤 step1 = Spotless + ktlint 最小統合
 type: harness
-status: in-progress
-related_pr: null
+status: completed
+related_pr: 182
 related_epic: null
 related_specs: []
 related_adrs:
@@ -16,7 +16,7 @@ expected_modules:
   - .editorconfig
   - .github/workflows/ci.yml
 created_at: 2026-05-19
-completed_at: null
+completed_at: 2026-05-19
 promoted_to: null
 ---
 
